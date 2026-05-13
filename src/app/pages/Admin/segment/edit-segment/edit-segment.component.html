@@ -1,0 +1,8 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+ 
+<app-form *ngIf="initialData && segmentFields.length > 0" [title]="'Edit Segment'" [fields]="segmentFields" [model]="initialData"
+  (formSubmit)="updateSegment($event)" (cancelForm)="onCancel()">
+</app-form>

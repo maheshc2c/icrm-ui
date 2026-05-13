@@ -1,0 +1,236 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:host {
+    display: block;
+    width: 100%;
+}
+
+.login-page {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    width: 100%;
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('/assets/images/Gemini_Generated_Image_d57aded57aded57a.png') no-repeat center center fixed;
+    background-size: cover;
+    overflow: hidden;
+    padding: 24px;
+}
+
+/* Airplane wing elements */
+.wing-left {
+    position: absolute;
+    bottom: 0;
+    left: -10%;
+    width: 40%;
+    height: 50%;
+    background: linear-gradient(to right, rgba(220, 230, 240, 0.6), rgba(255, 255, 255, 0.3));
+    clip-path: polygon(0 100%, 100% 50%, 100% 100%);
+    z-index: 0;
+}
+
+.wing-right {
+    position: absolute;
+    top: -5%;
+    right: -10%;
+    width: 35%;
+    height: 40%;
+    background: linear-gradient(to left, rgba(220, 230, 240, 0.5), rgba(255, 255, 255, 0.2));
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    z-index: 0;
+}
+
+.login-container {
+    display: flex;
+    width: 100%;
+    max-width: 900px;
+    min-height: 500px;
+    height: min(500px, calc(100vh - 48px));
+    background: #fdfdfd;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+    position: relative;
+}
+
+.image-section {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.aircraft-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.form-section {
+    flex: 0 0 380px;
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #fdfdfd;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 40px;
+    background-size: contain;
+}
+
+.l {
+    width: 170px;
+    height: 170px;
+    display: block;
+    margin: 0 auto 10px auto;
+    margin-top: -20px;
+}
+
+.tagline {
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.tagline::before {
+    content: '✈';
+    margin-right: 5px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    background: white;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #6bb36b;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(to right,#667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.login-btn:hover {
+    background: linear-gradient(to right,#667eea, #764ba2);
+}
+
+.login-btn:active {
+    transform: translateY(1px);
+}
+
+.forgot-password {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s;
+    display: inline-block;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 20px;
+}
+
+.forgot-password:hover {
+    color: #0056b3;
+}
+
+.error {
+    margin-top: -10px;
+    color: #dc3545;
+    font-size: 13px;
+    text-align: center;
+}
+
+@media (max-width: 992px) {
+    .login-container {
+        max-width: 720px;
+    }
+
+    .form-section {
+        padding: 45px 35px;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-page {
+        padding: 16px;
+    }
+
+    .login-container {
+        flex-direction: column;
+        min-height: unset;
+        height: auto;
+    }
+
+    .image-section {
+        flex: unset;
+        height: 220px;
+    }
+
+    .form-section {
+        flex: unset;
+        width: 100%;
+        padding: 35px 24px;
+    }
+
+    .l {
+        width: 140px;
+        height: 140px;
+        margin-top: -10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-section {
+        height: 180px;
+    }
+
+    .form-section {
+        padding: 28px 18px;
+    }
+}

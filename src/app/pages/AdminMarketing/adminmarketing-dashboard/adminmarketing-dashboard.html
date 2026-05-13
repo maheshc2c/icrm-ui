@@ -1,0 +1,132 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="'Admin MarketingDashboard'"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+ 
+ 
+<div class="dashboard-content">
+  <!-- First Row: Manage, Documents, and Leads -->
+  <div class="section-row">
+      <!-- Manage Section -->
+      <div class="section-block">
+        <div class="section-header-title">
+          <i class="fas fa-cogs"></i>
+          <span>Manage</span>
+        </div>
+        <div class="section-cards">
+          <div class="dashboard-card campaign-card">
+            <a routerLink="/adminmarketing/manage-campaign"></a>
+            <div class="card-header">
+              <div class="card-icon campaign-bg">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <div class="card-title">
+                <h3>Campaign</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Documents Section -->
+      <div class="section-block">
+        <div class="section-header-title">
+          <i class="fas fa-file-alt"></i>
+          <span>Documents</span>
+        </div>
+        <div class="section-cards">
+          <div class="dashboard-card document-card">
+            <a routerLink="/adminmarketing/upload-document"></a>
+            <div class="card-header">
+              <div class="card-icon document-bg">
+                <i class="fas fa-upload"></i>
+              </div>
+              <div class="card-title">
+                <h3>Upload Documents</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Leads Section -->
+      <div class="section-block">
+        <div class="section-header-title">
+          <i class="fas fa-users"></i>
+          <span>Leads</span>
+        </div>
+        <div class="section-cards">
+          <div class="dashboard-card leads-card">
+            <a routerLink="/adminmarketing/assign-leads"></a>
+            <div class="card-header">
+              <div class="card-icon leads-assign-bg">
+                <i class="fas fa-user-plus"></i>
+              </div>
+              <div class="card-title">
+                <h3>Assign Leads</h3>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-card leads-card">
+            <a routerLink="/admin-marketing/track-leads"></a>
+            <div class="card-header">
+              <div class="card-icon leads-track-bg">
+                <i class="fas fa-calendar-check"></i>
+              </div>
+              <div class="card-title">
+                <h3>Track Leads</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+  <!-- Second Row: Manage Customer Details -->
+  <div class="section-row">
+    <!-- Manage Customer Details Section -->
+    <div class="section-block">
+      <div class="section-header-title">
+        <i class="fas fa-users-cog"></i>
+        <span>Manage Customer</span>
+      </div>
+      <div class="section-cards">
+        <div class="dashboard-card customer-card">
+          <a routerLink="/adminmarketing/customer"></a>
+          <div class="card-header">
+            <div class="card-icon customer-bg">
+              <i class="fas fa-user-friends"></i>
+            </div>
+            <div class="card-title">
+              <h3>Customer</h3>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-card contact-card">
+          <a routerLink="/adminmarketing/contact"></a>
+          <div class="card-header">
+            <div class="card-icon contact-bg">
+              <i class="fas fa-address-book"></i>
+            </div>
+            <div class="card-title">
+              <h3>Contact</h3>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-card speciality-card">
+          <a routerLink="/adminmarketing/speciality"></a>
+          <div class="card-header">
+            <div class="card-icon speciality-bg">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="card-title">
+              <h3>Speciality</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

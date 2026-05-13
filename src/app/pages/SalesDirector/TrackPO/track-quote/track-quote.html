@@ -1,0 +1,15 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  title="Track Quotes"
+  [columns]="columns"
+  (search)="onSearch($event)"
+[searchFields]="searchFields"
+  [rows]="rows">
+</app-data-table>

@@ -1,0 +1,26 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="add-geo-container">
+  <div class="card">
+    <div class="card-body">
+      <app-form
+        [fields]="geoFields"
+        [model]="model"
+        [title]="isEditMode ? 'Update' : 'Submit'"
+        (formSubmit)="saveGeo($event)"
+        (cancelForm)="onCancel()"
+       >
+      </app-form>
+    </div>
+  </div>
+</div>
+
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+

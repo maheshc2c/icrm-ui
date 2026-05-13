@@ -1,0 +1,15 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-form
+[title]="isEditMode ? 'Edit Competitor' : 'Add New Competitor'"
+  [fields]="competitorFields"
+  [model]="formInitialData"
+  (formSubmit)="saveCompetitor($event)"
+  (cancelForm)="onCancel()">
+</app-form>

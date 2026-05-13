@@ -1,0 +1,26 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+ 
+<app-data-table
+  title="Users Lists"
+ 
+ 
+  [columns]="columns"
+  [rows]="rows"
+ 
+   [searchFields]="searchFields"
+
+  [showImport]="true"
+  [showAdd]="true"
+ 
+  (searchChange)="onSearch($event)"
+  (download)="onImport()"
+  (add)="onAdd()"
+ 
+   (editRow)="onEdit($event)"
+  (deleteRow)="onDelete($event)">
+</app-data-table>

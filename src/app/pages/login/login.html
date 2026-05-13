@@ -1,0 +1,56 @@
+<div class="login-page">
+  <div class="wing-left"></div>
+  <div class="wing-right"></div>
+
+  <div class="login-container">
+    <div class="image-section">
+      <img
+        class="aircraft-image"
+        src="assets/images/Gemini_Generated_Image_p6eqnqp6eqnqp6eq.png"
+        alt="ICRM"
+      />
+    </div>
+
+    <div class="form-section">
+      <div class="logo-container">
+        <img
+          src="assets/images/Gemini_Generated_Image_j4oc6rj4oc6rj4oc-removebg-preview.png"
+          alt=""
+          class="l"
+        />
+      </div>
+
+      <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+        <div class="form-group">
+          <label for="username">Employee ID</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            [(ngModel)]="username"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+
+      <div>
+        <a routerLink="/forgotpassword" class="forgot-password">Forgot Password</a>
+      </div>
+
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </div>
+  </div>
+</div>

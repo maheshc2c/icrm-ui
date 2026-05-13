@@ -1,0 +1,25 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  title="Approve Leads"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  [showImport]="false"
+  [showAdd]="false"
+  confirmItemType="Lead"
+  (search)="onSearch()"
+  (editRow)="onEdit($event)"
+  (approveRow)="onApprove($event)"
+  (rejectRow)="onReject($event)">
+</app-data-table>
+
+  <!-- [showDelete]="false"
+  [showSNo]="false"
+  [actionMode]="'approve'" -->

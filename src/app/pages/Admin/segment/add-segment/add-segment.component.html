@@ -1,0 +1,14 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+ 
+<app-form
+  [title]="isEditMode ? 'Edit Segment' : 'Add New Segment'"
+  [fields]="segmentFields"
+  [model]="formInitialData"
+  (formSubmit)="saveSegment($event)"
+  (cancelForm)="onCancel()">
+</app-form>

@@ -1,0 +1,176 @@
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(83, 56, 74, 0.88) 0%,
+      rgba(117, 83, 104, 0.84) 45%,
+      rgba(142, 98, 115, 0.80) 100%
+    ),
+    url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+  color: white;
+  position: fixed;
+  top: 70px;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  padding-top: 12px;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 3px;
+}
+
+/* ===== Sidebar Menu Styles ===== */
+.nav-menu {
+  padding: 10px 0;
+}
+
+.nav-menu .menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-menu .menu-item {
+  position: relative;
+  margin: 2px 0;
+}
+
+.nav-menu .menu .menu-item > a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin: 10px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.nav-menu .menu .menu-item > a:hover,
+.nav-menu .menu .menu-item > a.active {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.nav-menu .menu .menu-item > a i {
+  width: 24px;
+  text-align: center;
+  font-size: 1.15rem;
+  color: #ffffff;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+  transition: transform 0.25s ease, color 0.25s ease;
+  flex-shrink: 0;
+}
+
+.nav-menu .menu .menu-item > a .arrow {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+  font-size: 12px;
+}
+
+/* Submenu styles */
+.nav-menu .menu .menu-item.has-submenu .submenu {
+  display: block;
+  max-height: 0;
+  overflow: hidden;
+  padding-left: 15px;
+  transition: max-height 0.3s ease, opacity 0.2s ease;
+  opacity: 0;
+  visibility: hidden;
+  list-style: none;
+}
+
+.nav-menu .menu .menu-item.has-submenu.active .submenu {
+  max-height: 1000px;
+  opacity: 1;
+  visibility: visible;
+  transition: max-height 0.4s ease, opacity 0.3s ease 0.1s;
+}
+
+.nav-menu .menu .submenu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px 8px 40px;
+  color: #b3b3b3;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  margin: 2px 8px;
+  font-size: 0.9em;
+  position: relative;
+}
+
+.nav-menu .menu .submenu a i {
+  width: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.nav-menu .menu .submenu a:hover,
+.nav-menu .menu .submenu a.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding-left: 42px;
+}
+
+.nav-menu .menu .submenu a:hover i,
+.nav-menu .menu .submenu a.active i {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* Active card highlight for has-submenu */
+.nav-menu .menu .menu-item.has-submenu.active > a {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* Left accent bar when active */
+.nav-menu .menu .menu-item.has-submenu.active > a::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #ffe95a, #ffd600);
+  box-shadow: 0 0 6px rgba(255, 214, 0, 0.6);
+}
+
+/* Rotate arrow when active */
+.nav-menu .menu .menu-item.has-submenu.active > a .arrow {
+  transform: rotate(180deg);
+}
+
+.submenu.show {
+  max-height: 1000px;
+  opacity: 1;
+  visibility: visible;
+}

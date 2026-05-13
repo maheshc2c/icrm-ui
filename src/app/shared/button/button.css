@@ -1,0 +1,44 @@
+/* container in which toolbar sits (parent should be full width) */
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  /* let parent control alignment; avoid hard-coded large margins */
+  margin: 0;
+  align-items: center;
+  justify-content: flex-end; /* put toolbar to the right */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px; /* optional */
+}
+
+/* If you need an additional wrapper, don't shift with margin-left */
+.toolbar-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+/* BUTTON STYLE */
+.icon-actions .icon-btn {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #f5eaff;
+  border: 1px solid #eadcff;
+  color: #6d28d9;
+  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.12);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* HOVER EFFECT */
+.icon-actions .icon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
+}

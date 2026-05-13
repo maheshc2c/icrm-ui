@@ -1,0 +1,22 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="add-category-container">
+  <div class="card">
+    <div class="card-body">
+      <app-form
+        [title]="headerTitle"
+        [fields]="categoryFields"
+        [model]="model"
+        [title]="isEditMode ? 'Update' : 'Submit'"
+        (formSubmit)="saveCategory($event)"
+        (cancelForm)="onCancel()">
+      </app-form>
+    </div>
+  </div>
+</div>
+

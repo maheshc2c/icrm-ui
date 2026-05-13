@@ -1,0 +1,17 @@
+
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-form
+  *ngIf="companyData"
+  [title]="'Edit Company'"
+  [fields]="companyFields"
+  [model]="companyData"
+  (formSubmit)="updateCompany($event)"
+  (cancelForm)="cancelEdit()">
+</app-form>
+

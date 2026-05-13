@@ -1,0 +1,20 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  title="City List"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  (search)="onSearch($event)" 
+  [showImport]="true"
+  [showAdd]="true"
+  (download)="onImport()"
+  (add)="onAdd()"
+  (editRow)="onEdit($event)"
+  (deleteRow)="onDelete($event)">
+</app-data-table>

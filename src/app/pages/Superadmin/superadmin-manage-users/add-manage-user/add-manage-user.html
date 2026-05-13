@@ -1,0 +1,21 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <app-form
+        *ngIf="(!isEditMode || formInitialData.employeeId)"
+        [title]="isEditMode ? 'Edit Manage User' : 'Add New Manage User'"
+        [fields]="manageUserFields"
+        [model]="formInitialData"
+        (formSubmit)="saveManageUser($event)"
+        (cancelForm)="onCancel()">
+      </app-form>
+    </div>
+  </div>
+</div>

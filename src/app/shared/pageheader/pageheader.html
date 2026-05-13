@@ -1,0 +1,32 @@
+<div class="page-header">
+  <div class="page-title">
+    <h1>{{ title }}</h1>
+
+    <div class="breadcrumb" *ngIf="breadcrumbs?.length">
+
+      <!-- First breadcrumb -->
+      <a *ngIf="breadcrumbs[0]?.route; else firstLabel"
+         [routerLink]="breadcrumbs[0].route">
+        <i [class]="homeIcon"></i> {{ breadcrumbs[0].label }}
+      </a>
+
+      <ng-template #firstLabel>
+        <a href="javascript:void(0)">
+          <i [class]="homeIcon"></i> {{ breadcrumbs[0].label }}
+        </a>
+      </ng-template>
+
+      <!-- Remaining breadcrumbs -->
+      <ng-container *ngFor="let bc of breadcrumbs.slice(1)">
+        <span>/</span>
+        <a *ngIf="bc.route; else plain" [routerLink]="bc.route">
+          {{ bc.label }}
+        </a>
+        <ng-template #plain>
+          <span>{{ bc.label }}</span>
+        </ng-template>
+      </ng-container>
+
+    </div>
+  </div>
+</div>

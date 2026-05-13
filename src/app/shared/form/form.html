@@ -1,0 +1,144 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<div class="form-wrapper">
+  <div class="company-form-container">
+
+    <div class="form-header-block">
+      <h4 class="form-title-heading">{{ title }}</h4>
+    </div>
+
+    <div class="form-body-section">
+      <form (ngSubmit)="submit()">
+
+        <!-- LOOP ALL FIELDS -->
+        <div class="company-field-row" *ngFor="let field of fields">
+
+          <!-- LABEL -->
+          <label class="field-label-text">
+            {{ field.label }}
+            <span *ngIf="field.required" class="mandatory-star">*</span>
+          </label>
+
+            <!-- DATE -->
+            <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
+              [(ngModel)]="formData[field.name]" [name]="field.name" />
+ 
+            <!-- DATETIME-LOCAL -->
+            <input *ngIf="field.type === 'datetime-local'" type="datetime-local" class="company-text-input"
+              [(ngModel)]="formData[field.name]" [name]="field.name" />
+ 
+         
+
+
+
+
+          <div class="field-input-area">
+
+            <!-- TEXT / NUMBER / EMAIL -->
+            <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
+              [type]="field.type" class="company-text-input" [placeholder]="field.placeholder"
+              [(ngModel)]="formData[field.name]" [name]="field.name" />
+
+            <!-- DATE -->
+            <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
+              [(ngModel)]="formData[field.name]" [name]="field.name" />
+
+              <!-- TIME -->
+<input *ngIf="field.type === 'time'"
+  type="time"
+  class="company-text-input"
+  [(ngModel)]="formData[field.name]"
+  [name]="field.name" />
+
+            <!-- TEXTAREA -->
+            <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder"
+              [(ngModel)]="formData[field.name]" [name]="field.name">
+            </textarea>
+
+            <!-- STATIC DROPDOWN (🔥 FIXED) -->
+            <select *ngIf="field.type === 'select'" 
+  class="company-text-input" 
+  [(ngModel)]="formData[field.name]"
+  (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
+  [name]="field.name">
+
+  <option value="">-- Select --</option>
+  <option *ngFor="let opt of field.options" [value]="opt.value">
+    {{ opt.label }}
+
+              </option>
+            </select>
+
+            <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
+            <select *ngIf="field.type === 'select-dynamic'" 
+  [(ngModel)]="formData[field.name]"
+              (ngModelChange)="
+                formData[field.name] = $event;
+                fieldChange.emit({ name: field.name, value: $event });
+                field.onChange?.($event)
+              " [name]="field.name">
+
+              <option value="">-- Select --</option>
+
+              <ng-container *ngIf="
+                formData[field.dependsOn] &&
+                field.optionsMap[formData[field.dependsOn]]
+              ">
+                <option *ngFor="let opt of field.optionsMap[formData[field.dependsOn]]" [value]="opt.value">
+                  {{ opt.label }}
+                </option>
+              </ng-container>
+
+            </select>
+
+            <!-- CHECKBOX GROUP (🔥 NEW) -->
+            <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container">
+              <div *ngFor="let opt of field.options" class="checkbox-item">
+                <input type="checkbox" [id]="field.name + '_' + opt.value" [ngModel]="formData[field.name][opt.value]"
+                  (ngModelChange)="
+                    formData[field.name][opt.value] = $event;
+                    fieldChange.emit({ name: field.name, value: formData[field.name] })
+                  " [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
+                <label [for]="field.name + '_' + opt.value" class="checkbox-label">
+                  {{ opt.label }}
+                </label>
+              </div>
+            </div>
+
+            <!-- RADIO GROUP -->
+            <div *ngIf="field.type === 'radio'" class="checkbox-group-container">
+              <div *ngFor="let opt of field.options" class="checkbox-item">
+                <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
+                  [(ngModel)]="formData[field.name]" [name]="field.name"
+                  (ngModelChange)="fieldChange.emit({ name: field.name, value: $event })"
+                  class="company-checkbox-input" />
+                <label [for]="field.name + '_' + opt.value" class="checkbox-label">
+                  {{ opt.label }}
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- ACTION BUTTONS -->
+        <div class="form-action-buttons">
+          <button type="submit" class="submit-button">
+            <i class="fas fa-check"></i> Submit
+          </button>
+
+          <button type="button" class="cancel-button" (click)="cancel()">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+
+  </div>
+</div>

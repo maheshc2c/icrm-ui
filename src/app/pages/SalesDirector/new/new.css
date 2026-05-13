@@ -1,0 +1,35 @@
+.top-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  width: 95%;
+  box-sizing: border-box;
+}
+
+/* Updated button style using your example UI theme */
+.btn {
+  height: 36px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: #f5eaff;
+  border: 1px solid #eadcff;
+  color: #6d28d9;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.12);
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
+  background: #efe3ff;
+}

@@ -1,0 +1,8 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table title="Visits List" [columns]="columns" [rows]="rows" [showAdd]="true" [searchFields]="searchFields"
+    (add)="onAdd()" (editRow)="onEdit($event)">
+</app-data-table>

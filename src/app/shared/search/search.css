@@ -1,0 +1,83 @@
+/* SEARCH GROUP CONTAINER */
+.search-group {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* EACH SEARCH FIELD */
+.search-field {
+  min-width: 200px;
+}
+
+/* LABEL STYLE (MATCH TEXT TONE) */
+.search-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6d28d9; /* same purple */
+  margin-bottom: 4px;
+}
+
+/* INPUT & SELECT COMMON STYLE */
+.search-field input,
+.search-field select {
+  height: 23px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px; /* same as button */
+  border: 1px solid #eadcff;
+  transition: all 0.2s ease;
+}
+
+/* PLACEHOLDER */
+.search-field input::placeholder {
+  color: #c3bbd8;
+}
+
+/* FOCUS EFFECT (MATCH BUTTON HOVER FEEL) */
+.search-field input:focus,
+.search-field select:focus {
+  outline: none;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
+  background: #ffffff;
+}
+
+/* DROPDOWN ARROW FIX (OPTIONAL) */
+.search-field select {
+
+  height: 35px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px; /* same as button */
+  border: 1px solid #eadcff;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 150px;
+}
+
+/* CLEAR BUTTON (MATCH ICON BUTTON STYLE) */
+.clear-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: #f5eaff;
+  border: 1px solid #eadcff;
+  color: #6d28d9;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.12);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+/* CLEAR BUTTON HOVER */
+.clear-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
+}
+
+

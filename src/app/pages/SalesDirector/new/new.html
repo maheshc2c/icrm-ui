@@ -1,0 +1,24 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+
+<app-pageheader
+  [title]="isEditMode ? 'Edit Lead' : 'Create a new Lead'"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+
+<!-- Top Buttons -->
+<div class="top-action-buttons">
+  <button class="btn btn-primary" (click)="onAddCustomer()">+ Add Customer</button>
+  <button class="btn btn-primary" (click)="onAddContact()">+ Add Contact</button>
+</div>
+
+
+<app-form
+[title]="isEditMode ? 'Update Lead Details' : 'Enter the Below Details'"
+
+  [fields]="leadFields"
+  [model]="leadForm"
+  (formSubmit)="onSubmit($event)"
+  (cancelForm)="onCancel()"></app-form>

@@ -1,0 +1,31 @@
+<div class="app-container">
+    <!-- Header -->
+    <app-header></app-header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Sidebar -->
+        <app-sidebar></app-sidebar>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Page Header -->
+            <app-pageheader 
+                [title]="headerTitle" 
+                [breadcrumbs]="headerBreadcrumbs">
+            </app-pageheader>
+
+            <!-- Form Container -->
+            <div class="form-container">
+                <app-form
+                    [title]="'Edit Visit'"
+                    [fields]="fields"
+                    [model]="formInitialData"
+                    (formSubmit)="onSubmit($event)"
+                    (fieldChange)="onModelChange($event)"
+                    (cancelForm)="onCancel()">
+                </app-form>
+            </div>
+        </div>
+    </div>
+</div>

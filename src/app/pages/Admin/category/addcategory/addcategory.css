@@ -1,0 +1,16 @@
+/* Add/Edit Category styles */
+.add-category-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-body {
+  padding: 30px;
+}

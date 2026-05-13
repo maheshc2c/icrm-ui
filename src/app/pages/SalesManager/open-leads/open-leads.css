@@ -1,0 +1,345 @@
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: #f5f7fa;
+  color: #333;
+  font-size: 14px;
+}
+
+/* ================= MAIN CONTENT ================= */
+.admin-marketing-content {
+  padding: 20px 30px;
+  margin-left: 260px;
+  min-height: 100vh;
+}
+
+/* ================= WIZARD ================= */
+.wizard-tabs-container {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+.wizard-navigation-bar {
+  display: flex;
+  background: #f1f1f1;
+  border-bottom: 1px solid #ddd;
+}
+
+.wizard-step-item {
+  flex: 1;
+  padding: 14px;
+  text-align: center;
+  background: #e5e5e5;
+  cursor: pointer;
+  font-weight: 500;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%);
+}
+
+.wizard-step-item:last-child {
+  clip-path: none;
+}
+
+.wizard-step-item.step-active {
+  background: #4f46e5;
+  color: #fff;
+}
+
+/* ================= TAB CONTENT ================= */
+.tab-content-wrapper {
+  padding: 25px;
+}
+
+/* ================= PAGE HEADER ================= */
+.page-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+  margin-bottom: 25px;
+}
+
+.page-heading-text {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.header-action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* ================= BUTTONS ================= */
+.action-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-info-primary,
+.btn-reroute-action {
+  background: #f5eaff;
+  color: #6d28d9;
+}
+
+.btn-drop-danger {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+/* ================= FORM ================= */
+.form-details-section {
+  border: 1px solid #e5e7eb;
+  padding: 25px;
+  border-radius: 8px;
+}
+
+.detail-form-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+  padding: 12px 0;
+}
+
+.form-field-label {
+  font-weight: 500;
+}
+
+.required-mark {
+  color: red;
+}
+
+.form-field-input-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+.detail-input-field,
+.detail-select-field,
+.detail-textarea-field {
+  width: 80%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.icon-button-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+}
+
+/* ================= FORM FOOTER ================= */
+.form-submit-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.primary-submit-btn,
+.btn-primary {
+  background: #4f46e5;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-form-btn,
+.btn-secondary {
+  background: #6b7280;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+/* ================= TABLE ================= */
+.opportunities-data-table,
+.timeline-table,
+.quote-table,
+.installation-table {
+  width: 100%;
+  border-collapse: collapse;
+  align-items: center;
+  text-align: center;
+}
+
+.opportunities-data-table th,
+.opportunities-data-table td,
+.timeline-table th,
+.timeline-table td,
+.quote-table th,
+.quote-table td,
+.installation-table th,
+.installation-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.timeline-table thead,
+.installation-table thead {
+  background: #ffd6d1;
+}
+
+.quote-table thead {
+  background: #f1f5f9;
+}
+
+.installation-table .no-data td {
+  text-align: center;
+  font-style: italic;
+  color: #6b7280;
+}
+
+/* ================= MODAL OVERLAY ================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* ================= MODAL BASE ================= */
+.modal-lg,
+.modal-xl,
+.modal-large {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.35);
+}
+
+.modal-large {
+  width: 90%;
+  max-width: 1100px;
+}
+
+.modal-lg {
+  width: 90%;
+  max-width: 1000px;
+}
+
+.modal-xl {
+  width: 95%;
+  max-width: 1200px;
+}
+
+.modal-scroll {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================= MODAL HEADER ================= */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 22px;
+  background: #f5f6f8;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.modal-close {
+  font-size: 22px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+/* ================= MODAL BODY ================= */
+.modal-body {
+  padding: 25px 30px;
+  overflow-y: auto;
+}
+
+/* ================= MODAL FOOTER ================= */
+.modal-footer {
+  padding: 16px 22px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* ================= GRIDS ================= */
+.customer-grid,
+.opportunity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.req {
+  color: red;
+}
+
+textarea {
+  resize: none;
+  min-height: 70px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+  .admin-marketing-content {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-grid,
+  .opportunity-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: span 1;
+  }
+}

@@ -1,0 +1,45 @@
+<div class="search-group mb-3">
+
+  <div class="search-field"
+       *ngFor="let field of fields">
+
+    <label class="search-label">{{ field.label }}</label>
+
+    <!-- 🔹 INPUT FIELD -->
+    <input
+      *ngIf="field.type !== 'select'"
+      class="form-control"
+      [type]="field.type || 'text'"
+      [placeholder]="field.placeholder"
+      [(ngModel)]="values[field.key]"
+      (input)="onInput()" />
+
+    <!-- 🔹 DROPDOWN FIELD -->
+    <select
+      *ngIf="field.type === 'select'"
+      class="form-select"
+      [(ngModel)]="values[field.key]"
+      (change)="onInput()">
+
+      <!-- <option value="">Select</option> -->
+        <!-- ✅ REAL PLACEHOLDER -->
+  <option [ngValue]="null">
+  {{ field.placeholder || 'Select' }}
+</option>
+
+      <option *ngFor="let opt of field.options"
+              [value]="opt.value">
+        {{ opt.label }}
+      </option>
+
+    </select>
+
+  </div>
+
+  <!-- <button class="btn btn-sm btn-secondary clear-btn"
+          *ngIf="fields.length"
+          (click)="clear()">
+    Clear
+  </button> -->
+
+</div>

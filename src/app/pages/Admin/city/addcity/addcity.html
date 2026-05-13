@@ -1,0 +1,20 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="add-city-container">
+  <div class="card">
+    <div class="card-body">
+      <app-form
+        [fields]="cityFields"
+        [title]="isEditMode ? 'Edit City/Town' : 'Add New City/Town'"
+        [model]="model"
+        (formSubmit)="saveCity($event)"
+        (cancelForm)="onCancel()">
+      </app-form>
+    </div>
+  </div>
+</div>

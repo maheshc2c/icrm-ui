@@ -1,0 +1,192 @@
+/* ================= ROOT ================= */
+:host {
+    display: block;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    min-height: 100vh;
+}
+ 
+/* ================= OUTER WRAPPER ================= */
+.dashboard-content {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    margin-left: 280px;
+    margin-right: 10px;
+    max-width: calc(100% - 300px);
+}
+ 
+/* ================= LEFT MAIN AREA ================= */
+.main-area {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+}
+ 
+/* ================= SECTION ROW ================= */
+.sections-row {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+}
+ 
+/* ================= SECTION BOX ================= */
+.section-box {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    flex: 1;
+    overflow: hidden;
+}
+ 
+/* ================= SECTION TITLE ================= */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #333;
+}
+ 
+.section-title i {
+    font-size: 0.9rem;
+    color: #555;
+}
+ 
+/* ================= CARDS ROW ================= */
+.cards-row {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    flex-wrap: nowrap;
+}
+ 
+/* ================= NAV CARD ================= */
+.nav-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+    height: 90px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    text-decoration: none;
+}
+ 
+.nav-card:hover {
+    opacity: 0.88;
+    transform: translateY(-2px);
+}
+ 
+.nav-card i {
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+ 
+.nav-card span {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+ 
+/* ================= CARD COLORS ================= */
+.green-card {
+    background-color: #388e3c;
+}
+ 
+.red-card {
+    background-color: #d32f2f;
+}
+ 
+.olive-card {
+    background-color: #689f38;
+}
+ 
+.salmon-card {
+    background-color: #e57373;
+}
+ 
+.slate-card {
+    background-color: #546e7a;
+}
+ 
+.brown-card {
+    background-color: #6d4c41;
+}
+ 
+.blue-card {
+    background-color: #1565c0;
+}
+ 
+.gold-card {
+    background-color: #f9a825;
+}
+ 
+.dark-card {
+    background-color: #212121;
+}
+ 
+.crimson-card {
+    background-color: #c62828;
+}
+ 
+/* ================= ALERTS PANEL ================= */
+.alerts-panel {
+    width: 220px;
+    min-width: 210px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    align-self: flex-start;
+    overflow: hidden;
+}
+ 
+.alerts-header {
+    background-color: #f57c00;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+ 
+.alerts-header i {
+    font-size: 0.9rem;
+}
+ 
+.alerts-body {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+ 
+.alert-link-item {
+    font-size: 0.82rem;
+    color: #1565c0;
+    cursor: pointer;
+}
+ 
+.alert-link-item:hover {
+    text-decoration: underline;
+}
+ 
+.alert-pending-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #333;
+}

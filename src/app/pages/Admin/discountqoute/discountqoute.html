@@ -1,0 +1,75 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="'Quote Discount (%) For Approval'"
+  [breadcrumbs]="[
+    { label: 'Home', route: '/admindashboard' },
+    { label: 'Quote Discount For Approval', route: '/discountqoute' }
+  ]">
+</app-pageheader>
+
+<div class="form-wrapper">
+  <div class="company-form-container">
+
+    <!-- HEADER -->
+    <div class="form-header-block">
+      <div class="form-title-heading">
+        Quote Discount (%) For Approval
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="form-body-section">
+
+      <!-- Country Head -->
+      <div class="company-field-row">
+        <label class="field-label-text">
+          Country Head (>=)
+          <span class="mandatory-star">*</span>
+        </label>
+
+        <div class="field-input-area">
+          <input type="number"
+                 class="company-text-input"
+                 [(ngModel)]="form.countryHead" />
+        </div>
+      </div>
+
+      <!-- NSM -->
+      <div class="company-field-row">
+        <label class="field-label-text">
+          National Sales Manager (&lt;)
+          <span class="mandatory-star">*</span>
+        </label>
+
+        <div class="field-input-area">
+          <input type="number"
+                 class="company-text-input"
+                 [(ngModel)]="form.nsm" />
+        </div>
+      </div>
+
+      <!-- RBM -->
+      <div class="company-field-row">
+        <label class="field-label-text">
+          Regional Branch Manager (&lt;)
+          <span class="mandatory-star">*</span>
+        </label>
+
+        <div class="field-input-area">
+          <input type="number"
+                 class="company-text-input"
+                 [(ngModel)]="form.rbm" />
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="form-action-buttons">
+        <button class="submit-button" (click)="onSubmit()">✔ Submit</button>
+        <button class="cancel-button" (click)="onCancel()">✖ Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>

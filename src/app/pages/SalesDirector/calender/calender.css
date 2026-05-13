@@ -1,0 +1,147 @@
+.calendar-container {
+  margin-left: 287px;
+  width: calc(100% - 287px);
+  padding: 20px;
+  background: #f5f6f8;
+}
+
+/* Header */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* Dropdown */
+.user-dropdown {
+  padding: 8px;
+  width: 250px;
+}
+
+/* Buttons */
+.view-buttons button {
+  margin-left: 5px;
+  padding: 5px 10px;
+  border: none;
+  background: #e5e7eb;
+  cursor: pointer;
+}
+
+.view-buttons .active {
+  background: #2f80ed;
+  color: white;
+}
+
+/* Title */
+.calendar-title {
+  text-align: center;
+  margin: 15px;
+}
+
+/* Body */
+.calendar-body {
+  display: flex;
+  gap: 10px;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* Legend */
+.legend {
+  width: 150px;
+}
+
+/* Grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex: 1;
+}
+
+.day-header {
+  background: #5b8db8;
+  color: white;
+  text-align: center;
+  padding: 6px;
+}
+
+.day {
+  height: 60px;
+  border: 1px solid #ddd;
+  padding: 4px;
+}
+
+/* WEEK VIEW */
+.week-view {
+  flex: 1;
+  border: 1px solid #ccc;
+}
+
+.week-header {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  background: #5b8db8;
+  color: white;
+}
+
+.week-body {
+  display: flex;
+}
+
+.time-col {
+  width: 80px;
+}
+
+.time-col div {
+  height: 50px;
+  border-bottom: 1px solid #eee;
+}
+
+.week-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex: 1;
+}
+
+.slot {
+  height: 50px;
+  border-bottom: 1px solid #eee;
+}
+
+/* DAY VIEW */
+.day-view {
+  display: flex;
+  flex: 1;
+}
+
+/* LEGEND */
+.legend {
+  width: 160px;
+  padding-top: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+/* Color box */
+.color {
+  display: inline-block;
+  width: 100px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+/* Visit */
+.visit {
+  background: #4c51bf;
+}
+
+/* Demo */
+.demo {
+  background: #38a3db;
+}

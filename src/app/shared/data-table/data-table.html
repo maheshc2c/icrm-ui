@@ -1,0 +1,104 @@
+<!-- HEADER -->
+<app-header></app-header>
+<!-- SIDEBAR -->
+<app-sidebar></app-sidebar>
+<!-- MAIN -->
+<main class="content">
+<div class="datatable-toolbar">
+
+  <app-search
+  [fields]="searchFields"
+  (searchChange)="onSearchFromChild($event)">
+</app-search>
+  <app-button
+    [showSearch]="true"
+    [showImport]="showImport"
+    [showAdd]="showAdd"
+    (search)="onSearchClick()"
+    (add)="add.emit()"
+    (download)="download.emit()">
+  </app-button>
+
+  <div class="content-wrapper">
+    <div class="card">
+      <div class="card-body">
+        <!-- THE TABLE -->
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped soft-header">
+            <thead>
+              <tr>
+                <th style="width: 80px;">S.NO</th>
+                @for (col of columns; track col) {
+                  <th>{{ col.header }}</th>
+                }
+                <th style="width:120px;">Actions</th>
+              </tr>
+            </thead>
+ <tbody>
+  @if (filteredRows.length === 0) {
+  <tr class="no-records-row">
+    <td [attr.colspan]="columns.length + 2">
+      <div class="no-records-content">
+        <i class="fas fa-search"></i>
+        {{ emptyMessage }}
+      </div>
+    </td>
+  </tr>
+}
+ @else {
+    @for (row of paginatedRows; track detectKey(row, i); let i = $index) {
+      <tr>
+        <!-- S.NO -->
+        <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+        <!-- DATA -->
+        @for (col of columns; track col) {
+          <td>{{ row[col.field] }}</td>
+        }
+
+        <!-- ACTIONS -->
+        <td class="action-buttons">
+          <button
+            class="btn btn-sm btn-warning edit-btn"
+            (click)="edit(row)">
+            <i class="fas fa-edit"></i>
+          </button>
+
+          <button
+            class="btn btn-sm btn-danger delete-btn"
+            (click)="delete(row)">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </td>
+      </tr>
+    }
+
+  }
+</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pagination-container">
+
+  <button (click)="prevPage()" [disabled]="currentPage === 1">
+    Prev
+  </button>
+
+  <span>
+    Page {{ currentPage }} of {{ totalPages }}
+  </span>
+
+  <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+    Next
+  </button>
+
+  <!-- Page Size -->
+  <select (change)="changePageSize($any($event.target).value)">
+    <option value="10">10</option>
+    <option value="25">25</option>
+    <option value="50">50</option>
+  </select>
+</div>
+</div>
+</main>

@@ -1,0 +1,17 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-form
+  [title]="isEditMode ? 'Edit Demo Product' : 'Add New Demo Product'"
+  [fields]="demoFields"
+  [model]="formInitialData"
+  (formValueChange)="onFormValueChange($event)"
+  (formSubmit)="saveDemo($event)"
+  (cancelForm)="onCancel()">
+</app-form>
+

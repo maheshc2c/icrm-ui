@@ -1,0 +1,10 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="form-container">
+    <app-form [title]="headerTitle" [fields]="fields" [model]="formInitialData" (formSubmit)="onSubmit($event)"
+        (fieldChange)="onModelChange($event)" (cancelForm)="onCancel()">
+    </app-form>
+</div>

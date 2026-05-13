@@ -1,0 +1,161 @@
+/* ================= WRAPPER ================= */
+.form-wrapper {
+  margin-left: 287px; /* sidebar space */
+  padding: 24px 30px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ================= CONTAINER ================= */
+.company-form-container {
+  width: 100%;
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* ================= HEADER ================= */
+.form-header-block {
+  padding: 18px 32px;
+  background: #f9f9f9;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.form-title-heading {
+  font-size: 17px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+/* ================= BODY ================= */
+.form-body-section {
+  padding: 30px 40px;
+}
+
+/* ================= FIELD ROW ================= */
+.company-field-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  align-items: center;
+  column-gap: 20px;
+  margin-bottom: 22px;
+}
+
+/* ================= LABEL ================= */
+.field-label-text {
+  text-align: right;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  white-space: nowrap;
+}
+
+.mandatory-star {
+  color: #e74c3c;
+  margin-left: 3px;
+}
+
+/* ================= INPUT ================= */
+.field-input-area {
+  width: 100%;
+}
+
+.company-text-input {
+  width: 100%;
+  max-width: 220px; /* 🔥 keeps input compact like your design */
+  height: 36px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.company-text-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background-color: #f4f8ff;
+}
+
+/* ================= BUTTONS ================= */
+.form-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.submit-button,
+.cancel-button {
+  min-width: 110px;
+  height: 38px;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+/* SUBMIT */
+.submit-button {
+  background: #5b9bd5;
+  color: #fff;
+}
+
+.submit-button:hover {
+  background: #4a8cc2;
+  transform: translateY(-1px);
+}
+
+/* CANCEL */
+.cancel-button {
+  background: #d9534f;
+  color: #fff;
+}
+
+.cancel-button:hover {
+  background: #c9302c;
+  transform: translateY(-1px);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .form-wrapper {
+    margin-left: 0;
+    padding: 16px;
+  }
+
+  .company-form-container {
+    max-width: 100%;
+  }
+
+  .company-field-row {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+  }
+
+  .field-label-text {
+    text-align: left;
+    white-space: normal;
+  }
+
+  .form-action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .submit-button,
+  .cancel-button {
+    width: 100%;
+  }
+}

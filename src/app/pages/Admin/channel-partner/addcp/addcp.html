@@ -1,0 +1,15 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-form
+  [title]="isEditMode ? 'Edit Channel Partner' : 'Add Channel Partner'"
+  [fields]="channelFields"
+  [model]="formInitialData"
+  (formSubmit)="saveChannelPartner($event)"
+  (cancelForm)="onCancel()">
+</app-form>

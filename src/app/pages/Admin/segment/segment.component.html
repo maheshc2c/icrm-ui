@@ -1,0 +1,22 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+ 
+<app-data-table
+  title="Segment List"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  [showImport]="true"
+  (download)="onImport()"
+  [showAdd]="true"
+
+  (searchChange)="onSearch($event)"
+
+  (add)="onAdd()"
+  (editRow)="onEdit($event)"
+  (deleteRow)="onDelete($event)">
+</app-data-table>

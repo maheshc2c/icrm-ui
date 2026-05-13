@@ -1,0 +1,93 @@
+/* Add Geo Component Styles */
+.add-geo-container {
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.form-label.required::after {
+  content: ' *';
+  color: #dc3545;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-control.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-group .btn-primary {
+  background-color: #007bff;
+}
+
+.btn-group .btn-secondary {
+  background-color: #dc3545;
+}

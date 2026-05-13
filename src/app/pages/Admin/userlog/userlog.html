@@ -1,0 +1,20 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  title="User Login History"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  (editRow)="onEdit($event)"
+  (deleteRow)="onDelete($event)"
+  [showAdd]="false"
+  [showImport]="true"
+  (search)="onSearch($event)"
+  (download)="onImport()">
+</app-data-table>

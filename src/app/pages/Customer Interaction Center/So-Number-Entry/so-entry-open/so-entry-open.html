@@ -1,0 +1,82 @@
+<!-- <app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [title]="headerTitle"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  [showSearch]="true"
+  [showImport]="true"
+  [showAdd]="false"
+  [showRefresh]="true"
+  [showUploadButton]="true"
+  [showSubmit]="true"
+  [showActions]="false"
+  [showSNo]="false"
+  [editableFields]="['soNumber']"
+  (search)="onSearch()"
+  (refresh)="onRefresh()"
+  (import)="onImport()"
+  (editRow)="onEdit($event)"
+  (deleteRow)="onDelete($event)"
+  (cellChange)="onCellChange($event)"
+  (downloadRow)="onDownload($event)"
+  (uploadRow)="onUpload()">
+</app-data-table>
+
+<app-form
+  *ngIf="bulkUploadModalVisible"
+  variant="bulk-upload"
+  (formSubmit)="submitBulkUpload($any($event))"
+  (cancelForm)="closeBulkUpload()">
+</app-form>
+
+ -->
+<!-- [showRefresh]="true"
+  [showUploadButton]="true"
+  [showSubmit]="true"
+  [showActions]="false"
+  [showSNo]="false"
+
+  [editableFields]="['soNumber']"
+  (cellChange)="onCellChange()" -->
+ <app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [title]="headerTitle"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+
+  [showImport]="true"
+  [showAdd]="false"
+  
+
+  (search)="onSearch($event)"  
+  (refresh)="onRefresh()"
+  (import)="onImport()"
+  (editRow)="onEdit($event)"
+  (deleteRow)="onDelete($event)"
+
+  (downloadRow)="onDownload($event)"
+  (uploadRow)="onUpload()">
+</app-data-table>
+
+<!-- BULK UPLOAD FORM -->
+<app-form
+  *ngIf="bulkUploadModalVisible"
+  variant="bulk-upload"
+  (formSubmit)="submitBulkUpload($event)"
+  (cancelForm)="closeBulkUpload()">
+</app-form>

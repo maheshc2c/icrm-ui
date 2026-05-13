@@ -1,0 +1,8 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-form [title]="isEditMode ? 'Edit Product' : 'Add New Product'" [fields]="productFields" [model]="formInitialData"
+  (formSubmit)="saveProduct($event)" (cancelForm)="onCancel()" >
+</app-form>

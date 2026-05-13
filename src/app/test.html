@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Customer & Branch Setup</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f4f6fb;
+  padding: 20px;
+}
+.card {
+  background: white;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+h2 {
+  color: #4e54c8;
+}
+input, button, select {
+  padding: 8px;
+  margin: 6px 0;
+  width: 100%;
+}
+button {
+  background: #4e54c8;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+</style>
+</head>
+
+<body>
+
+<h1>👤 Customer & Location Setup (Step 1)</h1>
+
+<!-- CUSTOMER FORM -->
+<div class="card">
+<h2>1️⃣ Add Customer</h2>
+
+<input id="custName" placeholder="Customer Name">
+<input id="custPhone" placeholder="Phone Number">
+<input id="custEmail" placeholder="Email">
+<input id="custGst" placeholder="GST Number">
+
+<button onclick="addCustomer()">Save Customer</button>
+</div>
+
+<!-- BRANCH FORM -->
+<div class="card">
+<h2>2️⃣ Add Location / Branch</h2>
+
+<select id="customerSelect">
+  <option value="">Select Customer</option>
+</select>
+
+<input id="locationName" placeholder="Location / Branch Name">
+<input id="locationAddress" placeholder="Address">
+
+<button onclick="addBranch()">Add Location</button>
+</div>
+
+<!-- DISPLAY -->
+<div class="card">
+<h2>📋 Customer & Branch List</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Customer</th>
+  <th>Phone</th>
+  <th>Branch</th>
+  <th>Address</th>
+</tr>
+</thead>
+<tbody id="displayTable"></tbody>
+</table>
+</div>
+
+<script>
+let customers = [];
+let branches = [];
+
+// Add Customer
+function addCustomer() {
+  if (!custName.value) {
+    alert("Enter customer name");
+    return;
+  }
+
+  let customer = {
+    id: Date.now(),
+    name: custName.value,
+    phone: custPhone.value,
+    email: custEmail.value,
+    gst: custGst.value
+  };
+
+  customers.push(customer);
+
+  let option = document.createElement("option");
+  option.value = customer.id;
+  option.text = customer.name;
+  customerSelect.appendChild(option);
+
+  custName.value = custPhone.value = custEmail.value = custGst.value = "";
+}
+
+// Add Branch
+function addBranch() {
+  if (!customerSelect.value) {
+    alert("Select customer");
+    return;
+  }
+
+  let branch = {
+    customerId: customerSelect.value,
+    customerName: customerSelect.options[customerSelect.selectedIndex].text,
+    branchName: locationName.value,
+    address: locationAddress.value
+  };
+
+  branches.push(branch);
+  renderTable();
+
+  locationName.value = locationAddress.value = "";
+}
+
+// Display Table
+function renderTable() {
+  displayTable.innerHTML = "";
+  branches.forEach(b => {
+    let row = `
+      <tr>
+        <td>${b.customerName}</td>
+        <td>${customers.find(c => c.id == b.customerId).phone}</td>
+        <td>${b.branchName}</td>
+        <td>${b.address}</td>
+      </tr>
+    `;
+    displayTable.innerHTML += row;
+  });
+}
+</script>
+
+</body>
+</html>

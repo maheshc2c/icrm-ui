@@ -1,0 +1,131 @@
+/* Geo Component Styles */
+.geo-container {
+  padding: 20px;
+}
+
+.geo-header {
+  margin-bottom: 20px;
+}
+
+.geo-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.geo-breadcrumb {
+  color: #666;
+  font-size: 14px;
+}
+
+.geo-breadcrumb a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.geo-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.geo-actions {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.geo-search {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.geo-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.geo-table {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.geo-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.geo-table th,
+.geo-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.geo-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.geo-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn {
+  background-color: #ffc107;
+  border: none;
+  color: #212529;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+.no-records-row {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+}
+
+.no-records-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.no-records-content i {
+  font-size: 48px;
+  color: #dee2e6;
+}

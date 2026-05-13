@@ -1,0 +1,8 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-form *ngIf="productData" [title]="'Edit Product'" [fields]="productFields" [model]="productData"
+   (formSubmit)="updateProduct($event)" (cancelForm)="cancelEdit()" (fieldChange)="onFieldChange($event)">
+</app-form>

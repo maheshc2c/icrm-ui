@@ -1,0 +1,39 @@
+<p>sidebar works!</p>
+
+<aside class="sidebar">
+  <nav class="nav-menu">
+    <ul class="menu">
+
+      <ng-container *ngFor="let item of menuItems">
+
+        <!-- Normal menu item -->
+        <li class="menu-item" *ngIf="!item.children">
+          <a [routerLink]="item.route">
+            <i [class]="item.icon"></i>
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+
+        <!-- Submenu -->
+        <li class="menu-item has-submenu" *ngIf="item.children" [class.active]="item.open">
+          <a href="javascript:void(0)" (click)="item.open = !item.open">
+            <i [class]="item.icon"></i>
+            <span>{{ item.label }}</span>
+            <i class="fas fa-chevron-down arrow"></i>
+          </a>
+
+          <ul class="submenu" [class.show]="item.open">
+            <li *ngFor="let child of item.children">
+              <a [routerLink]="child.route">
+                <i [class]="child.icon"></i>
+                <span>{{ child.label }}</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ng-container>
+
+    </ul>
+  </nav>
+</aside>

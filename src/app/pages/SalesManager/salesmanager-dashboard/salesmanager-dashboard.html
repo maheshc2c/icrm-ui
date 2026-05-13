@@ -1,0 +1,208 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="'Sales Manager Dashboard'"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="dashboard-content">
+
+  <!-- First Row -->
+  <div class="section-row">
+
+    <!-- Leads -->
+    <div class="section-block">
+      <div class="section-header-title">
+        <i class="fas fa-inbox"></i>
+        <span>Leads</span>
+      </div>
+
+      <div class="section-cards">
+        <div class="dashboard-card new-leads-card">
+          <a routerLink="/salesmanager/leads/add">
+            <div class="card-header">
+              <div class="card-icon new-leads-bg">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div class="card-title">
+                <h3>New</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="dashboard-card open-leads-card">
+          <a routerLink="/openleads">
+            <div class="card-header">
+              <div class="card-icon open-leads-bg">
+                <i class="fas fa-folder-open"></i>
+              </div>
+              <div class="card-title">
+                <h3>Open</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="dashboard-card closed-leads-card">
+          <a routerLink="/salesmanager/closed-leads">
+            <div class="card-header">
+              <div class="card-icon closed-leads-bg">
+                <i class="fas fa-folder"></i>
+              </div>
+              <div class="card-title">
+                <h3>Closed</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Opportunities -->
+    <div class="section-block">
+      <div class="section-header-title">
+        <i class="fas fa-lightbulb"></i>
+        <span>Opportunities</span>
+      </div>
+
+      <div class="section-cards">
+        <div class="dashboard-card open-opp-card">
+          <a routerLink="/salesmanager/opportunities">
+            <div class="card-header">
+              <div class="card-icon open-opp-bg">
+                <i class="fas fa-folder-open"></i>
+              </div>
+              <div class="card-title">
+                <h3>Open</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="dashboard-card closed-opp-card">
+          <a routerLink="/salesmanager/closed-opportunities">
+            <div class="card-header">
+              <div class="card-icon closed-opp-bg">
+                <i class="fas fa-folder"></i>
+              </div>
+              <div class="card-title">
+                <h3>Closed</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Row -->
+  <div class="section-row">
+
+    <!-- Calendar -->
+    <div class="section-block">
+      <div class="section-header-title">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Calendar</span>
+      </div>
+
+      <div class="section-cards">
+        <div class="dashboard-card calendar-card">
+          <a routerLink="/salesmanager/calendar">
+            <div class="card-header">
+              <div class="card-icon calendar-bg">
+                <i class="fas fa-calendar"></i>
+              </div>
+              <div class="card-title">
+                <h3>Calendar</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plan -->
+    <div class="section-block">
+      <div class="section-header-title">
+        <i class="fas fa-clipboard-list"></i>
+        <span>Plan</span>
+      </div>
+
+      <div class="section-cards">
+        <div class="dashboard-card visit-card">
+          <a routerLink="/salesmanager/visit">
+            <div class="card-header">
+              <div class="card-icon visit-bg">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="card-title">
+                <h3>Visit</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="dashboard-card demo-card">
+          <a routerLink="/salesmanager/plan-demo">
+            <div class="card-header">
+              <div class="card-icon demo-bg">
+                <i class="fas fa-laptop"></i>
+              </div>
+              <div class="card-title">
+                <h3>Demo</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marketing -->
+    <div class="section-block">
+      <div class="section-header-title">
+        <i class="fas fa-bullhorn"></i>
+        <span>Marketing</span>
+      </div>
+
+      <div class="section-cards">
+        <div class="dashboard-card documents-card">
+          <a routerLink="/salesmanager/marketing-documents">
+            <div class="card-header">
+              <div class="card-icon documents-bg">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div class="card-title">
+                <h3>Documents</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Target Vs Actual -->
+    <div class="section-block">
+      <div class="section-header-title">
+        <i class="fas fa-chart-bar"></i>
+        <span>Target Vs Actual</span>
+      </div>
+
+      <div class="section-cards">
+        <div class="dashboard-card report-card">
+          <a routerLink="/salesmanager/report">
+            <div class="card-header">
+              <div class="card-icon report-bg">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="card-title">
+                <h3>Report</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

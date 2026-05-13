@@ -1,0 +1,15 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-form
+[title]="isEditMode ? 'Edit Speciality' : 'Add New Speciality'"
+  [fields]="specialityFields"
+  [model]="formInitialData"
+  (formSubmit)="saveSpeciality($event)"
+  (cancelForm)="onCancel()">
+</app-form>

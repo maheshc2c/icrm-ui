@@ -1,0 +1,66 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="'SuperAdmin Dashboard'"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+
+<div class="dashboard-content">
+
+  <!-- First Row -->
+  <div class="section-row">
+
+    <!-- Manage -->
+    <div class="section-block">
+      <div class="section-header-title">
+        <i class="fas fa-users-cog"></i>
+        <span>Manage Users</span>
+      </div>
+
+      <div class="section-cards">
+        <div class="dashboard-card users-card">
+          <a href="/superadmin/manage-users">
+            <div class="card-header">
+              <div class="card-icon users-bg">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="card-title">
+                <h3>Admin User</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Territory -->
+    <div class="section-block">
+      <div class="section-header-title">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>Manage Company</span>
+      </div>
+
+      <div class="section-cards">
+        <div class="dashboard-card city-card">
+           <a routerLink="/superadmin/company">
+            <div class="card-header">
+              <div class="card-icon city-bg">
+                <i class="fas fa-city"></i>
+              </div>
+              <div class="card-title">
+                <h3>Company</h3>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  
+
+
+  </div>
+</div>
+

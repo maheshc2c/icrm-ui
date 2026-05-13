@@ -1,0 +1,15 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-form
+  [title]="isEditMode ? 'Edit Financial Year' : 'Add New Financial Year'"
+  [fields]="fyFields"
+  [model]="formInitialData"
+  (formSubmit)="savefy($event)"
+  (cancelForm)="onCancel()">
+</app-form>

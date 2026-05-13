@@ -1,0 +1,25 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+[title]="headerTitle"
+[breadcrumbs]="headerBreadcrumbs"></app-pageheader>
+
+<app-data-table
+[rows]="rows"
+[columns]="columns"
+[showImport]="true"
+[showAdd]="true"
+(search)="onSearch()"
+[searchFields]="searchFields"
+(download)="onImport()"
+(add)="onAdd()"
+(editRow)="onEdit($event)"
+(deleteRow)="onDelete($event)" >
+
+</app-data-table>
+<!-- 
+[searchFields]="searchFields" -->
+<!-- (deleteRow)="onDelete($event)" -->
+
+<!-- (search)="onSearch($event)" -->
