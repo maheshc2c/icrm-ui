@@ -19,7 +19,7 @@ import { SalesDirectorService } from '../../../../service/sales-director.service
 export class Addcontact implements OnInit {
  
   constructor(
-    private salesDirService: SalesDirectorService,
+    private sdService: SalesDirectorService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -85,7 +85,7 @@ export class Addcontact implements OnInit {
  
   /* ================= LOAD CONTACT ================= */
   private loadContactById(id: number): void {
-    this.salesDirService.getContactById(id).subscribe({
+    this.sdService.getContactById(id).subscribe({
       next: contact => {
         this.formInitialData = {
           contactSalutation: contact.contactSalutation,
@@ -131,13 +131,13 @@ export class Addcontact implements OnInit {
     };
  
     const apiCall = this.isEditMode
-      ? this.salesDirService.updateContact(this.contactId, payload)
-      : this.salesDirService.createContact(payload);
+      ? this.sdService.updateContact(this.contactId, payload)
+      : this.sdService.createContact(payload);
  
     apiCall.subscribe({
       next: () => {
         alert(`Contact ${this.isEditMode ? 'updated' : 'created'} successfully`);
-        this.router.navigate(['/salesdirector/contact']);
+        this.router.navigate(['salesdirector/contact']);
       },
       error: err => {
         console.error(err);
@@ -146,25 +146,25 @@ export class Addcontact implements OnInit {
     });
   }
  
-  onCancel(): void {
-    this.router.navigate(['/salesdirector/contact']);
-  }
- 
   // onCancel(): void {
- 
-  //   const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
- 
-  //   if (returnUrl) {
-  //     this.router.navigateByUrl(returnUrl);
-  //   } else {
-  //     this.router.navigate(['/salesdirector/contact']);
-  //   }
- 
+  //   this.router.navigate(['/salesdirector/contact']);
   // }
+ 
+  onCancel(): void {
+ 
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+ 
+    if (returnUrl) {
+      this.router.navigateByUrl(returnUrl);
+    } else {
+      this.router.navigate(['/salesdirector/contact']);
+    }
+ 
+  }
  
   /* ================= DROPDOWNS ================= */
   // private loadSpecialities(): void {
-  //   this.salesDirService.getSpecialityDropDown().subscribe(res => {
+  //   this.sdService.getSpecialityDropDown().subscribe(res => {
   //     const options = (Array.isArray(res) ? res : [res]).map(s => ({
   //       label: s.specialityName,
   //       value: s.specialityId
@@ -176,7 +176,7 @@ export class Addcontact implements OnInit {
   //   });
   // }
   private loadSpecialities(): void {
-    this.salesDirService.getSpecialities().subscribe(res => {
+    this.sdService.getSpecialities().subscribe(res => {
  
       const list = Array.isArray(res) ? res : [res];
  
@@ -197,7 +197,7 @@ export class Addcontact implements OnInit {
   }
  
   private loadCustomers(): void {
-    this.salesDirService.getCustomerDropdown().subscribe(res => {
+    this.sdService.getCustomerDropdown().subscribe(res => {
  
       const options = (Array.isArray(res) ? res : [res]).map(c => ({
         label: c.customerName,

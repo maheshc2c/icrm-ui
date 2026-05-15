@@ -59,7 +59,31 @@ private loadSpeciality(): void {
         sno: index + 1,
         specialityId: c.specialityId,
         specialityName: c.specialityName,
+        specialityStatus: c.specialityStatus
       }));
+    },
+    error: (err) => {
+      console.error('Failed to load specialities', err);
+    }
+  });
+}
+
+onDelete(row: any) {
+  if (!row?.specialityId) {
+    return;
+  }
+
+  const apiCall =
+    row.specialityStatus === 1
+      ? this.adminservice.deactivateSpeciality(row.specialityId)
+      : this.adminservice.activateSpeciality(row.specialityId);
+
+  apiCall.subscribe({
+    next: () => {
+      this.loadSpeciality();
+    },
+    error: (err) => {
+      console.error('Status update failed', err);
     }
   });
 }
@@ -75,9 +99,9 @@ onEdit(row: any) {
 isEditMode = false;
 specialityId!: number
 
-  onDelete(row: any) {
-    console.log('Delete row:', row);
-  }
+  // onDelete(row: any) {
+  //   console.log('Delete row:', row);
+  // }
 
   
   //search Functionality

@@ -305,6 +305,32 @@ export class Adminservice {
     );
   }
 
+  deactivateSpeciality(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<SpecialityModel>(
+    `${this.baseUrl}/admin/deactivate-Speciality/${id}`,
+    {},
+    { headers }
+  );
+}
+
+activateSpeciality(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<SpecialityModel>(
+    `${this.baseUrl}/admin/activate-Speciality/${id}`,
+    {},
+    { headers }
+  );
+}
+
 
 
   // ================= CREATE Speciality =================

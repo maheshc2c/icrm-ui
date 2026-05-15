@@ -6,6 +6,7 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { DataTable } from '../../../../shared/data-table/data-table';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { SearchFieldConfig } from '../../../../shared/search/search';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-track-quote',
@@ -15,7 +16,9 @@ import { SearchFieldConfig } from '../../../../shared/search/search';
   styleUrl: './track-quote.css',
 })
 export class TrackQuote {
-  constructor(private service: SalesDirectorService) {}
+  constructor(
+    private router: Router,
+    private service: SalesDirectorService) {}
 
   headerTitle = 'Track Quotes';
 
@@ -115,6 +118,10 @@ onSearch(keyword: string) {
       console.error('Search failed', err);
     }
   });
+}
+
+onReset(): void {
+  this.router.navigate(['salesdirector/track-quotes']);
 }
   
 

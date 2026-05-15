@@ -1,17 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Header } from '../../../layout/header/header';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
+import { Header } from '../../../layout/header/header';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { Form } from '../../../shared/form/form';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Breadcrumb } from '../../../models/breadcrumb';
-import { Adminservice } from '../../../service/adminservice';
-import { CustomerModel } from '../../../models/customer-model';
 import { SalesDirectorService } from '../../../service/sales-director.service';
 import { AuthService } from '../../../service/auth-service';
 import { LeadPayload } from '../../../models/lead-model';
-import { Leadservice } from '../../../service/lead-service';
 
 interface FormField {
   name: string;
@@ -22,17 +19,15 @@ interface FormField {
   placeholder?: string;
 }
 
-
 @Component({
-  selector: 'app-new',
+  selector: 'app-addlead',
   standalone: true,
-  imports: [Header, Sidebar, Pageheader, Form, CommonModule],
+  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, Form],
   templateUrl: './new.html',
-  styleUrl: './new.css'
+  styleUrls: ['./new.css']
 })
 export class New implements OnInit {
 
-  
   breadcrumbs = [
     { label: 'Home', route: '/sddashboard' },
     { label: 'Lead' }
@@ -45,10 +40,11 @@ export class New implements OnInit {
   customersData: any[] = [];
   contactPersonsData: any[] = [];
   filteredContactPersons: any[] = [];
+  campaignsData: any[] = [];
+  defaultCampaignName = '';
 
   leadForm = {
     source: '',
-    // campaign: '', // Commented out
     customer: '',
     rapportWithCustomer: '',
     contact1: '',
@@ -71,13 +67,6 @@ export class New implements OnInit {
       required: true,
       options: []
     },
-    /* {
-      name: 'campaign',
-      label: 'Campaign',
-      type: 'select',
-      required: true,
-      options: []
-    }, */
     {
       name: 'customer',
       label: 'Customer',
@@ -167,7 +156,7 @@ export class New implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private leadservice: Leadservice,
+    private leadservice: SalesDirectorService,
     private auth: AuthService
   ) {}
 
@@ -175,7 +164,7 @@ export class New implements OnInit {
   ngOnInit(): void {
     console.log('AddLead component initialized');
     (window as any).debugLeads = this;
-    
+
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.isEditMode = true;
@@ -191,6 +180,7 @@ export class New implements OnInit {
   private getUsernameFromToken(): string {
     const token = this.auth.getToken();
     if (!token) return 'testsalesengg';
+
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.sub || payload.username || 'testsalesengg';
@@ -203,61 +193,59 @@ export class New implements OnInit {
   /* ================= LOAD ALL DROPDOWNS ================= */
   private loadDropdowns(): void {
     console.log('Loading dropdown data...');
-    
-    // 1. Source of Lead
+
     this.leadservice.getSources().subscribe({
       next: (data) => this.setFieldOptions('source', data, 'sourceName'),
       error: (err) => console.error('Failed to load lead sources:', err)
     });
 
-    // 2. Customer
     this.leadservice.getCustomers().subscribe({
       next: (data) => {
-        this.customersData = data;
-        this.setFieldOptions('customer', data, 'customerName', 'customerId');
+        this.customersData = data || [];
+        this.setFieldOptions('customer', this.customersData, 'customerName', 'customerId');
       },
       error: (err) => console.error('Failed to load customers:', err)
     });
 
-    // 3. Rapport (Relationship)
     this.leadservice.getRelationships().subscribe({
       next: (data) => this.setFieldOptions('rapportWithCustomer', data, 'relationshipName'),
       error: (err) => console.error('Failed to load rapport:', err)
     });
 
-    // 4. Site Readiness
     this.leadservice.getSiteReadiness().subscribe({
       next: (data) => this.setFieldOptions('siteReadiness', data, 'siteReadinessName'),
       error: (err) => console.error('Failed to load site readiness:', err)
     });
 
-    // 5. Distributors
     this.leadservice.getDistributors().subscribe({
       next: (data) => this.setFieldOptions('distributor', data, 'distributorName'),
       error: (err) => console.error('Failed to load distributors:', err)
     });
 
-    // 6. Contact Persons
     this.leadservice.getContacts().subscribe({
       next: (data) => {
-        this.contactPersonsData = data;
-        this.updateContactOptions('contact1', data);
-        this.updateContactOptions('contact2', data);
+        this.contactPersonsData = data || [];
+        this.updateContactOptions('contact1', this.contactPersonsData);
+        this.updateContactOptions('contact2', this.contactPersonsData);
       },
       error: (err) => console.error('Failed to load contacts:', err)
     });
 
-    // 7. Campaigns (Silent load for background default)
     this.leadservice.getCampaigns().subscribe({
       next: (data) => {
-        this.setFieldOptions('campaign', data, 'campaignName');
-        // If edit mode, load existing data after dropdowns are ready
+        this.campaignsData = data || [];
+        this.defaultCampaignName = this.campaignsData.length > 0
+          ? (this.campaignsData[0].campaignName || '').trim()
+          : '';
+
         if (this.isEditMode && this.leadId) {
           this.loadLeadData(this.leadId);
         }
       },
       error: (err) => {
         console.warn('Failed to load campaigns:', err);
+        this.defaultCampaignName = '';
+
         if (this.isEditMode && this.leadId) {
           this.loadLeadData(this.leadId);
         }
@@ -269,12 +257,13 @@ export class New implements OnInit {
     this.leadservice.getLeadById(id).subscribe({
       next: (data: LeadPayload) => {
         console.log('Loaded Lead Data:', data);
+
         this.leadForm = {
           source: data.sourceName || '',
           customer: data.customerId ? data.customerId.toString() : '',
           rapportWithCustomer: data.relationshipName || '',
           contact1: data.contactId ? data.contactId.toString() : '',
-          contact2: '', // Not in DTO yet
+          contact2: '',
           purchasePotentialRs: data.leadPurchasePotential ? data.leadPurchasePotential.toString() : '',
           purchasePotential: '',
           siteReadiness: data.siteReadinessName || '',
@@ -284,7 +273,7 @@ export class New implements OnInit {
           commentLine1: data.leadCmdLine1 || '',
           commentLine2: data.leadCmdLine2 || ''
         };
-        // Trigger field binding refresh
+
         this.leadFields = [...this.leadFields];
       },
       error: (err) => console.error('Failed to load lead details:', err)
@@ -299,12 +288,15 @@ export class New implements OnInit {
     field.options = [
       { label: '-- Select --', value: '' },
       ...data.map((item: any) => {
-        if (typeof item === 'string') return { label: item, value: item };
+        if (typeof item === 'string') {
+          return { label: item, value: item };
+        }
         const label = item[labelKey] || item.name || 'Unknown';
         const value = (valueKey && item[valueKey]) || item.id || label;
         return { label, value };
       })
     ];
+
     this.leadFields = [...this.leadFields];
   }
 
@@ -324,7 +316,7 @@ export class New implements OnInit {
   }
 
   /* ================= HANDLE FIELD CHANGES ================= */
-  onFieldChange(event: {fieldName: string, value: any}): void {
+  onFieldChange(event: { fieldName: string, value: any }): void {
     if (event.fieldName === 'customer') {
       // Future filter logic can go here
     }
@@ -332,22 +324,20 @@ export class New implements OnInit {
 
   onSubmit(formData: any) {
     console.log('========== LEAD FORM SUBMITTED ==========');
-    
-    // Removed formData.campaign from mandatory check
+
     if (!formData.source || !formData.customer || !formData.contact1) {
       alert('Please fill in all required fields (Source, Customer, Contact)');
       return;
     }
 
-    // Help function to get label from value in leadFields
+    const safe = (v: any) => (v ?? '').toString().trim();
+
     const getLabel = (fieldName: string, value: any) => {
-      // For commented out fields like 'campaign', we need a way to find a default
       const field = this.leadFields.find(f => f.name === fieldName);
       if (field && field.options && field.options.length > 0) {
-        // If not selected but options exist, use first non-empty option
         if (!value || value === '') {
-           const firstRealOption = field.options.find(o => o.value !== '');
-           return firstRealOption ? firstRealOption.label : '';
+          const firstRealOption = field.options.find(o => o.value !== '');
+          return firstRealOption ? firstRealOption.label : '';
         }
         const option = field.options.find(o => o.value == value);
         return option ? option.label : value;
@@ -355,13 +345,11 @@ export class New implements OnInit {
       return value || '';
     };
 
-    // Helper for contact first name
     const getContactFirstName = (contactId: any) => {
       const contact = this.contactPersonsData.find(c => (c.contactId || c.id) == contactId);
       return contact ? contact.contactFirstName : '';
     };
 
-    // Helper for customer name
     const getCustomerName = (customerId: any) => {
       const customer = this.leadFields.find(f => f.name === 'customer')?.options?.find(o => o.value == customerId);
       return customer ? customer.label : '';
@@ -370,19 +358,19 @@ export class New implements OnInit {
     const payload: LeadPayload = {
       customerId: Number(formData.customer),
       contactId: Number(formData.contact1),
-      customerName: getCustomerName(formData.customer),
-      contactFirstName: getContactFirstName(formData.contact1),
-      sourceName: getLabel('source', formData.source),
-      campaignName: getLabel('campaign', formData.campaign),
-      siteReadinessName: getLabel('siteReadiness', formData.siteReadiness),
-      distributorName: getLabel('distributor', formData.distributor),
-      relationshipName: getLabel('rapportWithCustomer', formData.rapportWithCustomer),
-      username: this.getUsernameFromToken(),
+      customerName: safe(getCustomerName(formData.customer)),
+      contactFirstName: safe(getContactFirstName(formData.contact1)),
+      sourceName: safe(getLabel('source', formData.source)),
+      campaignName: safe(this.defaultCampaignName || ''),
+      siteReadinessName: safe(getLabel('siteReadiness', formData.siteReadiness)),
+      distributorName: safe(getLabel('distributor', formData.distributor)),
+      relationshipName: safe(getLabel('rapportWithCustomer', formData.rapportWithCustomer)),
+      username: safe(this.getUsernameFromToken()),
       leadPurchasePotential: Number(formData.purchasePotentialRs) || 0,
       leadVisitRequirement: formData.visitRequirement === 'Yes' ? 1 : 0,
       leadResourceRequirement: formData.resourceRequirement === 'Yes' ? 1 : 0,
-      leadCmdLine1: formData.commentLine1 || '',
-      leadCmdLine2: formData.commentLine2 || '',
+      leadCmdLine1: safe(formData.commentLine1),
+      leadCmdLine2: safe(formData.commentLine2),
       leadStatus: 1
     };
 
@@ -390,9 +378,9 @@ export class New implements OnInit {
 
     if (this.isEditMode && this.leadId) {
       this.leadservice.updateLead(this.leadId, payload).subscribe({
-        next: (response) => {
+        next: () => {
           alert('Lead updated successfully!');
-          this.router.navigate(['/openleads']);
+          this.router.navigate(['/sddashboard']);
         },
         error: (err) => {
           console.error('Lead update failed:', err);
@@ -401,7 +389,7 @@ export class New implements OnInit {
       });
     } else {
       this.leadservice.createLead(payload).subscribe({
-        next: (response) => {
+        next: () => {
           alert('Lead created successfully!');
           this.router.navigate(['/sddashboard']);
         },
@@ -417,29 +405,11 @@ export class New implements OnInit {
     this.router.navigate(['/sddashboard']);
   }
 
-  /* ================= ADD CUSTOMER ================= */
-
   onAddCustomer() {
-
-    this.router.navigate(['/salesdirector/addleads/addcustomer'], 
-    //   {
-    //   queryParams: { returnUrl: this.router.url }
-    // }
-  );
-
+    this.router.navigate(['/salesdirector/addleads/addcustomer']);
   }
-
-  /* ================= ADD CONTACT ================= */
 
   onAddContact() {
-
-    this.router.navigate(['/salesdirector/addleads/addcontact']
-    //   ,
-    //    {
-    //   queryParams: { returnUrl: this.router.url }
-    // }
-  );
-
+    this.router.navigate(['/salesdirector/addleads/addcontact']);
   }
-
 }

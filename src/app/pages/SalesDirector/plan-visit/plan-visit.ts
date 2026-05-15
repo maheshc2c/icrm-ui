@@ -31,7 +31,8 @@ export class PlanVisit {
   
       // 🔹 Table Columns
     columns = [
-      { header: 'Customer Name', field: 'CustomerName' },
+      //  { header: 'Lead ID', field: 'leadId' },
+      { header: 'Customer Name', field: 'customerName' },
       { header: 'Purpose', field: 'purposeName' },
       { header: 'Start Date', field: 'startDate' },
       { header: 'End Date', field: 'endDate' },
@@ -98,88 +99,80 @@ private loadVisit(): void {
 
 //search Functionality
 
-
 searchFields: SearchFieldConfig[] = [
   {
-    key: 'leadid',
+    key: 'leadId',
     label: 'Lead ID',
-    placeholder: 'Lead ID',
-    type: 'text'   // ✅ now TypeScript knows this is literal
+    placeholder: 'Enter Lead ID',
+    type: 'text'
   },
   {
-    key: 'customerid',
-    label: 'Select Customer',
-    placeholder: 'Select Customer',
-    type: 'select'   // ✅ now TypeScript knows this is literal
+    // key: 'customerid',
+    key: 'customerName',
+    label: 'Customer',
+    placeholder: 'Enter Customer Name',
+    type: 'text'
   },
   {
-    key: 'starttime',
-    label: 'Start Time',
-    placeholder: 'Start Time',
-    type: 'text'   // ✅ now TypeScript knows this is literal
+    key: 'startDate',
+    label: 'Start Date',
+    placeholder: 'Select Start Date',
+    type: 'datetime-local'
   },
   {
-    key: 'endTime',
-    label: 'End Time',
-    placeholder: 'End Time',
-    type: 'text'   // ✅ now TypeScript knows this is literal
+    key: 'endDate',
+    label: 'End Date',
+    placeholder: 'Select End Date',
+    type: 'datetime-local'
   }
 ];
 
 
-// onSearch(keyword: string) {
 
-//   if (!keyword || keyword.trim() === '') {
-//     // 🔁 If empty search → reload full list
-//     this.loadVisit();
-//     return;
-//   }
+//automated 
+onSearch(filters: any) {
+  const isEmpty =
+    !filters?.leadId &&
+    !filters?.customerName &&
+    !filters?.startDate &&
+    !filters?.endDate;
 
-//   this.salesdirectorservice.searchfy(keyword).subscribe({
-//     next: (results: any[]) => {
+  if (isEmpty) {
+    this.loadVisit();
+    return;
+  }
 
-//       this.fullRows = results;
+  const payload: {
+    leadId?: number;
+    customerName?: string;
+    startDate?: string;
+    endDate?: string;
+  } = {
+    leadId: filters?.leadId ? Number(filters.leadId) : undefined,
+    customerName: filters?.customerName?.trim() || undefined,
+    startDate: filters?.startDate || undefined,
+    endDate: filters?.endDate || undefined
+  };
 
-//       this.rows = results.map((c, index) => ({
-//         sno: index + 1,
-//         visitId: c.visitId,
-//         purposeName: c.purposeName,
-//         startDate: c.startDate,
-//         endDate: c.endDate,
-//       }));
-//     },
-//     error: (err) => {
-//       console.error('Search failed', err);
-//     }
-//   });
-// }
+  this.salesdirectorservice.searchVisits(payload).subscribe({
+    next: (results: any[]) => {
+      this.fullRows = results;
 
-
-// loadDropdown() {
-//   this.salesdirectorservice.getDropfy().subscribe({
-//     next: (data: any[]) => {
-
-//       // ✅ CLEAR FIRST (important)
-//       const options = data.map(d => ({
-//         label: d,
-//         value: d
-//       }));
-
-//       this.searchFields = [
-//         {
-//           key: 'purposeName',
-//           label: 'Financial Year',
-//           type: 'select',
-//           placeholder: 'Select Year',
-//           options: options
-//         }
-//       ];
-//     }
-//   });
-// }
-
-
-onSearch(){}
+      this.rows = results.map((c, index) => ({
+        sno: index + 1,
+        visitId: c.visitId,
+        leadId: c.leadId,
+        purposeName: c.purposeName,
+        startDate: c.startDate,
+        endDate: c.endDate
+      }));
+    },
+    error: (err) => {
+      console.error('Visit search failed', err);
+      this.rows = [];
+    }
+  });
+}
 
 onImport() {
 

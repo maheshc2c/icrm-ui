@@ -7,6 +7,8 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Search, SearchFieldConfig } from '../../../../shared/search/search';
 import { SalesDirectorService } from '../../../../service/sales-director.service';
 import { TrackPomodel } from '../../../../models/TrackPomodel';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-track-po',
@@ -18,7 +20,9 @@ import { TrackPomodel } from '../../../../models/TrackPomodel';
 export class TrackPo implements OnInit {
   headerTitle = 'Track PO';
 
-  constructor(private service: SalesDirectorService) {}
+  constructor(
+    private router: Router,
+    private service: SalesDirectorService) {}
 
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/sd-dashboard' },
@@ -150,5 +154,9 @@ onSearch(keyword: string): void {
       console.error('Search failed', err);
     }
   });
+}
+
+onReset(): void {
+  this.router.navigate(['salesdirector/track-po']);
 }
 }

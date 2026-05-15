@@ -130,12 +130,12 @@ onAdd() {
 
   //search Functionality
         searchFields: SearchFieldConfig[] = [
-          {
-            key: 'contactFirstName',
-            label: 'First Name',
-            placeholder: 'Name',
-            type: 'text'   // ✅ now TypeScript knows this is literal
-          },
+          // {
+          //   key: 'contactFirstName',
+          //   label: 'First Name',
+          //   placeholder: 'Name',
+          //   type: 'text'   // ✅ now TypeScript knows this is literal
+          // },
           {
     key: 'customerName',
     label: 'Customer',
@@ -152,7 +152,7 @@ onAdd() {
   },
   {
             key: 'contactMobileNo',
-            label: 'Mobile',
+            label: 'Contact',
             placeholder: 'Enter Mobile Number',
             type: 'text'   // ✅ now TypeScript knows this is literal
           },
