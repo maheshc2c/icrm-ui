@@ -9,6 +9,8 @@
 <app-data-table
   [rows]="rows"
   [columns]="columns"
+  [showReset]="true"
   [searchFields]="searchFields"
-  (search)="onSearch($event)">
+  (search)="onSearch($event)"
+  (reset)="onReset()">
 </app-data-table>

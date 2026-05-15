@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 /* ✅ UPDATED INTERFACE */
@@ -7,7 +7,7 @@ export interface SearchFieldConfig {
   key: string;                 // companyName, email, status
   label: string;               // Label text
   placeholder?: string;        // Optional
-  type?: 'text' | 'email' | 'number' | 'date' | 'select';
+  type?: 'text' | 'email' | 'number' | 'date' | 'select'| 'datetime-local';
 
   /* 🔽 DROPDOWN OPTIONS (only for type = select) */
   options?: { label: string; value: any }[];
@@ -35,13 +35,31 @@ export class Search {
   });
 }
 
+// ngOnChanges(changes: SimpleChanges): void {
+//     if (changes['fields']) {
+//       const nextValues: { [key: string]: any } = {};
+//       this.fields.forEach(f => {
+//         nextValues[f.key] = null;
+//       });
+//       this.values = nextValues;
+//     }
+//   }
   
   onInput() {
     this.searchChange.emit(this.values);
   }
 
+  // clear() {
+  //   this.values = {};
+  //   this.searchChange.emit(this.values);
+  // }
+
   clear() {
-    this.values = {};
+    const cleared: { [key: string]: any } = {};
+    this.fields.forEach(f => {
+      cleared[f.key] = null;
+    });
+    this.values = cleared;
     this.searchChange.emit(this.values);
   }
 }

@@ -3,14 +3,14 @@
   justify-content: flex-end;
   align-items: center;
   gap: 20px;
-  padding-bottom: 0px;
-  padding-top: 0px;
   width: 95%;
   box-sizing: border-box;
+  margin: 10px auto 15px auto;
+  position: relative;
+  z-index: 10;
 }
 
-/* Updated button style using your example UI theme */
-.btn {
+.lead-action-btn {
   height: 36px;
   padding: 0 18px;
   display: inline-flex;
@@ -27,8 +27,7 @@
   transition: all 0.2s ease;
 }
 
-/* Hover effect */
-.btn:hover {
+.lead-action-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
   background: #efe3ff;

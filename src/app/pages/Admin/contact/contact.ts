@@ -72,9 +72,11 @@ export class Contact {
 // }
 
 private loadSpecialities(): void {
-  this.adminservice.getSpecialities().subscribe({
+  // this.adminservice.getSpecialities().subscribe({
+  this.adminservice.getSpecialityDropDown().subscribe({
     next: (list: any[]) => {
-      console.log('🩺 Specialities loaded:', list.length);
+      console.log('🩺 Active specialities loaded:', list.length);
+     
 
       const options = list.map(s => ({
         label: s.specialityName,

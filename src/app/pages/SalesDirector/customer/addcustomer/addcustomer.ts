@@ -38,14 +38,15 @@ export class Addcustomer implements OnInit {
 
   /* ================= FORM FIELDS ================= */
   customerFields: any[] = [
-    { name: 'customerName', label: 'Customer Name', type: 'text', required: true },
-    { name: 'customerName1', label: 'Customer Code', type: 'text', required: false },
+    { name: 'customerName', label: 'Customer Name', placeholder: 'Enter customer name', type: 'text', required: true },
+    { name: 'customerName1', label: 'Customer Code',placeholder: 'Enter customer code', type: 'text', required: false },
 
     {
       name: 'customerCategory',
       label: 'Category',
       type: 'select',
       required: false,
+      placeholder: 'Select category',
       options: [],
     },
     {
@@ -53,32 +54,34 @@ export class Addcustomer implements OnInit {
       label: 'Sub Category',
       type: 'select',
       required: false,
+      placeholder: 'Select sub category',
       options: [],
     },
 
-    { name: 'customerEmail', label: 'Email', type: 'email', required: true },
-    { name: 'customerTelephone', label: 'Telephone', type: 'number', required: false },
-    { name: 'customerMobile', label: 'Mobile', type: 'number', required: true },
-    { name: 'customerFax', label: 'Fax', type: 'text', required: false },
-    { name: 'customerWebsite', label: 'Website', type: 'text', required: false },
+    { name: 'customerEmail', label: 'Email',placeholder: 'Enter email address', type: 'email', required: true },
+    { name: 'customerTelephone', label: 'Telephone',placeholder: 'Enter telephone number', type: 'number', required: false },
+    { name: 'customerMobile', label: 'Mobile', type: 'number', placeholder: 'Enter mobile number', required: true },
+    { name: 'customerFax', label: 'Fax',placeholder: 'Enter fax number', type: 'text', required: false },
+    { name: 'customerWebsite', label: 'Website',placeholder: 'Enter website URL', type: 'text', required: false },
 
     {
       name: 'locations',
       label: 'City',
       type: 'select',
       required: false,
+      placeholder: 'Select city',
       options: [],
       searchable: true
     },
 
-    { name: 'customerAddress1', label: 'Address Line 1', type: 'text', required: true },
-    { name: 'customerAddress2', label: 'Address Line 2', type: 'textarea', required: false },
-    { name: 'customerAddress3', label: 'Address Line 3', type: 'textarea', required: false },
-    { name: 'customerLandmark', label: 'Landmark', type: 'text', required: false },
-    { name: 'customerPincode', label: 'Pincode', type: 'number', required: false },
-    { name: 'customerPan', label: 'PAN', type: 'text', required: false },
-    { name: 'customerTan', label: 'TAN', type: 'text', required: false },
-    { name: 'customerTin', label: 'TIN', type: 'text', required: false },
+    { name: 'customerAddress1', label: 'Address Line 1',placeholder: 'Enter address line 1', type: 'text', required: true },
+    { name: 'customerAddress2', label: 'Address Line 2',placeholder: 'Enter address line 2', type: 'textarea', required: false },
+    { name: 'customerAddress3', label: 'Address Line 3', placeholder: 'Enter address line 3', type: 'textarea', required: false },
+    { name: 'customerLandmark', label: 'Landmark',placeholder: 'Enter landmark', type: 'text', required: false },
+    { name: 'customerPincode', label: 'Pincode',placeholder: 'Enter pincode', type: 'number', required: false },
+    { name: 'customerPan', label: 'PAN', type: 'text',placeholder: 'Enter PAN number', required: false },
+    { name: 'customerTan', label: 'TAN', type: 'text',placeholder: 'Enter TAN number', required: false },
+    { name: 'customerTin', label: 'TIN', type: 'text',placeholder: 'Enter TIN number', required: false },
   ];
 
   /* ================= INIT ================= */

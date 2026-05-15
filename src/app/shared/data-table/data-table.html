@@ -14,6 +14,8 @@
     [showSearch]="true"
     [showImport]="showImport"
     [showAdd]="showAdd"
+    [showReset]="showReset"
+    (reset)="onResetClick()"
     (search)="onSearchClick()"
     (add)="add.emit()"
     (download)="download.emit()">
@@ -36,23 +38,38 @@
             </thead>
  <tbody>
   @if (filteredRows.length === 0) {
-  <tr class="no-records-row">
-    <td [attr.colspan]="columns.length + 2">
-      <div class="no-records-content">
-        <i class="fas fa-search"></i>
-        {{ emptyMessage }}
-      </div>
-    </td>
-  </tr>
-}
- @else {
+    <tr class="no-records-row">
+      <td [attr.colspan]="columns.length + 2">
+        <div class="no-records-content">
+          <i class="fas fa-search"></i>
+          {{ emptyMessage }}
+        </div>
+      </td>
+    </tr>
+  } @else {
     @for (row of paginatedRows; track detectKey(row, i); let i = $index) {
       <tr>
         <!-- S.NO -->
         <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+
         <!-- DATA -->
         @for (col of columns; track col) {
-          <td>{{ row[col.field] }}</td>
+          <td>
+            @if (col.field === 'probability') {
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  [class.progress-hot]="row[col.field] >= 70"
+                  [class.progress-warm]="row[col.field] >= 40 && row[col.field] < 70"
+                  [class.progress-cold]="row[col.field] < 40"
+                  [style.width.%]="row[col.field] || 0">
+                  {{ row[col.field] }}%
+                </div>
+              </div>
+            } @else {
+              {{ row[col.field] }}
+            }
+          </td>
         }
 
         <!-- ACTIONS -->
@@ -63,15 +80,40 @@
             <i class="fas fa-edit"></i>
           </button>
 
-          <button
-            class="btn btn-sm btn-danger delete-btn"
-            (click)="delete(row)">
-            <i class="fas fa-trash-alt"></i>
-          </button>
+          <!-- <button
+  class="btn btn-sm"
+  [ngClass]="row.specialityStatus === 1 ? 'deactivate-btn' : 'activate-btn'"
+  (click)="delete(row)"
+  [title]="row.specialityStatus === 1 ? 'Deactivate' : 'Activate'">
+
+  <i
+    class="fas"
+    [ngClass]="row.specialityStatus === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+  </i>
+</button> -->
+
+ @if (showStatusToggle && row.specialityStatus !== undefined) {
+    <button
+      class="btn btn-sm"
+      [ngClass]="row.specialityStatus === 1 ? 'deactivate-btn' : 'activate-btn'"
+      (click)="delete(row)"
+      [title]="row.specialityStatus === 1 ? 'Deactivate' : 'Activate'">
+      <i
+        class="fas"
+        [ngClass]="row.specialityStatus === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+      </i>
+    </button>
+  } @else {
+    <button
+      class="btn btn-sm delete-btn"
+      (click)="delete(row)"
+      title="Delete">
+      <i class="fas fa-trash-alt"></i>
+    </button>
+  }
         </td>
       </tr>
     }
-
   }
 </tbody>
           </table>
@@ -100,5 +142,9 @@
     <option value="50">50</option>
   </select>
 </div>
+
+
+
+
 </div>
 </main>

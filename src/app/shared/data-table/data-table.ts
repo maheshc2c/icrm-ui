@@ -26,9 +26,6 @@ export class DataTable
     this.editRow.emit(row);
   }
 
-  delete(row: any) {
-    console.log("Delete clicked:", row);
-  }
 
   //   ngOnChanges(changes: SimpleChanges) {
   //   if (changes['rows']) {
@@ -65,11 +62,13 @@ export class DataTable
 //Search Functionality
 
 searchText = '';
+pendingSearchValues: any = {};
 
 @Output() search = new EventEmitter<string>();
 
 onSearchClick() {
   this.search.emit(this.searchText);
+  this.searchChange.emit(this.pendingSearchValues);
 }
 
 
@@ -80,8 +79,10 @@ onSearchClick() {
 onSearchFromChild(values: any) {
   if (!values) {
     this.searchText = '';
+    this.pendingSearchValues = {};
     return;
   }
+  this.pendingSearchValues = values;
 
   // ✅ Pick the first NON-empty string value
   const activeValue = Object.values(values)
@@ -94,6 +95,8 @@ onSearchFromChild(values: any) {
 //automates the search method 
 detectKey(row: any, index: number) {
   return (
+    row?.startDate??
+    row?.endDate??
     row?.subcategoryName??
     row?.businessCategory??
     row?.segmentName??
@@ -163,5 +166,24 @@ changePageSize(size: number) {
   this.currentPage = 1;
   this.updatePagination();
 }
+
+@Input() showReset = false;
+
+@Output() reset = new EventEmitter<void>();
+
+onResetClick() {
+  this.searchText = '';
+  this.searchChange.emit({});
+  this.reset.emit();
+}
+
+//delete 
+@Input() showStatusToggle = false;
+@Output() deleteRow = new EventEmitter<any>();
+delete(row: any) {
+  console.log("Delete clicked:", row);
+  this.deleteRow.emit(row);
+}
+
 
 }
