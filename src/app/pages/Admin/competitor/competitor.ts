@@ -75,9 +75,31 @@ private loadCompetitors(): void {
         sno: index + 1,
         competitorId: c.competitorId,
         competitorName: c.competitorName,
-        competitorRating: c.competitorRating
+        competitorRating: c.competitorRating,
+        competitorStatus: c.competitorStatus
       }));
     }
+  });
+}
+
+
+//actiavte and deactivate
+
+onDelete(row: any) {
+  if (!row?.competitorId) return;
+
+  const apiCall =
+    row.competitorStatus === 1
+      ? this.adminservice.deactivateCompetitor(row.competitorId)
+      : this.adminservice.activateCompetitor(row.competitorId);
+
+  apiCall.subscribe({
+    next: () => {
+      row.competitorStatus = row.competitorStatus === 1 ? 2 : 1;
+      this.rows = [...this.rows];
+      this.loadCompetitors();
+    },
+    error: (err) => console.error('Status update failed', err)
   });
 }
 
@@ -118,26 +140,6 @@ onEdit(row: any) {
 isEditMode = false;
 companyId!: number
 
-  
-//actiavte and deactivate
-
-onDelete(row: any) {
-  if (!row?.competitorId) return;
-
-  const apiCall =
-    row.competitorStatus === 1
-      ? this.adminservice.deactivateCompetitor(row.competitorId)
-      : this.adminservice.activateCompetitor(row.competitorId);
-
-  apiCall.subscribe({
-    next: () => {
-      row.competitorStatus = row.competitorStatus === 1 ? 2 : 1;
-      this.rows = [...this.rows];
-      this.loadCompetitors();
-    },
-    error: (err) => console.error('Status update failed', err)
-  });
-}
 
 
 //search Functionality
@@ -170,7 +172,8 @@ onSearch(keyword: string) {
         sno: index + 1,
         competitorId: c.competitorId,
         competitorName: c.competitorName,
-        competitorRating: c.competitorRating
+        competitorRating: c.competitorRating,
+        competitorStatus: c.competitorStatus
       }));
     },
     error: (err) => {
