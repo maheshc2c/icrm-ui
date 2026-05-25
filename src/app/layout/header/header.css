@@ -6,6 +6,30 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.header .fa,
+.header .fa-solid,
+.header .fas,
+.header .fa-classic {
+  font-family: "Font Awesome 7 Free", "Font Awesome 6 Free", "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.header .fa-regular,
+.header .far {
+  font-family: "Font Awesome 7 Free", "Font Awesome 6 Free", "Font Awesome 5 Free", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.header .fa-brands,
+.header .fab {
+  font-family: "Font Awesome 5 Brands", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
 /* Header Styles */
 .header {
   background: #f8f9fa;
