@@ -1,0 +1,23 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="add-customer-container">
+  <div class="card">
+    <div class="card-body">
+      <app-form
+        [title]="headerTitle"
+        [fields]="customerFields"
+        [model]="model"
+        [submitButtonText]="isEditMode ? 'Update' : 'Submit'"
+        [cancelButtonText]="'Cancel'"
+        (formSubmit)="saveCustomer($event)"
+        (cancelForm)="onCancel()"
+        (fieldChange)="onFieldChange($event)">
+      </app-form>
+    </div>
+  </div>
+</div>

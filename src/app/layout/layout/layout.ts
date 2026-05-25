@@ -9,7 +9,7 @@ import { Button } from "../../shared/button/button";
 @Component({
   standalone: true,
   selector: 'app-layout',
-  imports: [CommonModule, RouterOutlet, Sidebar, Header, Dashboard, Button],
+  imports: [CommonModule, RouterOutlet, Sidebar, Header],
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })

@@ -28,6 +28,18 @@ export class Form implements OnChanges {
   @Output() cancelForm  = new EventEmitter<void>();
   @Output() fieldChange = new EventEmitter<{ name: string, value: any }>();
 
+  @Input() submitButtonText: string = 'Submit';
+  @Input() cancelButtonText: string = 'Cancel';
+  @Input() showAddCustomerButton: boolean = false;
+  @Input() showAddContactButton: boolean = false;
+  @Input() showDetailsButton: boolean = false;
+  @Input() showDropLeadButton: boolean = false;
+
+  @Output() clickDetails = new EventEmitter<void>();
+  @Output() clickDropLead = new EventEmitter<void>();
+  @Output() addCustomer = new EventEmitter<void>();
+  @Output() addContact = new EventEmitter<void>();
+
   formData: any = {};
 
   // ngOnChanges(changes: SimpleChanges) {

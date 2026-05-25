@@ -8,6 +8,9 @@ export interface LeadSummary {
   leadCreatedTime?: string;
   lifeTimeDays?: number;
   leadSource?: string;
+  hasOpportunity?: boolean;
+  hasQuote?: boolean;
+  hasCNote?: boolean;
 }
  
 export interface LeadPayload {
@@ -29,4 +32,6 @@ export interface LeadPayload {
   leadCmdLine2?: string;
   leadCmdLine3?: string;
   leadStatus: number;
+  leadCreatedTime?: string;
+  leadModifiedTime?: string;
 }

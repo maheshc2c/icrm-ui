@@ -5,6 +5,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
 import { SuperadminDashboard } from './pages/Superadmin/superadmin-dashboard/superadmin-dashboard';
 import { OpenLeads } from './pages/SalesManager/open-leads/open-leads';
+import { ClosedLeadsComponent } from './pages/SalesManager/closed-leads/closed-leads';
 import { Addcompany } from './pages/Superadmin/addcompany/addcompany';
 import { Competitor } from './pages/Admin/competitor/competitor';
 import { AddCompetitor } from './pages/Admin/competitor/add-competitor/add-competitor';
@@ -566,7 +567,25 @@ export const routes: Routes = [
         path: 'sales-manager-dashboard',
         loadComponent: () => import('./pages/SalesManager/salesmanager-dashboard/salesmanager-dashboard').then(m => m.SalesManagerDashboard),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/leads/add',
+        loadComponent: () => import('./pages/SalesManager/leads/addlead/addlead').then(m => m.AddleadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/leads/edit/:id',
+        loadComponent: () => import('./pages/SalesManager/leads/addlead/addlead').then(m => m.AddleadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/closed-leads',
+        component: ClosedLeadsComponent,
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
 
 {
@@ -674,7 +693,7 @@ export const routes: Routes = [
         path: 'openleads',
         component: OpenLeads,
         canActivate: [authGuard],
-        data: { roles: ['SUPERADMIN'] }
+        data: { roles: ['SUPERADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
 
 

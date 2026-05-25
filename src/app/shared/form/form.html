@@ -6,8 +6,25 @@
 <div class="form-wrapper">
   <div class="company-form-container">
 
-    <div class="form-header-block">
-      <h4 class="form-title-heading">{{ title }}</h4>
+    <div class="form-header-block" style="background: #fff; border-bottom: none; padding-bottom: 0;">
+      <h4 class="form-title-heading" style="color: #333; font-weight: 600;">{{ title }}</h4>
+      <div class="header-action-buttons" style="display: flex; gap: 10px;">
+        <!-- New Top Buttons -->
+        <button *ngIf="showDetailsButton" type="button" class="action-header-btn" style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer;" (click)="clickDetails.emit()">
+          <i class="fas fa-info-circle"></i> Details
+        </button>
+        <button *ngIf="showDropLeadButton" type="button" class="action-header-btn" style="background: #f44336; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer;" (click)="clickDropLead.emit()">
+          <i class="fas fa-trash-alt"></i> Drop Lead
+        </button>
+
+        <!-- Existing Add Buttons -->
+        <button *ngIf="showAddCustomerButton" type="button" class="action-header-btn btn-add-customer" (click)="addCustomer.emit()">
+          <i class="fas fa-plus"></i> Add Customer
+        </button>
+        <button *ngIf="showAddContactButton" type="button" class="action-header-btn btn-add-contact" (click)="addContact.emit()">
+          <i class="fas fa-plus"></i> Add Contact
+        </button>
+      </div>
     </div>
 
     <div class="form-body-section">
@@ -126,13 +143,14 @@
 
 
         <!-- ACTION BUTTONS -->
-        <div class="form-action-buttons">
+        <div class="form-action-buttons" style="display: flex; gap: 10px; align-items: center; justify-content: flex-end; flex-wrap: wrap;">
+
           <button type="submit" class="submit-button">
-            <i class="fas fa-check"></i> Submit
+            <i class="fas fa-check"></i> {{ submitButtonText }}
           </button>
 
           <button type="button" class="cancel-button" (click)="cancel()">
-            <i class="fas fa-times"></i> Cancel
+            <i class="fas fa-times"></i> {{ cancelButtonText }}
           </button>
         </div>
 

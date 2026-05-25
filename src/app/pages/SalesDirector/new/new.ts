@@ -11,7 +11,7 @@ import { CustomerModel } from '../../../models/customer-model';
 import { SalesDirectorService } from '../../../service/sales-director.service';
 import { AuthService } from '../../../service/auth-service';
 import { LeadPayload } from '../../../models/lead-model';
-import { Leadservice } from '../../../service/lead-service';
+import { Leadservice } from '../../../service/leadservice';
 
 interface FormField {
   name: string;
@@ -206,57 +206,57 @@ export class New implements OnInit {
     
     // 1. Source of Lead
     this.leadservice.getSources().subscribe({
-      next: (data) => this.setFieldOptions('source', data, 'sourceName'),
-      error: (err) => console.error('Failed to load lead sources:', err)
+      next: (data: any) => this.setFieldOptions('source', data, 'sourceName'),
+      error: (err: any) => console.error('Failed to load lead sources:', err)
     });
 
     // 2. Customer
     this.leadservice.getCustomers().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.customersData = data;
         this.setFieldOptions('customer', data, 'customerName', 'customerId');
       },
-      error: (err) => console.error('Failed to load customers:', err)
+      error: (err: any) => console.error('Failed to load customers:', err)
     });
 
     // 3. Rapport (Relationship)
     this.leadservice.getRelationships().subscribe({
-      next: (data) => this.setFieldOptions('rapportWithCustomer', data, 'relationshipName'),
-      error: (err) => console.error('Failed to load rapport:', err)
+      next: (data: any) => this.setFieldOptions('rapportWithCustomer', data, 'relationshipName'),
+      error: (err: any) => console.error('Failed to load rapport:', err)
     });
 
     // 4. Site Readiness
     this.leadservice.getSiteReadiness().subscribe({
-      next: (data) => this.setFieldOptions('siteReadiness', data, 'siteReadinessName'),
-      error: (err) => console.error('Failed to load site readiness:', err)
+      next: (data: any) => this.setFieldOptions('siteReadiness', data, 'siteReadinessName'),
+      error: (err: any) => console.error('Failed to load site readiness:', err)
     });
 
     // 5. Distributors
     this.leadservice.getDistributors().subscribe({
-      next: (data) => this.setFieldOptions('distributor', data, 'distributorName'),
-      error: (err) => console.error('Failed to load distributors:', err)
+      next: (data: any) => this.setFieldOptions('distributor', data, 'distributorName'),
+      error: (err: any) => console.error('Failed to load distributors:', err)
     });
 
     // 6. Contact Persons
     this.leadservice.getContacts().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.contactPersonsData = data;
         this.updateContactOptions('contact1', data);
         this.updateContactOptions('contact2', data);
       },
-      error: (err) => console.error('Failed to load contacts:', err)
+      error: (err: any) => console.error('Failed to load contacts:', err)
     });
 
     // 7. Campaigns (Silent load for background default)
     this.leadservice.getCampaigns().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.setFieldOptions('campaign', data, 'campaignName');
         // If edit mode, load existing data after dropdowns are ready
         if (this.isEditMode && this.leadId) {
           this.loadLeadData(this.leadId);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.warn('Failed to load campaigns:', err);
         if (this.isEditMode && this.leadId) {
           this.loadLeadData(this.leadId);
@@ -287,7 +287,7 @@ export class New implements OnInit {
         // Trigger field binding refresh
         this.leadFields = [...this.leadFields];
       },
-      error: (err) => console.error('Failed to load lead details:', err)
+      error: (err: any) => console.error('Failed to load lead details:', err)
     });
   }
 
@@ -390,22 +390,22 @@ export class New implements OnInit {
 
     if (this.isEditMode && this.leadId) {
       this.leadservice.updateLead(this.leadId, payload).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           alert('Lead updated successfully!');
           this.router.navigate(['/openleads']);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Lead update failed:', err);
           alert('Failed to update lead.');
         }
       });
     } else {
       this.leadservice.createLead(payload).subscribe({
-        next: (response) => {
+        next: (response: any) => {
           alert('Lead created successfully!');
           this.router.navigate(['/sddashboard']);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Lead creation failed:', err);
           alert('Failed to create lead. Please check the console.');
         }
