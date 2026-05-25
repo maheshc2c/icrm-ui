@@ -65,6 +65,27 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
+        path: 'admin/user-target',
+        loadComponent: () =>
+          import('./pages/Admin/target-role/target-role').then(m => m.TargetRoleComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/assign-target/:id',
+        loadComponent: () =>
+          import('./pages/Admin/target-role/assign-target/assign-target').then(m => m.AssignTargetComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/upload-target/:id',
+        loadComponent: () =>
+          import('./pages/Admin/target-role/upload-target/upload-target').then(m => m.UploadTargetComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
   path: 'admin/competitor',
   loadComponent: () =>
     import('./pages/Admin/competitor/competitor').then(m => m.Competitor)

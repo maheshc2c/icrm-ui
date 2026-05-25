@@ -6,12 +6,14 @@
 <main class="content">
 <div class="datatable-toolbar">
 
-  <app-search
-  [fields]="searchFields"
-  (searchChange)="onSearchFromChild($event)">
-</app-search>
+  @if (showSearch) {
+    <app-search
+      [fields]="searchFields"
+      (searchChange)="onSearchFromChild($event)">
+    </app-search>
+  }
   <app-button
-    [showSearch]="true"
+    [showSearch]="showSearch"
     [showImport]="showImport"
     [showAdd]="showAdd"
     [showReset]="showReset"
@@ -74,11 +76,13 @@
 
         <!-- ACTIONS -->
         <td class="action-buttons">
-          <button
-            class="btn btn-sm btn-warning edit-btn"
-            (click)="edit(row)">
-            <i class="fas fa-edit"></i>
-          </button>
+          @if (showEdit) {
+            <button
+              class="btn btn-sm btn-warning edit-btn"
+              (click)="edit(row)">
+              <i class="fas fa-edit"></i>
+            </button>
+          }
 
           <!-- <button
   class="btn btn-sm"
@@ -92,25 +96,40 @@
   </i>
 </button> -->
 
- @if (showStatusToggle && row.specialityStatus !== undefined) {
-    <button
-      class="btn btn-sm"
-      [ngClass]="row.specialityStatus === 1 ? 'deactivate-btn' : 'activate-btn'"
-      (click)="delete(row)"
-      [title]="row.specialityStatus === 1 ? 'Deactivate' : 'Activate'">
-      <i
-        class="fas"
-        [ngClass]="row.specialityStatus === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
-      </i>
-    </button>
-  } @else {
-    <button
-      class="btn btn-sm delete-btn"
-      (click)="delete(row)"
-      title="Delete">
-      <i class="fas fa-trash-alt"></i>
-    </button>
-  }
+          @if (showDelete) {
+            @if (showStatusToggle && row.specialityStatus !== undefined) {
+              <button
+                class="btn btn-sm"
+                [ngClass]="row.specialityStatus === 1 ? 'deactivate-btn' : 'activate-btn'"
+                (click)="delete(row)"
+                [title]="row.specialityStatus === 1 ? 'Deactivate' : 'Activate'">
+                <i
+                  class="fas"
+                  [ngClass]="row.specialityStatus === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+                </i>
+              </button>
+            } @else {
+              <button
+                class="btn btn-sm delete-btn"
+                (click)="delete(row)"
+                title="Delete">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            }
+          }
+
+  
+@if (showAssign) {
+                    <button class="btn btn-sm btn-primary assign-btn" (click)="assign(row)">
+                      <i class="fas fa-user-plus"></i>
+                    </button>
+                    }
+
+                    @if (showUpload) {
+                    <button class="btn btn-sm btn-info upload-btn" (click)="upload(row)">
+                      <i class="fas fa-upload"></i>
+                    </button>
+                    }
         </td>
       </tr>
     }

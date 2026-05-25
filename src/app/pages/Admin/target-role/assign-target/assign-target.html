@@ -1,0 +1,86 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs"></app-pageheader>
+
+<main class="content">
+    <div class="assign-target-card">
+
+        <!-- Header Row -->
+        <div class="card-top-bar">
+            <h2 class="card-title">
+                Product Targets For {{ selectedYear }} Financial Year
+            </h2>
+            <div class="top-bar-actions">
+                <select class="year-select form-select" [(ngModel)]="selectedYear">
+                    <option *ngFor="let yr of financialYears" [value]="yr">{{ yr }}</option>
+                </select>
+                <button class="btn btn-primary submit-btn" (click)="onSubmit()" [disabled]="isSubmitting">
+                    {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Target Matrix Table -->
+        <div class="table-responsive">
+            <table class="target-table">
+                <thead>
+                    <tr>
+                        <th class="col-sno">S.NO</th>
+                        <th class="col-product">Product</th>
+                        <th *ngFor="let month of months" class="col-month">
+                            <div class="month-header-label">{{ month }}</div>
+                            <input type="checkbox" class="month-header-checkbox"
+                                [(ngModel)]="headerCheckboxMatrix[month]"
+                                [name]="'hdr_chk_' + month"
+                                (change)="onHeaderCheckboxChange(month)">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="products.length === 0">
+                        <td [colSpan]="months.length + 2" class="no-records">No Records</td>
+                    </tr>
+                    <tr *ngFor="let product of products; let i = index">
+                        <td class="col-sno">{{ i + 1 }}</td>
+                        <td class="col-product">
+                            <div class="product-cell-layout">
+                                <div class="product-details">
+                                    <div class="product-title">{{ product.productName }}</div>
+                                    <div class="product-subtitle">{{ product.productId }}</div>
+                                </div>
+                                <input type="checkbox" class="product-checkbox"
+                                    [(ngModel)]="rowCheckboxMatrix[product.productId]"
+                                    [name]="'row_chk_' + product.productId"
+                                    (change)="onRowCheckboxChange(product.productId)">
+                            </div>
+                        </td>
+                        <td *ngFor="let month of months" class="col-month-input">
+                            <div class="month-input-container">
+                                <ng-container *ngIf="targetMatrix[product.productId][month] > 0; else textInputCell">
+                                    <span class="dynamic-qty">{{ targetMatrix[product.productId][month] }}</span>
+                                </ng-container>
+                                <ng-template #textInputCell>
+                                    <input type="text" 
+                                        class="qty-text-input" 
+                                        placeholder=""
+                                        [(ngModel)]="quantityMatrix[product.productId][month]"
+                                        [name]="'qty_' + product.productId + '_' + month"
+                                        (input)="validateQuantity(product.productId, month, $event)">
+                                    <div *ngIf="validationErrors[product.productId]?.[month]" class="qty-error-message">
+                                        {{ validationErrors[product.productId][month] }}
+                                    </div>
+                                </ng-template>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="card-bottom-bar">
+            <button class="btn btn-outline-secondary" (click)="onCancel()">Cancel</button>
+        </div>
+
+    </div>
+</main>

@@ -13,6 +13,7 @@ import { Search, SearchFieldConfig } from "../search/search";
   templateUrl: './data-table.html',
   styleUrl: './data-table.css'
 })
+
 export class DataTable
 {
   @Input() columns: any[] = [];   // column headers
@@ -45,12 +46,28 @@ export class DataTable
 
   @Input() showImport = true;
   @Input() showAdd = true;
+  @Input() showAssign = false;
+  @Input() showUpload = false;
+  @Input() showSearch = true;
+  @Input() showEdit = true;
+  @Input() showDelete = true;
+
 
   /* ===== TOOLBAR EVENTS ===== */
 
   @Output() import = new EventEmitter<void>();
   @Output() add = new EventEmitter<void>();
   @Output() editRow = new EventEmitter<any>();
+   @Output() assignRow = new EventEmitter<any>();
+  @Output() uploadRow = new EventEmitter<any>();
+
+    assign(row: any) {
+    this.assignRow.emit(row);
+  }
+
+  upload(row: any) {
+    this.uploadRow.emit(row);
+  }
 
 @Input() emptyMessage = 'No records found';
 
