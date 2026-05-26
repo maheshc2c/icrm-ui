@@ -185,5 +185,14 @@ delete(row: any) {
   this.deleteRow.emit(row);
 }
 
+@Input() statusField: string = 'status';
+getRowStatus(row: any): number | undefined {
+  return row?.competitorStatus
+    ?? row?.specialityStatus
+    ?? row?.status
+    ?? row?.customerStatus
+    ?? row?.leadStatus;
+}
+
 
 }

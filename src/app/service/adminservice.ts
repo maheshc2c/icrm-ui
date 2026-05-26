@@ -71,6 +71,34 @@ export class Adminservice {
     );
   }
 
+  
+
+  deactivateCompetitor(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<SpecialityModel>(
+    `${this.baseUrl}/admin/deactivate-competitor/${id}`,
+    {},
+    { headers }
+  );
+}
+
+activateCompetitor(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<SpecialityModel>(
+    `${this.baseUrl}/admin/activate-competitor/${id}`,
+    {},
+    { headers }
+  );
+}
+
   // ================= EXCEL DOWNLOAD COMPETITORS=================
   downloadCompetitorExcel(data: CompetitorModel[]): Observable<Blob> {
     return this.http.post(

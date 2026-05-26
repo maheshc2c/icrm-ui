@@ -92,25 +92,23 @@
   </i>
 </button> -->
 
- @if (showStatusToggle && row.specialityStatus !== undefined) {
-    <button
-      class="btn btn-sm"
-      [ngClass]="row.specialityStatus === 1 ? 'deactivate-btn' : 'activate-btn'"
-      (click)="delete(row)"
-      [title]="row.specialityStatus === 1 ? 'Deactivate' : 'Activate'">
-      <i
-        class="fas"
-        [ngClass]="row.specialityStatus === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
-      </i>
-    </button>
-  } @else {
-    <button
-      class="btn btn-sm delete-btn"
-      (click)="delete(row)"
-      title="Delete">
-      <i class="fas fa-trash-alt"></i>
-    </button>
-  }
+ 
+ @if (showStatusToggle && getRowStatus(row) !== undefined) {
+  <button
+    class="btn btn-sm"
+    [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
+    (click)="delete(row)"
+    [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
+    <i
+      class="fas"
+      [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+    </i>
+  </button>
+} @else {
+  <button class="btn btn-sm delete-btn" (click)="delete(row)" title="Delete">
+    <i class="fas fa-trash-alt"></i>
+  </button>
+}
         </td>
       </tr>
     }
