@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Header } from '../../../layout/header/header';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
@@ -10,7 +10,7 @@ import { GlobalHeadService } from '../../../service/GlobalHeadService';
 @Component({
   selector: 'app-globalhead-dashboard',
   standalone: true,
-  imports: [CommonModule, Header, Sidebar, Pageheader],
+  imports: [CommonModule, Header, Sidebar, Pageheader, RouterLink],
   templateUrl: './globalhead-dashboard.html',
   styleUrls: ['./globalhead-dashboard.css'],
 })
