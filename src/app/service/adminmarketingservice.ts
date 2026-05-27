@@ -50,11 +50,17 @@ export class adminMarketingservice {
 }
 
 
-// ================= GET ALL Speciality =================
-  getSpecialities(): Observable<SpecialityModel[]> {
-    return this.http.get<SpecialityModel[]>(
-      `${this.baseUrl}/adminMarketing/view-Speciality`, // ✅ FIXED
-      { headers: this.getAuthHeaders() }
+  // ================= GET ALL Speciality =================
+  getSpecialities(pageNumber: number = 0, pageSize: number = 10): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/adminMarketing/view-Speciality`,
+      {
+        headers: this.getAuthHeaders(),
+        params: {
+          page: String(pageNumber),
+          size: String(pageSize)
+        }
+      }
     );
   }
 

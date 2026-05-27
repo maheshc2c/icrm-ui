@@ -96,40 +96,23 @@
   </i>
 </button> -->
 
-          @if (showDelete) {
-            @if (showStatusToggle && row.specialityStatus !== undefined) {
-              <button
-                class="btn btn-sm"
-                [ngClass]="row.specialityStatus === 1 ? 'deactivate-btn' : 'activate-btn'"
-                (click)="delete(row)"
-                [title]="row.specialityStatus === 1 ? 'Deactivate' : 'Activate'">
-                <i
-                  class="fas"
-                  [ngClass]="row.specialityStatus === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
-                </i>
-              </button>
-            } @else {
-              <button
-                class="btn btn-sm delete-btn"
-                (click)="delete(row)"
-                title="Delete">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            }
-          }
-
-  
-@if (showAssign) {
-                    <button class="btn btn-sm btn-primary assign-btn" (click)="assign(row)">
-                      <i class="fas fa-user-plus"></i>
-                    </button>
-                    }
-
-                    @if (showUpload) {
-                    <button class="btn btn-sm btn-info upload-btn" (click)="upload(row)">
-                      <i class="fas fa-upload"></i>
-                    </button>
-                    }
+ 
+ @if (showStatusToggle && getRowStatus(row) !== undefined) {
+  <button
+    class="btn btn-sm"
+    [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
+    (click)="delete(row)"
+    [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
+    <i
+      class="fas"
+      [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+    </i>
+  </button>
+} @else {
+  <button class="btn btn-sm delete-btn" (click)="delete(row)" title="Delete">
+    <i class="fas fa-trash-alt"></i>
+  </button>
+}
         </td>
       </tr>
     }
@@ -141,26 +124,41 @@
     </div>
   </div>
   <div class="pagination-container">
+    <div class="pagination-info">
+      Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
+    </div>
 
-  <button (click)="prevPage()" [disabled]="currentPage === 1">
-    Prev
-  </button>
+    <div class="pagination-right">
+      <div class="pagination-controls">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">
+          Prev
+        </button>
 
-  <span>
-    Page {{ currentPage }} of {{ totalPages }}
-  </span>
+        @for (page of getVisiblePages(); track page) {
+          @if (page === '...') {
+            <span class="pagination-ellipsis">...</span>
+          } @else {
+            <button 
+              [class.active]="currentPage === page" 
+              (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          }
+        }
 
-  <button (click)="nextPage()" [disabled]="currentPage === totalPages">
-    Next
-  </button>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+          Next
+        </button>
+      </div>
 
-  <!-- Page Size -->
-  <select (change)="changePageSize($any($event.target).value)">
-    <option value="10">10</option>
-    <option value="25">25</option>
-    <option value="50">50</option>
-  </select>
-</div>
+      <!-- Page Size -->
+      <select (change)="changePageSize($any($event.target).value)">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+  </div>
 
 
 

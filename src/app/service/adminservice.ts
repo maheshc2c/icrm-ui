@@ -71,6 +71,34 @@ export class Adminservice {
     );
   }
 
+  
+
+  deactivateCompetitor(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<SpecialityModel>(
+    `${this.baseUrl}/admin/deactivate-competitor/${id}`,
+    {},
+    { headers }
+  );
+}
+
+activateCompetitor(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<SpecialityModel>(
+    `${this.baseUrl}/admin/activate-competitor/${id}`,
+    {},
+    { headers }
+  );
+}
+
   // ================= EXCEL DOWNLOAD COMPETITORS=================
   downloadCompetitorExcel(data: CompetitorModel[]): Observable<Blob> {
     return this.http.post(
@@ -129,15 +157,20 @@ export class Adminservice {
 
 
   // ================= GET ALL CUSTOMERS =================
-  getCustomers(): Observable<CustomerModel[]> {
-    return this.http.get<CustomerModel[]>(
-      `${this.baseUrl}/admin/view-Customer`, // ✅ FIXED
-      { headers: this.getAuthHeaders() }
+  getCustomers(page: number = 0, size: number = 10): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/admin/view-Customer`,
+      {
+        headers: this.getAuthHeaders(),
+        params: {
+          page: String(page),
+          size: String(size)
+        }
+      }
     );
   }
 
 
-  // ================= SEARCH CUSTOMER =================
   searchCustomer(name: string) {
     return this.http.get<CustomerModel[]>(
       `${this.baseUrl}/admin/search`,
@@ -145,6 +178,36 @@ export class Adminservice {
         headers: this.getAuthHeaders(),
         params: { name: name } // ✅ MATCHES BACKEND
       }
+    );
+  }
+
+  searchCustomersPaged(
+    customerName: string | null,
+    customerCategoryName: string | null,
+    subCategoryName: string | null,
+    cityName: string | null,
+    pageNumber: number = 0,
+    pageSize: number = 10,
+    sortBy: string = 'customerId',
+    sortOrder: string = 'desc'
+  ): Observable<any> {
+    const payload = {
+      customerName: customerName || null,
+      customerCategoryName: customerCategoryName || null,
+      subCategoryName: subCategoryName || null,
+      cityName: cityName || null,
+      pagination: {
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+        sortBy: sortBy,
+        sortOrder: sortOrder
+      }
+    };
+
+    return this.http.post<any>(
+      `${this.baseUrl}/admin/search`,
+      payload,
+      { headers: this.getAuthHeaders() }
     );
   }
 
@@ -298,11 +361,18 @@ export class Adminservice {
   // ================= SPECIALTIY =================
 
   // ================= GET ALL Speciality =================
-  getSpecialities(): Observable<SpecialityModel[]> {
-    return this.http.get<SpecialityModel[]>(
-      `${this.baseUrl}/admin/view-Speciality`, // ✅ FIXED
-      { headers: this.getAuthHeaders() }
-    );
+  getSpecialities(pageNumber: number = 0, pageSize: number = 10): Observable<any> {
+    return this.http.request<any>('GET', `${this.baseUrl}/admin/view-Speciality`, {
+      headers: this.getAuthHeaders(),
+      params: {
+        pageNumber: String(pageNumber),
+        pageSize: String(pageSize)
+      },
+      body: {
+        pageNumber: pageNumber,
+        pageSize: pageSize
+      }
+    });
   }
 
   deactivateSpeciality(id: number) {
