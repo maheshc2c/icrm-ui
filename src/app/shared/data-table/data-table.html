@@ -49,7 +49,7 @@
       </td>
     </tr>
   } @else {
-    @for (row of paginatedRows; track detectKey(row, i); let i = $index) {
+    @for (row of paginatedRows; track row.demoProductDetailId || row.customerId || row.competitorId || row.productId || row.qouteId || row.poId || row.id || $index; let i = $index) {
       <tr>
         <!-- S.NO -->
         <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>

@@ -96,7 +96,7 @@ export class Customer {
           locationName: c.locations?.map((l: any) => l.locationName).join(', ') ?? ''
         }));
       },
-      error: (err) => {
+      error: (err: any) => {
         this.loading = false;
         console.error('Customer API Error:', err);
       }
@@ -225,13 +225,17 @@ export class Customer {
         a.click();
         window.URL.revokeObjectURL(url);
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Download failed:', err);
         alert(`Download failed: ${err.status}`);
       }
     });
   }
 
-
-  
+onReset(): void {
+  this.searchFilters = {};
+  this.currentPage = 1;
+  this.loadCustomers();
+}
+ 
 }

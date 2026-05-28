@@ -33,15 +33,21 @@ export class ProductService {
   }
 
   // Get all products
-  getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/view-product`, {
-      headers: this.getAuthHeaders()
-    });
+  getProducts(page: number = 0, size: number = 100000): Observable<Product[]> {
+    return this.http.get<any>(`${this.baseUrl}/view-product`, {
+      headers: this.getAuthHeaders(),
+      params: {
+        page: String(page),
+        size: String(size)
+      }
+    }).pipe(
+      map(res => Array.isArray(res) ? res : (res?.content || []))
+    );
   }
 
   // Get product by ID
   getProductById(id: number): Observable<Product> {
-    return this.getProducts().pipe(
+    return this.getProducts(0, 100000).pipe(
       map(products => {
         const product = products.find(p => p.productId === id);
         if (!product) throw new Error('Product not found');

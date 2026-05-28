@@ -11,11 +11,17 @@
 [rows]="rows"
 [showImport]="true"
 [showAdd]="true"
+[showStatusToggle]="true"
 [searchFields]="searchFields"
 (add)="onAdd()"
 (download)="onImport()"
 (editRow)="onEdit($event)"
-(search)="onSearch($event)">
+(search)="onSearch($event)"
+(deleteRow)="onDelete($event)"
+[showStatusToggle]="true"
+  [statusField]="'demoProductDetailStatus'"
+  [trackByField]="'demoProductDetailId'"
+>
 </app-data-table>
 
 <!-- (search)="onSearch($event)" -->

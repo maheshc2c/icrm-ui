@@ -7,6 +7,7 @@ import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Form } from '../../../../shared/form/form';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Adminservice } from '../../../../service/adminservice';
+import { ProductService } from '../../../../service/productservice';
 import { DemoProductModel } from '../../../../models/demo-product-model';
 
 @Component({
@@ -20,6 +21,7 @@ export class Add implements OnInit {
 
   constructor(
     private adminService: Adminservice,
+    private productService: ProductService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -167,22 +169,14 @@ private loadDemoById(id: number) {
         return;
       }
 
-      // ✅ Always assign FULL object once
+      // Assign non-dropdown values first
       this.formInitialData = {
-        categoryId: demo.categoryId,
-        groupId: demo.groupId,
-        productId: demo.productId,
-        regionId: demo.regionId,
-        branchId: demo.branchId,
-        cityId: demo.cityId,
         demoProductDetailSerialNumber: demo.demoProductDetailSerialNumber,
         demoProductDetailLocation: demo.demoProductDetailLocation
       };
 
-      // ✅ THEN load dropdowns
-      this.onCategoryChange(demo.categoryId);
-      this.onGroupChange(demo.groupId);
-      this.onRegionChange(demo.regionId);
+      // Load all edit dropdowns and resolve correct IDs by matching names
+      this.loadEditDropdowns(demo);
     },
     error: () => {
       alert('Failed to load demo');
@@ -191,60 +185,91 @@ private loadDemoById(id: number) {
   });
 }
 
-
-
 private loadEditDropdowns(demo: any) {
+  // 1. CATEGORY → GROUP → PRODUCT (Resolved via ProductService matching productName)
+  this.productService.getProducts().subscribe({
+    next: (products) => {
+      const matchedProduct = products.find(p => p.productName === demo.productName);
 
-  // CATEGORY → GROUP → PRODUCT
-  this.adminService.getProductCategoriesDropdown().subscribe(catRes => {
+      if (matchedProduct) {
+        const categoryId = matchedProduct.group.category.categoryId;
+        const groupId = matchedProduct.group.groupId;
+        const productId = matchedProduct.productId;
 
-    this.categories = catRes;
-    this.setOptions('categoryId', catRes, 'categoryId', 'categoryName');
+        // Load Categories options
+        this.adminService.getProductCategoriesDropdown().subscribe(catRes => {
+          this.categories = catRes;
+          this.setOptions('categoryId', catRes, 'categoryId', 'categoryName');
 
-    this.formInitialData.categoryId = demo.categoryId;
+          // Load Segments/Groups options
+          this.adminService.getSegmentDropdown(categoryId).subscribe(groupRes => {
+            this.groups = groupRes;
+            this.setOptions('groupId', groupRes, 'groupId', 'groupName');
 
-    this.adminService.getSegmentDropdown(demo.categoryId).subscribe(groupRes => {
+            // Load Products options
+            this.adminService.getProductDropdown(groupId).subscribe(prodRes => {
+              this.products = prodRes;
+              this.setOptions('productId', prodRes, 'productId', 'productName');
 
-      this.groups = groupRes;
-      this.setOptions('groupId', groupRes, 'groupId', 'groupName');
-
-      this.formInitialData.groupId = demo.groupId;
-
-      this.adminService.getProductDropdown(demo.groupId).subscribe(prodRes => {
-
-        this.products = prodRes;
-        this.setOptions('productId', prodRes, 'productId', 'productName');
-
-        this.formInitialData.productId = demo.productId;
-      });
-    });
+              // Set the resolved IDs into form initial data once all options are loaded
+              this.formInitialData = {
+                ...this.formInitialData,
+                categoryId: categoryId,
+                groupId: groupId,
+                productId: productId
+              };
+            });
+          });
+        });
+      } else {
+        // Fallback to loading standard first-level Categories if product name match is not found
+        this.loadCategories();
+      }
+    },
+    error: () => {
+      this.loadCategories();
+    }
   });
 
-
-  // REGION → BRANCH → CITY
+  // 2. REGION → BRANCH / CITY
   this.adminService.getRegionDropdown().subscribe(regRes => {
-
     this.regions = regRes;
     this.setOptions('regionId', regRes, 'locationId', 'locationName');
 
-    this.formInitialData.regionId = demo.regionId;
+    const matchedRegion = regRes.find(r => r.locationName === (demo.regionName || demo.region));
+    if (matchedRegion) {
+      const regionId = matchedRegion.locationId;
+      this.formInitialData = {
+        ...this.formInitialData,
+        regionId: regionId
+      };
 
-    this.adminService.getBranchDropdown(demo.regionId).subscribe(branchRes => {
+      this.adminService.getBranchDropdown(regionId).subscribe(branchRes => {
+        this.branches = branchRes;
+        this.setOptions('branchId', branchRes, 'branchId', 'branchName');
 
-      this.branches = branchRes;
-      this.setOptions('branchId', branchRes, 'branchId', 'branchName');
+        const matchedBranch = branchRes.find(b => b.branchName === demo.branchName);
+        if (matchedBranch) {
+          this.formInitialData = {
+            ...this.formInitialData,
+            branchId: matchedBranch.branchId
+          };
+        }
+      });
 
-      this.formInitialData.branchId = demo.branchId;
-    });
+      this.adminService.getCityDropdown(regionId).subscribe(cityRes => {
+        this.cities = cityRes;
+        this.setOptions('cityId', cityRes, 'locationId', 'locationName');
 
-    this.adminService.getCityDropdown(demo.regionId).subscribe(cityRes => {
-
-      this.cities = cityRes;
-      this.setOptions('cityId', cityRes, 'locationId', 'locationName');
-
-      this.formInitialData.cityId = demo.cityId;
-    });
-
+        const matchedCity = cityRes.find(c => c.locationName === demo.cityName);
+        if (matchedCity) {
+          this.formInitialData = {
+            ...this.formInitialData,
+            cityId: matchedCity.locationId
+          };
+        }
+      });
+    }
   });
 }
 

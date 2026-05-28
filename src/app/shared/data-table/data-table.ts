@@ -116,7 +116,6 @@ onSearchFromChild(values: any) {
     .find((v): v is string => typeof v === 'string' && v.trim().length > 0);
 
   this.searchText = activeValue || '';
-  this.searchChange.emit(values);
 }
 
 //automates the search method 
@@ -281,11 +280,14 @@ changePageSize(size: number) {
 
 onResetClick() {
   this.searchText = '';
+  this.pendingSearchValues = {};
+  this.currentPage = 1;
   this.searchChange.emit({});
   this.reset.emit();
 }
 
 //delete 
+@Input() trackByField: string = '';
 @Input() showStatusToggle = false;
 @Output() deleteRow = new EventEmitter<any>();
 delete(row: any) {
@@ -299,6 +301,7 @@ getRowStatus(row: any): number | undefined {
     ?? row?.specialityStatus
     ?? row?.status
     ?? row?.customerStatus
+    ?? row?.demoProductDetailStatus
     ?? row?.leadStatus;
 }
 
