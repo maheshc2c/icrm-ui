@@ -155,6 +155,32 @@ activateCompetitor(id: number) {
     );
   }
 
+   deactivateCustomer(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<CustomerModel>(
+    `${this.baseUrl}/admin/deactivate-customer/${id}`,
+    {},
+    { headers }
+  );
+}
+
+activateCustomer(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<CustomerModel>(
+    `${this.baseUrl}/admin/activate-customer/${id}`,
+    {},
+    { headers }
+  );
+}
+
 
   // ================= GET ALL CUSTOMERS =================
   getCustomers(page: number = 0, size: number = 10, fetchAll: boolean = false): Observable<any> {
