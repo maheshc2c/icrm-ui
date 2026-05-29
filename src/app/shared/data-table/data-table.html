@@ -6,12 +6,14 @@
 <main class="content">
 <div class="datatable-toolbar">
 
-  <app-search
-  [fields]="searchFields"
-  (searchChange)="onSearchFromChild($event)">
-</app-search>
+  @if (showSearch) {
+    <app-search
+      [fields]="searchFields"
+      (searchChange)="onSearchFromChild($event)">
+    </app-search>
+  }
   <app-button
-    [showSearch]="true"
+    [showSearch]="showSearch"
     [showImport]="showImport"
     [showAdd]="showAdd"
     [showReset]="showReset"
@@ -47,7 +49,7 @@
       </td>
     </tr>
   } @else {
-    @for (row of paginatedRows; track detectKey(row, i); let i = $index) {
+    @for (row of paginatedRows; track row.demoProductDetailId || row.customerId || row.competitorId || row.productId || row.qouteId || row.poId || row.id || $index; let i = $index) {
       <tr>
         <!-- S.NO -->
         <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
@@ -74,11 +76,13 @@
 
         <!-- ACTIONS -->
         <td class="action-buttons">
-          <button
-            class="btn btn-sm btn-warning edit-btn"
-            (click)="edit(row)">
-            <i class="fas fa-edit"></i>
-          </button>
+          @if (showEdit) {
+            <button
+              class="btn btn-sm btn-warning edit-btn"
+              (click)="edit(row)">
+              <i class="fas fa-edit"></i>
+            </button>
+          }
 
           <!-- <button
   class="btn btn-sm"
@@ -120,26 +124,41 @@
     </div>
   </div>
   <div class="pagination-container">
+    <div class="pagination-info">
+      Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
+    </div>
 
-  <button (click)="prevPage()" [disabled]="currentPage === 1">
-    Prev
-  </button>
+    <div class="pagination-right">
+      <div class="pagination-controls">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">
+          Prev
+        </button>
 
-  <span>
-    Page {{ currentPage }} of {{ totalPages }}
-  </span>
+        @for (page of getVisiblePages(); track page) {
+          @if (page === '...') {
+            <span class="pagination-ellipsis">...</span>
+          } @else {
+            <button 
+              [class.active]="currentPage === page" 
+              (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          }
+        }
 
-  <button (click)="nextPage()" [disabled]="currentPage === totalPages">
-    Next
-  </button>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+          Next
+        </button>
+      </div>
 
-  <!-- Page Size -->
-  <select (change)="changePageSize($any($event.target).value)">
-    <option value="10">10</option>
-    <option value="25">25</option>
-    <option value="50">50</option>
-  </select>
-</div>
+      <!-- Page Size -->
+      <select (change)="changePageSize($any($event.target).value)">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+  </div>
 
 
 

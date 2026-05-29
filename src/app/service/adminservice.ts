@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ContentChildDecorator, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { CompetitorModel } from '../models/competitor-model';
 import { AuthService } from './auth-service';
 import { CustomerModel } from '../models/customer-model';
@@ -157,15 +157,64 @@ activateCompetitor(id: number) {
 
 
   // ================= GET ALL CUSTOMERS =================
-  getCustomers(): Observable<CustomerModel[]> {
-    return this.http.get<CustomerModel[]>(
-      `${this.baseUrl}/admin/view-Customer`, // ✅ FIXED
+  getCustomers(page: number = 0, size: number = 10, fetchAll: boolean = false): Observable<any> {
+    const payload = {
+      customerName: null,
+      customerCategoryName: null,
+      subCategoryName: null,
+      cityName: null,
+      pagination: {
+        pageNumber: page,
+        pageSize: fetchAll ? 1000000 : size,
+        sortBy: 'customerId',
+        sortOrder: 'desc'
+      }
+    };
+
+    const obs = this.http.post<any>(
+      `${this.baseUrl}/admin/search`,
+      payload,
       { headers: this.getAuthHeaders() }
     );
+
+    if (fetchAll) {
+      return obs.pipe(
+        map(res => Array.isArray(res) ? res : (res?.content || []))
+      );
+    }
+    return obs;
   }
 
 
-  // ================= SEARCH CUSTOMER =================
+  getCustomersPaged(
+    customerName: string | null,
+    customerCategoryName: string | null,
+    subCategoryName: string | null,
+    cityName: string | null,
+    pageNumber: number = 0,
+    pageSize: number = 10,
+    sortBy: string = 'customerId',
+    sortOrder: string = 'desc'
+  ): Observable<any> {
+    const payload = {
+      customerName: customerName || null,
+      customerCategoryName: customerCategoryName || null,
+      subCategoryName: subCategoryName || null,
+      cityName: cityName || null,
+      pagination: {
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+        sortBy: sortBy,
+        sortOrder: sortOrder
+      }
+    };
+
+    return this.http.post<any>(
+      `${this.baseUrl}/admin/search`,
+      payload,
+      { headers: this.getAuthHeaders() }
+    );
+  }
   searchCustomer(name: string) {
     return this.http.get<CustomerModel[]>(
       `${this.baseUrl}/admin/search`,
@@ -173,6 +222,36 @@ activateCompetitor(id: number) {
         headers: this.getAuthHeaders(),
         params: { name: name } // ✅ MATCHES BACKEND
       }
+    );
+  }
+
+  searchCustomersPaged(
+    customerName: string | null,
+    customerCategoryName: string | null,
+    subCategoryName: string | null,
+    cityName: string | null,
+    pageNumber: number = 0,
+    pageSize: number = 10,
+    sortBy: string = 'customerId',
+    sortOrder: string = 'desc'
+  ): Observable<any> {
+    const payload = {
+      customerName: customerName || null,
+      customerCategoryName: customerCategoryName || null,
+      subCategoryName: subCategoryName || null,
+      cityName: cityName || null,
+      pagination: {
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+        sortBy: sortBy,
+        sortOrder: sortOrder
+      }
+    };
+
+    return this.http.post<any>(
+      `${this.baseUrl}/admin/search`,
+      payload,
+      { headers: this.getAuthHeaders() }
     );
   }
 
@@ -326,11 +405,18 @@ activateCompetitor(id: number) {
   // ================= SPECIALTIY =================
 
   // ================= GET ALL Speciality =================
-  getSpecialities(): Observable<SpecialityModel[]> {
-    return this.http.get<SpecialityModel[]>(
-      `${this.baseUrl}/admin/view-Speciality`, // ✅ FIXED
-      { headers: this.getAuthHeaders() }
-    );
+  getSpecialities(pageNumber: number = 0, pageSize: number = 10): Observable<any> {
+    return this.http.request<any>('GET', `${this.baseUrl}/admin/view-Speciality`, {
+      headers: this.getAuthHeaders(),
+      params: {
+        pageNumber: String(pageNumber),
+        pageSize: String(pageSize)
+      },
+      body: {
+        pageNumber: pageNumber,
+        pageSize: pageSize
+      }
+    });
   }
 
   deactivateSpeciality(id: number) {
@@ -413,6 +499,22 @@ activateSpeciality(id: number) {
       { headers: this.getAuthHeaders() }
     );
   }
+
+   deactivateDemo(id: number) {
+  return this.http.put<DemoProductDetailModel>(
+    `${this.baseUrl}/admin/demo/deactivate/${id}`,
+    {},
+    { headers: this.getAuthHeaders() }
+  );
+}
+ 
+activateDemo(id: number) {
+  return this.http.put<DemoProductDetailModel>(
+    `${this.baseUrl}/admin/demo/activate/${id}`,
+    {},
+    { headers: this.getAuthHeaders() }
+  );
+}
 
 
 

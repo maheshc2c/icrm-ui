@@ -18,7 +18,11 @@
   (editRow)="onEdit($event)"
   (download)="onImport()"
   [showStatusToggle]="true"
-  (deleteRow)="onDelete($event)">
+  (deleteRow)="onDelete($event)"
+  [totalElements]="totalElements"
+  [currentPage]="currentPage"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)">
 </app-data-table>
 
 <!-- (search)="onSearch($event)" 

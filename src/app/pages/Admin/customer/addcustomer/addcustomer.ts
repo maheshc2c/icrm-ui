@@ -111,7 +111,7 @@ export class Addcustomer implements OnInit {
 
   /* ================= DROPDOWNS ================= */
   private loadDropdowns(): void {
-    this.adminService.getCustomers().subscribe({
+    this.adminService.getCustomers(0, 100000, true).subscribe({
       next: (customers: CustomerModel[]) => {
 
         this.buildDropdownOptions(
@@ -132,7 +132,7 @@ export class Addcustomer implements OnInit {
           c => c.locations?.[0]?.locationName
         );
       },
-      error: err => console.error('Dropdown load error', err)
+      error: (err: any) => console.error('Dropdown load error', err)
     });
   }
 
@@ -161,7 +161,7 @@ export class Addcustomer implements OnInit {
 
   /* ================= LOAD CUSTOMER (EDIT) ================= */
   private loadCustomerById(id: number): void {
-    this.adminService.getCustomers().subscribe({
+    this.adminService.getCustomers(0, 100000, true).subscribe({
       next: (customers: CustomerModel[]) => {
         const customer = customers.find(c => c.customerId === id);
 
@@ -216,7 +216,7 @@ export class Addcustomer implements OnInit {
           alert('Customer updated successfully');
           this.router.navigate(['/admin/customer']);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Update failed:', err);
           alert('Update failed. Check console.');
         }
@@ -229,7 +229,7 @@ export class Addcustomer implements OnInit {
           alert('Customer created successfully');
           this.router.navigate(['/admin/customer']);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Create failed:', err);
           alert('Create failed. Check console.');
         }

@@ -76,8 +76,9 @@ export class Addspec {
   /* ================= LOAD ================= */
   private loadSpecialityById(id: number): void {
   this.adminService.getSpecialities().subscribe({
-    next: (specialitys) => {
-      const speciality = specialitys.find(c => c.specialityId === id);
+    next: (res: any) => {
+      const specialitys = Array.isArray(res) ? res : (res?.content || []);
+      const speciality = specialitys.find((c: any) => c.specialityId === id);
 
       if (!speciality) {
         alert('Speciality not found');

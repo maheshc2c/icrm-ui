@@ -45,217 +45,197 @@ export class Customer {
 
 
 
- customers: CustomerModel[] = [];
+  customers: CustomerModel[] = [];
   loading = false;
   errorMsg = '';
 
- 
+  rows: any[] = [];
+  fullRows: any[] = []; // ✅ full API data (for Excel)
+
+  totalElements = 0;
+  currentPage = 1;
+  pageSize = 10;
+  searchFilters: any = {};
+
   ngOnInit(): void {
+    this.loadDropdowns();
     this.loadCustomers();
   }
 
-  rows: any[] = [];
-  mappedRowsCache: any[] = [];   // ✅ ADD THIS LINE
-  // allRows: any[] = []; // 🔹 master copy
-  fullRows: any[] = [];   // ✅ full API data (for Excel)
-
-
   private loadCustomers(): void {
-  const start = performance.now();
+    this.loading = true;
 
-  this.adminservice.getCustomers().subscribe({
-    next: (customers: CustomerModel[]) => {
+    // Check if we have active search filters
+    const hasSearch = Object.values(this.searchFilters).some(v => v && String(v).trim().length > 0);
 
-      console.log('API Customers count:', customers.length);
+    const apiCall = hasSearch
+      ? this.adminservice.searchCustomersPaged(
+          this.searchFilters.customerName || null,
+          this.searchFilters.customerCategoryName || null,
+          this.searchFilters.subCategoryName || null,
+          this.searchFilters.cityName || null,
+          this.currentPage - 1,
+          this.pageSize
+        )
+      : this.adminservice.getCustomers(this.currentPage - 1, this.pageSize);
 
-      // ✅ Store full data
-      this.fullRows = customers;
+    apiCall.subscribe({
+      next: (res: any) => {
+        this.loading = false;
+        const customerList = Array.isArray(res) ? res : (res?.content || []);
+        this.totalElements = Array.isArray(res) ? res.length : (res?.totalElements || 0);
 
-      this.buildDropdownOptions(
-  customers,
-  'category',
-  c => c.customerCategory?.customerCategoryName
-);
+        this.fullRows = customerList;
 
-this.buildDropdownOptions(
-  customers,
-  'subCategory',
-  c => c.subCategory?.subcategoryName
-);
+        this.rows = customerList.map((c: any, index: number) => ({
+          sno: (this.currentPage - 1) * this.pageSize + index + 1,
+          customerId: c.customerId,
+          customerName: c.customerName,
+          customerTelephone: c.customerTelephone,
+          customerMobile: c.customerMobile,
+          locationName: c.locations?.map((l: any) => l.locationName).join(', ') ?? ''
+        }));
+      },
+      error: (err: any) => {
+        this.loading = false;
+        console.error('Customer API Error:', err);
+      }
+    });
+  }
 
-this.buildDropdownOptions(
-  customers,
-  'locations',
-  c => c.locations?.[0]?.locationName
-);
+  private loadDropdowns(): void {
+    // Load Customer Categories
+    this.adminservice.getCustomerCategories().subscribe({
+      next: (res: any) => {
+        const categories = Array.isArray(res) ? res : [];
+        const unique = new Set<string>();
+        categories.forEach((c: any) => {
+          if (c.customerCategory?.customerCategoryName) {
+            unique.add(c.customerCategory.customerCategoryName);
+          }
+        });
+        const options = Array.from(unique).map(v => ({ label: v, value: v }));
+        const field = this.searchFields.find(f => f.key === 'customerCategoryName');
+        if (field) {
+          field.options = options;
+        }
+      }
+    });
 
-
-
-      // ✅ Pre-map ONCE (cache)
-      this.mappedRowsCache = customers.map((c, index) => ({
-  sno: index + 1,
-  customerId: c.customerId,
-  customerName: c.customerName,
-  customerTelephone: c.customerTelephone,
-  customerMobile: c.customerMobile,
-
-  // ✅ searchable fields
-  category: c.customerCategory?.customerCategoryName ?? '',
-  subCategory: c.subCategory?.subcategoryName ?? '',
-  locationName: c.locations
-    ?.map((l: { locationName: string }) => l.locationName)
-    .join(', ')
-}));
-
-
-      // ✅ Render only first 300 rows initially
-      this.rows = this.mappedRowsCache.slice(0, 300);
-
-      const end = performance.now();
-      console.log(`⚡ UI mapping took ${(end - start).toFixed(1)} ms`);
-    },
-    error: (err) => {
-      console.error('Customer API Error:', err);
-    }
-  });
-}
-
-
-
-  //  onImport() {
-  //   console.log('Import clicked');
-  // }
+    // Load Sub Categories
+    this.adminservice.getSubSystem().subscribe({
+      next: (res: any) => {
+        const subCategories = Array.isArray(res) ? res : [];
+        const unique = new Set<string>();
+        subCategories.forEach((c: any) => {
+          if (c.subcategoryName) {
+            unique.add(c.subcategoryName);
+          }
+        });
+        const options = Array.from(unique).map(v => ({ label: v, value: v }));
+        const field = this.searchFields.find(f => f.key === 'subCategoryName');
+        if (field) {
+          field.options = options;
+        }
+      }
+    });
+  }
 
   onAdd() {
     this.router.navigate(['customer/add']);
   }
 
-onEdit(row: any) {
-  this.router.navigate(['customer/edit', row.customerId]);
-}
-isEditMode = false;
-customerId!: number
+  onEdit(row: any) {
+    this.router.navigate(['customer/edit', row.customerId]);
+  }
+
+  isEditMode = false;
+  customerId!: number;
 
   onDelete(row: any) {
     console.log('Delete row:', row);
   }
-
-  
-
-  //Search Functioanlity 
 
   searchFields: SearchFieldConfig[] = [
     {
       key: 'customerName',
       label: 'Customer Name',
       placeholder: 'Name',
-      type: 'text'   // ✅ now TypeScript knows this is literal
+      type: 'text'
     },
-
     {
-    key: 'category',
-    label: 'Category',
-    placeholder: 'Select Category',
-    type: 'select',
-    options: []
-  },
-
-  {
-    key: 'subCategory',
-    label: 'Sub Category',
-    placeholder: 'Select Sub Category',
-    type: 'select',
-    options: [
-    ]
-  },
-
-  {
-    key: 'locationName',
-    label: 'Location',
-    placeholder: 'Select location',
-    type: 'text',
-  }
-  ];
-  
-  
-onSearch(keyword: string) {
-  console.log('🔍 Customer search keyword:', keyword);
-
-  if (!keyword || keyword.trim() === '') {
-    this.rows = this.mappedRowsCache.slice(0, 300);
-    return;
-  }
-
-  const lower = keyword.toLowerCase();
-
-  const filtered = this.mappedRowsCache.filter(r => {
-    return (
-      r.customerName?.toLowerCase().includes(lower) ||
-      r.category?.toLowerCase().includes(lower) ||
-      r.subCategory?.toLowerCase().includes(lower) ||
-      r.locationName?.toLowerCase().includes(lower)
-    );
-  });
-
-  console.log('✅ Filtered count:', filtered.length);
-  this.rows = filtered.slice(0, 300);
-}
-
-//DropDown
-private buildDropdownOptions<T>(
-  customers: CustomerModel[],
-  fieldKey: string,
-  extractor: (c: CustomerModel) => string | undefined
-) {
-  const unique = new Set<string>();
-
-  customers.forEach(c => {
-    const value = extractor(c);
-    if (value) {
-      unique.add(value);
-    }
-  });
-
-  const options = Array.from(unique).map(v => ({
-    label: v,
-    value: v
-  }));
-
-  const field = this.searchFields.find(f => f.key === fieldKey);
-  if (field) {
-    field.options = options;
-  }
-
-  console.log(`✅ ${fieldKey} options loaded:`, options.length);
-}
-
-
-//Download
- onImport() {
-
-  if (!this.fullRows || this.fullRows.length === 0) {
-    alert('No data available to download');
-    return;
-  }
-
-  this.adminservice.downloadCustomer(this.fullRows).subscribe({
-    next: (blob: Blob) => {
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'Customer.xlsx';
-      a.click();
-
-      window.URL.revokeObjectURL(url);
+      key: 'customerCategoryName',
+      label: 'Category',
+      placeholder: 'Select Category',
+      type: 'select',
+      options: []
     },
-    error: (err) => {
-      console.error('Download failed:', err);
-      alert(`Download failed: ${err.status}`);
+    {
+      key: 'subCategoryName',
+      label: 'Sub Category',
+      placeholder: 'Select Sub Category',
+      type: 'select',
+      options: []
+    },
+    {
+      key: 'cityName',
+      label: 'Location',
+      placeholder: 'Select location',
+      type: 'text',
     }
-  });
+  ];
+
+  onSearch(keyword: string) {
+    console.log('🔍 Customer quick search keyword:', keyword);
+    this.searchFilters = { customerName: keyword };
+    this.currentPage = 1;
+    this.loadCustomers();
+  }
+
+  onSearchChange(filters: any) {
+    console.log('🔍 Customer structured search filters:', filters);
+    this.searchFilters = filters;
+    this.currentPage = 1;
+    this.loadCustomers();
+  }
+
+  onPageChange(page: number) {
+    this.currentPage = page;
+    this.loadCustomers();
+  }
+
+  onPageSizeChange(size: number) {
+    this.pageSize = size;
+    this.currentPage = 1;
+    this.loadCustomers();
+  }
+
+  onImport() {
+    if (!this.fullRows || this.fullRows.length === 0) {
+      alert('No data available to download');
+      return;
+    }
+
+    this.adminservice.downloadCustomer(this.fullRows).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Customer.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err: any) => {
+        console.error('Download failed:', err);
+        alert(`Download failed: ${err.status}`);
+      }
+    });
+  }
+
+onReset(): void {
+  this.searchFilters = {};
+  this.currentPage = 1;
+  this.loadCustomers();
 }
-
-
-  
+ 
 }

@@ -39,10 +39,11 @@ export class Speciality {
 
   
   rows: any[] = [];
-  // allRows: any[] = []; // 🔹 master copy
   fullRows: any[] = [];   // ✅ full API data (for Excel)
 
-
+  totalElements = 0;
+  currentPage = 1;
+  pageSize = 10;
 
    ngOnInit(): void {
     this.loadSpeciality();
@@ -50,15 +51,17 @@ export class Speciality {
 
   // ✅ LIST API ONLY
 private loadSpeciality(): void {
-  this.adminmarketingService.getSpecialities().subscribe({
-    next: (specialities: any[]) => {
+  this.adminmarketingService.getSpecialities(this.currentPage - 1, this.pageSize).subscribe({
+    next: (res: any) => {
+      const specialities = Array.isArray(res) ? res : (res?.content || []);
+      this.totalElements = Array.isArray(res) ? res.length : (res?.totalElements || 0);
 
       // ✅ keep FULL data untouched
       this.fullRows = specialities;
 
       // ✅ map only what table needs
-      this.rows = specialities.map((c, index) => ({
-        sno: index + 1,
+      this.rows = specialities.map((c: any, index: number) => ({
+        sno: (this.currentPage - 1) * this.pageSize + index + 1,
         specialityId: c.specialityId,
         specialityName: c.specialityName,
       }));
@@ -104,12 +107,15 @@ onSearch(keyword: string) {
     return;
   }
 
+  this.currentPage = 1;
+
   this.adminmarketingService.searchSpeciality(value).subscribe({
-    next: (results: any[]) => {
+    next: (results: any) => {
+      const data = Array.isArray(results) ? results : (results?.content || []);
 
-      this.fullRows = results;
+      this.fullRows = data;
 
-      this.rows = results.map((c, index) => ({
+      this.rows = data.map((c: any, index: number) => ({
         sno: index + 1,
         specialityId: c.specialityId,
         specialityName: c.specialityName,
@@ -148,5 +154,16 @@ onSearch(keyword: string) {
   });
 }
 
+onPageChange(page: number) {
+  this.currentPage = page;
+  this.loadSpeciality();
+}
+
+onPageSizeChange(size: number) {
+  this.pageSize = size;
+  this.currentPage = 1;
+  this.loadSpeciality();
+}
 
 }
+
