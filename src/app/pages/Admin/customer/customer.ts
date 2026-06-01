@@ -44,7 +44,6 @@ export class Customer {
   ];
 
 
-
   customers: CustomerModel[] = [];
   loading = false;
   errorMsg = '';
@@ -93,6 +92,7 @@ export class Customer {
           customerName: c.customerName,
           customerTelephone: c.customerTelephone,
           customerMobile: c.customerMobile,
+          customerStatus: c.customerStatus,
           locationName: c.locations?.map((l: any) => l.locationName).join(', ') ?? ''
         }));
       },
@@ -152,9 +152,39 @@ export class Customer {
   isEditMode = false;
   customerId!: number;
 
-  onDelete(row: any) {
-    console.log('Delete row:', row);
+  //actiavte and deactivate
+onDelete(row: any) {
+ 
+  const Id = row?.customerId;
+ 
+  if (!Id) {
+    return;
   }
+ 
+  const status = Number(row?.customerStatus);
+ 
+  const isActive = status === 1;
+ 
+  const apiCall = isActive
+    ? this.adminservice.deactivateCustomer(Id)
+    : this.adminservice.activateCustomer(Id);
+ 
+  apiCall.subscribe({
+    next: () => {
+ 
+      row.customerStatus = isActive ? 2 : 1;
+ 
+      this.rows = [...this.rows];
+      this.fullRows = [...this.fullRows];
+ 
+    },
+ 
+    error: (err) => {
+      console.error('Status update failed', err);
+      alert('Failed to update status');
+    }
+  });
+}
 
   searchFields: SearchFieldConfig[] = [
     {
