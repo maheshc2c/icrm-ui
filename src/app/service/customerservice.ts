@@ -33,4 +33,12 @@ export class Customerservice {
   createCustomer(payload: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/create-customer`, payload);
   }
+
+  getInstallationBase(customerId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/customer-installation-base/${customerId}`);
+  }
+
+  saveInstallationBase(customerId: number, records: any[]): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/customer-installation-base/${customerId}`, records);
+  }
 }

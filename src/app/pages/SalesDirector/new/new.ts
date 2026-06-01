@@ -49,10 +49,10 @@ export class New implements OnInit {
   leadForm = {
     source: '',
     // campaign: '', // Commented out
-    customer: '',
+    customer: '' as string | number,
     rapportWithCustomer: '',
-    contact1: '',
-    contact2: '',
+    contact1: '' as string | number,
+    contact2: '' as string | number,
     purchasePotentialRs: '',
     purchasePotential: '',
     siteReadiness: '',
@@ -271,12 +271,12 @@ export class New implements OnInit {
         console.log('Loaded Lead Data:', data);
         this.leadForm = {
           source: data.sourceName || '',
-          customer: data.customerId ? data.customerId.toString() : '',
+          customer: data.customerId || '',
           rapportWithCustomer: data.relationshipName || '',
-          contact1: data.contactId ? data.contactId.toString() : '',
-          contact2: '', // Not in DTO yet
+          contact1: data.contactId || '',
+          contact2: data.contact2Id || '',
           purchasePotentialRs: data.leadPurchasePotential ? data.leadPurchasePotential.toString() : '',
-          purchasePotential: '',
+          purchasePotential: data.leadCmdLine3 || '',
           siteReadiness: data.siteReadinessName || '',
           visitRequirement: data.leadVisitRequirement === 1 ? 'Yes' : 'No',
           resourceRequirement: data.leadResourceRequirement === 1 ? 'Yes' : 'No',
@@ -370,6 +370,7 @@ export class New implements OnInit {
     const payload: LeadPayload = {
       customerId: Number(formData.customer),
       contactId: Number(formData.contact1),
+      contact2Id: formData.contact2 ? Number(formData.contact2) : null,
       customerName: getCustomerName(formData.customer),
       contactFirstName: getContactFirstName(formData.contact1),
       sourceName: getLabel('source', formData.source),
@@ -383,6 +384,7 @@ export class New implements OnInit {
       leadResourceRequirement: formData.resourceRequirement === 'Yes' ? 1 : 0,
       leadCmdLine1: formData.commentLine1 || '',
       leadCmdLine2: formData.commentLine2 || '',
+      leadCmdLine3: formData.purchasePotential || '',
       leadStatus: 1
     };
 

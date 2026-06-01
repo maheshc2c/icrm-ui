@@ -142,7 +142,7 @@ export class ClosedLeadsComponent implements OnInit {
   /* ================= NAVIGATION ================= */
   viewLead(leadId: number): void {
     if (leadId) {
-      this.router.navigate(['/salesmanager/leads/edit', leadId]);
+      this.router.navigate(['/salesmanager/leads/edit', leadId], { queryParams: { readOnly: true } });
     }
   }
 

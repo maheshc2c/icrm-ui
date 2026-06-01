@@ -7,9 +7,9 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div class="modal-backdrop" *ngIf="show" (click)="close()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-content" [ngClass]="size" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h3>{{ title }}</h3>
+          <h3 class="modal-title">{{ title }}</h3>
           <button class="close-btn" (click)="close()">&times;</button>
         </div>
         <div class="modal-body">
@@ -25,47 +25,79 @@ import { CommonModule } from '@angular/common';
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .modal-backdrop *, .modal-backdrop *:before, .modal-backdrop *:after {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+      box-sizing: border-box;
     }
     .modal-content {
       background: white;
       border-radius: 8px;
-      width: 80%;
-      max-width: 600px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      width: 90%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
       max-height: 90vh;
+      overflow: hidden;
+      border: none;
+      animation: fadeIn 0.25s ease-out;
     }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-content.sm { max-width: 400px; }
+    .modal-content.md { max-width: 600px; }
+    .modal-content.lg { max-width: 850px; }
+    .modal-content.xl { max-width: 1100px; }
+
     .modal-header {
-      padding: 16px;
-      border-bottom: 1px solid #eee;
+      padding: 14px 20px;
+      background: #2196f3;
+      color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: none;
     }
-    .modal-header h3 {
+    .modal-title {
       margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: inherit;
     }
     .close-btn {
       background: none;
       border: none;
       font-size: 24px;
       cursor: pointer;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .close-btn:hover {
+      color: white;
     }
     .modal-body {
-      padding: 16px;
+      padding: 20px;
       overflow-y: auto;
+      background: #fdfdfd;
+      font-family: inherit;
     }
   `]
 })
 export class ModalComponent {
   @Input() show = false;
   @Input() title = '';
+  @Input() size: 'sm' | 'md' | 'lg' | 'xl' = 'md';
   @Output() closeDialog = new EventEmitter<void>();
 
   close() {

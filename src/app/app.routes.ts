@@ -570,6 +570,24 @@ export const routes: Routes = [
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
+        path: 'salesmanager/opportunities',
+        loadComponent: () => import('./pages/SalesManager/opportunities/opportunities').then(m => m.OpportunitiesComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/closed-opportunities',
+        loadComponent: () => import('./pages/SalesManager/closed-opportunities/closed-opportunities').then(m => m.ClosedOpportunitiesComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/funnel-history',
+        loadComponent: () => import('./pages/SalesManager/funnel-history/funnel-history').then(m => m.FunnelHistoryComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
         path: 'salesmanager/leads/add',
         loadComponent: () => import('./pages/SalesManager/leads/addlead/addlead').then(m => m.AddleadComponent),
         canActivate: [authGuard],
@@ -584,6 +602,42 @@ export const routes: Routes = [
       {
         path: 'salesmanager/closed-leads',
         component: ClosedLeadsComponent,
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/customer',
+        loadComponent: () => import('./pages/SalesManager/customer/customer').then(m => m.CustomerComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/customer/add',
+        loadComponent: () => import('./pages/SalesManager/customer/addcustomer/addcustomer').then(m => m.AddcustomerComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/customer/edit/:id',
+        loadComponent: () => import('./pages/SalesManager/customer/addcustomer/addcustomer').then(m => m.AddcustomerComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/contact',
+        loadComponent: () => import('./pages/SalesManager/contact/contact').then(m => m.ContactComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/contact/add',
+        loadComponent: () => import('./pages/SalesManager/contact/addcontact/addcontact').then(m => m.AddcontactComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'salesmanager/contact/edit/:id',
+        loadComponent: () => import('./pages/SalesManager/contact/addcontact/addcontact').then(m => m.AddcontactComponent),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },

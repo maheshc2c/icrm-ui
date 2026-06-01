@@ -17,6 +17,11 @@
           <i class="fas fa-trash-alt"></i> Drop Lead
         </button>
 
+        <!-- Installed Base Button -->
+        <button *ngIf="showInstalledBaseButton" type="button" class="action-header-btn" style="background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="clickInstalledBase.emit()">
+          <i class="fas fa-database"></i> Installed Base
+        </button>
+
         <!-- Existing Add Buttons -->
         <button *ngIf="showAddCustomerButton" type="button" class="action-header-btn btn-add-customer" (click)="addCustomer.emit()">
           <i class="fas fa-plus"></i> Add Customer
@@ -41,11 +46,11 @@
 
             <!-- DATE -->
             <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
-              [(ngModel)]="formData[field.name]" [name]="field.name" />
+              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly" />
  
             <!-- DATETIME-LOCAL -->
             <input *ngIf="field.type === 'datetime-local'" type="datetime-local" class="company-text-input"
-              [(ngModel)]="formData[field.name]" [name]="field.name" />
+              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly" />
  
          
 
@@ -57,37 +62,49 @@
             <!-- TEXT / NUMBER / EMAIL -->
             <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
               [type]="field.type" class="company-text-input" [placeholder]="field.placeholder"
-              [(ngModel)]="formData[field.name]" [name]="field.name" />
+              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly" />
 
             <!-- DATE -->
             <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
-              [(ngModel)]="formData[field.name]" [name]="field.name" />
+              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly" />
 
               <!-- TIME -->
 <input *ngIf="field.type === 'time'"
   type="time"
   class="company-text-input"
   [(ngModel)]="formData[field.name]"
-  [name]="field.name" />
+  [name]="field.name" [disabled]="readOnly" />
 
             <!-- TEXTAREA -->
             <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder"
-              [(ngModel)]="formData[field.name]" [name]="field.name">
+              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly">
             </textarea>
 
             <!-- STATIC DROPDOWN (🔥 FIXED) -->
-            <select *ngIf="field.type === 'select'" 
-  class="company-text-input" 
-  [(ngModel)]="formData[field.name]"
-  (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
-  [name]="field.name">
+            <div [style.display]="field.name === 'customer' && readOnly ? 'flex' : 'block'" [style.gap]="'10px'" [style.align-items]="'center'" [style.width]="'100%'">
+              <select *ngIf="field.type === 'select'" 
+                [style.flex]="field.name === 'customer' && readOnly ? '1' : 'none'"
+                class="company-text-input" 
+                [(ngModel)]="formData[field.name]"
+                (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
+                [name]="field.name"
+                [disabled]="readOnly">
 
-  <option value="">-- Select --</option>
-  <option *ngFor="let opt of field.options" [value]="opt.value">
-    {{ opt.label }}
+                <option value="">-- Select --</option>
+                <option *ngFor="let opt of field.options" [value]="opt.value">
+                  {{ opt.label }}
+                </option>
+              </select>
 
-              </option>
-            </select>
+              <div *ngIf="field.name === 'customer' && readOnly" style="display: flex; gap: 8px;">
+                <button type="button" (click)="clickCustomerDetails.emit(formData[field.name])" style="background: #2196f3; color: white; border: none; border-radius: 4px; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" title="Customer Details">
+                  <i class="fas fa-info"></i>
+                </button>
+                <button type="button" (click)="clickCustomerAction2.emit(formData[field.name])" style="background: #2196f3; color: white; border: none; border-radius: 4px; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" title="Folder Actions">
+                  <i class="fas fa-folder-open"></i>
+                </button>
+              </div>
+            </div>
 
             <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
             <select *ngIf="field.type === 'select-dynamic'" 
@@ -96,7 +113,7 @@
                 formData[field.name] = $event;
                 fieldChange.emit({ name: field.name, value: $event });
                 field.onChange?.($event)
-              " [name]="field.name">
+              " [name]="field.name" [disabled]="readOnly">
 
               <option value="">-- Select --</option>
 
@@ -118,7 +135,7 @@
                   (ngModelChange)="
                     formData[field.name][opt.value] = $event;
                     fieldChange.emit({ name: field.name, value: formData[field.name] })
-                  " [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
+                  " [name]="field.name + '_' + opt.value" class="company-checkbox-input" [disabled]="readOnly" />
                 <label [for]="field.name + '_' + opt.value" class="checkbox-label">
                   {{ opt.label }}
                 </label>
@@ -131,7 +148,7 @@
                 <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
                   [(ngModel)]="formData[field.name]" [name]="field.name"
                   (ngModelChange)="fieldChange.emit({ name: field.name, value: $event })"
-                  class="company-checkbox-input" />
+                  class="company-checkbox-input" [disabled]="readOnly" />
                 <label [for]="field.name + '_' + opt.value" class="checkbox-label">
                   {{ opt.label }}
                 </label>
@@ -143,7 +160,7 @@
 
 
         <!-- ACTION BUTTONS -->
-        <div class="form-action-buttons" style="display: flex; gap: 10px; align-items: center; justify-content: flex-end; flex-wrap: wrap;">
+        <div class="form-action-buttons" *ngIf="!readOnly" style="display: flex; gap: 10px; align-items: center; justify-content: flex-end; flex-wrap: wrap;">
 
           <button type="submit" class="submit-button">
             <i class="fas fa-check"></i> {{ submitButtonText }}

@@ -27,10 +27,13 @@
     [model]="leadForm"
     [submitButtonText]="isEditMode ? 'Update' : 'Submit'"
     [cancelButtonText]="'Cancel'"
-    [showAddCustomerButton]="!isEditMode"
-    [showAddContactButton]="!isEditMode"
+    [showAddCustomerButton]="!isEditMode && !isReadOnly"
+    [showAddContactButton]="!isEditMode && !isReadOnly"
     [showDetailsButton]="isEditMode"
-    [showDropLeadButton]="isEditMode"
+    [showDropLeadButton]="isEditMode && !isReadOnly"
+    [readOnly]="isReadOnly"
+    (clickCustomerDetails)="onCustomerDetails($event)"
+    (clickCustomerAction2)="onCustomerAction2($event)"
     (clickDetails)="onDetails()"
     (clickDropLead)="onDropLead()"
     (formSubmit)="onSubmit($event)"
@@ -105,29 +108,21 @@
 </div>
 
 <!-- Details Modal (Chronological Sequence of Events) -->
-<div class="custom-modal-overlay" *ngIf="showDetailsModal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 10000; display: flex; justify-content: center; align-items: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-  <div class="custom-modal-box" style="background: #fff; width: 100%; max-width: 900px; border-radius: 4px; box-shadow: 0 4px 25px rgba(0,0,0,0.3); overflow: hidden; display: flex; flex-direction: column;">
-    <!-- Header -->
-    <div style="background: #2196f3; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e88e5;">
-      <h5 style="margin: 0; color: #fff; font-weight: 500; font-size: 15px;">
-        Chronological Sequence of Events
-      </h5>
-      <button (click)="closeDetailsModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #fff; opacity: 0.9;">&times;</button>
-    </div>
-    <!-- Body -->
-    <div style="padding: 15px; overflow-y: auto; max-height: 70vh; background: #fff;" *ngIf="originalLeadData">
-      <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6; background: #fff;">
-        <thead style="background-color: #5b9bd5; color: white;">
-          <tr>
-            <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">S No</th>
-            <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">Event</th>
-            <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">Date</th>
-            <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">End Date</th>
-            <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">User</th>
-            <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">Remarks</th>
-          </tr>
-        </thead>
-        <tbody>
+<app-modal [show]="showDetailsModal" [title]="'Chronological Sequence of Events'" (closeDialog)="closeDetailsModal()">
+  <div style="padding: 15px; overflow-y: auto; max-height: 70vh; background: #fff;">
+    <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6; background: #fff;">
+      <thead style="background-color: #5b9bd5; color: white;">
+        <tr>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">S No</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">Event</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">Date</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">End Date</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">User</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="originalLeadData">
           <!-- Row 1: Created -->
           <tr style="background-color: #fff;">
             <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">1</td>
@@ -146,16 +141,255 @@
             <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">{{ originalLeadData.username || 'System' }}</td>
             <td style="padding: 8px; border: 1px solid #dee2e6; color: #333; background: #fff;"></td>
           </tr>
-        </tbody>
-      </table>
-    </div>
-    <!-- Footer -->
-    <div style="padding: 10px 15px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; background: #fff;">
-      <button (click)="closeDetailsModal()" style="padding: 4px 20px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; color: #333; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;">
-        Ok
-      </button>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <div style="padding: 10px 15px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; background: #fff;">
+    <button (click)="closeDetailsModal()" style="padding: 4px 20px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; color: #333; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;">
+      Ok
+    </button>
+  </div>
+</app-modal>
+
+<!-- Customer Details Modal -->
+<app-modal [show]="showCustomerDetailsModal" [title]="'Customer Details'" size="lg" (closeDialog)="closeCustomerDetailsModal()">
+  <style>
+    .customer-modal-container {
+      padding: 10px 15px;
+      color: #334155;
+    }
+    .customer-modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 30px;
+      row-gap: 20px;
+    }
+    .customer-modal-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .customer-modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .customer-modal-label {
+      font-weight: 600;
+      font-size: 12.5px;
+      color: #475569;
+    }
+    .customer-modal-input {
+      width: 100%;
+      height: 38px;
+      padding: 8px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 13.5px;
+      transition: all 0.2s;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .customer-modal-input:disabled {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #475569;
+      cursor: not-allowed;
+    }
+    .customer-modal-textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 13.5px;
+      resize: none;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .customer-modal-textarea:disabled {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #475569;
+      cursor: not-allowed;
+    }
+  </style>
+
+  <div class="customer-modal-container">
+    <div class="customer-modal-grid">
+      
+      <!-- Column 1 -->
+      <div class="customer-modal-col">
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Customer Name</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerName)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Salutation</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerSalutation)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Category</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerCategory?.customerCategoryName)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Email</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerEmail)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Fax</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerFax)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">City</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.locations?.[0]?.locationName)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Pincode</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerPincode)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">TAN</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerTan)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Address Line 1</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerAddress1)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Address Line 3</label>
+          <textarea class="customer-modal-textarea" disabled>{{ formatCustomerValue(selectedCustomer?.customerAddress3) }}</textarea>
+        </div>
+      </div>
+
+      <!-- Column 2 -->
+      <div class="customer-modal-col">
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Customer Type</label>
+          <input type="text" [value]="selectedCustomer?.customerType === 1 ? 'Speciality' : selectedCustomer?.customerType === 2 ? 'General' : 'Speciality'" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Department</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerDepartment)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Sub Category</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.subCategory?.subcategoryName)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Telephone</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerTelephone)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Mobile</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerMobile)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Website</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerWebsite)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">PAN</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerPan)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">TIN</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerTin)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Address Line 2</label>
+          <textarea class="customer-modal-textarea" disabled>{{ formatCustomerValue(selectedCustomer?.customerAddress2) }}</textarea>
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Landmark</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerLandmark)" class="customer-modal-input" disabled />
+        </div>
+      </div>
+
     </div>
   </div>
-</div>
+  <div style="padding: 15px 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; background: #fff;">
+    <button (click)="closeCustomerDetailsModal()" style="padding: 7px 22px; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 13.5px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
+      Close
+    </button>
+  </div>
+</app-modal>
+
+<!-- Customer Installation Base Details Modal -->
+<app-modal [show]="showInstallationBaseDetailsModal" [title]="'Customers Installation Base'" size="xl" (closeDialog)="closeInstallationBaseDetailsModal()">
+  <style>
+    .install-details-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #fff;
+    }
+    .install-details-table th {
+      background: #5b9bd5;
+      color: white;
+      font-weight: 500;
+      padding: 10px;
+      border: 1px solid #dee2e6;
+      text-align: center;
+    }
+    .install-details-table td {
+      padding: 10px;
+      border: 1px solid #dee2e6;
+      text-align: center;
+      color: #333;
+      background: #fff;
+    }
+    .no-records-row {
+      background: #f9f9f9;
+    }
+    .no-records-box {
+      padding: 6px 12px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #333;
+    }
+  </style>
+
+  <div style="padding: 15px; overflow-y: auto; max-height: 70vh; background: #fff;">
+    <table class="install-details-table">
+      <thead>
+        <tr>
+          <th>Manufacturer</th>
+          <th>ProducManufacturer/Model</th>
+          <th>Quantity</th>
+          <th>Make</th>
+          <th>Year Of Purchase</th>
+          <th>Replacement Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of installationBaseDetails">
+          <td>{{ row.competitor || 'N/A' }}</td>
+          <td>{{ row.productModel || 'N/A' }}</td>
+          <td>{{ row.quantity !== null && row.quantity !== undefined ? row.quantity : 'N/A' }}</td>
+          <td>{{ row.make || 'N/A' }}</td>
+          <td>{{ row.yearOfPurchase || 'N/A' }}</td>
+          <td>{{ row.replacementYear || 'N/A' }}</td>
+        </tr>
+        <tr *ngIf="installationBaseDetails.length === 0" class="no-records-row">
+          <td colspan="6" class="text-center py-4" style="padding: 20px; background: #fdfdfd;">
+            <div class="no-records-box">No records</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="padding: 15px 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; background: #fff;">
+    <button type="button" (click)="closeInstallationBaseDetailsModal()" style="padding: 7px 22px; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 13.5px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
+      Close
+    </button>
+  </div>
+</app-modal>
 
 

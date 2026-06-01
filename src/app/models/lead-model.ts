@@ -17,6 +17,7 @@ export interface LeadPayload {
   leadId?: number;
   customerId: number;
   contactId: number;
+  contact2Id?: number | null;
   customerName: string;
   contactFirstName: string;
   sourceName: string;

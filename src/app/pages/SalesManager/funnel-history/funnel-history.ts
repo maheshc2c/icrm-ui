@@ -4,11 +4,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { Header } from '../../../layout/header/header';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
+import { Pageheader } from '../../../shared/pageheader/pageheader';
 
 @Component({
   selector: 'app-funnel-history',
   standalone: true,
-  imports: [DataTable, CommonModule, FormsModule],
+  imports: [DataTable, CommonModule, FormsModule, Header, Sidebar, Pageheader],
   templateUrl: './funnel-history.html',
   styleUrls: ['./funnel-history.css']
 })

@@ -1,6 +1,12 @@
-<app-data-table
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
   [title]="headerTitle"
-  [breadcrumbs]="headerBreadcrumbs"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
   [columns]="columns"
   [rows]="filteredOpportunities"
   [searchFields]="searchFields"

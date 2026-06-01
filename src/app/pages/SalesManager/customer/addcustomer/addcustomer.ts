@@ -8,11 +8,12 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Customerservice } from '../../../../service/customerservice';
+import { ModalComponent } from '../../../../shared/modal/modal';
 
 @Component({
   selector: 'app-addcustomer',
   standalone: true,
-  imports: [Form, Header, Sidebar, Pageheader, CommonModule, FormsModule],
+  imports: [Form, Header, Sidebar, Pageheader, CommonModule, FormsModule, ModalComponent],
   templateUrl: './addcustomer.html',
   styleUrls: ['./addcustomer.css']
 })
@@ -25,6 +26,65 @@ export class AddcustomerComponent implements OnInit {
   isEditMode: boolean = false;
   customerId: number | null = null;
   model: any = {};
+
+  /* ================= INSTALLATION BASE STATE ================= */
+  showInstalledBaseModal: boolean = false;
+  installationBaseRows: any[] = [];
+  confirmedInstallationBaseRows: any[] = [];
+
+  openInstalledBaseModal(): void {
+    if (this.confirmedInstallationBaseRows.length === 0) {
+      this.installationBaseRows = [{
+        competitor: '',
+        productModel: '',
+        quantity: null,
+        make: '',
+        yearOfPurchase: '',
+        replacementYear: ''
+      }];
+    } else {
+      this.installationBaseRows = this.confirmedInstallationBaseRows.map(row => ({ ...row }));
+    }
+    this.showInstalledBaseModal = true;
+  }
+
+  closeInstalledBaseModal(): void {
+    this.showInstalledBaseModal = false;
+  }
+
+  confirmInstalledBase(): void {
+    this.confirmedInstallationBaseRows = this.installationBaseRows
+      .filter(row => row.competitor || row.productModel || row.quantity || row.make || row.yearOfPurchase || row.replacementYear)
+      .map(row => ({ ...row }));
+    this.showInstalledBaseModal = false;
+    console.log('Confirmed Installation Base Rows:', this.confirmedInstallationBaseRows);
+  }
+
+  addInstallationRow(index: number): void {
+    const newRow = {
+      competitor: '',
+      productModel: '',
+      quantity: null,
+      make: '',
+      yearOfPurchase: '',
+      replacementYear: ''
+    };
+    this.installationBaseRows.splice(index + 1, 0, newRow);
+  }
+
+  removeInstallationRow(index: number): void {
+    this.installationBaseRows.splice(index, 1);
+    if (this.installationBaseRows.length === 0) {
+      this.installationBaseRows.push({
+        competitor: '',
+        productModel: '',
+        quantity: null,
+        make: '',
+        yearOfPurchase: '',
+        replacementYear: ''
+      });
+    }
+  }
 
   /* ================= DROPDOWN DATA ================= */
   categoriesData: any[] = [];
@@ -453,6 +513,22 @@ export class AddcustomerComponent implements OnInit {
             this.onCategoryChange(customer.categoryId, false);
             this.model.subCategory = customer.subcategoryId;
           }
+
+          // Load Installation Base
+          this.customerService.getInstallationBase(id).subscribe({
+            next: (records: any[]) => {
+              this.confirmedInstallationBaseRows = records.map(rec => ({
+                competitor: rec.competitor || '',
+                productModel: rec.productModel || '',
+                quantity: rec.quantity || null,
+                make: rec.make || '',
+                yearOfPurchase: rec.yearOfPurchase || '',
+                replacementYear: rec.replacementYear || ''
+              }));
+              console.log('Loaded installation base rows:', this.confirmedInstallationBaseRows);
+            },
+            error: (err) => console.error('Failed to load installation base:', err)
+          });
         } else {
           alert('Customer not found');
           this.router.navigate(['/salesmanager/customer']);
@@ -506,8 +582,17 @@ export class AddcustomerComponent implements OnInit {
       this.customerService.updateCustomer(this.customerId, payload).subscribe({
         next: (response: any) => {
           console.log('Customer updated:', response);
-          alert('Customer updated successfully!');
-          this.router.navigate(['/salesmanager/customer']);
+          this.customerService.saveInstallationBase(this.customerId!, this.confirmedInstallationBaseRows).subscribe({
+            next: () => {
+              alert('Customer and Installation Base updated successfully!');
+              this.router.navigate(['/salesmanager/customer']);
+            },
+            error: (err: any) => {
+              console.error('Failed to save installation base:', err);
+              alert('Customer updated, but failed to save Installation Base.');
+              this.router.navigate(['/salesmanager/customer']);
+            }
+          });
         },
         error: (err: any) => {
           console.error('Update failed:', err);
@@ -519,8 +604,23 @@ export class AddcustomerComponent implements OnInit {
       this.customerService.createCustomer(payload).subscribe({
         next: (response: any) => {
           console.log('Customer created:', response);
-          alert('Customer created successfully!');
-          this.router.navigate(['/salesmanager/customer']);
+          const createdCustomerId = response.customerId;
+          if (createdCustomerId) {
+            this.customerService.saveInstallationBase(createdCustomerId, this.confirmedInstallationBaseRows).subscribe({
+              next: () => {
+                alert('Customer and Installation Base created successfully!');
+                this.router.navigate(['/salesmanager/customer']);
+              },
+              error: (err: any) => {
+                console.error('Failed to save installation base:', err);
+                alert('Customer created, but failed to save Installation Base.');
+                this.router.navigate(['/salesmanager/customer']);
+              }
+            });
+          } else {
+            alert('Customer created successfully!');
+            this.router.navigate(['/salesmanager/customer']);
+          }
         },
         error: (err: any) => {
           console.error('Create failed:', err);

@@ -8,11 +8,16 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { ModalComponent } from '../../../shared/modal/modal';
 import { Form } from '../../../shared/form/form';
 import { Leadservice } from '../../../service/leadservice';
+import { Header } from '../../../layout/header/header';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { Pageheader } from '../../../shared/pageheader/pageheader';
 
 @Component({
   selector: 'app-opportunities',
   standalone: true,
-  imports: [DataTable, CommonModule, FormsModule, ModalComponent, Form],
+  imports: [DataTable, CommonModule, FormsModule, ModalComponent, Form, Header, Sidebar, Pageheader],
   templateUrl: './opportunities.html',
   styleUrls: ['./opportunities.css']
 })
@@ -155,14 +160,71 @@ export class OpportunitiesComponent implements OnInit {
   loadOpportunities(): void {
     this.leadService.getOpportunityTable().subscribe({
       next: (data) => {
-        this.opportunities = data;
+        this.opportunities = data.map(opp => ({
+          ...opp,
+          product: opp.productAndCategory,
+          lifeTime: opp.lifeTimeDays,
+          value: opp.value || (opp.qty ? opp.qty * 125000 : 0)
+        }));
         this.filteredOpportunities = [...this.opportunities];
+        this.populateSearchDropdowns();
       },
       error: (err) => {
         console.error('Error loading opportunities:', err);
-        // Fallback to empty or dummy if needed for testing
         this.opportunities = [];
         this.filteredOpportunities = [];
+      }
+    });
+  }
+
+  populateSearchDropdowns(): void {
+    // 1. Load customer names from leadService
+    this.leadService.getCustomers().subscribe(data => {
+      const field = this.searchFields.find(f => f.key === 'customer');
+      if (field && data) {
+        const uniqueNames = [...new Set(data.map(c => c.customerName))].sort();
+        field.options = uniqueNames.map(name => ({ value: name, label: name }));
+      }
+    });
+
+    // 2. Extract product categories from loaded rows
+    const categories = new Set<string>();
+    this.opportunities.forEach(opp => {
+      if (opp.productAndCategory) {
+        const match = opp.productAndCategory.match(/\(([^)]+)\)/);
+        if (match && match[1]) {
+          categories.add(match[1]);
+        } else {
+          categories.add(opp.productAndCategory);
+        }
+      }
+    });
+    const pcField = this.searchFields.find(f => f.key === 'productCategory');
+    if (pcField) {
+      pcField.options = Array.from(categories).sort().map(c => ({ value: c, label: c }));
+    }
+
+    // 3. Extract regions from loaded rows
+    const regions = new Set<string>();
+    this.opportunities.forEach(opp => {
+      if (opp.leadDetails) {
+        const match = opp.leadDetails.match(/\(([^)]+)\)$/);
+        if (match && match[1]) {
+          regions.add(match[1]);
+        }
+      }
+    });
+    const regionField = this.searchFields.find(f => f.key === 'region');
+    if (regionField) {
+      regionField.options = Array.from(regions).sort().map(r => ({ value: r, label: r }));
+    }
+
+    // 4. Load source of lead from leadService
+    this.leadService.getSources().subscribe(data => {
+      const field = this.searchFields.find(f => f.key === 'sourceOfLead');
+      if (field && data) {
+        const uniqueSources = [...new Set(data.map(s => s.sourceName))].sort();
+        field.options = uniqueSources.map(name => ({ value: name, label: name }));
       }
     });
   }
@@ -173,10 +235,70 @@ export class OpportunitiesComponent implements OnInit {
 
   onSearch(): void {
     this.filteredOpportunities = this.opportunities.filter(opp => {
-      const matchesId = !this.currentFilters.oppId || opp.id?.toString().includes(this.currentFilters.oppId);
-      const matchesCustomer = !this.currentFilters.customer || opp.leadDetails?.toLowerCase().includes(this.currentFilters.customer.toLowerCase());
-      return matchesId && matchesCustomer;
+      // 1) Opp ID
+      if (this.currentFilters.oppId) {
+        if (!opp.id?.toString().includes(this.currentFilters.oppId)) return false;
+      }
+
+      // 2) Customer
+      if (this.currentFilters.customer) {
+        const custName = this.extractCustomerName(opp.leadDetails);
+        if (!custName.toLowerCase().includes(this.currentFilters.customer.toLowerCase())) return false;
+      }
+
+      // 3) Product Category
+      if (this.currentFilters.productCategory) {
+        const categoryName = this.extractCategoryName(opp.productAndCategory);
+        if (categoryName.toLowerCase() !== this.currentFilters.productCategory.toLowerCase()) return false;
+      }
+
+      // 4) Stage
+      if (this.currentFilters.stage) {
+        if (opp.stage?.toLowerCase() !== this.currentFilters.stage.toLowerCase()) return false;
+      }
+
+      // 5) Category
+      if (this.currentFilters.category) {
+        if (opp.category?.toLowerCase() !== this.currentFilters.category.toLowerCase()) return false;
+      }
+
+      // 6) Region
+      if (this.currentFilters.region) {
+        const regionName = this.extractRegionName(opp.leadDetails);
+        if (regionName.toLowerCase() !== this.currentFilters.region.toLowerCase()) return false;
+      }
+
+      // 7) Search By (Text Search)
+      if (this.currentFilters.searchBy) {
+        const search = this.currentFilters.searchBy.toLowerCase();
+        const matchesId = opp.id?.toString().includes(search);
+        const matchesLead = opp.leadDetails?.toLowerCase().includes(search);
+        const matchesProduct = opp.product?.toLowerCase().includes(search);
+        const matchesStage = opp.stage?.toLowerCase().includes(search);
+        const matchesCategory = opp.category?.toLowerCase().includes(search);
+        if (!(matchesId || matchesLead || matchesProduct || matchesStage || matchesCategory)) return false;
+      }
+
+      return true;
     });
+  }
+
+  private extractCustomerName(leadDetails: string): string {
+    if (!leadDetails) return '';
+    const match = leadDetails.match(/ID\s*:\s*\d+\s*-\s*(.*?)\s*\(/);
+    return match && match[1] ? match[1].trim() : leadDetails;
+  }
+
+  private extractCategoryName(productAndCategory: string): string {
+    if (!productAndCategory) return '';
+    const match = productAndCategory.match(/\(([^)]+)\)/);
+    return match && match[1] ? match[1].trim() : productAndCategory;
+  }
+
+  private extractRegionName(leadDetails: string): string {
+    if (!leadDetails) return '';
+    const match = leadDetails.match(/\(([^)]+)\)$/);
+    return match && match[1] ? match[1].trim() : '';
   }
 
   /* ================= MODAL ACTIONS ================= */
@@ -199,6 +321,35 @@ export class OpportunitiesComponent implements OnInit {
   }
 
   downloadExcel(): void {
-    alert('Download functionality will be implemented');
+    if (!this.filteredOpportunities || this.filteredOpportunities.length === 0) {
+      alert('No data available to download');
+      return;
+    }
+
+    const excelData = this.filteredOpportunities.map((row, index) => ({
+      'S.NO': index + 1,
+      'ID': row.id,
+      'Lead Details': row.leadDetails,
+      'Product': row.product,
+      'Qty': row.qty,
+      'Value (Rs)': row.value,
+      'Stage': row.stage,
+      'Category': row.category,
+      'Probability (%)': row.probability,
+      'Life Time (Days)': row.lifeTime
+    }));
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'Opportunities': worksheet },
+      SheetNames: ['Opportunities']
+    };
+
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data: Blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+    });
+
+    saveAs(data, `opportunities_export_${new Date().getTime()}.xlsx`);
   }
 }

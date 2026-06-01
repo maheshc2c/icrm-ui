@@ -8,10 +8,12 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Header } from '../../../../layout/header/header';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Form } from '../../../../shared/form/form';
+import { ModalComponent } from '../../../../shared/modal/modal';
 
 // Services
 import { Leadservice } from '../../../../service/leadservice';
 import { AuthService } from '../../../../service/auth-service';
+import { Customerservice } from '../../../../service/customerservice';
 import { LeadPayload } from '../../../../models/lead-model';
 
 interface FormField {
@@ -26,7 +28,7 @@ interface FormField {
 @Component({
   selector: 'app-addlead',
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, Form],
+  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, Form, ModalComponent],
   templateUrl: './addlead.html'
 })
 export class AddleadComponent implements OnInit {
@@ -42,6 +44,11 @@ export class AddleadComponent implements OnInit {
   showDetailsModal = false;
   originalLeadData: LeadPayload | null = null;
   opportunities: any[] = [];
+  isReadOnly = false;
+  showCustomerDetailsModal = false;
+  selectedCustomer: any = null;
+  showInstallationBaseDetailsModal = false;
+  installationBaseDetails: any[] = [];
   
   tabs = ['Lead Details', 'Opportunities', 'Quote', 'Contract Note'];
 
@@ -53,10 +60,10 @@ export class AddleadComponent implements OnInit {
   leadForm = {
     source: '',
     // campaign: '', // Commented out
-    customer: '',
+    customer: '' as string | number,
     rapportWithCustomer: '',
-    contact1: '',
-    contact2: '',
+    contact1: '' as string | number,
+    contact2: '' as string | number,
     purchasePotentialRs: '',
     purchasePotential: '',
     siteReadiness: '',
@@ -172,7 +179,8 @@ export class AddleadComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private leadservice: Leadservice,
-    private auth: AuthService
+    private auth: AuthService,
+    private customerService: Customerservice
   ) {}
 
   /* ================= INIT ================= */
@@ -186,12 +194,26 @@ export class AddleadComponent implements OnInit {
         this.leadId = +params['id'];
         console.log('Edit mode enabled for Lead ID:', this.leadId);
         
-        // Update breadcrumbs for edit mode
-        this.breadcrumbs = [
-          { label: 'Home', route: '/sales-manager-dashboard' },
-          { label: 'Open Leads', route: '/openleads' },
-          { label: 'Lead ID - ' + this.leadId }
-        ];
+        // Also check if readOnly query parameter is present
+        this.isReadOnly = this.route.snapshot.queryParams['readOnly'] === 'true';
+        
+        // Update breadcrumbs for edit/view mode
+        if (this.isReadOnly) {
+          this.breadcrumbs = [
+            { label: 'Home', route: '/sales-manager-dashboard' },
+            { label: 'Closed Leads', route: '/salesmanager/closed-leads' },
+            { label: 'Lead ID - ' + this.leadId }
+          ];
+        } else {
+          this.breadcrumbs = [
+            { label: 'Home', route: '/sales-manager-dashboard' },
+            { label: 'Open Leads', route: '/openleads' },
+            { label: 'Lead ID - ' + this.leadId }
+          ];
+        }
+
+        // Load existing lead details immediately
+        this.loadLeadData(this.leadId);
       }
     });
 
@@ -264,19 +286,8 @@ export class AddleadComponent implements OnInit {
 
     // 7. Campaigns (Silent load for background default)
     this.leadservice.getCampaigns().subscribe({
-      next: (data) => {
-        this.setFieldOptions('campaign', data, 'campaignName');
-        // If edit mode, load existing data after dropdowns are ready
-        if (this.isEditMode && this.leadId) {
-          this.loadLeadData(this.leadId);
-        }
-      },
-      error: (err) => {
-        console.warn('Failed to load campaigns:', err);
-        if (this.isEditMode && this.leadId) {
-          this.loadLeadData(this.leadId);
-        }
-      }
+      next: (data) => this.setFieldOptions('campaign', data, 'campaignName'),
+      error: (err) => console.warn('Failed to load campaigns:', err)
     });
   }
 
@@ -285,14 +296,25 @@ export class AddleadComponent implements OnInit {
       next: (data: LeadPayload) => {
         console.log('Loaded Lead Data:', data);
         this.originalLeadData = data;
+        
+        // Auto-detect closed/dropped leads and force read-only
+        if (data.leadStatus === 2 || data.leadStatus === 3) {
+          this.isReadOnly = true;
+          this.breadcrumbs = [
+            { label: 'Home', route: '/sales-manager-dashboard' },
+            { label: 'Closed Leads', route: '/salesmanager/closed-leads' },
+            { label: 'Lead ID - ' + this.leadId }
+          ];
+        }
+
         this.leadForm = {
           source: data.sourceName || '',
-          customer: data.customerId ? data.customerId.toString() : '',
+          customer: data.customerId || '',
           rapportWithCustomer: data.relationshipName || '',
-          contact1: data.contactId ? data.contactId.toString() : '',
-          contact2: '', // Not in DTO yet
+          contact1: data.contactId || '',
+          contact2: data.contact2Id || '',
           purchasePotentialRs: data.leadPurchasePotential ? data.leadPurchasePotential.toString() : '',
-          purchasePotential: '',
+          purchasePotential: data.leadCmdLine3 || '',
           siteReadiness: data.siteReadinessName || '',
           visitRequirement: data.leadVisitRequirement === 1 ? 'Yes' : 'No',
           resourceRequirement: data.leadResourceRequirement === 1 ? 'Yes' : 'No',
@@ -321,6 +343,7 @@ export class AddleadComponent implements OnInit {
         return { label, value };
       })
     ];
+    console.log(`Dropdown Options for field '${fieldName}':`, field.options);
     this.leadFields = [...this.leadFields];
   }
 
@@ -386,6 +409,7 @@ export class AddleadComponent implements OnInit {
     const payload: LeadPayload = {
       customerId: Number(formData.customer),
       contactId: Number(formData.contact1),
+      contact2Id: formData.contact2 ? Number(formData.contact2) : null,
       customerName: getCustomerName(formData.customer),
       contactFirstName: getContactFirstName(formData.contact1),
       sourceName: getLabel('source', formData.source),
@@ -399,6 +423,7 @@ export class AddleadComponent implements OnInit {
       leadResourceRequirement: formData.resourceRequirement === 'Yes' ? 1 : 0,
       leadCmdLine1: formData.commentLine1 || '',
       leadCmdLine2: formData.commentLine2 || '',
+      leadCmdLine3: formData.purchasePotential || '',
       leadStatus: 1,
       leadId: this.leadId || undefined
     };
@@ -500,6 +525,7 @@ export class AddleadComponent implements OnInit {
         const payload: LeadPayload = {
           customerId: Number(this.leadForm.customer),
           contactId: Number(this.leadForm.contact1),
+          contact2Id: this.leadForm.contact2 ? Number(this.leadForm.contact2) : null,
           customerName: getCustomerName(this.leadForm.customer),
           contactFirstName: getContactFirstName(this.leadForm.contact1),
           sourceName: getLabel('source', this.leadForm.source),
@@ -513,6 +539,7 @@ export class AddleadComponent implements OnInit {
           leadResourceRequirement: this.leadForm.resourceRequirement === 'Yes' ? 1 : 0,
           leadCmdLine1: this.leadForm.commentLine1 || '',
           leadCmdLine2: this.leadForm.commentLine2 || '',
+          leadCmdLine3: this.leadForm.purchasePotential || '',
           leadStatus: 3 // 3 represents Dropped
         };
 
@@ -536,5 +563,60 @@ export class AddleadComponent implements OnInit {
 
   onAddContact() {
     this.router.navigate(['/salesmanager/contact/add']);
+  }
+
+  onCustomerDetails(customerId: any): void {
+    console.log('Customer details clicked for customer ID:', customerId);
+    if (!customerId) {
+      alert('No customer selected');
+      return;
+    }
+    
+    // Find the customer details in our pre-loaded customersData
+    const customer = this.customersData.find(c => (c.customerId || c.id) == customerId);
+    if (customer) {
+      this.selectedCustomer = customer;
+      this.showCustomerDetailsModal = true;
+      console.log('Opening Customer Details Modal for:', customer);
+    } else {
+      alert('Customer details not found locally');
+    }
+  }
+
+  onCustomerAction2(customerId: any): void {
+    console.log('Customer action 2 clicked for customer ID:', customerId);
+    if (!customerId) {
+      alert('No customer selected');
+      return;
+    }
+    this.customerService.getInstallationBase(Number(customerId)).subscribe({
+      next: (records: any[]) => {
+        this.installationBaseDetails = records;
+        this.showInstallationBaseDetailsModal = true;
+        console.log('Loaded customer installation base for details popup:', this.installationBaseDetails);
+      },
+      error: (err) => {
+        console.error('Failed to load customer installation base details:', err);
+        this.installationBaseDetails = [];
+        this.showInstallationBaseDetailsModal = true;
+      }
+    });
+  }
+
+  closeInstallationBaseDetailsModal(): void {
+    this.showInstallationBaseDetailsModal = false;
+    this.installationBaseDetails = [];
+  }
+
+  closeCustomerDetailsModal(): void {
+    this.showCustomerDetailsModal = false;
+    this.selectedCustomer = null;
+  }
+
+  formatCustomerValue(val: any): string {
+    if (val === null || val === undefined || val === 0 || val === '0' || val === 'null' || val === 'NULL') {
+      return '';
+    }
+    return String(val).trim();
   }
 }

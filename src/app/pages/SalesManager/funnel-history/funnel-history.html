@@ -1,6 +1,12 @@
-<app-data-table
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
   title="Opportunity Status"
-  [breadcrumbs]="breadcrumbs"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<app-data-table
   [columns]="columns"
   [rows]="rows"
   [searchFields]="searchFields"
