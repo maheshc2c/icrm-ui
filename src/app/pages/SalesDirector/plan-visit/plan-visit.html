@@ -10,7 +10,7 @@
 [columns]="columns"
 [showImport]="true"
 [showAdd]="true"
-(search)="onSearch()"
+(searchChange)="onSearch($event)"
 [searchFields]="searchFields"
 (download)="onImport()"
 (add)="onAdd()"
@@ -23,3 +23,5 @@
 <!-- (deleteRow)="onDelete($event)" -->
 
 <!-- (search)="onSearch($event)" -->
+
+<!-- (searchChange)="onSearch($event)" -->

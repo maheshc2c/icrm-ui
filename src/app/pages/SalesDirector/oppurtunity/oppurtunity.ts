@@ -1,24 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Breadcrumb } from '../../../models/breadcrumb';
-import { SearchFieldConfig } from '../../../shared/search/search';
-import { Pageheader } from "../../../shared/pageheader/pageheader";
-import { Header } from "../../../layout/header/header";
-import { Sidebar } from "../../../layout/sidebar/sidebar";
-import { DataTable } from "../../../shared/data-table/data-table";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+import { Pageheader } from '../../../shared/pageheader/pageheader';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
+import { Header } from '../../../layout/header/header';
+import { DataTable } from '../../../shared/data-table/data-table';
+
+import { Breadcrumb } from '../../../models/breadcrumb';
+import { SearchFieldConfig } from '../../../shared/search/search';
+import { SalesDirectorService } from '../../../service/sales-director.service';
+import { OpportunityTableModel } from '../../../models/opportunity-table.model';
 
 @Component({
   selector: 'app-oppurtunity',
   standalone: true,
-  imports: [Pageheader, Header, Sidebar, DataTable, CommonModule, FormsModule],
+  imports: [Pageheader, Sidebar, DataTable, Header, CommonModule, FormsModule],
   templateUrl: './oppurtunity.html',
   styleUrls: ['./oppurtunity.css'],
 })
-export class Oppurtunity {
+export class Oppurtunity implements OnInit {
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private salesService: SalesDirectorService
+  ) {}
 
   headerTitle = 'Opportunities';
 
@@ -27,198 +34,79 @@ export class Oppurtunity {
     { label: 'Opportunity', route: '/salesdirector/opportunity' }
   ];
 
-  // ✅ Table Columns
   columns = [
     { header: 'Lead Details', field: 'leadDetails' },
-    { header: 'Product', field: 'product' },
+    { header: 'Product', field: 'productAndCategory' },
     { header: 'Qty', field: 'qty' },
-    { header: 'Value (Rs)', field: 'value' },
     { header: 'Stage', field: 'stage' },
     { header: 'Category', field: 'category' },
     { header: 'Probability', field: 'probability' },
-    { header: 'Life Time (Days)', field: 'lifetime' },
+    { header: 'Life Time (Days)', field: 'lifeTimeDays' },
+  
   ];
 
-  // ✅ Static Table Data
-  rows: any[] = [
-    {
-      id: 1,
-      leadDetails: 'ABC Pvt Ltd - Enquiry',
-      product: 'Machine A',
-      qty: 2,
-      value: 50000,
-      stage: 'Initial',
-      category: 'Hot',
-      probability: '70%',
-      lifetime: 10
-    },
-    {
-      id: 2,
-      leadDetails: 'XYZ Corp - Demo',
-      product: 'Machine B',
-      qty: 1,
-      value: 75000,
-      stage: 'Demo',
-      category: 'Warm',
-      probability: '50%',
-      lifetime: 7
-    },
-    {
-      id: 3,
-      leadDetails: 'Test Client - Follow-up',
-      product: 'Machine C',
-      qty: 5,
-      value: 120000,
-      stage: 'Negotiation',
-      category: 'Cold',
-      probability: '30%',
-      lifetime: 15
-    }
-  ];
+  rows: OpportunityTableModel[] = [];
+  fullRows: OpportunityTableModel[] = [];
 
-  // ✅ Search Fields (ALL FIXED WITH label)
   searchFields: SearchFieldConfig[] = [
-
-    { key: 'oppId', label: '', placeholder: 'Opp ID', type: 'text' },
-
     {
-      key: 'customer',
-      label: '',
-      placeholder: 'Select Customer',
-      type: 'select',
-      options: [
-        { label: 'ABC Pvt Ltd', value: '1' },
-        { label: 'XYZ Corp', value: '2' }
-      ]
-    },
-
-    {
-      key: 'productCategory',
-      label: '',
-      placeholder: 'Select Product Category',
-      type: 'select',
-      options: [
-        { label: 'Category A', value: 'A' },
-        { label: 'Category B', value: 'B' }
-      ]
-    },
-
-    {
-      key: 'stage',
-      label: '',
-      placeholder: 'Select Stage',
-      type: 'select',
-      options: [
-        { label: 'Initial', value: 'initial' },
-        { label: 'Demo', value: 'demo' },
-        { label: 'Negotiation', value: 'negotiation' }
-      ]
-    },
-
-    {
-      key: 'stage2',
-      label: '',
-      placeholder: 'Select Stage (Alt)',
-      type: 'select',
-      options: [
-        { label: 'Closed', value: 'closed' },
-        { label: 'Lost', value: 'lost' }
-      ]
-    },
-
-    {
-      key: 'category',
-      label: '',
-      placeholder: 'Select Category',
-      type: 'select',
-      options: [
-        { label: 'Hot', value: 'hot' },
-        { label: 'Warm', value: 'warm' },
-        { label: 'Cold', value: 'cold' }
-      ]
-    },
-
-    {
-      key: 'createdStart',
-      label: '',
-      placeholder: 'Opportunity Created Start Date',
-      type: 'date'
-    },
-
-    {
-      key: 'createdEnd',
-      label: '',
-      placeholder: 'Opportunity Created End Date',
-      type: 'date'
-    },
-
-    {
-      key: 'owner',
-      label: '',
-      placeholder: 'Select Owner',
-      type: 'select',
-      options: [
-        { label: 'John', value: 'john' },
-        { label: 'David', value: 'david' }
-      ]
-    },
-
-    {
-      key: 'region',
-      label: '',
-      placeholder: 'Select Region',
-      type: 'select',
-      options: [
-        { label: 'South', value: 'south' },
-        { label: 'North', value: 'north' }
-      ]
-    },
-
-    {
-      key: 'source',
-      label: '',
-      placeholder: 'Select Source of Lead',
-      type: 'select',
-      options: [
-        { label: 'Website', value: 'web' },
-        { label: 'Referral', value: 'ref' }
-      ]
-    },
-
-    {
-      key: 'orderStart',
-      label: '',
-      placeholder: 'Order Conclusion Start Date',
-      type: 'date'
-    },
-
-    {
-      key: 'orderEnd',
-      label: '',
-      placeholder: 'Order Conclusion End Date',
-      type: 'date'
-    },
-
-    {
-      key: 'searchAll',
-      label: '',
-      placeholder: 'Search All',
+      key: 'leadId',
+      label: 'Lead ID',
+      placeholder: 'Enter Lead ID',
       type: 'text'
-    },
-
-    {
-      key: 'searchText',
-      label: '',
-      placeholder: 'Select (Search by Text)',
-      type: 'select',
-      options: [
-        { label: 'Lead Name', value: 'lead' },
-        { label: 'Product', value: 'product' }
-      ]
     }
   ];
 
-  // ✅ Actions
+  ngOnInit(): void {
+    this.loadOpportunities();
+  }
+
+  // Load all records
+  private loadOpportunities(): void {
+    this.salesService.getOpportunityTable().subscribe({
+      next: (data: OpportunityTableModel[]) => {
+        this.fullRows = data || [];
+        this.rows = this.fullRows.map((row, index) => ({
+          ...row,
+          sno: index + 1
+        }));
+      },
+      error: (err) => {
+        console.error('Load opportunities failed:', err);
+        this.rows = [];
+        this.fullRows = [];
+      }
+    });
+  }
+
+  // Search by leadId
+  onSearch(keyword: string) {
+    if (!keyword || keyword.trim() === '') {
+      this.loadOpportunities();
+      return;
+    }
+
+    const leadId = Number(keyword);
+    if (isNaN(leadId)) {
+      alert('Please enter a valid Lead ID');
+      return;
+    }
+
+    this.salesService.getOpportunityTableByLeadId(leadId).subscribe({
+      next: (data: OpportunityTableModel[]) => {
+        this.fullRows = data || [];
+        this.rows = this.fullRows.map((row, index) => ({
+          ...row,
+          sno: index + 1
+        }));
+      },
+      error: (err) => {
+        console.error('Search failed:', err);
+        this.rows = [];
+      }
+    });
+  }
+
   onAdd() {
     this.router.navigate(['salesdirector/opportunity/add']);
   }
@@ -231,6 +119,28 @@ export class Oppurtunity {
     console.log('Delete:', row);
   }
 
-  onImport() {}
-  onSearch() {}
+ 
+onImport() {
+
+  if (!this.fullRows || this.fullRows.length === 0) {
+    alert('No data available');
+    return;
+  }
+
+  this.salesService.downloadOpp(this.fullRows).subscribe({
+    next: (blob: Blob) => {
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Oppurtunity.xlsx';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },
+    error: err => {
+      console.error('Download failed:', err);
+      alert(`Download failed: ${err.status}`);
+    }
+  });
+}
 }

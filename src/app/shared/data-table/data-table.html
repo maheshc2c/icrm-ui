@@ -2,14 +2,18 @@
 <main class="content">
 <div class="datatable-toolbar">
 
-  <app-search
-  [fields]="searchFields"
-  (searchChange)="onSearchFromChild($event)">
-</app-search>
+  @if (showSearch) {
+    <app-search
+      [fields]="searchFields"
+      (searchChange)="onSearchFromChild($event)">
+    </app-search>
+  }
   <app-button
-    [showSearch]="true"
+    [showSearch]="showSearch"
     [showImport]="showImport"
     [showAdd]="showAdd"
+    [showReset]="showReset"
+    (reset)="onResetClick()"
     (search)="onSearchClick()"
     (add)="add.emit()"
     (download)="download.emit()">
@@ -40,45 +44,97 @@
       </div>
     </td>
   </tr>
-}
- @else {
-    @for (row of showPagination ? paginatedRows : filteredRows; track detectKey(row, i); let i = $index) {
-      <tr>
-        <!-- S.NO -->
-        <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
+} @else {
+  @for (row of showPagination ? paginatedRows : filteredRows; track detectKey(row, i); let i = $index) {
+    <tr>
+      <!-- S.NO -->
+      <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
         <!-- DATA -->
         @for (col of columns; track col) {
-          <td>{{ row[col.field] }}</td>
+          <td>
+            @if (col.field === 'probability') {
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  [class.progress-hot]="row[col.field] >= 70"
+                  [class.progress-warm]="row[col.field] >= 40 && row[col.field] < 70"
+                  [class.progress-cold]="row[col.field] < 40"
+                  [style.width.%]="row[col.field] || 0">
+                  {{ row[col.field] }}%
+                </div>
+              </div>
+            } @else {
+              {{ row[col.field] }}
+            }
+          </td>
         }
 
         <!-- ACTIONS -->
         <td class="action-buttons">
-          <button
-            *ngIf="showViewButton"
-            class="btn btn-sm btn-info view-btn"
-            style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
-            (click)="view(row)">
-            <i class="fas fa-info-circle"></i>
-          </button>
+          @if (showViewButton) {
+            <button
+              class="btn btn-sm btn-info view-btn"
+              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
+              (click)="view(row)"
+              title="View">
+              <i class="fas fa-info-circle"></i>
+            </button>
+          }
 
-          <button
-            *ngIf="showEditButton"
-            class="btn btn-sm btn-warning edit-btn"
-            style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
-            (click)="edit(row)">
-            <i class="fas fa-edit"></i>
-          </button>
+          @if (showEdit && showEditButton) {
+            <button
+              class="btn btn-sm btn-warning edit-btn"
+              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
+              (click)="edit(row)"
+              title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+          }
 
-          <button
-            *ngIf="showDeleteButton"
-            class="btn btn-sm btn-danger delete-btn"
-            (click)="delete(row)">
-            <i class="fas fa-trash-alt"></i>
-          </button>
+          @if (showAssign) {
+            <button
+              class="btn btn-sm btn-info assign-btn"
+              style="background: #e0f2f1; color: #00796b; border: 1px solid #b2dfdb; margin-right: 8px;"
+              (click)="assign(row)"
+              title="Assign">
+              <i class="fas fa-user-plus"></i>
+            </button>
+          }
+
+          @if (showUpload) {
+            <button
+              class="btn btn-sm btn-success upload-btn"
+              style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; margin-right: 8px;"
+              (click)="upload(row)"
+              title="Upload Target">
+              <i class="fas fa-upload"></i>
+            </button>
+          }
+
+          @if (showDelete && showDeleteButton) {
+            @if (showStatusToggle && getRowStatus(row) !== undefined) {
+              <button
+                class="btn btn-sm"
+                [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
+                (click)="delete(row)"
+                [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
+                <i
+                  class="fas"
+                  [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+                </i>
+              </button>
+            } @else {
+              <button
+                class="btn btn-sm delete-btn"
+                (click)="delete(row)"
+                title="Delete">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            }
+          }
         </td>
       </tr>
     }
-
   }
 </tbody>
           </table>
@@ -86,27 +142,42 @@
       </div>
     </div>
     @if (showPagination) {
-    <div class="pagination-container">
+      <div class="pagination-container">
+        <div class="pagination-info">
+          Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
+        </div>
 
-      <button (click)="prevPage()" [disabled]="currentPage === 1">
-        Prev
-      </button>
+        <div class="pagination-right">
+          <div class="pagination-controls">
+            <button (click)="prevPage()" [disabled]="currentPage === 1">
+              Prev
+            </button>
 
-      <span>
-        Page {{ currentPage }} of {{ totalPages }}
-      </span>
+            @for (page of getVisiblePages(); track page) {
+              @if (page === '...') {
+                <span class="pagination-ellipsis">...</span>
+              } @else {
+                <button 
+                  [class.active]="currentPage === page" 
+                  (click)="goToPage(page)">
+                  {{ page }}
+                </button>
+              }
+            }
 
-      <button (click)="nextPage()" [disabled]="currentPage === totalPages">
-        Next
-      </button>
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+              Next
+            </button>
+          </div>
 
-      <!-- Page Size -->
-      <select (change)="changePageSize($any($event.target).value)">
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-      </select>
-    </div>
+          <!-- Page Size -->
+          <select (change)="changePageSize($any($event.target).value)">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
     }
   </div>
 </div>

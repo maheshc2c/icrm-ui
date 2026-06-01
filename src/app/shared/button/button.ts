@@ -17,8 +17,10 @@ export class Button {
   @Input() showAdd = true;
   @Input() showView = true;
   @Input() showRefresh = false;
+  @Input() showReset = false;
 
   @Output() search = new EventEmitter<void>();
+  @Output() reset = new EventEmitter<void>();
   @Output() download = new EventEmitter<void>();
   @Output() import = new EventEmitter<void>(); // (can remove later)
   @Output() add = new EventEmitter<void>();

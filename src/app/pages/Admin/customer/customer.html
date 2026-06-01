@@ -12,13 +12,23 @@
   [rows]="rows"
   [showImport]="true"
   [showAdd]="true"
+  [showReset]="true"
   [searchFields]="searchFields"
+  [totalElements]="totalElements"
+  [currentPage]="currentPage"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
   (search)="onSearch($event)"
+  (searchChange)="onSearchChange($event)"
   (download)="onImport()"
   (add)="onAdd()"
   (editRow)="onEdit($event)"
-  (deleteRow)="onDelete($event)">
-</app-data-table>
+  (deleteRow)="onDelete($event)"
+[showStatusToggle]="true"
+  [statusField]="'customerStatus'"
+  [trackByField]="'customerId'"
+  (reset)="onReset()">
 
+</app-data-table>
 
 <!-- [data]="customers" -->

@@ -55,6 +55,8 @@ export class Demo implements OnInit {
         this.rows = data.map((c: any, index: number) => ({
   sno: index + 1,
   demoProductDetailId: c.demoProductDetailId,
+  demoProductDetailStatus: c.demoProductDetailStatus,
+ 
 
   productName: c.productName ?? '-',
 
@@ -84,6 +86,42 @@ export class Demo implements OnInit {
       }
     });
   }
+
+
+    //actiavte and deactivate
+  //actiavte and deactivate
+onDelete(row: any) {
+ 
+  const detailId = row?.demoProductDetailId;
+ 
+  if (!detailId) {
+    return;
+  }
+ 
+  const status = Number(row?.demoProductDetailStatus);
+ 
+  const isActive = status === 1;
+ 
+  const apiCall = isActive
+    ? this.adminservice.deactivateDemo(detailId)
+    : this.adminservice.activateDemo(detailId);
+ 
+  apiCall.subscribe({
+    next: () => {
+ 
+      row.demoProductDetailStatus = isActive ? 2 : 1;
+ 
+      this.rows = [...this.rows];
+      this.fullRows = [...this.fullRows];
+ 
+    },
+ 
+    error: (err) => {
+      console.error('Status update failed', err);
+      alert('Failed to update status');
+    }
+  });
+}
 
   // ================= DROPDOWN BUILDER =================
   private buildDropdownOptions(
@@ -201,6 +239,8 @@ onSearch(filters: any): void {
 
         return {
           sno: index + 1,
+          demoProductDetailId: match?.demoProductDetailId ?? c.demoProductDetailId,
+          demoProductDetailStatus: match?.demoProductDetailStatus ?? c.demoProductDetailStatus,
 
           productName: c.product ?? '-',
           demoProductDetailSerialNumber: c.serialNo ?? '-',
@@ -229,9 +269,7 @@ onSearch(filters: any): void {
     this.router.navigate(['/admin/demo/edit', row.demoProductDetailId]);
   }
 
-  onDelete(row: any): void {
-    console.log(row);
-  }
+ 
 
   // ================= DOWNLOAD =================
   onImport(): void {

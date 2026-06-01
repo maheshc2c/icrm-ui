@@ -11,9 +11,8 @@
   [columns]="columns"
   [showImport]="true"
   [showAdd]="true"
+  (search)="onSearch($event)"
   [searchFields]="searchFields"
-
-  (search)="onSearch()"
   (download)="onImport()"
   (add)="onAdd()"
   (editRow)="onEdit($event)"

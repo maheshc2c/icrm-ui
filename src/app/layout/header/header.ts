@@ -1,4 +1,4 @@
-import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, OnInit, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterEvent } from '@angular/router';
 
@@ -16,6 +16,9 @@ export class Header implements OnInit {
   userId: string | null = null;
   firstName: string | null = null;
   lastName: string | null = null;
+  showRoleInfo = true;
+  showDropdown = false;
+  showSettingsDropdown = false;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
 private router: Router) {}
@@ -26,9 +29,25 @@ private router: Router) {}
       this.sub = localStorage.getItem('sub');
       this.firstName = localStorage.getItem('firstName');
       this.lastName = localStorage.getItem('lastName');
-      // this.userId = localStorage.getItem('userId');
+    }
+  }
 
+  onSwitchRoleClick(): void {
+    this.showDropdown = !this.showDropdown;
+    this.showSettingsDropdown = false;
+  }
 
+  onSettingsClick(): void {
+    this.showSettingsDropdown = !this.showSettingsDropdown;
+    this.showDropdown = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown')) {
+      this.showDropdown = false;
+      this.showSettingsDropdown = false;
     }
   }
 }

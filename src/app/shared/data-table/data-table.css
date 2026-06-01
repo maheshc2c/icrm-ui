@@ -194,12 +194,13 @@
 
 .pagination-container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 16px;
 
-  margin-top: 20px;
-  padding: 10px 14px;
+  margin-top: 14px;
+  padding: 12px 18px;
 
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -208,13 +209,32 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
+.pagination-info {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* Buttons */
 .pagination-container button {
-  padding: 6px 14px;
+  padding: 6px 12px;
   border-radius: 6px;
-  border: none;
-  background: #6d28d9;
-  color: #fff;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -223,21 +243,37 @@
 
 /* Hover */
 .pagination-container button:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  transform: none;
+}
+
+/* Active */
+.pagination-container button.active {
+  background: #6d28d9;
+  color: #ffffff;
+  border-color: #6d28d9;
+}
+
+.pagination-container button.active:hover {
   background: #5b21b6;
-  transform: translateY(-1px);
 }
 
 /* Disabled */
 .pagination-container button:disabled {
-  background: #d1d5db;
+  background: #f3f4f6;
+  color: #9ca3af;
+  border-color: #e5e7eb;
   cursor: not-allowed;
 }
 
-/* Page text */
-.pagination-container span {
+/* Ellipsis span */
+.pagination-ellipsis {
+  padding: 0 4px;
   font-size: 13px;
+  color: #9ca3af;
   font-weight: 500;
-  color: #374151;
+  user-select: none;
 }
 
 /* Select dropdown */
@@ -258,4 +294,97 @@
   outline: none;
   border-color: #6d28d9;
   box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.15);
+}
+
+
+/* =========================
+   PROBABILITY BAR
+========================= */
+
+.progress {
+  width: 100%;
+  height: 22px;
+  background: #ececec;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  transition: width 0.4s ease-in-out;
+  border-radius: 5px;
+}
+
+/* Green */
+.progress-hot {
+  background: linear-gradient(45deg, #5cb85c, #6ed36e);
+}
+
+/* Orange */
+.progress-warm {
+  background: linear-gradient(45deg, #f0ad4e, #ffbf66);
+}
+
+/* Red */
+.progress-cold {
+  background: linear-gradient(45deg, #d9534f, #ff6b6b);
+}
+
+
+/* ================= STATUS ACTION BUTTONS ================= */
+
+/* Active -> show deactivate button */
+.deactivate-btn {
+  background: #ffebee !important;
+  color: #d32f2f !important;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.deactivate-btn:hover {
+  background: #ffcdd2 !important;
+  transform: translateY(-1px);
+}
+
+/* Deactive -> show activate button */
+.activate-btn {
+  background: #e8f5e9 !important;
+  color: #2e7d32 !important;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.activate-btn:hover {
+  background: #c8e6c9 !important;
+  transform: translateY(-1px);
+}
+
+/* Status Badge */
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+/* Active badge */
+.status-active {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* Deactive badge */
+.status-deactive {
+  background: #ffebee;
+  color: #d32f2f;
 }
