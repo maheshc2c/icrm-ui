@@ -291,8 +291,18 @@ onResetClick() {
 @Input() showStatusToggle = false;
 @Output() deleteRow = new EventEmitter<any>();
 delete(row: any) {
-  console.log("Delete clicked:", row);
-  this.deleteRow.emit(row);
+
+  const status = this.getRowStatus(row);
+
+  const action = status === 1 ? 'Deactivate' : 'Activate';
+
+  const confirmed = confirm(
+    `Are you sure you want to ${action}?`
+  );
+
+  if (confirmed) {
+    this.deleteRow.emit(row);
+  }
 }
 
 @Input() statusField: string = 'status';
@@ -301,6 +311,7 @@ getRowStatus(row: any): number | undefined {
     ?? row?.specialityStatus
     ?? row?.status
     ?? row?.customerStatus
+    ?? row?.contactStatus
     ?? row?.demoProductDetailStatus
     ?? row?.leadStatus;
 }
