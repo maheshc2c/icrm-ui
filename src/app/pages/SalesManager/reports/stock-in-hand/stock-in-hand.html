@@ -1,0 +1,13 @@
+<app-data-table
+  [title]="'Stock In Hand Report'"
+  [breadcrumbs]="breadcrumbs"
+  [searchFields]="searchFields"
+  [columns]="columns"
+  [rows]="rows"
+  [showSerialNumber]="false"
+  [showAdd]="false"
+  [showImport]="true"
+  [showRefresh]="true"
+  (searchChange)="onSearch($event)"
+  (download)="onDownload()">
+</app-data-table>

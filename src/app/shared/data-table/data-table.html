@@ -1,7 +1,3 @@
-<!-- HEADER -->
-<app-header></app-header>
-<!-- SIDEBAR -->
-<app-sidebar></app-sidebar>
 <!-- MAIN -->
 <main class="content">
 <div class="datatable-toolbar">
@@ -40,20 +36,19 @@
             </thead>
  <tbody>
   @if (filteredRows.length === 0) {
-    <tr class="no-records-row">
-      <td [attr.colspan]="columns.length + 2">
-        <div class="no-records-content">
-          <i class="fas fa-search"></i>
-          {{ emptyMessage }}
-        </div>
-      </td>
-    </tr>
-  } @else {
-    @for (row of paginatedRows; track row.demoProductDetailId || row.customerId || row.competitorId || row.productId || row.qouteId || row.poId || row.id || $index; let i = $index) {
-      <tr>
-        <!-- S.NO -->
-        <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-
+  <tr class="no-records-row">
+    <td [attr.colspan]="columns.length + 2">
+      <div class="no-records-content">
+        <i class="fas fa-search"></i>
+        {{ emptyMessage }}
+      </div>
+    </td>
+  </tr>
+} @else {
+  @for (row of showPagination ? paginatedRows : filteredRows; track detectKey(row, i); let i = $index) {
+    <tr>
+      <!-- S.NO -->
+      <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
         <!-- DATA -->
         @for (col of columns; track col) {
           <td>
@@ -76,43 +71,67 @@
 
         <!-- ACTIONS -->
         <td class="action-buttons">
-          @if (showEdit) {
+          @if (showViewButton) {
+            <button
+              class="btn btn-sm btn-info view-btn"
+              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
+              (click)="view(row)"
+              title="View">
+              <i class="fas fa-info-circle"></i>
+            </button>
+          }
+
+          @if (showEdit && showEditButton) {
             <button
               class="btn btn-sm btn-warning edit-btn"
-              (click)="edit(row)">
+              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
+              (click)="edit(row)"
+              title="Edit">
               <i class="fas fa-edit"></i>
             </button>
           }
 
-          <!-- <button
-  class="btn btn-sm"
-  [ngClass]="row.specialityStatus === 1 ? 'deactivate-btn' : 'activate-btn'"
-  (click)="delete(row)"
-  [title]="row.specialityStatus === 1 ? 'Deactivate' : 'Activate'">
+          @if (showAssign) {
+            <button
+              class="btn btn-sm btn-info assign-btn"
+              style="background: #e0f2f1; color: #00796b; border: 1px solid #b2dfdb; margin-right: 8px;"
+              (click)="assign(row)"
+              title="Assign">
+              <i class="fas fa-user-plus"></i>
+            </button>
+          }
 
-  <i
-    class="fas"
-    [ngClass]="row.specialityStatus === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
-  </i>
-</button> -->
+          @if (showUpload) {
+            <button
+              class="btn btn-sm btn-success upload-btn"
+              style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; margin-right: 8px;"
+              (click)="upload(row)"
+              title="Upload Target">
+              <i class="fas fa-upload"></i>
+            </button>
+          }
 
- 
- @if (showStatusToggle && getRowStatus(row) !== undefined) {
-  <button
-    class="btn btn-sm"
-    [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
-    (click)="delete(row)"
-    [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
-    <i
-      class="fas"
-      [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
-    </i>
-  </button>
-} @else {
-  <button class="btn btn-sm delete-btn" (click)="delete(row)" title="Delete">
-    <i class="fas fa-trash-alt"></i>
-  </button>
-}
+          @if (showDelete && showDeleteButton) {
+            @if (showStatusToggle && getRowStatus(row) !== undefined) {
+              <button
+                class="btn btn-sm"
+                [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
+                (click)="delete(row)"
+                [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
+                <i
+                  class="fas"
+                  [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+                </i>
+              </button>
+            } @else {
+              <button
+                class="btn btn-sm delete-btn"
+                (click)="delete(row)"
+                title="Delete">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            }
+          }
         </td>
       </tr>
     }
@@ -122,46 +141,44 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="pagination-container">
-    <div class="pagination-info">
-      Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
-    </div>
+    @if (showPagination) {
+      <div class="pagination-container">
+        <div class="pagination-info">
+          Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
+        </div>
 
-    <div class="pagination-right">
-      <div class="pagination-controls">
-        <button (click)="prevPage()" [disabled]="currentPage === 1">
-          Prev
-        </button>
-
-        @for (page of getVisiblePages(); track page) {
-          @if (page === '...') {
-            <span class="pagination-ellipsis">...</span>
-          } @else {
-            <button 
-              [class.active]="currentPage === page" 
-              (click)="goToPage(page)">
-              {{ page }}
+        <div class="pagination-right">
+          <div class="pagination-controls">
+            <button (click)="prevPage()" [disabled]="currentPage === 1">
+              Prev
             </button>
-          }
-        }
 
-        <button (click)="nextPage()" [disabled]="currentPage === totalPages">
-          Next
-        </button>
+            @for (page of getVisiblePages(); track page) {
+              @if (page === '...') {
+                <span class="pagination-ellipsis">...</span>
+              } @else {
+                <button 
+                  [class.active]="currentPage === page" 
+                  (click)="goToPage(page)">
+                  {{ page }}
+                </button>
+              }
+            }
+
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+              Next
+            </button>
+          </div>
+
+          <!-- Page Size -->
+          <select (change)="changePageSize($any($event.target).value)">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </div>
       </div>
-
-      <!-- Page Size -->
-      <select (change)="changePageSize($any($event.target).value)">
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-      </select>
-    </div>
+    }
   </div>
-
-
-
-
 </div>
 </main>

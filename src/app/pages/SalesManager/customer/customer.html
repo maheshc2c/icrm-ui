@@ -1,19 +1,11 @@
-<app-header></app-header>
-<app-sidebar></app-sidebar>
-
-<app-pageheader
-  title="Open Leads"
-  [breadcrumbs]="breadcrumbs">
-</app-pageheader>
-
 <app-data-table
+  title="Manage Customer"
   [columns]="columns"
   [rows]="rows"
   [searchFields]="searchFields"
   (searchChange)="onSearch($event)"
   [showImport]="true"
   [showAdd]="true"
-  [showPagination]="false"
   (download)="onDownload()"
   (add)="onAdd()"
   (editRow)="onEdit($event)">

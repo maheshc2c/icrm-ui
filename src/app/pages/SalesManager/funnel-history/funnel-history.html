@@ -2,7 +2,7 @@
 <app-sidebar></app-sidebar>
 
 <app-pageheader
-  title="Open Leads"
+  title="Opportunity Status"
   [breadcrumbs]="breadcrumbs">
 </app-pageheader>
 
@@ -12,9 +12,7 @@
   [searchFields]="searchFields"
   (searchChange)="onSearch($event)"
   [showImport]="true"
-  [showAdd]="true"
-  [showPagination]="false"
+  [showAdd]="false"
   (download)="onDownload()"
-  (add)="onAdd()"
   (editRow)="onEdit($event)">
 </app-data-table>

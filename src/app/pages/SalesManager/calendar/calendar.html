@@ -1,0 +1,71 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="calendar-container">
+  <div class="card">
+    <div class="card-body">
+      <!-- User Selection -->
+      <div class="user-selection">
+        <select [(ngModel)]="selectedUser" class="form-control">
+          <option value="">Select User</option>
+          <option *ngFor="let user of users" [value]="user.value">{{ user.label }}</option>
+        </select>
+      </div>
+
+      <!-- Legend -->
+      <div class="calendar-legend">
+        <div class="legend-item">
+          <span class="legend-color visit-color"></span>
+          <span>⇒ Visit</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color demo-color"></span>
+          <span>⇒ Demo</span>
+        </div>
+      </div>
+
+      <!-- Calendar Header -->
+      <div class="calendar-header">
+        <h3>{{ currentMonth }}</h3>
+        <div class="calendar-nav">
+          <button class="btn btn-sm btn-primary" (click)="goToToday()">month</button>
+          <button class="btn btn-sm btn-secondary" (click)="goToToday()">week</button>
+          <button class="btn btn-sm btn-secondary" (click)="goToToday()">day</button>
+          <button class="btn btn-sm btn-secondary" (click)="goToToday()">today</button>
+          <button class="btn btn-sm btn-secondary" (click)="previousMonth()">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="btn btn-sm btn-secondary" (click)="nextMonth()">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Calendar Grid -->
+      <div class="calendar-grid">
+        <!-- Day Headers -->
+        <div class="calendar-day-header">Sun</div>
+        <div class="calendar-day-header">Mon</div>
+        <div class="calendar-day-header">Tue</div>
+        <div class="calendar-day-header">Wed</div>
+        <div class="calendar-day-header">Thu</div>
+        <div class="calendar-day-header">Fri</div>
+        <div class="calendar-day-header">Sat</div>
+
+        <!-- Calendar Days -->
+        <div *ngFor="let dayData of calendarDays" class="calendar-day">
+          <div class="day-number">{{ dayData.day }}</div>
+          <div *ngFor="let event of dayData.events" 
+               [ngClass]="{'event-visit': event.type === 'visit', 'event-demo': event.type === 'demo'}"
+               class="event-item">
+            {{ event.label }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
