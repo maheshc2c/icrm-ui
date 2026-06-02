@@ -12,8 +12,6 @@
         [title]="headerTitle"
         [fields]="contactFields"
         [model]="model"
-        [submitButtonText]="isEditMode ? 'Update' : 'Submit'"
-        [cancelButtonText]="'Cancel'"
         (formSubmit)="saveContact($event)"
         (cancelForm)="onCancel()">
       </app-form>

@@ -6,30 +6,8 @@
 <div class="form-wrapper">
   <div class="company-form-container">
 
-    <div class="form-header-block" style="background: #fff; border-bottom: none; padding-bottom: 0;">
-      <h4 class="form-title-heading" style="color: #333; font-weight: 600;">{{ title }}</h4>
-      <div class="header-action-buttons" style="display: flex; gap: 10px;">
-        <!-- New Top Buttons -->
-        <button *ngIf="showDetailsButton" type="button" class="action-header-btn" style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer;" (click)="clickDetails.emit()">
-          <i class="fas fa-info-circle"></i> Details
-        </button>
-        <button *ngIf="showDropLeadButton" type="button" class="action-header-btn" style="background: #f44336; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer;" (click)="clickDropLead.emit()">
-          <i class="fas fa-trash-alt"></i> Drop Lead
-        </button>
-
-        <!-- Installed Base Button -->
-        <button *ngIf="showInstalledBaseButton" type="button" class="action-header-btn" style="background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="clickInstalledBase.emit()">
-          <i class="fas fa-database"></i> Installed Base
-        </button>
-
-        <!-- Existing Add Buttons -->
-        <button *ngIf="showAddCustomerButton" type="button" class="action-header-btn btn-add-customer" (click)="addCustomer.emit()">
-          <i class="fas fa-plus"></i> Add Customer
-        </button>
-        <button *ngIf="showAddContactButton" type="button" class="action-header-btn btn-add-contact" (click)="addContact.emit()">
-          <i class="fas fa-plus"></i> Add Contact
-        </button>
-      </div>
+    <div class="form-header-block">
+      <h4 class="form-title-heading">{{ title }}</h4>
     </div>
 
     <div class="form-body-section">
@@ -46,11 +24,11 @@
 
             <!-- DATE -->
             <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
-              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly" />
+              [(ngModel)]="formData[field.name]" [name]="field.name" />
  
             <!-- DATETIME-LOCAL -->
             <input *ngIf="field.type === 'datetime-local'" type="datetime-local" class="company-text-input"
-              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly" />
+              [(ngModel)]="formData[field.name]" [name]="field.name" />
  
          
 
@@ -62,49 +40,37 @@
             <!-- TEXT / NUMBER / EMAIL -->
             <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
               [type]="field.type" class="company-text-input" [placeholder]="field.placeholder"
-              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly" />
+              [(ngModel)]="formData[field.name]" [name]="field.name" />
 
             <!-- DATE -->
             <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
-              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly" />
+              [(ngModel)]="formData[field.name]" [name]="field.name" />
 
               <!-- TIME -->
 <input *ngIf="field.type === 'time'"
   type="time"
   class="company-text-input"
   [(ngModel)]="formData[field.name]"
-  [name]="field.name" [disabled]="readOnly" />
+  [name]="field.name" />
 
             <!-- TEXTAREA -->
             <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder"
-              [(ngModel)]="formData[field.name]" [name]="field.name" [disabled]="readOnly">
+              [(ngModel)]="formData[field.name]" [name]="field.name">
             </textarea>
 
             <!-- STATIC DROPDOWN (🔥 FIXED) -->
-            <div [style.display]="field.name === 'customer' && readOnly ? 'flex' : 'block'" [style.gap]="'10px'" [style.align-items]="'center'" [style.width]="'100%'">
-              <select *ngIf="field.type === 'select'" 
-                [style.flex]="field.name === 'customer' && readOnly ? '1' : 'none'"
-                class="company-text-input" 
-                [(ngModel)]="formData[field.name]"
-                (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
-                [name]="field.name"
-                [disabled]="readOnly">
+            <select *ngIf="field.type === 'select'" 
+  class="company-text-input" 
+  [(ngModel)]="formData[field.name]"
+  (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
+  [name]="field.name">
 
-                <option value="">-- Select --</option>
-                <option *ngFor="let opt of field.options" [value]="opt.value">
-                  {{ opt.label }}
-                </option>
-              </select>
+  <option value="">-- Select --</option>
+  <option *ngFor="let opt of field.options" [value]="opt.value">
+    {{ opt.label }}
 
-              <div *ngIf="field.name === 'customer' && readOnly" style="display: flex; gap: 8px;">
-                <button type="button" (click)="clickCustomerDetails.emit(formData[field.name])" style="background: #2196f3; color: white; border: none; border-radius: 4px; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" title="Customer Details">
-                  <i class="fas fa-info"></i>
-                </button>
-                <button type="button" (click)="clickCustomerAction2.emit(formData[field.name])" style="background: #2196f3; color: white; border: none; border-radius: 4px; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" title="Folder Actions">
-                  <i class="fas fa-folder-open"></i>
-                </button>
-              </div>
-            </div>
+              </option>
+            </select>
 
             <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
             <select *ngIf="field.type === 'select-dynamic'" 
@@ -113,7 +79,7 @@
                 formData[field.name] = $event;
                 fieldChange.emit({ name: field.name, value: $event });
                 field.onChange?.($event)
-              " [name]="field.name" [disabled]="readOnly">
+              " [name]="field.name">
 
               <option value="">-- Select --</option>
 
@@ -135,7 +101,7 @@
                   (ngModelChange)="
                     formData[field.name][opt.value] = $event;
                     fieldChange.emit({ name: field.name, value: formData[field.name] })
-                  " [name]="field.name + '_' + opt.value" class="company-checkbox-input" [disabled]="readOnly" />
+                  " [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
                 <label [for]="field.name + '_' + opt.value" class="checkbox-label">
                   {{ opt.label }}
                 </label>
@@ -148,7 +114,7 @@
                 <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
                   [(ngModel)]="formData[field.name]" [name]="field.name"
                   (ngModelChange)="fieldChange.emit({ name: field.name, value: $event })"
-                  class="company-checkbox-input" [disabled]="readOnly" />
+                  class="company-checkbox-input" />
                 <label [for]="field.name + '_' + opt.value" class="checkbox-label">
                   {{ opt.label }}
                 </label>
@@ -160,14 +126,13 @@
 
 
         <!-- ACTION BUTTONS -->
-        <div class="form-action-buttons" *ngIf="!readOnly" style="display: flex; gap: 10px; align-items: center; justify-content: flex-end; flex-wrap: wrap;">
-
+        <div class="form-action-buttons">
           <button type="submit" class="submit-button">
-            <i class="fas fa-check"></i> {{ submitButtonText }}
+            <i class="fas fa-check"></i> Submit
           </button>
 
           <button type="button" class="cancel-button" (click)="cancel()">
-            <i class="fas fa-times"></i> {{ cancelButtonText }}
+            <i class="fas fa-times"></i> Cancel
           </button>
         </div>
 

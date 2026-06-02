@@ -11,8 +11,6 @@
     [title]="isEditMode ? 'Edit Visit' : 'Plan New Visit'"
     [fields]="visitFields"
     [model]="visitForm"
-    [submitButtonText]="isEditMode ? 'Update' : 'Submit'"
-    [cancelButtonText]="'Cancel'"
     (formSubmit)="onSubmit($event)"
     (cancelForm)="onCancel()">
   </app-form>
