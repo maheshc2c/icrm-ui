@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, SimpleChanges } from '@angular/core';
-import {  Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Header } from "../../layout/header/header";
 import { Sidebar } from "../../layout/sidebar/sidebar";
@@ -16,6 +15,8 @@ import { Search, SearchFieldConfig } from "../search/search";
 
 export class DataTable
 {
+  @ViewChild(Search) searchComponent?: Search;
+
   @Input() columns: any[] = [];   // column headers
   @Input() rows: any[] = [];      // data rows
   @Input() title = '';            // optional title
@@ -61,6 +62,8 @@ export class DataTable
   @Input() showSearch = true;
   @Input() showEdit = true;
   @Input() showDelete = true;
+  @Input() showView = false;
+  @Input() showDownload = true;
 
 
   /* ===== TOOLBAR EVENTS ===== */
@@ -101,6 +104,7 @@ onSearchClick() {
 
 @Input() searchFields: SearchFieldConfig[] = [];
 @Output() searchChange = new EventEmitter<any>();
+@Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
 
 
 onSearchFromChild(values: any) {
@@ -158,12 +162,19 @@ view(row: any) {
 
 //[pagination]
 @Input() totalElements: number | null = null;
+@Input() set totalItems(value: number | null) {
+  this.totalElements = value;
+}
+get totalItems(): number | null {
+  return this.totalElements;
+}
+@Input() showPagination = true;
 @Output() pageChange = new EventEmitter<number>();
 @Output() pageSizeChange = new EventEmitter<number>();
 
-  pageSize = 10;
+  @Input() pageSize = 10;
   @Input() currentPage = 1;
-totalPages = 1;
+@Input() totalPages = 1;
 paginatedRows: any[] = [];
 
 updatePagination() {
@@ -282,6 +293,9 @@ onResetClick() {
   this.searchText = '';
   this.pendingSearchValues = {};
   this.currentPage = 1;
+  if (this.searchComponent) {
+    this.searchComponent.clear();
+  }
   this.searchChange.emit({});
   this.reset.emit();
 }

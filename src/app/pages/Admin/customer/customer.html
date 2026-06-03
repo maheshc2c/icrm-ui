@@ -18,13 +18,12 @@
   [currentPage]="currentPage"
   (pageChange)="onPageChange($event)"
   (pageSizeChange)="onPageSizeChange($event)"
-  (search)="onSearch($event)"
   (searchChange)="onSearchChange($event)"
+  (fieldChange)="onFieldChange($event)"
   (download)="onImport()"
   (add)="onAdd()"
   (editRow)="onEdit($event)"
-  (deleteRow)="onDelete($event)"
-  (reset)="onReset()">
+  (deleteRow)="onDelete($event)">
 
 </app-data-table>
 

@@ -124,10 +124,14 @@ export class EditProduct implements OnInit {
         if (product) {
           console.log('Loaded Product:', product);
  
+          const hasSecondaryName = !!product.productSecondaryName;
+
           // Flatten the nested object to match form control names
           this.productData = {
             ...product,
-            productCode: product.productCode || '', // Now mapping real productCode
+            productCode: hasSecondaryName ? product.productSecondaryName : (product.productName || ''),
+            productName: hasSecondaryName ? (product.productName || '') : (product.productDescription || product.productName || ''),
+            productDescription: hasSecondaryName ? (product.productDescription || '') : '',
             productCategory: product.group?.category?.categoryName,
             productSegment: product.group?.groupName,
             productSubSystem: product.subCategory?.subcategoryName,
@@ -191,6 +195,7 @@ export class EditProduct implements OnInit {
       productId: this.productId,
       modifiedBy: localStorage.getItem('userId') || '1',
       // Ensure mapping is correct
+      productSecondaryName: formData.productCode, // Map productCode back to backend's productSecondaryName
       groupName: formData.productSegment, // Segment -> Group
       categoryName: formData.productCategory,
       subCategoryName: formData.productSubSystem,

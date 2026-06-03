@@ -1,0 +1,110 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs"></app-pageheader>
+
+<div class="view-user-wrapper">
+
+  <!-- Dynamic Loading Spinner -->
+  <div *ngIf="isUserLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Syncing profile details dynamically...</p>
+  </div>
+
+  <!-- Profile Details Content -->
+  <div *ngIf="!isUserLoading && userData" class="profile-card">
+    
+    <!-- Profile Banner -->
+    <div class="profile-banner">
+      <div class="user-meta">
+        <div class="avatar-circle">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="meta-text">
+          <h2>{{ userName }}</h2>
+          <span class="role-badge">{{ userData.roleName || 'N/A' }}</span>
+        </div>
+      </div>
+      
+      <!-- Quick Status -->
+      <div class="status-indicator">
+        <span class="status-dot" [class.active-dot]="userData.status !== 0"></span>
+        <span class="status-text">{{ userData.status === 0 ? 'INACTIVE' : 'ACTIVE' }}</span>
+      </div>
+    </div>
+
+    <!-- Main Grid Sections -->
+    <div class="profile-grid">
+      
+      <!-- Module 1: Basic Information -->
+      <div class="grid-section">
+        <div class="section-title">
+          <i class="fas fa-id-card"></i>
+          <span>Basic Profile</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>First Name</label>
+            <span class="value">{{ userData.firstName || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Last Name</label>
+            <span class="value">{{ userData.lastName || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Employee ID</label>
+            <span class="value">{{ userData.username || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Email Address</label>
+            <span class="value">{{ userData.email || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Mobile Number</label>
+            <span class="value">{{ userData.phoneNumber || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Alternate Mobile</label>
+            <span class="value">{{ userData.alternateNumber || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 2: Organization & Assignment -->
+      <div class="grid-section">
+        <div class="section-title">
+          <i class="fas fa-sitemap"></i>
+          <span>Organization & Scope</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Role</label>
+            <span class="value role-highlight">{{ userData.roleName || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>Branch</label>
+            <span class="value">{{ userData.branchName || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>City</label>
+            <span class="value">{{ userData.city || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <label>State</label>
+            <span class="value">{{ userData.state || 'N/A' }}</span>
+          </div>
+        </div>
+
+        <!-- Address details -->
+        <div class="full-width-item">
+          <label>Address Line 1</label>
+          <span class="value block-text">{{ userData.address1 || 'N/A' }}</span>
+        </div>
+        <div class="full-width-item">
+          <label>Address Line 2</label>
+          <span class="value block-text">{{ userData.address2 || 'N/A' }}</span>
+        </div>
+      </div>
+
+  </div>
+
+</div>

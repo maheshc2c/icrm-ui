@@ -172,7 +172,7 @@ activateCompetitor(id: number) {
     };
 
     const obs = this.http.post<any>(
-      `${this.baseUrl}/admin/search`,
+      `${this.baseUrl}/customer/search`,
       payload,
       { headers: this.getAuthHeaders() }
     );
@@ -210,7 +210,7 @@ activateCompetitor(id: number) {
     };
 
     return this.http.post<any>(
-      `${this.baseUrl}/admin/search`,
+      `${this.baseUrl}/customer/search`,
       payload,
       { headers: this.getAuthHeaders() }
     );
@@ -220,7 +220,7 @@ activateCompetitor(id: number) {
       `${this.baseUrl}/admin/search`,
       {
         headers: this.getAuthHeaders(),
-        params: { name: name } // ✅ MATCHES BACKEND
+        params: { name: name } 
       }
     );
   }
@@ -249,8 +249,23 @@ activateCompetitor(id: number) {
     };
 
     return this.http.post<any>(
-      `${this.baseUrl}/admin/search`,
+      `${this.baseUrl}/customer/search`,
       payload,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  // ================= CATEGORY & SUBCATEGORY DROPDOWNS (ManageCustomer) =================
+  getCategoryDropdown(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/customer/categories`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getSubCategoryDropdown(categoryId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/customer/subcategory/${categoryId}`,
       { headers: this.getAuthHeaders() }
     );
   }

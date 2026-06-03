@@ -76,17 +76,20 @@ export class Product implements OnInit {
         console.log("API Response:", products);
  
         this.fullRows = products;
-        this.rows = products.map((c, index) => ({
-          productId: c.productId ?? null,
-          category: c.group?.category?.categoryName ?? '',
-          segment: c.group?.groupName ?? '',
-          productName: c.productName ?? '',
-          productDescription: c.productDescription ?? '',
-          productType: typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || 'Standard' : c.productType ?? 'Standard',
-          productMrp: c.productMrp ?? 0,
-          productBasePrice: c.productBasePrice ?? 0,
-          productDp: c.productDp ?? 0
-        }));
+        this.rows = products.map((c, index) => {
+          const hasSecondaryName = !!c.productSecondaryName;
+          return {
+            productId: c.productId ?? null,
+            category: c.group?.category?.categoryName ?? '',
+            segment: c.group?.groupName ?? '',
+            productName: hasSecondaryName ? (c.productName ?? '') : (c.productDescription ?? c.productName ?? ''),
+            productDescription: hasSecondaryName ? (c.productDescription ?? '') : (c.productName ?? ''),
+            productType: typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || 'Standard' : c.productType ?? 'Standard',
+            productMrp: c.productMrp ?? 0,
+            productBasePrice: c.productBasePrice ?? 0,
+            productDp: c.productDp ?? 0
+          };
+        });
       },
       error: (err: any) => {
         console.error("Failed to load product list:", err);
@@ -118,23 +121,27 @@ export class Product implements OnInit {
 
     if (!searchName && !searchCategory && !searchSegment && !searchType) {
       // 🔁 Restore full list from fullRows
-      this.rows = this.fullRows.map((c) => ({
-        productId: c.productId ?? null,
-        category: c.group?.category?.categoryName ?? '',
-        segment: c.group?.groupName ?? '',
-        productName: c.productName ?? '',
-        productDescription: c.productDescription ?? '',
-        productType: typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || 'Standard' : c.productType ?? 'Standard',
-        productMrp: c.productMrp ?? 0,
-        productBasePrice: c.productBasePrice ?? 0,
-        productDp: c.productDp ?? 0
-      }));
+      this.rows = this.fullRows.map((c) => {
+        const hasSecondaryName = !!c.productSecondaryName;
+        return {
+          productId: c.productId ?? null,
+          category: c.group?.category?.categoryName ?? '',
+          segment: c.group?.groupName ?? '',
+          productName: hasSecondaryName ? (c.productName ?? '') : (c.productDescription ?? c.productName ?? ''),
+          productDescription: hasSecondaryName ? (c.productDescription ?? '') : (c.productName ?? ''),
+          productType: typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || 'Standard' : c.productType ?? 'Standard',
+          productMrp: c.productMrp ?? 0,
+          productBasePrice: c.productBasePrice ?? 0,
+          productDp: c.productDp ?? 0
+        };
+      });
       return;
     }
 
     // Filter fullRows locally
     const filtered = this.fullRows.filter(c => {
-      const productName = (c.productName || '').toLowerCase();
+      const hasSecondaryName = !!c.productSecondaryName;
+      const productName = (hasSecondaryName ? (c.productName ?? '') : (c.productDescription ?? c.productName ?? '')).toLowerCase();
       const category = (c.group?.category?.categoryName || '').toLowerCase();
       const segment = (c.group?.groupName || '').toLowerCase();
       const type = (typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || '' : c.productType ?? '').toLowerCase();
@@ -148,17 +155,20 @@ export class Product implements OnInit {
     });
 
     // Update table rows
-    this.rows = filtered.map((c) => ({
-      productId: c.productId ?? null,
-      category: c.group?.category?.categoryName ?? '',
-      segment: c.group?.groupName ?? '',
-      productName: c.productName ?? '',
-      productDescription: c.productDescription ?? '',
-      productType: typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || 'Standard' : c.productType ?? 'Standard',
-      productMrp: c.productMrp ?? 0,
-      productBasePrice: c.productBasePrice ?? 0,
-      productDp: c.productDp ?? 0
-    }));
+    this.rows = filtered.map((c) => {
+      const hasSecondaryName = !!c.productSecondaryName;
+      return {
+        productId: c.productId ?? null,
+        category: c.group?.category?.categoryName ?? '',
+        segment: c.group?.groupName ?? '',
+        productName: hasSecondaryName ? (c.productName ?? '') : (c.productDescription ?? c.productName ?? ''),
+        productDescription: hasSecondaryName ? (c.productDescription ?? '') : (c.productName ?? ''),
+        productType: typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || 'Standard' : c.productType ?? 'Standard',
+        productMrp: c.productMrp ?? 0,
+        productBasePrice: c.productBasePrice ?? 0,
+        productDp: c.productDp ?? 0
+      };
+    });
   }
 
   onImport(): void {

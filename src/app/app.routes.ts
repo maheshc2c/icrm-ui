@@ -65,6 +65,34 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
+        path: 'admin/manage-users',
+        loadComponent: () =>
+          import('./pages/Admin/manager-users/manage-users').then(m => m.ManageUsersComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/add-users',
+        loadComponent: () =>
+          import('./pages/Admin/manager-users/add-users/add-users').then(m => m.AddUsersComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/edit-user/:id',
+        loadComponent: () =>
+          import('./pages/Admin/manager-users/edit-users/edit-users').then(m => m.EditUsersComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/view-user/:id',
+        loadComponent: () =>
+          import('./pages/Admin/manager-users/view-user/view-user').then(m => m.ViewUserComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
         path: 'admin/user-target',
         loadComponent: () =>
           import('./pages/Admin/target-role/target-role').then(m => m.TargetRoleComponent),
@@ -101,7 +129,7 @@ export const routes: Routes = [
     import('./pages/Admin/competitor/add-competitor/add-competitor').then(m => m.AddCompetitor)
 },
 {
-  path: 'admin/customer',
+  path: 'customer',
   loadComponent: () =>
     import('./pages/Admin/customer/customer').then(m => m.Customer)
 },
@@ -619,9 +647,13 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/GlobalHead/manage-visits/edit-visit/edit-visit.component').then(m => m.EditVisitComponent),
 
       },
+      {
+        path: 'globalhead-dashboard/plan-demo',
+        loadComponent: () => import('./pages/GlobalHead/plan-demo/plan-demo.component').then(m => m.PlanDemoComponent),
+      },
 
-      
-      
+
+
       //Global Head Routes
 
         {
