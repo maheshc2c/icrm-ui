@@ -1,0 +1,14 @@
+<app-data-table
+  [title]="'Manage Demo'"
+  [breadcrumbs]="breadcrumbs"
+  [searchFields]="searchFields"
+  [columns]="columns"
+  [rows]="rows"
+  [showAdd]="true"
+  [showImport]="true"
+  [showRefresh]="false"
+  (searchChange)="onSearch($event)"
+  (add)="onAdd()"
+  (editRow)="onEdit($event)"
+  (download)="onDownload()">
+</app-data-table>

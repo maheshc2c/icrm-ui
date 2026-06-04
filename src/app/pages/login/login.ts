@@ -72,8 +72,11 @@ export class Login {
                 break;
 
               case 'Sales Engineer':
-                this.router.navigateByUrl('/sales-manager-dashboard');
-                break;
+              case 'Sales Manager':
+              case 'SALES_MANAGER':
+              case 'SALESMANAGER':
+              this.router.navigateByUrl('/sales-manager-dashboard');
+              break;
 
               case 'ADMINMARKETING':
                 this.router.navigateByUrl('/adminmarketingdashboard');

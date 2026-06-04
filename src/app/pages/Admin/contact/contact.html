@@ -9,7 +9,10 @@
 (editRow)="onEdit($event)"
   (deleteRow)="onDelete($event)"
 (download)="onImport()"
-    (search)="onSearch($event)">
+    (search)="onSearch($event)"
+    [showStatusToggle]="true"
+  [statusField]="'contactStatus'"
+  [trackByField]="'contactId'">
 </app-data-table>
 
 <!-- (search)="onSearch($event)" -->

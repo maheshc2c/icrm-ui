@@ -1,0 +1,411 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="isEditMode ? 'Open Leads / Lead ID - ' + leadId : 'Create a new Lead'"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<!-- Tabs Navigation -->
+<div class="form-wrapper-tabs" *ngIf="isEditMode" style="margin-left: 287px; padding: 24px 30px 0 30px; display: flex; justify-content: center;">
+  <div style="width: 100%; max-width: 1050px; display: flex; align-items: flex-end;">
+    <div *ngFor="let tab of tabs" 
+         style="padding: 10px 24px; cursor: pointer; font-size: 14px; font-weight: 500; border-top-left-radius: 6px; border-top-right-radius: 6px; border: 1px solid #dcdcdc; border-bottom: none; margin-right: 4px; position: relative; bottom: -1px; transition: all 0.2s;"
+         [style.background]="activeTab === tab ? '#fff' : '#f4f5f7'"
+         [style.color]="activeTab === tab ? '#2c3e50' : '#888'"
+         [style.z-index]="activeTab === tab ? '10' : '1'"
+         (click)="switchTab(tab)">
+      {{ tab }}
+    </div>
+  </div>
+</div>
+
+<!-- Top Action Buttons Bar -->
+<div style="display: flex; gap: 10px; margin-bottom: 15px; justify-content: flex-end; flex-wrap: wrap; margin-left: 287px; padding: 10px 30px 0 30px;">
+  <!-- Customer actions (shown if a customer is selected in the form) -->
+  <button *ngIf="leadForm.customer" type="button" class="btn" style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onCustomerDetails(leadForm.customer)">
+    <i class="fas fa-info-circle"></i> Customer Details
+  </button>
+  <button *ngIf="leadForm.customer" type="button" class="btn" style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onCustomerAction2(leadForm.customer)">
+    <i class="fas fa-folder-open"></i> Customer Folders
+  </button>
+
+  <!-- Sequence of events / Drop Lead (shown in edit mode) -->
+  <button *ngIf="isEditMode" type="button" class="btn" style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onDetails()">
+    <i class="fas fa-history"></i> Sequence of Events
+  </button>
+  <button *ngIf="isEditMode && !isReadOnly" type="button" class="btn" style="background: #f44336; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onDropLead()">
+    <i class="fas fa-trash-alt"></i> Drop Lead
+  </button>
+
+  <!-- Add buttons (shown in create/new mode) -->
+  <button *ngIf="!isEditMode && !isReadOnly" type="button" class="btn" style="background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onAddCustomer()">
+    <i class="fas fa-plus"></i> Add Customer
+  </button>
+  <button *ngIf="!isEditMode && !isReadOnly" type="button" class="btn" style="background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onAddContact()">
+    <i class="fas fa-plus"></i> Add Contact
+  </button>
+</div>
+
+<!-- Main Form Content (Shown for New Leads or when 'Lead Details' tab is active) -->
+<div [ngClass]="{'d-none': isEditMode && activeTab !== 'Lead Details'}" style="position: relative; z-index: 5;">
+  <div [style.pointer-events]="isReadOnly ? 'none' : 'auto'" [style.opacity]="isReadOnly ? '0.85' : '1'">
+    <app-form
+      [title]="isEditMode ? 'Lead Details' : 'Enter the Below Details'"
+      [fields]="leadFields"
+      [model]="leadForm"
+      (formSubmit)="onSubmit($event)"
+      (cancelForm)="onCancel()"
+      (fieldChange)="onFieldChange($event)">
+    </app-form>
+  </div>
+</div>
+
+<!-- Opportunities Tab -->
+<div class="container-fluid p-4" *ngIf="isEditMode && activeTab === 'Opportunities'" style="background: #fff; border: 1px solid #dee2e6; border-top: none; margin-left: 287px; width: calc(100% - 317px); min-height: 400px;">
+  
+  <!-- Add Opportunity Button -->
+  <div class="d-flex justify-content-end mb-3">
+    <button (click)="onAddOpportunity()" style="background: #2196f3; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+      <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Opportunity
+    </button>
+  </div>
+
+  <!-- Opportunities Table -->
+  <div class="table-responsive">
+    <table class="table table-hover" style="border: 1px solid #dee2e6; font-size: 13px;">
+      <thead style="background: #5b9bd5; color: #fff;">
+        <tr>
+          <th style="font-weight: 500; padding: 12px; border: 1px solid #dee2e6;">ID</th>
+          <th style="font-weight: 500; padding: 12px; border: 1px solid #dee2e6;">Product</th>
+          <th style="font-weight: 500; padding: 12px; border: 1px solid #dee2e6;">Quantity</th>
+          <th style="font-weight: 500; padding: 12px; border: 1px solid #dee2e6;">Stage</th>
+          <th style="font-weight: 500; padding: 12px; border: 1px solid #dee2e6;">Category</th>
+          <th style="font-weight: 500; padding: 12px; border: 1px solid #dee2e6;">Probability</th>
+          <th style="font-weight: 500; padding: 12px; border: 1px solid #dee2e6;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let opp of opportunities">
+          <td style="padding: 10px; border: 1px solid #dee2e6;">{{ opp.id }}</td>
+          <td style="padding: 10px; border: 1px solid #dee2e6;">{{ opp.productAndCategory }}</td>
+          <td style="padding: 10px; border: 1px solid #dee2e6;">{{ opp.qty }}</td>
+          <td style="padding: 10px; border: 1px solid #dee2e6;">{{ opp.stage }}</td>
+          <td style="padding: 10px; border: 1px solid #dee2e6;">
+            <span [style.background]="opp.category === 'Hot' ? '#ffcdd2' : opp.category === 'Warm' ? '#fff9c4' : '#c8e6c9'"
+                  [style.color]="opp.category === 'Hot' ? '#c62828' : opp.category === 'Warm' ? '#fbc02d' : '#2e7d32'"
+                  style="padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600;">
+              {{ opp.category }}
+            </span>
+          </td>
+          <td style="padding: 10px; border: 1px solid #dee2e6;">{{ opp.probability }}%</td>
+          <td style="padding: 10px; border: 1px solid #dee2e6;">
+             <button class="btn btn-sm btn-outline-primary me-1" title="View"><i class="fa fa-eye"></i></button>
+             <button class="btn btn-sm btn-outline-info" title="Edit"><i class="fa fa-edit"></i></button>
+          </td>
+        </tr>
+        <tr *ngIf="opportunities.length === 0">
+          <td colspan="7" class="text-center py-4 text-muted" style="background: #f9f9f9;">
+             <div style="padding: 10px; background: #e0e0e0; border-radius: 4px; display: inline-block; font-size: 11px; font-weight: 600;">No Records</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="container-fluid py-5 text-center bg-white rounded shadow-sm mx-3 my-3" style="width: auto;" *ngIf="isEditMode && activeTab === 'Quote'">
+  <h4 class="text-muted">Quote</h4>
+  <p>No quotes generated for this lead yet.</p>
+</div>
+
+<div class="container-fluid py-5 text-center bg-white rounded shadow-sm mx-3 my-3" style="width: auto;" *ngIf="isEditMode && activeTab === 'Contract Note'">
+  <h4 class="text-muted">Contract Note</h4>
+  <p>No contract notes available for this lead yet.</p>
+</div>
+
+<!-- Details Modal (Chronological Sequence of Events) -->
+<app-modal [show]="showDetailsModal" [title]="'Chronological Sequence of Events'" (closeDialog)="closeDetailsModal()">
+  <div style="padding: 15px; overflow-y: auto; max-height: 70vh; background: #fff;">
+    <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6; background: #fff;">
+      <thead style="background-color: #5b9bd5; color: white;">
+        <tr>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">S No</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">Event</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">Date</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">End Date</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">User</th>
+          <th style="padding: 8px; border: 1px solid #dee2e6; font-weight: 600; text-align: center; background-color: #5b9bd5; color: #fff;">Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="originalLeadData">
+          <!-- Row 1: Created -->
+          <tr style="background-color: #fff;">
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">1</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: left; color: #333; background: #fff;">Lead Created</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">{{ (originalLeadData.leadCreatedTime | date:'yyyy-MM-dd HH:mm:ss') || 'N/A' }}</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">NA</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">{{ originalLeadData.username || 'System' }}</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; color: #333; background: #fff;"></td>
+          </tr>
+          <!-- Row 2: Approved (If available) -->
+          <tr *ngIf="originalLeadData.leadStatus && originalLeadData.leadStatus >= 2" style="background-color: #fff;">
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">2</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: left; color: #333; background: #fff;">Lead Approved</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">{{ (originalLeadData.leadModifiedTime | date:'yyyy-MM-dd HH:mm:ss') || 'N/A' }}</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">NA</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; text-align: center; color: #333; background: #fff;">{{ originalLeadData.username || 'System' }}</td>
+            <td style="padding: 8px; border: 1px solid #dee2e6; color: #333; background: #fff;"></td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <div style="padding: 10px 15px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; background: #fff;">
+    <button (click)="closeDetailsModal()" style="padding: 4px 20px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; color: #333; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;">
+      Ok
+    </button>
+  </div>
+</app-modal>
+
+<!-- Customer Details Modal -->
+<app-modal [show]="showCustomerDetailsModal" [title]="'Customer Details'" size="lg" (closeDialog)="closeCustomerDetailsModal()">
+  <style>
+    .customer-modal-container {
+      padding: 10px 15px;
+      color: #334155;
+    }
+    .customer-modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 30px;
+      row-gap: 20px;
+    }
+    .customer-modal-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .customer-modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .customer-modal-label {
+      font-weight: 600;
+      font-size: 12.5px;
+      color: #475569;
+    }
+    .customer-modal-input {
+      width: 100%;
+      height: 38px;
+      padding: 8px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 13.5px;
+      transition: all 0.2s;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .customer-modal-input:disabled {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #475569;
+      cursor: not-allowed;
+    }
+    .customer-modal-textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 13.5px;
+      resize: none;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .customer-modal-textarea:disabled {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #475569;
+      cursor: not-allowed;
+    }
+  </style>
+
+  <div class="customer-modal-container">
+    <div class="customer-modal-grid">
+      
+      <!-- Column 1 -->
+      <div class="customer-modal-col">
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Customer Name</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerName)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Salutation</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerSalutation)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Category</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerCategory?.customerCategoryName)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Email</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerEmail)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Fax</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerFax)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">City</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.locations?.[0]?.locationName)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Pincode</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerPincode)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">TAN</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerTan)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Address Line 1</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerAddress1)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Address Line 3</label>
+          <textarea class="customer-modal-textarea" disabled>{{ formatCustomerValue(selectedCustomer?.customerAddress3) }}</textarea>
+        </div>
+      </div>
+
+      <!-- Column 2 -->
+      <div class="customer-modal-col">
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Customer Type</label>
+          <input type="text" [value]="selectedCustomer?.customerType === 1 ? 'Speciality' : selectedCustomer?.customerType === 2 ? 'General' : 'Speciality'" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Department</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerDepartment)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Sub Category</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.subCategory?.subcategoryName)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Telephone</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerTelephone)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Mobile</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerMobile)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Website</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerWebsite)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">PAN</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerPan)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">TIN</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerTin)" class="customer-modal-input" disabled />
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Address Line 2</label>
+          <textarea class="customer-modal-textarea" disabled>{{ formatCustomerValue(selectedCustomer?.customerAddress2) }}</textarea>
+        </div>
+        <div class="customer-modal-field">
+          <label class="customer-modal-label">Landmark</label>
+          <input type="text" [value]="formatCustomerValue(selectedCustomer?.customerLandmark)" class="customer-modal-input" disabled />
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div style="padding: 15px 24px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; background: #fff;">
+    <button (click)="closeCustomerDetailsModal()" style="padding: 7px 22px; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 13.5px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
+      Close
+    </button>
+  </div>
+</app-modal>
+
+<!-- Customer Installation Base Details Modal -->
+<app-modal [show]="showInstallationBaseDetailsModal" [title]="'Customers Installation Base'" size="xl" (closeDialog)="closeInstallationBaseDetailsModal()">
+  <style>
+    .install-details-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #fff;
+    }
+    .install-details-table th {
+      background: #5b9bd5;
+      color: white;
+      font-weight: 500;
+      padding: 10px;
+      border: 1px solid #dee2e6;
+      text-align: center;
+    }
+    .install-details-table td {
+      padding: 10px;
+      border: 1px solid #dee2e6;
+      text-align: center;
+      color: #333;
+      background: #fff;
+    }
+    .no-records-row {
+      background: #f9f9f9;
+    }
+    .no-records-box {
+      padding: 6px 12px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #333;
+    }
+  </style>
+
+  <div style="padding: 15px; overflow-y: auto; max-height: 70vh; background: #fff;">
+    <table class="install-details-table">
+      <thead>
+        <tr>
+          <th>Manufacturer</th>
+          <th>ProducManufacturer/Model</th>
+          <th>Quantity</th>
+          <th>Make</th>
+          <th>Year Of Purchase</th>
+          <th>Replacement Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of installationBaseDetails">
+          <td>{{ row.competitor || 'N/A' }}</td>
+          <td>{{ row.productModel || 'N/A' }}</td>
+          <td>{{ row.quantity !== null && row.quantity !== undefined ? row.quantity : 'N/A' }}</td>
+          <td>{{ row.make || 'N/A' }}</td>
+          <td>{{ row.yearOfPurchase || 'N/A' }}</td>
+          <td>{{ row.replacementYear || 'N/A' }}</td>
+        </tr>
+        <tr *ngIf="installationBaseDetails.length === 0" class="no-records-row">
+          <td colspan="6" class="text-center py-4" style="padding: 20px; background: #fdfdfd;">
+            <div class="no-records-box">No records</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="padding: 15px 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; background: #fff;">
+    <button type="button" (click)="closeInstallationBaseDetailsModal()" style="padding: 7px 22px; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer; font-size: 13.5px; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
+      Close
+    </button>
+  </div>
+</app-modal>
+
+
