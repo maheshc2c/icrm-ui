@@ -5,7 +5,8 @@
   @if (showSearch) {
     <app-search
       [fields]="searchFields"
-      (searchChange)="onSearchFromChild($event)">
+      (searchChange)="onSearchFromChild($event)"
+      (fieldChange)="fieldChange.emit($event)">
     </app-search>
   }
   <app-button
@@ -13,6 +14,7 @@
     [showImport]="showImport"
     [showAdd]="showAdd"
     [showReset]="showReset"
+    [showDownload]="showDownload"
     (reset)="onResetClick()"
     (search)="onSearchClick()"
     (add)="add.emit()"
@@ -71,17 +73,16 @@
 
         <!-- ACTIONS -->
         <td class="action-buttons">
-          @if (showViewButton) {
+          @if (showView) {
             <button
               class="btn btn-sm btn-info view-btn"
-              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
               (click)="view(row)"
               title="View">
-              <i class="fas fa-info-circle"></i>
+              <i class="fas fa-eye"></i>
             </button>
           }
 
-          @if (showEdit && showEditButton) {
+          @if (showEdit) {
             <button
               class="btn btn-sm btn-warning edit-btn"
               style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
@@ -93,10 +94,9 @@
 
           @if (showAssign) {
             <button
-              class="btn btn-sm btn-info assign-btn"
-              style="background: #e0f2f1; color: #00796b; border: 1px solid #b2dfdb; margin-right: 8px;"
+              class="btn btn-sm btn-primary assign-btn"
               (click)="assign(row)"
-              title="Assign">
+              title="Assign Target">
               <i class="fas fa-user-plus"></i>
             </button>
           }
@@ -141,44 +141,48 @@
         </div>
       </div>
     </div>
-    @if (showPagination) {
-      <div class="pagination-container">
-        <div class="pagination-info">
-          Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
-        </div>
-
-        <div class="pagination-right">
-          <div class="pagination-controls">
-            <button (click)="prevPage()" [disabled]="currentPage === 1">
-              Prev
-            </button>
-
-            @for (page of getVisiblePages(); track page) {
-              @if (page === '...') {
-                <span class="pagination-ellipsis">...</span>
-              } @else {
-                <button 
-                  [class.active]="currentPage === page" 
-                  (click)="goToPage(page)">
-                  {{ page }}
-                </button>
-              }
-            }
-
-            <button (click)="nextPage()" [disabled]="currentPage === totalPages">
-              Next
-            </button>
-          </div>
-
-          <!-- Page Size -->
-          <select (change)="changePageSize($any($event.target).value)">
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
-        </div>
-      </div>
-    }
   </div>
+  @if (showPagination) {
+    <div class="pagination-container">
+      <div class="pagination-info">
+        Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
+      </div>
+
+      <div class="pagination-right">
+        <div class="pagination-controls">
+          <button (click)="prevPage()" [disabled]="currentPage === 1">
+            Prev
+          </button>
+
+          @for (page of getVisiblePages(); track page) {
+            @if (page === '...') {
+              <span class="pagination-ellipsis">...</span>
+            } @else {
+              <button 
+                [class.active]="currentPage === page" 
+                (click)="goToPage(page)">
+                {{ page }}
+              </button>
+            }
+          }
+
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+            Next
+          </button>
+        </div>
+
+        <!-- Page Size -->
+        <select (change)="changePageSize($any($event.target).value)">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+  }
+
+
+
+
 </div>
 </main>

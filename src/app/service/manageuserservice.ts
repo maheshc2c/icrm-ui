@@ -39,8 +39,16 @@ export class ManageUserService {
     if (!this.usersCache$) {
       const headers = this.getAuthHeaders();
       this.usersCache$ = this.http
-        .get<SuperAdminManageUser[]>(`${this.baseUrl}/superadmin/view-adminuser`, { headers })
-        .pipe(shareReplay(1));
+        .get<any>(`${this.baseUrl}/superadmin/view-adminuser?size=100000`, { headers })
+        .pipe(
+          map(res => {
+            if (Array.isArray(res)) return res;
+            if (res && Array.isArray(res.content)) return res.content;
+            if (res && Array.isArray(res.data)) return res.data;
+            return [];
+          }),
+          shareReplay(1)
+        );
     }
     return this.usersCache$;
   }

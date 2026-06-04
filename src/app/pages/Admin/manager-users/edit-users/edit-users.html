@@ -1,0 +1,441 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs"></app-pageheader>
+
+<div class="edit-user-wrapper">
+
+  <!-- ── Dynamic Sync Banner ────────────────────────────────── -->
+  <div *ngIf="isUserLoading" class="sync-banner">
+    <div class="mini-spinner"></div>
+    <span>Syncing user details dynamically...</span>
+  </div>
+
+  <!-- ── Main Content ────────────────────────────────────── -->
+  <div class="edit-user-content">
+
+    <!-- ══ EDIT USER CARD CONTAINER ════════════════════════ -->
+    <div *ngIf="!activePanel" class="edit-card-container">
+      <div class="edit-card-header">
+        <i class="fas fa-pencil-alt pencil-icon"></i>
+        <span class="heading-text">Edit User</span>
+      </div>
+      <div class="edit-card-body">
+        
+        <!-- ══ CARD GRID ══════════════════════════════════════ -->
+        <div class="cards-grid">
+
+          <!-- Card 1 – User Details -->
+          <button
+            class="action-card card-user-details"
+            [class.card-active]="activePanel === 'userDetails'"
+            (click)="openPanel('userDetails')"
+            type="button">
+            <i class="fas fa-user card-icon"></i>
+            <span class="card-label">User Details</span>
+          </button>
+
+          <!-- Card 2 – Change Role -->
+          <button
+            class="action-card card-change-role"
+            [class.card-active]="activePanel === 'changeRole'"
+            (click)="openPanel('changeRole')"
+            type="button">
+            <i class="fas fa-cogs card-icon"></i>
+            <span class="card-label">Change Role</span>
+          </button>
+
+          <!-- Card 3 – Locations -->
+          <button
+            class="action-card card-locations"
+            [class.card-active]="activePanel === 'locations'"
+            (click)="openPanel('locations')"
+            type="button">
+            <i class="fas fa-map-marker-alt card-icon"></i>
+            <span class="card-label">Locations</span>
+          </button>
+
+          <!-- Card 4 – Products -->
+          <button
+            class="action-card card-products"
+            [class.card-active]="activePanel === 'products'"
+            (click)="openPanel('products')"
+            type="button">
+            <i class="fas fa-gavel card-icon"></i>
+            <span class="card-label">Products</span>
+          </button>
+
+        </div><!-- /cards-grid -->
+
+      </div>
+    </div><!-- /edit-card-container -->
+
+    <!-- ══ PANEL: User Details ════════════════════════════ -->
+    <div *ngIf="activePanel === 'userDetails'" class="panel-container">
+      <div class="panel-header panel-header-user">
+        <i class="fas fa-user"></i>
+        <span>User Details</span>
+        <button class="panel-close" (click)="closePanel()" type="button">✕</button>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="isUserLoading" class="panel-loading-state">
+          <div class="spinner"></div>
+          <p>Syncing user details...</p>
+        </div>
+        <form *ngIf="!isUserLoading" (ngSubmit)="saveUserDetails()">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name <span class="req">*</span></label>
+              <input id="firstName" name="firstName" type="text" class="form-control"
+                [(ngModel)]="userData.firstName" placeholder="First name" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input id="lastName" name="lastName" type="text" class="form-control"
+                [(ngModel)]="userData.lastName" placeholder="Last name">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email Address <span class="req">*</span></label>
+              <input id="email" name="email" type="email" class="form-control"
+                [(ngModel)]="userData.email" placeholder="Email address" required>
+            </div>
+            <div class="form-group">
+              <label for="phoneNumber">Mobile Number</label>
+              <input id="phoneNumber" name="phoneNumber" type="tel" class="form-control"
+                [(ngModel)]="userData.phoneNumber" placeholder="Mobile number">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="username">Employee ID <span class="req">*</span></label>
+              <input id="username" name="username" type="text" class="form-control"
+                [(ngModel)]="userData.username" placeholder="Employee ID" required>
+            </div>
+            <div class="form-group">
+              <label for="alternateNumber">Alternate Number</label>
+              <input id="alternateNumber" name="alternateNumber" type="tel" class="form-control"
+                [(ngModel)]="userData.alternateNumber" placeholder="Alternate mobile">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="branchName">Branch</label>
+              <select id="branchName" name="branchName" class="form-control"
+                [(ngModel)]="userData.branchName">
+                <option value="">-- Select Branch --</option>
+                <option *ngFor="let b of branches" [value]="b">{{ b }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input id="city" name="city" type="text" class="form-control"
+                [(ngModel)]="userData.city" placeholder="City">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="address1">Address Line 1</label>
+              <textarea id="address1" name="address1" class="form-control"
+                [(ngModel)]="userData.address1" rows="2" placeholder="Address line 1"></textarea>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="address2">Address Line 2</label>
+              <textarea id="address2" name="address2" class="form-control"
+                [(ngModel)]="userData.address2" rows="2" placeholder="Address line 2"></textarea>
+            </div>
+          </div>
+
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn-cancel" (click)="closePanel()">Cancel</button>
+            <button type="submit" class="btn btn-save" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Saving…' : 'Save User Details' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div><!-- /panel userDetails -->
+
+    <!-- ══ PANEL: Change Role ══════════════════════════════ -->
+    <div *ngIf="activePanel === 'changeRole'" class="panel-container">
+      <div class="panel-header panel-header-role">
+        <i class="fas fa-cogs"></i>
+        <span>Change Role</span>
+        <button class="panel-close" (click)="closePanel()" type="button">✕</button>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="isUserLoading" class="panel-loading-state">
+          <div class="spinner"></div>
+          <p>Syncing role details...</p>
+        </div>
+        <div *ngIf="!isUserLoading">
+          <!-- Current role badge -->
+          <div class="current-info">
+            <span class="info-label">Current Role:</span>
+            <span class="info-badge badge-role">{{ userData.roleName || 'Not assigned' }}</span>
+          </div>
+
+          <form (ngSubmit)="saveRole()">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="roleName">Select New Role <span class="req">*</span></label>
+              <select id="roleName" name="roleName" class="form-control"
+                [(ngModel)]="userData.roleName">
+                <option value="">-- Select Role --</option>
+                <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn-cancel" (click)="closePanel()">Cancel</button>
+            <button type="submit" class="btn btn-save btn-role" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Saving…' : 'Update Role' }}
+            </button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div><!-- /panel changeRole -->
+
+    <!-- ══ PANEL: Locations ════════════════════════════════ -->
+    <div *ngIf="activePanel === 'locations'" class="panel-container">
+      <div class="panel-header panel-header-location">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Locations</span>
+        <button class="panel-close" (click)="closePanel()" type="button">✕</button>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="isUserLoading" class="panel-loading-state">
+          <div class="spinner"></div>
+          <p>Syncing location details...</p>
+        </div>
+        <div *ngIf="!isUserLoading">
+          <!-- Current location info -->
+          <div class="current-info" *ngIf="userData.roleName">
+            <span class="info-label">Role:</span>
+            <span class="info-badge badge-location">{{ userData.roleName }}</span>
+            <span class="info-label" style="margin-left:12px;">Location Mode:</span>
+            <span class="info-badge badge-location">{{ locationMode | titlecase }}</span>
+          </div>
+
+          <form (ngSubmit)="saveLocations()">
+
+          <!-- ── WORLD MODE ── -->
+          <ng-container *ngIf="locationMode === 'world'">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="selWorld">Assign World <span class="req">*</span></label>
+                <select id="selWorld" name="selWorld" class="form-control"
+                  [(ngModel)]="selWorld" (ngModelChange)="onWorldChange($event)">
+                  <option value="">-- Select World --</option>
+                  <option *ngFor="let w of worldOptions" [value]="w">{{ w }}</option>
+                </select>
+              </div>
+            </div>
+            <p class="hint-text">
+              <i class="fas fa-info-circle"></i>
+              This role has access to all locations under the selected World.
+            </p>
+          </ng-container>
+
+          <!-- ── GEO MODE ── -->
+          <ng-container *ngIf="locationMode === 'geo'">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="selGeoOnly">Assign Geo <span class="req">*</span></label>
+                <select id="selGeoOnly" name="selGeoOnly" class="form-control"
+                  [(ngModel)]="selGeo" (ngModelChange)="onGeoChange($event)">
+                  <option value="">-- Select Geo --</option>
+                  <option *ngFor="let g of geoOptions" [value]="g.locationName">{{ g.locationName }}</option>
+                </select>
+              </div>
+            </div>
+            <p class="hint-text">
+              <i class="fas fa-info-circle"></i>
+              This role operates at Geo level. Select one Geo to assign.
+            </p>
+          </ng-container>
+
+          <!-- ── CASCADE MODE ── -->
+          <ng-container *ngIf="locationMode === 'cascade'">
+
+            <!-- Geo -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="selGeoCascade">Assign Geo</label>
+                <select id="selGeoCascade" name="selGeoCascade" class="form-control"
+                  [(ngModel)]="selGeo" (ngModelChange)="onGeoChange($event)">
+                  <option value="">-- Select Geo --</option>
+                  <option *ngFor="let g of geoOptions" [value]="g.locationName">{{ g.locationName }}</option>
+                </select>
+              </div>
+              <!-- Country -->
+              <div class="form-group" *ngIf="countryOptions.length">
+                <label for="selCountry">Assign Country</label>
+                <select id="selCountry" name="selCountry" class="form-control"
+                  [(ngModel)]="selCountry" (ngModelChange)="onCountryChange($event)">
+                  <option value="">-- Select Country --</option>
+                  <option *ngFor="let c of countryOptions" [value]="c.locationName">{{ c.locationName }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row" *ngIf="regionOptions.length">
+              <!-- Region -->
+              <div class="form-group">
+                <label for="selRegion">Assign Region</label>
+                <select id="selRegion" name="selRegion" class="form-control"
+                  [(ngModel)]="selRegion" (ngModelChange)="onRegionChange($event)">
+                  <option value="">-- Select Region --</option>
+                  <option *ngFor="let r of regionOptions" [value]="r.locationName">{{ r.locationName }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- States (checkboxes) -->
+            <div class="form-row" *ngIf="stateOptions.length">
+              <div class="form-group full-width">
+                <label>Assign States</label>
+                <div class="checkbox-list">
+                  <div class="checkbox-item" *ngFor="let s of stateOptions">
+                    <input type="checkbox" [id]="'state_' + s.locationName"
+                      [checked]="selStates.includes(s.locationName)"
+                      (change)="onStateCheck($event, s.locationName)">
+                    <label [for]="'state_' + s.locationName">{{ s.locationName }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Districts (checkboxes) -->
+            <div class="form-row" *ngIf="districtOptions.length">
+              <div class="form-group full-width">
+                <label>Assign Districts</label>
+                <div class="checkbox-list">
+                  <div class="checkbox-item" *ngFor="let d of districtOptions">
+                    <input type="checkbox" [id]="'dist_' + d.locationName"
+                      [checked]="selDistricts.includes(d.locationName)"
+                      (change)="onDistrictCheck($event, d.locationName)">
+                    <label [for]="'dist_' + d.locationName">{{ d.locationName }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cities (checkboxes) -->
+            <div class="form-row" *ngIf="cityOptions.length">
+              <div class="form-group full-width">
+                <label>Assign Cities</label>
+                <div class="checkbox-list">
+                  <div class="checkbox-item" *ngFor="let c of cityOptions">
+                    <input type="checkbox" [id]="'city_' + c.locationName"
+                      [checked]="selCities.includes(c.locationName)"
+                      (change)="onCityCheck($event, c.locationName)">
+                    <label [for]="'city_' + c.locationName">{{ c.locationName }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </ng-container><!-- /cascade -->
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn-cancel" (click)="closePanel()">Cancel</button>
+            <button type="submit" class="btn btn-save btn-location" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Saving…' : 'Save Locations' }}
+            </button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div><!-- /panel locations -->
+
+    <!-- ══ PANEL: Products ════════════════════════════════ -->
+    <div *ngIf="activePanel === 'products'" class="panel-container">
+      <div class="panel-header panel-header-product">
+        <i class="fas fa-hammer"></i>
+        <span>Products</span>
+        <button class="panel-close" (click)="closePanel()" type="button">✕</button>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="isUserLoading" class="panel-loading-state">
+          <div class="spinner"></div>
+          <p>Syncing product details...</p>
+        </div>
+        <div *ngIf="!isUserLoading">
+          <form (ngSubmit)="saveProducts()">
+
+          <!-- Categories -->
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label>Assign Categories</label>
+              <div class="checkbox-list" *ngIf="categories.length; else noCats">
+                <div class="checkbox-item" *ngFor="let c of categories">
+                  <input type="checkbox" [id]="'cat_' + c"
+                    [checked]="selCategories.includes(c)"
+                    (change)="onCategoryCheck($event, c)">
+                  <label [for]="'cat_' + c">{{ c }}</label>
+                </div>
+              </div>
+              <ng-template #noCats>
+                <p class="hint-text">No categories available.</p>
+              </ng-template>
+            </div>
+          </div>
+
+          <!-- Groups -->
+          <div class="form-row" *ngIf="groupOptions.length">
+            <div class="form-group full-width">
+              <label>Assign Groups</label>
+              <div class="checkbox-list">
+                <div class="checkbox-item" *ngFor="let g of groupOptions">
+                  <input type="checkbox" [id]="'grp_' + g.groupName"
+                    [checked]="selGroups.includes(g.groupName)"
+                    (change)="onGroupCheck($event, g.groupName)">
+                  <label [for]="'grp_' + g.groupName">{{ g.groupName }}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products -->
+          <div class="form-row" *ngIf="productOptions.length">
+            <div class="form-group full-width">
+              <label>Assign Products</label>
+              <div class="checkbox-list">
+                <div class="checkbox-item" *ngFor="let p of productOptions">
+                  <input type="checkbox" [id]="'prod_' + p"
+                    [checked]="selProducts.includes(p)"
+                    (change)="onProductCheck($event, p)">
+                  <label [for]="'prod_' + p">{{ p }}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button type="button" class="btn btn-cancel" (click)="closePanel()">Cancel</button>
+            <button type="submit" class="btn btn-save btn-product" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Saving…' : 'Save Products' }}
+            </button>
+          </div>
+
+        </form>
+        </div>
+      </div>
+    </div><!-- /panel products -->
+
+
+  </div><!-- /edit-user-content -->
+</div><!-- /edit-user-wrapper -->

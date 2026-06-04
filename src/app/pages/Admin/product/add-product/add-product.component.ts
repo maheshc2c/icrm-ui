@@ -164,6 +164,7 @@ export class AddProduct implements OnInit {
     const payload = {
       ...data,
       // Ensure mapping is correct
+      productSecondaryName: data.productCode, // Map productCode back to backend's productSecondaryName
       groupName: data.productSegment, // Segment -> Group
       categoryName: data.productCategory,
       subCategoryName: data.productSubSystem,
