@@ -243,7 +243,7 @@ activateCustomer(id: number) {
   }
   searchCustomer(name: string) {
     return this.http.get<CustomerModel[]>(
-      `${this.baseUrl}/admin/search`,
+      `${this.baseUrl}/customer/search`,
       {
         headers: this.getAuthHeaders(),
         params: { name: name } 
@@ -307,7 +307,7 @@ activateCustomer(id: number) {
     console.log('🧪 CREATE CUSTOMER HEADERS:', headers);
 
     return this.http.post(
-      `${this.baseUrl}/admin/create-customer`,
+      `${this.baseUrl}/customer`,
       customer,
       { headers }
     );
@@ -329,7 +329,7 @@ activateCustomer(id: number) {
     const headers = this.getAuthHeaders();
 
     return this.http.put<CustomerModel>(
-      `${this.baseUrl}/admin/update-customer/${customerId}`,
+      `${this.baseUrl}/customer/${customerId}`,
       customer,
       { headers }
     );
@@ -338,14 +338,14 @@ activateCustomer(id: number) {
   // ================= CUSTOMER DROPDOWN CATEGORY =================
   getSubCategories(categoryId: number): Observable<CustomerModel[]> {
     return this.http.get<CustomerModel[]>(
-      `${this.baseUrl}/admin/dropdown-sub-categories/${categoryId}`,
+      `${this.baseUrl}/customer/subcategory/${categoryId}`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   getCustomerCategories(): Observable<CustomerModel[]> {
     return this.http.get<CustomerModel[]>(
-      `${this.baseUrl}/admin/dropdown-customer`,
+      `${this.baseUrl}/customer/categories`,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -647,6 +647,23 @@ activateDemo(id: number) {
     );
   }
 
+  //product
+  deactivateProduct(id: number) {
+  return this.http.put(
+    `${this.baseUrl}/admin/deactivate-product/${id}`,
+    {},
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+activateProduct(id: number) {
+  return this.http.put(
+    `${this.baseUrl}/admin/activate-product/${id}`,
+    {},
+    { headers: this.getAuthHeaders() }
+  );
+}
+
   //Demo Dropdowns
 
   getProductCategoriesDropdown(): Observable<any[]> {
@@ -924,6 +941,38 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
       { headers: this.getAuthHeaders() }
     );
   }
+  getChannelPartnerById(id: number) {
+  return this.http.get<ChannelPartnerModel>(
+    `${this.baseUrl}/admin/view-chanel/${id}`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+  deactivateChannelPartners(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<ChannelPartnerModel>(
+    `${this.baseUrl}/admin/deactivate-chanelpartner/${id}`,
+    {},
+    { headers }
+  );
+}
+
+activateChannelPartners(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<ChannelPartnerModel>(
+    `${this.baseUrl}/admin/activate-chanelpartner/${id}`,
+    {},
+    { headers }
+  );
+}
 
   // SEARCH
   searchChannelPartner(name: string) {

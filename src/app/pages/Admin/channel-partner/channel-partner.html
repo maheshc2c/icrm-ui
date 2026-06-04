@@ -17,5 +17,8 @@
   (download)="onImport()"
   (add)="onAdd()"
   (editRow)="onEdit($event)"
-  (deleteRow)="onDelete($event)">
+  (deleteRow)="onDelete($event)"
+  [showStatusToggle]="true"
+  [statusField]="'status'"
+  [trackByField]="'channelPartnerId'">
 </app-data-table>
