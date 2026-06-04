@@ -31,7 +31,7 @@ export class Customer {
 
    headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Customer', route: '/admin/customer' }
+    { label: 'Customer', route: '/customer' }
   ];
 
    // 🔹 Table Columns
@@ -56,9 +56,12 @@ export class Customer {
   pageSize = 10;
   searchFilters: any = {};
 
+  // Map categoryId → categoryName for search
+  private categoryMap: Map<number, string> = new Map();
+
   ngOnInit(): void {
-    this.loadDropdowns();
     this.loadCustomers();
+    this.loadDropdowns();
   }
 
   private loadCustomers(): void {
@@ -104,41 +107,51 @@ export class Customer {
   }
 
   private loadDropdowns(): void {
-    // Load Customer Categories
-    this.adminservice.getCustomerCategories().subscribe({
-      next: (res: any) => {
+    // Load categories from /customer/categories
+    this.adminservice.getCategoryDropdown().subscribe({
+      next: (res: any[]) => {
         const categories = Array.isArray(res) ? res : [];
-        const unique = new Set<string>();
-        categories.forEach((c: any) => {
-          if (c.customerCategory?.customerCategoryName) {
-            unique.add(c.customerCategory.customerCategoryName);
-          }
+        this.categoryMap.clear();
+        const options = categories.map((c: any) => {
+          this.categoryMap.set(c.customerCategoryId, c.customerCategoryName);
+          return { label: c.customerCategoryName, value: c.customerCategoryId };
         });
-        const options = Array.from(unique).map(v => ({ label: v, value: v }));
         const field = this.searchFields.find(f => f.key === 'customerCategoryName');
-        if (field) {
-          field.options = options;
-        }
+        if (field) { field.options = options; }
+      },
+      error: (err: any) => {
+        console.error('Failed to load categories:', err);
       }
     });
+  }
 
-    // Load Sub Categories
-    this.adminservice.getSubSystem().subscribe({
-      next: (res: any) => {
-        const subCategories = Array.isArray(res) ? res : [];
-        const unique = new Set<string>();
-        subCategories.forEach((c: any) => {
-          if (c.subcategoryName) {
-            unique.add(c.subcategoryName);
-          }
-        });
-        const options = Array.from(unique).map(v => ({ label: v, value: v }));
-        const field = this.searchFields.find(f => f.key === 'subCategoryName');
-        if (field) {
-          field.options = options;
+  // Handle dependent dropdown: category → subcategory
+  onFieldChange(event: { key: string; value: any }): void {
+    if (event.key === 'customerCategoryName' && event.value) {
+      const categoryId = Number(event.value);
+      // Clear existing subcategory options
+      const subField = this.searchFields.find(f => f.key === 'subCategoryName');
+      if (subField) { subField.options = []; }
+
+      // Fetch subcategories for the selected category
+      this.adminservice.getSubCategoryDropdown(categoryId).subscribe({
+        next: (res: any[]) => {
+          const subCategories = Array.isArray(res) ? res : [];
+          const options = subCategories.map((sc: any) => ({
+            label: sc.name,
+            value: sc.name
+          }));
+          if (subField) { subField.options = options; }
+        },
+        error: (err: any) => {
+          console.error('Failed to load subcategories:', err);
         }
-      }
-    });
+      });
+    } else if (event.key === 'customerCategoryName' && !event.value) {
+      // Category cleared → clear subcategory options
+      const subField = this.searchFields.find(f => f.key === 'subCategoryName');
+      if (subField) { subField.options = []; }
+    }
   }
 
   onAdd() {
@@ -224,7 +237,13 @@ onDelete(row: any) {
 
   onSearchChange(filters: any) {
     console.log('🔍 Customer structured search filters:', filters);
-    this.searchFilters = filters;
+    // Convert categoryId back to categoryName for the search API
+    const searchFilters = { ...filters };
+    if (searchFilters.customerCategoryName) {
+      const catId = Number(searchFilters.customerCategoryName);
+      searchFilters.customerCategoryName = this.categoryMap.get(catId) || null;
+    }
+    this.searchFilters = searchFilters;
     this.currentPage = 1;
     this.loadCustomers();
   }

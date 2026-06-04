@@ -1,34 +1,41 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, SimpleChanges, ViewChild } from '@angular/core';
-import {  Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Header } from "../../layout/header/header";
-import { Sidebar } from "../../layout/sidebar/sidebar";
 import { Button } from "../button/button";
 import { Search, SearchFieldConfig } from "../search/search";
 @Component({
   selector: 'app-data-table',
    standalone: true,
-  imports: [CommonModule, FormsModule, Header, Sidebar, Button, Search],
+  imports: [CommonModule, FormsModule, Button, Search],
   templateUrl: './data-table.html',
   styleUrl: './data-table.css'
 })
 
 export class DataTable
 {
-
   @ViewChild(Search) searchComponent?: Search;
+
   @Input() columns: any[] = [];   // column headers
   @Input() rows: any[] = [];      // data rows
   @Input() title = '';            // optional title
+  @Input() breadcrumbs: any[] = [];
+  @Input() showRefresh: boolean = false;
+  @Input() showSerialNumber: boolean = true;
+  @Input() showDeleteButton: boolean = true;
+  @Input() showEditButton: boolean = true;
+  @Input() showViewButton: boolean = false;
 
    filteredRows = [...this.rows];
 
-   edit(row: any) {
+  edit(row: any) {
     console.log("Edit clicked:", row);
     this.editRow.emit(row);
   }
 
+  view(row: any) {
+    console.log("View clicked:", row);
+    this.viewRow.emit(row);
+  }
 
   //   ngOnChanges(changes: SimpleChanges) {
   //   if (changes['rows']) {
@@ -58,6 +65,7 @@ export class DataTable
 
   @Input() showImport = true;
   @Input() showAdd = true;
+  @Input() showPagination = true;
   @Input() showAssign = false;
   @Input() showUpload = false;
   @Input() showSearch = true;
@@ -66,16 +74,16 @@ export class DataTable
   @Input() showView = false;
   @Input() showDownload = true;
 
-
   /* ===== TOOLBAR EVENTS ===== */
 
   @Output() import = new EventEmitter<void>();
   @Output() add = new EventEmitter<void>();
   @Output() editRow = new EventEmitter<any>();
-   @Output() assignRow = new EventEmitter<any>();
+  @Output() viewRow = new EventEmitter<any>();
+  @Output() assignRow = new EventEmitter<any>();
   @Output() uploadRow = new EventEmitter<any>();
 
-    assign(row: any) {
+  assign(row: any) {
     this.assignRow.emit(row);
   }
 
@@ -153,12 +161,6 @@ detectKey(row: any, index: number) {
     index
   );
 }
-@Output() viewRow = new EventEmitter<any>();
-
-view(row: any) {
-  console.log('View clicked:', row);
-  this.viewRow.emit(row);
-}
 
 
 //[pagination]
@@ -172,7 +174,7 @@ get totalItems(): number | null {
 @Input() showPagination = true;
 @Output() pageChange = new EventEmitter<number>();
 @Output() pageSizeChange = new EventEmitter<number>();
- 
+
   @Input() pageSize = 10;
   @Input() currentPage = 1;
 @Input() totalPages = 1;
@@ -292,7 +294,7 @@ onResetClick() {
   this.searchText = '';
   this.pendingSearchValues = {};
   this.currentPage = 1;
-    if (this.searchComponent) {
+  if (this.searchComponent) {
     this.searchComponent.clear();
   }
   this.searchChange.emit({});

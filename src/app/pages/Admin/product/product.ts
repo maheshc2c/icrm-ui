@@ -138,7 +138,8 @@ export class Product implements OnInit {
 
     // Filter fullRows locally
     const filtered = this.fullRows.filter(c => {
-      const productName = (c.productName || '').toLowerCase();
+      const hasSecondaryName = !!c.productSecondaryName;
+      const productName = (hasSecondaryName ? (c.productName ?? '') : (c.productDescription ?? c.productName ?? '')).toLowerCase();
       const category = (c.group?.category?.categoryName || '').toLowerCase();
       const segment = (c.group?.groupName || '').toLowerCase();
       const type = (typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || '' : c.productType ?? '').toLowerCase();

@@ -1,0 +1,33 @@
+export interface Users {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  alternateNumber?: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  roleName: string;
+  branchName: string;
+  companyName: string;
+  status: number;
+  geoNames: string[];
+  distributorName?: string;
+  panNumber?: string;
+  tinNumber?: string;
+  tanNumber?: string;
+  serviceTaxNumber?: string;
+  salesTaxNumber?: string;
+  exciseNumber?: string;
+  bankName?: string;
+  branch?: string;
+  accountHolderName?: string;
+  accountNumber?: string;
+  ifscCode?: string;
+  userId?: number;
+  createdBy?: any;
+  createdTime?: string;
+  modifiedBy?: any;
+  modifiedTime?: string | null;
+}

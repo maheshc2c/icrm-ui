@@ -9,6 +9,7 @@ import { Form } from '../../../shared/form/form';
 import { SalesDirectorService } from '../../../service/sales-director.service';
 import { AuthService } from '../../../service/auth-service';
 import { LeadPayload } from '../../../models/lead-model';
+import { Leadservice } from '../../../service/leadservice';
 
 interface FormField {
   name: string;
@@ -45,10 +46,10 @@ export class New implements OnInit {
 
   leadForm = {
     source: '',
-    customer: '',
+    customer: '' as string | number,
     rapportWithCustomer: '',
-    contact1: '',
-    contact2: '',
+    contact1: '' as string | number,
+    contact2: '' as string | number,
     purchasePotentialRs: '',
     purchasePotential: '',
     siteReadiness: '',
@@ -195,44 +196,44 @@ export class New implements OnInit {
     console.log('Loading dropdown data...');
 
     this.leadservice.getSources().subscribe({
-      next: (data) => this.setFieldOptions('source', data, 'sourceName'),
-      error: (err) => console.error('Failed to load lead sources:', err)
+      next: (data: any) => this.setFieldOptions('source', data, 'sourceName'),
+      error: (err: any) => console.error('Failed to load lead sources:', err)
     });
 
     this.leadservice.getCustomers().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.customersData = data || [];
         this.setFieldOptions('customer', this.customersData, 'customerName', 'customerId');
       },
-      error: (err) => console.error('Failed to load customers:', err)
+      error: (err: any) => console.error('Failed to load customers:', err)
     });
 
     this.leadservice.getRelationships().subscribe({
-      next: (data) => this.setFieldOptions('rapportWithCustomer', data, 'relationshipName'),
-      error: (err) => console.error('Failed to load rapport:', err)
+      next: (data: any) => this.setFieldOptions('rapportWithCustomer', data, 'relationshipName'),
+      error: (err: any) => console.error('Failed to load rapport:', err)
     });
 
     this.leadservice.getSiteReadiness().subscribe({
-      next: (data) => this.setFieldOptions('siteReadiness', data, 'siteReadinessName'),
-      error: (err) => console.error('Failed to load site readiness:', err)
+      next: (data: any) => this.setFieldOptions('siteReadiness', data, 'siteReadinessName'),
+      error: (err: any) => console.error('Failed to load site readiness:', err)
     });
 
     this.leadservice.getDistributors().subscribe({
-      next: (data) => this.setFieldOptions('distributor', data, 'distributorName'),
-      error: (err) => console.error('Failed to load distributors:', err)
+      next: (data: any) => this.setFieldOptions('distributor', data, 'distributorName'),
+      error: (err: any) => console.error('Failed to load distributors:', err)
     });
 
     this.leadservice.getContacts().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.contactPersonsData = data || [];
         this.updateContactOptions('contact1', this.contactPersonsData);
         this.updateContactOptions('contact2', this.contactPersonsData);
       },
-      error: (err) => console.error('Failed to load contacts:', err)
+      error: (err: any) => console.error('Failed to load contacts:', err)
     });
 
     this.leadservice.getCampaigns().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.campaignsData = data || [];
         this.defaultCampaignName = this.campaignsData.length > 0
           ? (this.campaignsData[0].campaignName || '').trim()
@@ -242,7 +243,7 @@ export class New implements OnInit {
           this.loadLeadData(this.leadId);
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.warn('Failed to load campaigns:', err);
         this.defaultCampaignName = '';
 
@@ -260,12 +261,12 @@ export class New implements OnInit {
 
         this.leadForm = {
           source: data.sourceName || '',
-          customer: data.customerId ? data.customerId.toString() : '',
+          customer: data.customerId || '',
           rapportWithCustomer: data.relationshipName || '',
           contact1: data.contactId ? data.contactId.toString() : '',
-          contact2: '',
+          contact2: data.contact2Id ? data.contact2Id.toString() : '',
           purchasePotentialRs: data.leadPurchasePotential ? data.leadPurchasePotential.toString() : '',
-          purchasePotential: '',
+          purchasePotential: data.leadCmdLine3 || '',
           siteReadiness: data.siteReadinessName || '',
           visitRequirement: data.leadVisitRequirement === 1 ? 'Yes' : 'No',
           resourceRequirement: data.leadResourceRequirement === 1 ? 'Yes' : 'No',
@@ -276,7 +277,7 @@ export class New implements OnInit {
 
         this.leadFields = [...this.leadFields];
       },
-      error: (err) => console.error('Failed to load lead details:', err)
+      error: (err: any) => console.error('Failed to load lead details:', err)
     });
   }
 
@@ -358,6 +359,7 @@ export class New implements OnInit {
     const payload: LeadPayload = {
       customerId: Number(formData.customer),
       contactId: Number(formData.contact1),
+      contact2Id: formData.contact2 ? Number(formData.contact2) : null,
       customerName: safe(getCustomerName(formData.customer)),
       contactFirstName: safe(getContactFirstName(formData.contact1)),
       sourceName: safe(getLabel('source', formData.source)),
@@ -371,6 +373,7 @@ export class New implements OnInit {
       leadResourceRequirement: formData.resourceRequirement === 'Yes' ? 1 : 0,
       leadCmdLine1: safe(formData.commentLine1),
       leadCmdLine2: safe(formData.commentLine2),
+      leadCmdLine3: safe(formData.purchasePotential),
       leadStatus: 1
     };
 
@@ -378,22 +381,22 @@ export class New implements OnInit {
 
     if (this.isEditMode && this.leadId) {
       this.leadservice.updateLead(this.leadId, payload).subscribe({
-        next: () => {
+        next: (response: any) => {
           alert('Lead updated successfully!');
           this.router.navigate(['/sddashboard']);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Lead update failed:', err);
           alert('Failed to update lead.');
         }
       });
     } else {
       this.leadservice.createLead(payload).subscribe({
-        next: () => {
+        next: (response: any) => {
           alert('Lead created successfully!');
           this.router.navigate(['/sddashboard']);
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Lead creation failed:', err);
           alert('Failed to create lead. Please check the console.');
         }

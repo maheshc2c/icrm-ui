@@ -69,7 +69,7 @@ export class AddManageUser implements OnInit {
     // Load companies
     this.companyService.getCompanies().subscribe({
       next: (companies: any[]) => {
-        this.companies = companies.map(company => ({
+        this.companies = (Array.isArray(companies) ? companies : []).map(company => ({
           label: company.companyName,
           value: company.companyName
         }));
@@ -88,7 +88,7 @@ export class AddManageUser implements OnInit {
     // Load branches
     this.branchService.getBranches().subscribe({
       next: (branches: any[]) => {
-        this.branches = branches.map(branch => ({
+        this.branches = (Array.isArray(branches) ? branches : []).map(branch => ({
           label: branch.branchName,
           value: branch.branchName
         }));
@@ -147,8 +147,8 @@ export class AddManageUser implements OnInit {
         }
 
         // Populate dropdown options first
-        this.companies = companies.map((c: any) => ({ label: c.companyName, value: c.companyName }));
-        this.branches = branches.map((b: any) => ({ label: b.branchName, value: b.branchName }));
+        this.companies = (Array.isArray(companies) ? companies : []).map((c: any) => ({ label: c.companyName, value: c.companyName }));
+        this.branches = (Array.isArray(branches) ? branches : []).map((b: any) => ({ label: b.branchName, value: b.branchName }));
 
         // Update fields and trigger change detection for fields array
         this.updateFormFields();
