@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Output, SimpleChanges, ViewChild } from '@angular/core';
 import {  Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Header } from "../../layout/header/header";
@@ -16,6 +16,8 @@ import { Search, SearchFieldConfig } from "../search/search";
 
 export class DataTable
 {
+
+  @ViewChild(Search) searchComponent?: Search;
   @Input() columns: any[] = [];   // column headers
   @Input() rows: any[] = [];      // data rows
   @Input() title = '';            // optional title
@@ -61,6 +63,8 @@ export class DataTable
   @Input() showSearch = true;
   @Input() showEdit = true;
   @Input() showDelete = true;
+  @Input() showView = false;
+  @Input() showDownload = true;
 
 
   /* ===== TOOLBAR EVENTS ===== */
@@ -101,6 +105,7 @@ onSearchClick() {
 
 @Input() searchFields: SearchFieldConfig[] = [];
 @Output() searchChange = new EventEmitter<any>();
+@Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
 
 
 onSearchFromChild(values: any) {
@@ -158,77 +163,82 @@ view(row: any) {
 
 //[pagination]
 @Input() totalElements: number | null = null;
+@Input() set totalItems(value: number | null) {
+  this.totalElements = value;
+}
+get totalItems(): number | null {
+  return this.totalElements;
+}
+@Input() showPagination = true;
 @Output() pageChange = new EventEmitter<number>();
 @Output() pageSizeChange = new EventEmitter<number>();
-
-  pageSize = 10;
+ 
+  @Input() pageSize = 10;
   @Input() currentPage = 1;
-totalPages = 1;
+@Input() totalPages = 1;
 paginatedRows: any[] = [];
-
+ 
 updatePagination() {
   if (this.totalElements !== null) {
     this.totalPages = Math.ceil(this.totalElements / this.pageSize);
     this.paginatedRows = this.filteredRows;
   } else {
     this.totalPages = Math.ceil(this.filteredRows.length / this.pageSize);
-
+ 
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
-
+ 
     this.paginatedRows = this.filteredRows.slice(start, end);
   }
 }
-
 getStartRecord(): number {
   const total = this.totalElements !== null ? this.totalElements : this.filteredRows.length;
   if (total === 0) return 0;
   return (this.currentPage - 1) * this.pageSize + 1;
 }
-
+ 
 getEndRecord(): number {
   const total = this.totalElements !== null ? this.totalElements : this.filteredRows.length;
   return Math.min(this.currentPage * this.pageSize, total);
 }
-
+ 
 getVisiblePages(): (number | string)[] {
   const pages: (number | string)[] = [];
   const maxVisible = 7;
-
+ 
   if (this.totalPages <= maxVisible) {
     for (let i = 1; i <= this.totalPages; i++) {
       pages.push(i);
     }
   } else {
     pages.push(1);
-
+ 
     let start = Math.max(2, this.currentPage - 1);
     let end = Math.min(this.totalPages - 1, this.currentPage + 1);
-
+ 
     if (this.currentPage <= 3) {
       end = 4;
     } else if (this.currentPage >= this.totalPages - 2) {
       start = this.totalPages - 3;
     }
-
+ 
     if (start > 2) {
       pages.push('...');
     }
-
+ 
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-
+ 
     if (end < this.totalPages - 1) {
       pages.push('...');
     }
-
+ 
     pages.push(this.totalPages);
   }
-
+ 
   return pages;
 }
-
 goToPage(page: number | string) {
   if (typeof page === 'number') {
     this.currentPage = page;
@@ -239,7 +249,7 @@ goToPage(page: number | string) {
     }
   }
 }
-
+ 
 // ✅ Page navigation
 prevPage() {
   if (this.currentPage > 1) {
@@ -251,7 +261,7 @@ prevPage() {
     }
   }
 }
-
+ 
 nextPage() {
   if (this.currentPage < this.totalPages) {
     this.currentPage++;
@@ -262,7 +272,7 @@ nextPage() {
     }
   }
 }
-
+ 
 // ✅ Page size change
 changePageSize(size: number) {
   this.pageSize = Number(size);
@@ -282,8 +292,12 @@ onResetClick() {
   this.searchText = '';
   this.pendingSearchValues = {};
   this.currentPage = 1;
+    if (this.searchComponent) {
+    this.searchComponent.clear();
+  }
   this.searchChange.emit({});
   this.reset.emit();
+
 }
 
 //delete 
@@ -313,6 +327,7 @@ getRowStatus(row: any): number | undefined {
     ?? row?.customerStatus
     ?? row?.contactStatus
     ?? row?.demoProductDetailStatus
+    ?? row?.productStatus
     ?? row?.leadStatus;
 }
 

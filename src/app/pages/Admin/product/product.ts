@@ -11,6 +11,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { Adminservice } from '../../../service/adminservice';
  
 @Component({
   standalone: true,
@@ -31,6 +32,7 @@ export class Product implements OnInit {
  
   constructor(
     private productService: ProductService,
+    private adminService: Adminservice,
     private router: Router,
     private route: ActivatedRoute,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -85,7 +87,8 @@ export class Product implements OnInit {
           productType: typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || 'Standard' : c.productType ?? 'Standard',
           productMrp: c.productMrp ?? 0,
           productBasePrice: c.productBasePrice ?? 0,
-          productDp: c.productDp ?? 0
+          productDp: c.productDp ?? 0,
+          productStatus: c.productStatus 
         }));
       },
       error: (err: any) => {
@@ -127,7 +130,8 @@ export class Product implements OnInit {
         productType: typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || 'Standard' : c.productType ?? 'Standard',
         productMrp: c.productMrp ?? 0,
         productBasePrice: c.productBasePrice ?? 0,
-        productDp: c.productDp ?? 0
+        productDp: c.productDp ?? 0,
+        productStatus: c.productStatus
       }));
       return;
     }
@@ -157,7 +161,8 @@ export class Product implements OnInit {
       productType: typeof c.productType === 'object' ? c.productType?.typeName || c.productType?.name || 'Standard' : c.productType ?? 'Standard',
       productMrp: c.productMrp ?? 0,
       productBasePrice: c.productBasePrice ?? 0,
-      productDp: c.productDp ?? 0
+      productDp: c.productDp ?? 0,
+      productStatus: c.productStatus
     }));
   }
 
@@ -205,7 +210,33 @@ export class Product implements OnInit {
     this.router.navigate(['/admin/product/edit', row.productId]);
   }
  
-  onDelete(row: any): void {
-    console.log('Delete', row);
+  onDelete(row: any) {
+
+  const id = row.productId;
+
+  if (!id) {
+    return;
   }
+
+  const isActive = Number(row.productStatus) === 1;
+
+  const apiCall = isActive
+    ? this.adminService.deactivateProduct(id)
+    : this.adminService.activateProduct(id);
+
+  apiCall.subscribe({
+    next: () => {
+
+      row.productStatus = isActive ? 2 : 1;
+
+      this.rows = [...this.rows];
+      this.fullRows = [...this.fullRows];
+
+    },
+    error: err => {
+      console.error('Status update failed', err);
+      alert('Failed to update status');
+    }
+  });
+}
 }

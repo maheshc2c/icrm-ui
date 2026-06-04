@@ -9,7 +9,8 @@
   @if (showSearch) {
     <app-search
       [fields]="searchFields"
-      (searchChange)="onSearchFromChild($event)">
+      (searchChange)="onSearchFromChild($event)"
+      (fieldChange)="fieldChange.emit()">
     </app-search>
   }
   <app-button
@@ -76,11 +77,38 @@
 
         <!-- ACTIONS -->
         <td class="action-buttons">
+
+          @if (showView) {
+            <button
+              class="btn btn-sm btn-info view-btn"
+              (click)="view(row)"
+              title="View">
+              <i class="fas fa-eye"></i>
+            </button>
+          }
           @if (showEdit) {
             <button
               class="btn btn-sm btn-warning edit-btn"
               (click)="edit(row)">
               <i class="fas fa-edit"></i>
+            </button>
+          }
+
+          @if (showAssign) {
+            <button
+              class="btn btn-sm btn-primary assign-btn"
+              (click)="assign(row)"
+              title="Assign Target">
+              <i class="fas fa-user-plus"></i>
+            </button>
+          }
+ 
+          @if (showUpload) {
+            <button
+              class="btn btn-sm btn-success upload-btn"
+              (click)="upload(row)"
+              title="Upload Target">
+              <i class="fas fa-upload"></i>
             </button>
           }
 
@@ -123,10 +151,11 @@
       </div>
     </div>
   </div>
-  <div class="pagination-container">
-    <div class="pagination-info">
-      Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
-    </div>
+  @if (showPagination) {
+    <div class="pagination-container">
+      <div class="pagination-info">
+        Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
+      </div>
 
     <div class="pagination-right">
       <div class="pagination-controls">
@@ -159,6 +188,7 @@
       </select>
     </div>
   </div>
+}
 
 
 
