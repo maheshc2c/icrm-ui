@@ -168,10 +168,10 @@ detectKey(row: any, index: number) {
 @Input() set totalItems(value: number | null) {
   this.totalElements = value;
 }
-get totalItems(): number | null {
-  return this.totalElements;
-}
-// @Input() showPagination = true;
+  get totalItems(): number | null {
+    return this.totalElements;
+  }
+  // Removed duplicate showPagination
 @Output() pageChange = new EventEmitter<number>();
 @Output() pageSizeChange = new EventEmitter<number>();
 
@@ -322,16 +322,17 @@ delete(row: any) {
 }
 
 @Input() statusField: string = 'status';
-getRowStatus(row: any): number | undefined {
-  return row?.competitorStatus
-    ?? row?.specialityStatus
-    ?? row?.status
-    ?? row?.customerStatus
-    ?? row?.contactStatus
-    ?? row?.demoProductDetailStatus
-    ?? row?.productStatus
-    ?? row?.leadStatus;
-}
+  getRowStatus(row: any): number | undefined {
+    return row?.competitorStatus
+      ?? row?.specialityStatus
+      ?? row?.status
+      ?? row?.customerStatus
+      ?? row?.contactStatus
+      ?? row?.demoProductDetailStatus
+      ?? row?.productStatus
+      ?? row?.categoryStatus
+      ?? row?.leadStatus;
+  }
 
 
 }

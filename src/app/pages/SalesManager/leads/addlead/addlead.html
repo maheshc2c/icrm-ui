@@ -6,7 +6,7 @@
 </app-pageheader>
 
 <!-- Tabs Navigation -->
-<div class="form-wrapper-tabs" *ngIf="isEditMode" style="margin-left: 287px; padding: 24px 30px 0 30px; display: flex; justify-content: center;">
+<div class="form-wrapper-tabs" style="margin-left: 287px; padding: 24px 30px 0 30px; display: flex; justify-content: center;">
   <div style="width: 100%; max-width: 1050px; display: flex; align-items: flex-end;">
     <div *ngFor="let tab of tabs" 
          style="padding: 10px 24px; cursor: pointer; font-size: 14px; font-weight: 500; border-top-left-radius: 6px; border-top-right-radius: 6px; border: 1px solid #dcdcdc; border-bottom: none; margin-right: 4px; position: relative; bottom: -1px; transition: all 0.2s;"
@@ -19,49 +19,150 @@
   </div>
 </div>
 
-<!-- Top Action Buttons Bar -->
-<div style="display: flex; gap: 10px; margin-bottom: 15px; justify-content: flex-end; flex-wrap: wrap; margin-left: 287px; padding: 10px 30px 0 30px;">
-  <!-- Customer actions (shown if a customer is selected in the form) -->
-  <button *ngIf="leadForm.customer" type="button" class="btn" style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onCustomerDetails(leadForm.customer)">
-    <i class="fas fa-info-circle"></i> Customer Details
-  </button>
-  <button *ngIf="leadForm.customer" type="button" class="btn" style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onCustomerAction2(leadForm.customer)">
-    <i class="fas fa-folder-open"></i> Customer Folders
-  </button>
-
-  <!-- Sequence of events / Drop Lead (shown in edit mode) -->
-  <button *ngIf="isEditMode" type="button" class="btn" style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onDetails()">
-    <i class="fas fa-history"></i> Sequence of Events
-  </button>
-  <button *ngIf="isEditMode && !isReadOnly" type="button" class="btn" style="background: #f44336; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onDropLead()">
-    <i class="fas fa-trash-alt"></i> Drop Lead
-  </button>
-
-  <!-- Add buttons (shown in create/new mode) -->
-  <button *ngIf="!isEditMode && !isReadOnly" type="button" class="btn" style="background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onAddCustomer()">
-    <i class="fas fa-plus"></i> Add Customer
-  </button>
-  <button *ngIf="!isEditMode && !isReadOnly" type="button" class="btn" style="background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px 14px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;" (click)="onAddContact()">
-    <i class="fas fa-plus"></i> Add Contact
-  </button>
-</div>
-
 <!-- Main Form Content (Shown for New Leads or when 'Lead Details' tab is active) -->
-<div [ngClass]="{'d-none': isEditMode && activeTab !== 'Lead Details'}" style="position: relative; z-index: 5;">
+<div [ngClass]="{'d-none': activeTab !== 'Lead Details'}" style="position: relative; z-index: 5;">
   <div [style.pointer-events]="isReadOnly ? 'none' : 'auto'" [style.opacity]="isReadOnly ? '0.85' : '1'">
-    <app-form
-      [title]="isEditMode ? 'Lead Details' : 'Enter the Below Details'"
-      [fields]="leadFields"
-      [model]="leadForm"
-      (formSubmit)="onSubmit($event)"
-      (cancelForm)="onCancel()"
-      (fieldChange)="onFieldChange($event)">
-    </app-form>
+    
+    <div class="form-wrapper" [style.padding-top]="isEditMode ? '0px' : '24px'">
+      <div class="company-form-container">
+
+        <div class="form-header-block">
+          <h4 class="form-title-heading">{{ isEditMode ? 'Lead Details' : 'Enter the Below Details' }}</h4>
+          
+          <!-- Action Buttons in Header -->
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <!-- Details / Drop Lead (shown in edit mode) -->
+            <button *ngIf="isEditMode" type="button" class="action-header-btn" (click)="onDetails()" style="pointer-events: auto;">
+              <i class="fa-solid fa-clock-rotate-left"></i> Details
+            </button>
+            <button *ngIf="isEditMode && !isReadOnly" type="button" class="action-header-btn" style="background: #f44336; border-color: #d32f2f;" (click)="onDropLead()" onmouseover="this.style.background='#d32f2f'" onmouseout="this.style.background='#f44336'">
+              <i class="fa-solid fa-trash-can"></i> Drop Lead
+            </button>
+
+            <!-- Add buttons (shown in create/new mode) -->
+            <button *ngIf="!isEditMode && !isReadOnly" type="button" class="action-header-btn" (click)="onAddCustomer()">
+              <i class="fa-solid fa-plus"></i> Add Customer
+            </button>
+            <button *ngIf="!isEditMode && !isReadOnly" type="button" class="action-header-btn" (click)="onAddContact()">
+              <i class="fa-solid fa-plus"></i> Add Contact
+            </button>
+          </div>
+        </div>
+
+        <div class="form-body-section">
+          <form (ngSubmit)="onSubmit(leadForm)">
+
+            <!-- LOOP ALL FIELDS -->
+            <div class="company-field-row" *ngFor="let field of leadFields">
+
+              <!-- LABEL -->
+              <label class="field-label-text">
+                {{ field.label }}
+                <span *ngIf="field.required" class="mandatory-star">*</span>
+              </label>
+
+              <div class="field-input-area">
+
+                <!-- If Customer field, render custom layout with action buttons -->
+                <ng-container *ngIf="field.name === 'customer'; else normalField">
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <select 
+                      class="company-text-input" 
+                      [(ngModel)]="leadForm.customer"
+                      (ngModelChange)="onFieldChange({ name: field.name, value: $event })"
+                      name="customer"
+                      style="flex: 1;">
+                      <option value="">-- Select --</option>
+                      <option *ngFor="let opt of field.options" [value]="opt.value">
+                        {{ opt.label }}
+                      </option>
+                    </select>
+                    
+                    <!-- Customer details button next to customer dropdown -->
+                    <button 
+                      *ngIf="isEditMode && leadForm.customer" 
+                      type="button" 
+                      class="btn" 
+                      style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 0; min-width: 35px; height: 35px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background-color 0.2s; pointer-events: auto;" 
+                      (click)="onCustomerDetails(leadForm.customer)"
+                      title="Customer Details">
+                      <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                    
+                    <!-- Customer installation base button next to customer dropdown -->
+                    <button 
+                      *ngIf="isEditMode && leadForm.customer" 
+                      type="button" 
+                      class="btn" 
+                      style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 0; min-width: 35px; height: 35px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background-color 0.2s; pointer-events: auto;" 
+                      (click)="onCustomerAction2(leadForm.customer)"
+                      title="Customer Installation Base">
+                      <i class="fa-solid fa-folder-open"></i>
+                    </button>
+                  </div>
+                </ng-container>
+
+                <!-- Otherwise, render normal fields -->
+                <ng-template #normalField>
+                  <!-- TEXT / NUMBER / EMAIL -->
+                  <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
+                    [type]="field.type" class="company-text-input" [placeholder]="field.placeholder || ''"
+                    [(ngModel)]="leadForm[field.name]" [name]="field.name" />
+
+                  <!-- TEXTAREA -->
+                  <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder || ''"
+                    [(ngModel)]="leadForm[field.name]" [name]="field.name">
+                  </textarea>
+
+                  <!-- STATIC DROPDOWN -->
+                  <select *ngIf="field.type === 'select'" 
+                    class="company-text-input" 
+                    [(ngModel)]="leadForm[field.name]"
+                    (ngModelChange)="onFieldChange({ name: field.name, value: $event })"
+                    [name]="field.name">
+                    <option value="">-- Select --</option>
+                    <option *ngFor="let opt of field.options" [value]="opt.value">
+                      {{ opt.label }}
+                    </option>
+                  </select>
+
+                  <!-- RADIO GROUP -->
+                  <div *ngIf="field.type === 'radio'" class="checkbox-group-container">
+                    <div *ngFor="let opt of field.options" class="checkbox-item">
+                      <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
+                        [(ngModel)]="leadForm[field.name]" [name]="field.name"
+                        (ngModelChange)="onFieldChange({ name: field.name, value: $event })"
+                        class="company-checkbox-input" />
+                      <label [for]="field.name + '_' + opt.value" class="checkbox-label">
+                        {{ opt.label }}
+                      </label>
+                    </div>
+                  </div>
+                </ng-template>
+
+              </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="form-action-buttons">
+              <button type="submit" class="submit-button">
+                <i class="fas fa-check"></i> Submit
+              </button>
+
+              <button type="button" class="cancel-button" (click)="onCancel()">
+                <i class="fas fa-times"></i> Cancel
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Opportunities Tab -->
-<div class="container-fluid p-4" *ngIf="isEditMode && activeTab === 'Opportunities'" style="background: #fff; border: 1px solid #dee2e6; border-top: none; margin-left: 287px; width: calc(100% - 317px); min-height: 400px;">
+<div class="container-fluid p-4" *ngIf="activeTab === 'Opportunities'" style="background: #fff; border: 1px solid #dee2e6; border-top: none; margin-left: 287px; width: calc(100% - 317px); min-height: 400px;">
   
   <!-- Add Opportunity Button -->
   <div class="d-flex justify-content-end mb-3">
@@ -113,18 +214,18 @@
   </div>
 </div>
 
-<div class="container-fluid py-5 text-center bg-white rounded shadow-sm mx-3 my-3" style="width: auto;" *ngIf="isEditMode && activeTab === 'Quote'">
+<div class="container-fluid py-5 text-center bg-white rounded shadow-sm mx-3 my-3" style="width: auto;" *ngIf="activeTab === 'Quote'">
   <h4 class="text-muted">Quote</h4>
   <p>No quotes generated for this lead yet.</p>
 </div>
 
-<div class="container-fluid py-5 text-center bg-white rounded shadow-sm mx-3 my-3" style="width: auto;" *ngIf="isEditMode && activeTab === 'Contract Note'">
+<div class="container-fluid py-5 text-center bg-white rounded shadow-sm mx-3 my-3" style="width: auto;" *ngIf="activeTab === 'Contract Note'">
   <h4 class="text-muted">Contract Note</h4>
   <p>No contract notes available for this lead yet.</p>
 </div>
 
-<!-- Details Modal (Chronological Sequence of Events) -->
-<app-modal [show]="showDetailsModal" [title]="'Chronological Sequence of Events'" (closeDialog)="closeDetailsModal()">
+<!-- Details Modal -->
+<app-modal [show]="showDetailsModal" [title]="'Details'" (closeDialog)="closeDetailsModal()">
   <div style="padding: 15px; overflow-y: auto; max-height: 70vh; background: #fff;">
     <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6; background: #fff;">
       <thead style="background-color: #5b9bd5; color: white;">
@@ -377,7 +478,7 @@
       <thead>
         <tr>
           <th>Manufacturer</th>
-          <th>ProducManufacturer/Model</th>
+          <th>Product Model</th>
           <th>Quantity</th>
           <th>Make</th>
           <th>Year Of Purchase</th>
@@ -407,5 +508,6 @@
     </button>
   </div>
 </app-modal>
+
 
 

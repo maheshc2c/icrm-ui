@@ -5,64 +5,14 @@
   [breadcrumbs]="headerBreadcrumbs">
 </app-pageheader>
 
-<div class="closed-opportunities-container">
-  <div class="card">
-    <div class="card-header">
-      <div class="header-left">
-        <h5 class="card-title">Closed Opportunities</h5>
-      </div>
-    </div>
-
-    <div class="card-body">
-      <!-- REUSABLE SEARCH COMPONENT -->
-      <app-search
-        [fields]="searchFields"
-        (searchChange)="onSearchChange($event)">
-      </app-search>
-
-      <!-- REUSABLE BUTTON COMPONENT -->
-      <app-button
-        [showSearch]="true"
-        [showDownload]="true"
-        [showRefresh]="true"
-        [showAdd]="false"
-        (search)="onSearch()"
-        (download)="downloadExcel()"
-        (refresh)="onRefresh()">
-      </app-button>
-
-      <!-- TABLE -->
-      <div class="table-container">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th *ngFor="let column of displayedColumns">{{ column.label }}</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let opp of filteredOpportunities">
-              <td>{{ opp.id }}</td>
-              <td>{{ opp.leadDetails }}</td>
-              <td>{{ opp.product }}</td>
-              <td class="text-center">{{ opp.qty }}</td>
-              <td>{{ opp.value }}</td>
-              <td>{{ opp.stage }}</td>
-              <td class="text-center">{{ opp.lifeTime }}</td>
-              <td>
-                <button class="btn-action btn-view" (click)="viewOpportunity(opp.id)" title="View">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="filteredOpportunities.length === 0">
-              <td [attr.colspan]="displayedColumns.length + 1" class="no-data">
-                No closed opportunities found
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
+<app-data-table
+  [columns]="columns"
+  [rows]="filteredOpportunities"
+  [searchFields]="searchFields"
+  [showImport]="true"
+  [showAdd]="false"
+  (searchChange)="onSearchChange($event)"
+  (search)="onSearch()"
+  (download)="downloadExcel()"
+  (editRow)="viewOpportunity($event.id)">
+</app-data-table>

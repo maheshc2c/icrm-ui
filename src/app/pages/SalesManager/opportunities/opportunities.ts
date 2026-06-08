@@ -8,6 +8,7 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { ModalComponent } from '../../../shared/modal/modal';
 import { Form } from '../../../shared/form/form';
 import { Leadservice } from '../../../service/leadservice';
+import { OpportunityTableModel } from '../../../models/opportunity-table.model';
 import { Header } from '../../../layout/header/header';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import * as XLSX from 'xlsx';
@@ -17,7 +18,7 @@ import { Pageheader } from '../../../shared/pageheader/pageheader';
 @Component({
   selector: 'app-opportunities',
   standalone: true,
-  imports: [DataTable, CommonModule, FormsModule, ModalComponent, Form, Header, Sidebar, Pageheader],
+  imports: [CommonModule, FormsModule, ModalComponent, Header, Sidebar, Pageheader, DataTable],
   templateUrl: './opportunities.html',
   styleUrls: ['./opportunities.css']
 })
@@ -100,8 +101,8 @@ export class OpportunitiesComponent implements OnInit {
   };
 
   /* ================= DATA ================= */
-  opportunities: any[] = [];
-  filteredOpportunities: any[] = [];
+  opportunities: OpportunityTableModel[] = [];
+  filteredOpportunities: OpportunityTableModel[] = [];
   currentFilters: any = {};
 
   /* ================= TABLE COLUMNS ================= */
@@ -283,19 +284,19 @@ export class OpportunitiesComponent implements OnInit {
     });
   }
 
-  private extractCustomerName(leadDetails: string): string {
+  private extractCustomerName(leadDetails: string | null | undefined): string {
     if (!leadDetails) return '';
     const match = leadDetails.match(/ID\s*:\s*\d+\s*-\s*(.*?)\s*\(/);
     return match && match[1] ? match[1].trim() : leadDetails;
   }
 
-  private extractCategoryName(productAndCategory: string): string {
+  private extractCategoryName(productAndCategory: string | null | undefined): string {
     if (!productAndCategory) return '';
     const match = productAndCategory.match(/\(([^)]+)\)/);
     return match && match[1] ? match[1].trim() : productAndCategory;
   }
 
-  private extractRegionName(leadDetails: string): string {
+  private extractRegionName(leadDetails: string | null | undefined): string {
     if (!leadDetails) return '';
     const match = leadDetails.match(/\(([^)]+)\)$/);
     return match && match[1] ? match[1].trim() : '';

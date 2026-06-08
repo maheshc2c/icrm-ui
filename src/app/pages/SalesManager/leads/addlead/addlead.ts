@@ -7,7 +7,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Header } from '../../../../layout/header/header';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
-import { Form } from '../../../../shared/form/form';
 import { ModalComponent } from '../../../../shared/modal/modal';
 
 // Services
@@ -28,8 +27,9 @@ interface FormField {
 @Component({
   selector: 'app-addlead',
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, Form, ModalComponent],
-  templateUrl: './addlead.html'
+  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, ModalComponent],
+  templateUrl: './addlead.html',
+  styleUrl: './addlead.css'
 })
 export class AddleadComponent implements OnInit {
   
@@ -57,7 +57,7 @@ export class AddleadComponent implements OnInit {
   contactPersonsData: any[] = [];
   filteredContactPersons: any[] = [];
 
-  leadForm = {
+  leadForm: any = {
     source: '',
     // campaign: '', // Commented out
     customer: '' as string | number,
@@ -296,9 +296,9 @@ export class AddleadComponent implements OnInit {
       next: (data: LeadPayload) => {
         console.log('Loaded Lead Data:', data);
         this.originalLeadData = data;
-        
+
         // Auto-detect closed/dropped leads and force read-only
-        if (data.leadStatus === 2 || data.leadStatus === 3) {
+        if (data.leadStatus === 21 || data.leadStatus === 22 || data.leadStatus === 3) {
           this.isReadOnly = true;
           this.breadcrumbs = [
             { label: 'Home', route: '/sales-manager-dashboard' },
@@ -365,7 +365,8 @@ export class AddleadComponent implements OnInit {
   /* ================= HANDLE FIELD CHANGES ================= */
   onFieldChange(event: {name: string, value: any}): void {
     if (event.name === 'customer') {
-      // Future filter logic can go here
+      this.showInstallationBaseDetailsModal = false;
+      this.installationBaseDetails = [];
     }
   }
 
@@ -571,16 +572,18 @@ export class AddleadComponent implements OnInit {
       alert('No customer selected');
       return;
     }
-    
-    // Find the customer details in our pre-loaded customersData
-    const customer = this.customersData.find(c => (c.customerId || c.id) == customerId);
-    if (customer) {
-      this.selectedCustomer = customer;
-      this.showCustomerDetailsModal = true;
-      console.log('Opening Customer Details Modal for:', customer);
-    } else {
-      alert('Customer details not found locally');
-    }
+
+    this.customerService.getCustomerById(Number(customerId)).subscribe({
+      next: (customer) => {
+        this.selectedCustomer = customer;
+        this.showCustomerDetailsModal = true;
+        console.log('Opening Customer Details Modal for:', customer);
+      },
+      error: (err) => {
+        console.error('Failed to load customer details:', err);
+        alert('Failed to load customer details from server.');
+      }
+    });
   }
 
   onCustomerAction2(customerId: any): void {
@@ -589,14 +592,15 @@ export class AddleadComponent implements OnInit {
       alert('No customer selected');
       return;
     }
+    
     this.customerService.getInstallationBase(Number(customerId)).subscribe({
       next: (records: any[]) => {
         this.installationBaseDetails = records;
         this.showInstallationBaseDetailsModal = true;
-        console.log('Loaded customer installation base for details popup:', this.installationBaseDetails);
+        console.log('Loaded customer installation base from backend:', this.installationBaseDetails);
       },
       error: (err) => {
-        console.error('Failed to load customer installation base details:', err);
+        console.error('Failed to load customer installation base details from backend:', err);
         this.installationBaseDetails = [];
         this.showInstallationBaseDetailsModal = true;
       }

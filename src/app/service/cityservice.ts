@@ -24,27 +24,26 @@ export class Cityservice {
       headers: this.getAuthHeaders()
     });
   }
+
+  // ================= GET CITIES FOR DISTRICT =================
+  getCitiesForDistrict(districtId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/location/city/${districtId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
  
   createCity(city: any): Observable<any> {
-    const body = {
-      countryName: city.countryName,
-      countryId: city.countryId,
-      regionName: city.regionName,
-      regionId: city.regionId,
-      stateName: city.stateName,
-      stateId: city.stateId,
-      districtName: city.districtName,
-      districtId: city.districtId,
+    const payload = {
       cityName: city.cityName,
-      serialNo: 1
+      districtId: city.districtId
     };
  
     console.log('========== CITY SERVICE CREATE ==========');
-    console.log('API URL:', `${this.baseUrl}/admin/city-create`);
-    console.log('Request body:', JSON.stringify(body, null, 2));
+    console.log('API URL:', `${this.baseUrl}/location/city`);
+    console.log('Payload:', JSON.stringify(payload, null, 2));
     console.log('========================================');
  
-    return this.http.post(`${this.baseUrl}/admin/city-create`, body, {
+    return this.http.post(`${this.baseUrl}/location/city`, payload, {
       headers: this.getAuthHeaders()
     });
   }

@@ -5,14 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { Header } from '../../../layout/header/header';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
-import { Search, SearchFieldConfig } from '../../../shared/search/search';
-import { Button } from '../../../shared/button/button';
+import { SearchFieldConfig } from '../../../shared/search/search';
 import { Breadcrumb } from '../../../models/breadcrumb';
+import { DataTable } from '../../../shared/data-table/data-table';
+import { Leadservice } from '../../../service/leadservice';
+import { OpportunityTableModel } from '../../../models/opportunity-table.model';
 
 @Component({
   selector: 'app-closed-opportunities',
   standalone: true,
-  imports: [Header, Sidebar, Pageheader, Search, Button, CommonModule, FormsModule],
+  imports: [Header, Sidebar, Pageheader, DataTable, CommonModule, FormsModule],
   templateUrl: './closed-opportunities.html',
   styleUrls: ['./closed-opportunities.css']
 })
@@ -64,22 +66,22 @@ export class ClosedOpportunitiesComponent implements OnInit {
   ];
 
   /* ================= DATA ================= */
-  closedOpportunities: any[] = [];
-  filteredOpportunities: any[] = [];
+  closedOpportunities: OpportunityTableModel[] = [];
+  filteredOpportunities: OpportunityTableModel[] = [];
   currentFilters: any = {};
 
   /* ================= TABLE COLUMNS ================= */
-  displayedColumns = [
-    { key: 'id', label: 'ID' },
-    { key: 'leadDetails', label: 'Lead Details' },
-    { key: 'product', label: 'Product' },
-    { key: 'qty', label: 'Qty' },
-    { key: 'value', label: 'Value (Rs)' },
-    { key: 'stage', label: 'Stage' },
-    { key: 'lifeTime', label: 'Life Time(Days)' }
+  columns = [
+    { header: 'ID', field: 'id' },
+    { header: 'Lead Details', field: 'leadDetails' },
+    { header: 'Product', field: 'product' },
+    { header: 'Qty', field: 'qty' },
+    { header: 'Value (Rs)', field: 'value' },
+    { header: 'Stage', field: 'stage' },
+    { header: 'Life Time(Days)', field: 'lifeTime' }
   ];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private leadService: Leadservice) { }
 
   ngOnInit(): void {
     this.loadClosedOpportunities();
@@ -87,28 +89,23 @@ export class ClosedOpportunitiesComponent implements OnInit {
 
   /* ================= LOAD CLOSED OPPORTUNITIES ================= */
   loadClosedOpportunities(): void {
-    // Dummy data for UI testing
-    this.closedOpportunities = [
-      {
-        id: 1,
-        leadDetails: 'Closed Lead - ABC Corp',
-        product: 'Product A',
-        qty: 15,
-        value: 6.0,
-        stage: 'Won',
-        lifeTime: 45
+    this.leadService.getOpportunityTable().subscribe({
+      next: (data) => {
+        // Filter to only include opportunities where stage is Won or Lost
+        const closedData = data.filter(opp => opp.stage === 'Won' || opp.stage === 'Lost' || opp.stage === 'Dropped');
+        
+        this.closedOpportunities = closedData.map(opp => ({
+          ...opp,
+          product: opp.productAndCategory,
+          lifeTime: opp.lifeTimeDays,
+          value: opp.value || (opp.qty ? opp.qty * 125000 : 0)
+        }));
+        this.filteredOpportunities = [...this.closedOpportunities];
       },
-      {
-        id: 2,
-        leadDetails: 'Lost Lead - XYZ Ltd',
-        product: 'Product B',
-        qty: 10,
-        value: 4.5,
-        stage: 'Lost',
-        lifeTime: 30
+      error: (err) => {
+        console.error('Error fetching closed opportunities:', err);
       }
-    ];
-    this.filteredOpportunities = [...this.closedOpportunities];
+    });
   }
 
   /* ================= SEARCH ================= */
@@ -123,11 +120,21 @@ export class ClosedOpportunitiesComponent implements OnInit {
       const matchesId = !this.currentFilters.oppId || 
         opp.id?.toString().includes(this.currentFilters.oppId);
       
+      const customerName = opp.leadDetails ? this.extractCustomerName(opp.leadDetails) : '';
       const matchesCustomer = !this.currentFilters.customer || 
-        opp.leadDetails?.toLowerCase().includes(this.currentFilters.customer.toLowerCase());
+        customerName.toLowerCase().includes(this.currentFilters.customer.toLowerCase());
       
-      return matchesId && matchesCustomer;
+      const matchesStage = !this.currentFilters.stage ||
+        opp.stage?.toLowerCase() === this.currentFilters.stage.toLowerCase();
+
+      return matchesId && matchesCustomer && matchesStage;
     });
+  }
+
+  private extractCustomerName(leadDetails: string | null | undefined): string {
+    if (!leadDetails) return '';
+    const match = leadDetails.match(/ID\s*:\s*\d+\s*-\s*(.*?)\s*\(/);
+    return match && match[1] ? match[1].trim() : leadDetails;
   }
 
   /* ================= DOWNLOAD ================= */

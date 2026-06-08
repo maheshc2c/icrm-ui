@@ -85,12 +85,12 @@ constructor() {
         icon: 'fas fa-map-location-dot',
         route: '/openleads',
         children: [
-          { label: 'Geo', icon: 'fas fa-globe', route: '/admin/geo' },
-          { label: 'Country', icon: 'fas fa-flag', route: '/admin/country' },
-          { label: 'Region', icon: 'fas fa-map', route: '/admin/region' },
-          { label: 'State', icon: 'fas fa-map-marked-alt', route: '/admin/state' },
-          { label: 'District', icon: 'fas fa-location-dot', route: '/admin/district' },
-          { label: 'City/Town', icon: 'fas fa-city', route: '/admin/city' }
+          { label: 'Geo', icon: 'fas fa-globe', route: '/geo' },
+          { label: 'Country', icon: 'fas fa-flag', route: '/country' },
+          { label: 'Region', icon: 'fas fa-map', route: '/region' },
+          { label: 'State', icon: 'fas fa-map-marked-alt', route: '/state' },
+          { label: 'District', icon: 'fas fa-location-dot', route: '/district' },
+          { label: 'City/Town', icon: 'fas fa-city', route: '/city' }
 
         ]
       },
