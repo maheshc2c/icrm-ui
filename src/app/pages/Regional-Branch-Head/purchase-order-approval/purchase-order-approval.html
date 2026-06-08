@@ -1,0 +1,24 @@
+<app-header></app-header>
+
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+
+  [showAdd]="false"
+  [showDownload]="false"
+  [showEdit]="true"
+  [showDelete]="false"
+  [showView]="true"
+
+  (search)="onSearch($event)"
+  (viewRow)="onView($event)"
+  (editRow)="onEdit($event)">
+</app-data-table>

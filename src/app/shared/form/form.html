@@ -59,18 +59,27 @@
             </textarea>
 
             <!-- STATIC DROPDOWN (🔥 FIXED) -->
-            <select *ngIf="field.type === 'select'" 
-  class="company-text-input" 
+            <select *ngIf="field.type === 'select'"
+  class="company-text-input"
   [(ngModel)]="formData[field.name]"
   (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
   [name]="field.name">
 
-  <option value="">-- Select --</option>
+  <option [ngValue]="null">
+  {{ field.placeholder }}
+</option>
+
   <option *ngFor="let opt of field.options" [value]="opt.value">
     {{ opt.label }}
+  </option>
 
-              </option>
-            </select>
+</select>
+<div
+  *ngIf="errors[field.name]"
+  class="validation-error"
+>
+  {{ errors[field.name] }}
+</div>
 
             <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
             <select *ngIf="field.type === 'select-dynamic'" 

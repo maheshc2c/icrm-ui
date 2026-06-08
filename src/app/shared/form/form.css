@@ -240,3 +240,9 @@
   cursor: pointer;
   user-select: none;
 }
+
+.validation-error {
+  color: #dc3545;
+  font-size: 13px;
+  margin-top: 4px;
+}

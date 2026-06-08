@@ -24,7 +24,7 @@
       <!-- <option value="">Select</option> -->
         <!-- ✅ REAL PLACEHOLDER -->
   <option [ngValue]="null">
-  {{ field.placeholder || 'Select' }}
+  {{ field.placeholder }}
 </option>
 
       <option *ngFor="let opt of field.options"
