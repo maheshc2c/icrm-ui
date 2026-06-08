@@ -260,26 +260,33 @@ onDelete(row: any) {
   }
 
   onImport() {
-    if (!this.fullRows || this.fullRows.length === 0) {
-      alert('No data available to download');
-      return;
-    }
+    console.log('DOWNLOAD CLICKED');
 
-    this.adminservice.downloadCustomer(this.fullRows).subscribe({
-      next: (blob: Blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Customer.xlsx';
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err: any) => {
-        console.error('Download failed:', err);
-        alert(`Download failed: ${err.status}`);
-      }
-    });
-  }
+  this.adminservice.downloadCustomer(
+    this.searchFilters.customerName || null,
+    this.searchFilters.customerCategoryName || null,
+    this.searchFilters.subCategoryName || null,
+    this.searchFilters.cityName || null
+  )
+  .subscribe({
+    next: (blob: Blob) => {
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Customers.xlsx';
+      a.click();
+
+      
+
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => {
+      console.error('Download failed', err);
+    }
+  });
+}
 
 onReset(): void {
   this.searchFilters = {};

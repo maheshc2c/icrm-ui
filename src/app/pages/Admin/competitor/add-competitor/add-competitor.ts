@@ -52,7 +52,9 @@ export class AddCompetitor implements OnInit {
       label: 'Competitor Rating',
       type: 'number',
       placeholder: 'Enter rating',
-      required: true
+      required: true,
+      min: 1,
+    max: 10
     }
   ];
 
@@ -83,8 +85,13 @@ export class AddCompetitor implements OnInit {
   /* ================= LOAD ================= */
   private loadCompetitorById(id: number): void {
   this.adminService.getCompetitors().subscribe({
-    next: (competitors) => {
-      const competitor = competitors.find(c => c.competitorId === id);
+    next: (response: any) => {
+
+      const competitors = response.content;
+
+      const competitor = competitors.find(
+        (c: CompetitorModel) => c.competitorId === id
+      );
 
       if (!competitor) {
         alert('Competitor not found');
@@ -106,6 +113,12 @@ export class AddCompetitor implements OnInit {
 
   /* ================= SAVE ================= */
   saveCompetitor(data: Partial<CompetitorModel>): void {
+
+    // Competitor Name Validation
+  if (!data.competitorName || data.competitorName.trim() === '') {
+    alert('This value is required.');
+    return;
+  }
 
     if (this.isEditMode) {
       // ✅ FULL MODEL FOR UPDATE

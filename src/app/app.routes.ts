@@ -764,6 +764,21 @@ export const routes: Routes = [
         data: { roles: ['Regional Branch Head'] }
       },
 
+      {
+        path: 'quotes-view',
+        loadComponent: () => import('./pages/Regional-Branch-Head/quote-approval/quote-approval').then(m => m.QuoteApproval),
+      },
+      {
+        path: 'c-note',
+        loadComponent: () => import('./pages/Regional-Branch-Head/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
+      },
+      {
+        path: 'PO-Approval',
+        loadComponent: () => import('./pages/Regional-Branch-Head/purchase-order-approval/purchase-order-approval').then(m => m.PurchaseOrderApproval),
+      },
+
+
+
         {
         path: 'regional-sales-manager-dashboard',
         loadComponent: () => import('./pages/Regional-Sales-Manager/regional-sales-manager-dashboard/regional-sales-manager-dashboard').then(m => m.RegionalSalesManagerDashboard),

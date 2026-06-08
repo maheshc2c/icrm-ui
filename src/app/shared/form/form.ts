@@ -23,12 +23,14 @@ export class Form implements OnChanges {
   @Input() title: string = '';
   @Input() fields: any[] = [];
   @Input() model: any;
+  
 
   @Output() formSubmit = new EventEmitter<any>();
   @Output() cancelForm  = new EventEmitter<void>();
   @Output() fieldChange = new EventEmitter<{ name: string, value: any }>();
 
   formData: any = {};
+  errors: any = {};
 
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
@@ -55,6 +57,10 @@ export class Form implements OnChanges {
   }
 
   this.fields.forEach(field => {
+
+    if (this.formData[field.name] === undefined) {
+    this.formData[field.name] = null;
+  }
     if (field.type === 'checkbox' && !this.formData[field.name]) {
       this.formData[field.name] = {};
     }
@@ -77,11 +83,64 @@ export class Form implements OnChanges {
   }
 
   submit() {
-    this.formSubmit.emit(this.formData);
+
+  this.errors = {};
+
+  this.fields.forEach(field => {
+
+    const error = this.validateField(field);
+
+    if (error) {
+      this.errors[field.name] = error;
+    }
+
+  });
+
+  if (Object.keys(this.errors).length > 0) {
+    return;
   }
+
+  this.formSubmit.emit(this.formData);
+}
 
   cancel() {
     this.cancelForm.emit();
   }
+
+  //helper for validation
+  validateField(field: any): string | null {
+
+  const value = this.formData[field.name];
+
+  // Required
+  if (
+    field.required &&
+    (value === null || value === undefined || value === '')
+  ) {
+    return `${field.label} is required`;
+  }
+
+  // Min
+  if (
+    field.min !== undefined &&
+    value !== null &&
+    value !== '' &&
+    Number(value) < field.min
+  ) {
+    return `${field.label} must be at least ${field.min}`;
+  }
+
+  // Max
+  if (
+    field.max !== undefined &&
+    value !== null &&
+    value !== '' &&
+    Number(value) > field.max
+  ) {
+    return `${field.label} must be less than ${field.max}`;
+  }
+
+  return null;
+}
 
 }

@@ -171,7 +171,7 @@ detectKey(row: any, index: number) {
 get totalItems(): number | null {
   return this.totalElements;
 }
-@Input() showPagination = true;
+// @Input() showPagination = true;
 @Output() pageChange = new EventEmitter<number>();
 @Output() pageSizeChange = new EventEmitter<number>();
 

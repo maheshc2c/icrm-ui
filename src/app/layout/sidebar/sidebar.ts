@@ -275,9 +275,9 @@ constructor() {
           icon: 'fas fa-check-circle',
           route: '/regional-branch-head/quote-approval',
           children: [
-            { label: 'C-Note Approval', icon: 'fas fa-file-signature', route: '/regional-branch-head/c-note-approval' },
-            { label: 'Quote Approval', icon: 'fas fa-file-signature', route: '/regional-branch-head/quote-approval' },
-            { label: 'Purchase Order Approval', icon: 'fas fa-file-contract', route: '/regional-branch-head/purchase-order-approval' }
+            { label: 'C-Note Approval', icon: 'fas fa-file-signature', route: '/c-note' },
+            { label: 'Quote Approval', icon: 'fas fa-file-signature', route: '/quotes-view' },
+            { label: 'Purchase Order Approval', icon: 'fas fa-file-contract', route: '/PO-Approval' }
           ]
         },
         {

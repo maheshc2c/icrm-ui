@@ -299,6 +299,7 @@ export class Addcustomer implements OnInit {
     {
       name: 'customerCategory',
       label: 'Category',
+      placeholder: 'Select-Category',
       type: 'select',
       required: false,
       options: [],

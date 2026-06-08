@@ -112,12 +112,20 @@ activateCompetitor(id: number) {
   }
 
   // ================= GET ALL COMPETITORS =================
-  getCompetitors(): Observable<CompetitorModel[]> {
-    return this.http.get<CompetitorModel[]>(
-      `${this.baseUrl}/admin/get-competitors`, // ✅ FIXED
-      { headers: this.getAuthHeaders() }
-    );
-  }
+  // getCompetitors(): Observable<CompetitorModel[]> {
+  //   return this.http.get<CompetitorModel[]>(
+  //     `${this.baseUrl}/admin/get-competitors`, // ✅ FIXED
+  //     { headers: this.getAuthHeaders() }
+  //   );
+  // }
+  getCompetitors(page = 0, size = 10): Observable<any> {
+  return this.http.get<any>(
+    `${this.baseUrl}/admin/get-competitors?page=${page}&size=${size}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
 
   // ================= CREATE COMPETITORS =================
@@ -313,16 +321,38 @@ activateCustomer(id: number) {
     );
   }
 
-  downloadCustomer(data: CustomerModel[]): Observable<Blob> {
-    return this.http.post(
-      `${this.baseUrl}/admin/customer-excel`,
-      data,    // ✅ send actual table data
-      {
-        headers: this.getAuthHeaders(),
-        responseType: 'blob'
-      }
-    );
-  }
+  // downloadCustomer(data: CustomerModel[]): Observable<Blob> {
+  //   return this.http.post(
+  //     `${this.baseUrl}/admin/customer-excel`,
+  //     data,    // ✅ send actual table data
+  //     {
+  //       headers: this.getAuthHeaders(),
+  //       responseType: 'blob'
+  //     }
+  //   );
+  // }
+
+  downloadCustomer(
+  customerName: string | null,
+  customerCategoryName: string | null,
+  subCategoryName: string | null,
+  cityName: string | null
+): Observable<Blob> {
+
+  return this.http.post(
+    `${this.baseUrl}/customer/download`,
+    {
+      customerName,
+      customerCategoryName,
+      subCategoryName,
+      cityName
+    },
+    {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    }
+  );
+}
 
   // ================= UPDATE CUSTOMER =================
   updateCustomer(customerId: number, customer: any) {
