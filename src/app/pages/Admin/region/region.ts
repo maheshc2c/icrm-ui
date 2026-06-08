@@ -33,7 +33,7 @@ export class RegionComponent implements OnInit {
   headerTitle = 'Region';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Territory', route: '/admin/region' },
+    { label: 'Manage Territory', route: '/region' },
     { label: 'Region' }
   ];
 
@@ -129,7 +129,7 @@ export class RegionComponent implements OnInit {
   }
 
   onAdd() {
-    this.router.navigate(['/admin/addregion']);
+    this.router.navigate(['/addregion']);
   }
 
   onEdit(row: any) {
@@ -139,7 +139,7 @@ export class RegionComponent implements OnInit {
       alert('No valid ID found for editing');
       return;
     }
-    this.router.navigate(['/admin/editregion', id]);
+    this.router.navigate(['/editregion', id]);
   }
 
   onDelete(row: any) {
@@ -160,44 +160,24 @@ export class RegionComponent implements OnInit {
   onSearch(searchData: any) {
     console.log('Search Triggered with Data:', searchData);
 
-    // Handle both object-based and string-based search input
     const searchTerm = typeof searchData === 'string' 
-      ? searchData 
+      ? searchData.trim() 
       : searchData?.locationName?.trim() || '';
 
     if (!searchTerm) {
       console.log('Empty search term, resetting to full list...');
-      this.loadRegions();
+      this.rows = [...this.fullRows];
       return;
     }
 
-    console.log(`Searching Backend for: "${searchTerm}"`);
-    this.regionService.searchRegion(searchTerm).subscribe({
-      next: (results: any[]) => {
-        console.log('Search Results from Backend:', results);
-
-        if (!results || results.length === 0) {
-          console.warn('No results returned from Backend Search');
-          this.rows = [];
-          this.fullRows = [];
-          return;
-        }
-
-        // Store raw results for export
-        this.originalData = results;
-        
-        this.rows = results.map((r, index) => {
-          return this.mapRegionRow(r, index);
-        });
-
-        this.fullRows = [...this.rows];
-        console.log('DataTable rows updated:', this.rows.length);
-      },
-      error: (err: any) => {
-        console.error('Search API Error:', err);
-        alert('Search failed');
-      }
+    const lowerTerm = searchTerm.toLowerCase();
+    this.rows = this.fullRows.filter(row => {
+      const matchCountry = row.countryName && row.countryName.toLowerCase().includes(lowerTerm);
+      const matchRegion = row.regionName && row.regionName.toLowerCase().includes(lowerTerm);
+      return matchCountry || matchRegion;
     });
+    
+    console.log('DataTable rows updated locally:', this.rows.length);
   }
 
   /* ================= DOWNLOAD FUNCTIONALITY ================= */

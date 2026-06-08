@@ -58,4 +58,18 @@ export class Categoryservice {
       responseType: 'blob'
     });
   }
+
+  // Activate category
+  activateCategory(id: number): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/activate-productCategory/${id}`, {}, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Deactivate category
+  deactivateCategory(id: number): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/deactivate-productCategory/${id}`, {}, {
+      headers: this.getAuthHeaders()
+    });
+  }
 }

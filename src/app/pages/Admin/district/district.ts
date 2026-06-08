@@ -31,8 +31,8 @@ export class DistrictComponent implements OnInit {
   headerTitle: string = 'District Management';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Territory', route: '/admin/district' },
-    { label: 'District', route: '/admin/district' }
+    { label: 'Manage Territory', route: '/district' },
+    { label: 'District', route: '/district' }
   ];
 
   /* ================= TABLE CONFIG ================= */
@@ -56,7 +56,7 @@ export class DistrictComponent implements OnInit {
   /* ================= BREADCRUMB ================= */
   breadcrumb: any[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Territory', route: '/admin/district' },
+    { label: 'Manage Territory', route: '/district' },
     { label: 'District' }
   ];
 
@@ -178,14 +178,14 @@ export class DistrictComponent implements OnInit {
 
   /* ================= ACTION HANDLERS ================= */
   onAdd(): void {
-    this.router.navigate(['/admin/adddistrict']);
+    this.router.navigate(['/adddistrict']);
   }
 
   onEdit(district: any): void {
     console.log('========== EDIT DISTRICT CLICKED ==========');
     console.log('District object:', district);
     console.log('District ID:', district.id);
-    console.log('Navigating to:', `/admin/editdistrict/${district.id}`);
+    console.log('Navigating to:', `/editdistrict/${district.id}`);
     
     if (!district.id) {
       console.error('❌ No ID found in district object!');
@@ -193,7 +193,7 @@ export class DistrictComponent implements OnInit {
       return;
     }
     
-    this.router.navigate(['/admin/editdistrict', district.id]);
+    this.router.navigate(['/editdistrict', district.id]);
     console.log('========================================');
   }
 

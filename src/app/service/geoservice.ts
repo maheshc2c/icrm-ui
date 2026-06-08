@@ -57,7 +57,7 @@ export class Geoservice {
   getGeos(): Observable<Geo[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<Geo[]>(
-      `${this.baseUrl}/admin/geo-view`,
+      `${this.baseUrl}/location/geo`,
       { headers }
     );
   }
@@ -65,9 +65,12 @@ export class Geoservice {
   // ================= CREATE GEO =================
   createGeo(geo: Geo): Observable<Geo> {
     const headers = this.getAuthHeaders();
+    const payload = {
+      geoName: geo.locationName
+    };
     return this.http.post<Geo>(
-      `${this.baseUrl}/admin/geo-add`,
-      geo,
+      `${this.baseUrl}/location/geo`,
+      payload,
       { headers }
     );
   }

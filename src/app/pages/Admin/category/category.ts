@@ -71,7 +71,8 @@ export class CategoryComponent implements OnInit {
         this.rows = categories.map((c, index) => ({
           id: c.categoryId,
           categoryName: c.categoryName || 'N/A',
-          categoryDescription: c.categoryDescription || 'N/A'
+          categoryDescription: c.categoryDescription || 'N/A',
+          categoryStatus: c.categoryStatus
         }));
         
         console.log('Total rows created:', this.rows.length);
@@ -106,7 +107,8 @@ export class CategoryComponent implements OnInit {
         this.rows = results.map((c) => ({
           id: c.categoryId,
           categoryName: c.categoryName || 'N/A',
-          categoryDescription: c.categoryDescription || 'N/A'
+          categoryDescription: c.categoryDescription || 'N/A',
+          categoryStatus: c.categoryStatus
         }));
       },
       error: (err: any) => {
@@ -131,10 +133,23 @@ export class CategoryComponent implements OnInit {
   }
 
   onDelete(category: any): void {
-    if (confirm(`Are you sure you want to delete ${category.categoryName}?`)) {
-      console.log('Delete category:', category);
-      alert('Delete functionality not implemented yet');
+    if (!category.id) {
+      return;
     }
+
+    const apiCall =
+      category.categoryStatus === 1
+        ? this.categoryService.deactivateCategory(category.id)
+        : this.categoryService.activateCategory(category.id);
+
+    apiCall.subscribe({
+      next: () => {
+        this.loadCategories();
+      },
+      error: (err: any) => {
+        console.error('Status update failed', err);
+      }
+    });
   }
 
   onImport(): void {

@@ -317,53 +317,53 @@ export const routes: Routes = [
 },
 //Geo
 {
-  path: 'admin/geo',
+  path: 'geo',
   loadComponent: () =>
     import('./pages/Admin/geo/geo').then(m => m.Geo),
 },
 {
-  path: 'admin/addgeo',
+  path: 'addgeo',
   loadComponent: () =>
     import('./pages/Admin/geo/addgeo/addgeo').then(m => m.Addgeo),
 },
 {
-  path: 'admin/editgeo/:id',
+  path: 'editgeo/:id',
   loadComponent: () =>
     import('./pages/Admin/geo/addgeo/addgeo').then(m => m.Addgeo),
 },
 
 //Country
 {
-  path: 'admin/country',
+  path: 'country',
   loadComponent: () =>
     import('./pages/Admin/country/country').then(m => m.CountryComponent),
  
 },
 {
-  path: 'admin/addcountry',
+  path: 'addcountry',
   loadComponent: () =>
     import('./pages/Admin/country/addcountry/addcountry').then(m => m.Addcountry),
 
 },
 {
-  path: 'admin/editcountry/:id',
+  path: 'editcountry/:id',
   loadComponent: () =>
     import('./pages/Admin/country/addcountry/addcountry').then(m => m.Addcountry),
 },
 //Region
 {
-  path: 'admin/region',
+  path: 'region',
   loadComponent: () =>
     import('./pages/Admin/region/region').then(m => m.RegionComponent),
   
 },
 {
-  path: 'admin/addregion',
+  path: 'addregion',
   loadComponent: () =>
     import('./pages/Admin/region/addregion/addregion').then(m => m.Addregion),
 },
 {
-  path: 'admin/editregion/:id',
+  path: 'editregion/:id',
   loadComponent: () =>
     import('./pages/Admin/region/addregion/addregion').then(m => m.Addregion),
 },
@@ -390,73 +390,55 @@ export const routes: Routes = [
 
 //State
 {
-  path: 'admin/state',
+  path: 'state',
   loadComponent: () =>
     import('./pages/Admin/state/state').then(m => m.StateComponent),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/addstate',
+  path: 'addstate',
   loadComponent: () =>
     import('./pages/Admin/state/addstate/addstate').then(m => m.Addstate),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/editstate/:id',
+  path: 'editstate/:id',
   loadComponent: () =>
     import('./pages/Admin/state/addstate/addstate').then(m => m.Addstate),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
  // District
 {
-  path: 'admin/district',
+  path: 'district',
   loadComponent: () =>
     import('./pages/Admin/district/district').then(m => m.DistrictComponent),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/adddistrict',
+  path: 'adddistrict',
   loadComponent: () =>
     import('./pages/Admin/district/adddistrict/adddistrict').then(m => m.Adddistrict),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/editdistrict/:id',
+  path: 'editdistrict/:id',
   loadComponent: () =>
     import('./pages/Admin/district/adddistrict/adddistrict').then(m => m.Adddistrict),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
  
 //City
 
 {
-  path: 'admin/city',
+  path: 'city',
   loadComponent: () =>
     import('./pages/Admin/city/city').then(m => m.CityComponent),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/addcity',
+  path: 'addcity',
   loadComponent: () =>
     import('./pages/Admin/city/addcity/addcity').then(m => m.Addcity),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 
 
 {
-  path: 'admin/editcity/:id',
+  path: 'editcity/:id',
   loadComponent: () =>
     import('./pages/Admin/city/addcity/addcity').then(m => m.Addcity),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 
 

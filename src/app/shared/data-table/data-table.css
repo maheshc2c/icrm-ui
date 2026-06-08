@@ -91,6 +91,10 @@
 }
 
 /* ================= ACTION BUTTONS ================= */
+.action-cell {
+  text-align: center;
+}
+
 .action-buttons {
   display: inline-flex;
   gap: 6px;

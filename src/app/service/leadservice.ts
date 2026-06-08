@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth-service';
 import { LeadSummary, LeadPayload } from '../models/lead-model';
+import { OpportunityTableModel } from '../models/opportunity-table.model';
 
 @Injectable({
   providedIn: 'root'
@@ -166,8 +167,8 @@ export class Leadservice {
   }
 
   /* ================= GET ALL OPPORTUNITIES (TABLE) ================= */
-  getOpportunityTable(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/SalesEngineer/opportunity/table`, {
+  getOpportunityTable(): Observable<OpportunityTableModel[]> {
+    return this.http.get<OpportunityTableModel[]>(`${this.baseUrl}/SalesEngineer/opportunity/table`, {
       headers: this.getAuthHeaders()
     });
   }

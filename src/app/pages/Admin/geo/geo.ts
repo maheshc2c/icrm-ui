@@ -33,7 +33,7 @@ export class Geo implements OnInit {
  
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Territory', route: '/admin/geo' },
+    { label: 'Manage Territory', route: '/geo' },
     { label: 'Geo' }
   ];
  
@@ -83,7 +83,7 @@ export class Geo implements OnInit {
  
   //
   onAdd() {
-    this.router.navigate(['/admin/addgeo']);
+    this.router.navigate(['/addgeo']);
   }
  
   onEdit(row: any) {
@@ -105,8 +105,8 @@ export class Geo implements OnInit {
       return;
     }
  
-    console.log('Navigating to:', `/admin/editgeo/${id}`);
-    this.router.navigate(['/admin/editgeo', id]);
+    console.log('Navigating to:', `/editgeo/${id}`);
+    this.router.navigate(['/editgeo', id]);
   }
   isEditMode = false;
   geoId!: number
