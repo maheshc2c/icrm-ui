@@ -1,0 +1,306 @@
+.role-selection-container {
+    padding: 60px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fcfcfc;
+    /* optional light bg */
+}
+
+.role-selection-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 40px;
+    width: 100%;
+    max-width: 600px;
+    /* Reduced width */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    /* subtle shadow */
+}
+
+.role-selection-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 40px;
+    font-weight: 500;
+    text-align: center;
+    /* Centered heading */
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-right: 20px;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-select {
+    width: 60%;
+    /* smaller than 100% since label is beside it */
+    padding: 8px 12px;
+    border: 1px solid #00adef;
+    /* Light blue border matching theme */
+    border-radius: 4px;
+    outline: none;
+    font-size: 14px;
+    color: #555;
+}
+
+.form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* ================= WIZARD LAYOUT ================= */
+.wizard-container {
+    background: #fff;
+    margin: 24px;
+    margin-left: 287px;
+    /* Account for the sidebar width */
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* ================= WIZARD TABS HEADER ================= */
+.wizard-tabs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    border-bottom: 2px solid #00adef;
+    /* A theme color line */
+}
+
+.tabs-list {
+    display: flex;
+    flex-direction: row;
+}
+
+.tab-item {
+    padding: 16px 32px;
+    font-size: 15px;
+    color: #777;
+    position: relative;
+    background: #ebebeb;
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%);
+    margin-right: -10px;
+    /* Overlap for chevron effect */
+    padding-left: 40px;
+    font-weight: 500;
+}
+
+.tab-item:first-child {
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%);
+    padding-left: 32px;
+}
+
+.tab-item.active {
+    background: #fff;
+    color: #4a90e2;
+    /* Active blue color matching screenshot text */
+    z-index: 10;
+}
+
+.tabs-actions {
+    padding-right: 24px;
+}
+
+.nav-btn {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 6px 16px;
+    margin-left: 8px;
+    border-radius: 16px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #333;
+}
+
+.nav-btn:hover {
+    background: #f0f0f0;
+}
+
+/* ================= WIZARD FORM BODY ================= */
+.wizard-form-body {
+    padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+}
+
+.wizard-form-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.wizard-form-container form {
+    width: 100%;
+    max-width: 700px;
+}
+
+.section-title {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 32px;
+    font-weight: 400;
+    align-self: flex-start;
+    /* Optional: Keep title left aligned or let text center */
+    width: 100%;
+}
+
+.section-title {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 32px;
+    font-weight: 400;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 32px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.inline-label {
+    margin: 0;
+    font-weight: 600;
+    font-size: 14px;
+    color: #444;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-danger {
+    color: #d9534f;
+    margin-left: 2px;
+}
+
+.input-container {
+    max-width: 400px;
+    /* Force the inputs to stay small like the original */
+    width: 100%;
+}
+
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    font-size: 14px;
+    color: #333;
+}
+
+textarea.form-control {
+    resize: vertical;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #66afe9;
+    outline: none;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+.phone-input-group {
+    display: flex;
+    gap: 16px;
+}
+
+.phone-code {
+    flex: 0 0 80px;
+    /* Fixed width for country code */
+}
+
+/* Buttons inside form */
+.form-actions {
+    margin-left: 232px;
+    /* Align with inputs */
+}
+
+.btn-rounded {
+    border-radius: 16px;
+    padding: 6px 24px;
+}
+
+.btn-outline-secondary {
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: #4a90e2;
+    /* Theme secondary blue */
+    border: none;
+    color: #fff;
+    font-size: 14px;
+}
+
+/* ================= CHECKBOX LIST ================= */
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+.checkbox-item input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #4a90e2;
+}
+
+.checkbox-item label {
+    cursor: pointer;
+    margin: 0;
+    user-select: none;
+}

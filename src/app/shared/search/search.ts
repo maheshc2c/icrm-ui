@@ -27,6 +27,7 @@ export class Search {
   values: { [key: string]: any } = {};
 
   @Output() searchChange = new EventEmitter<any>();
+  @Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
 
 
   ngOnInit() {
@@ -45,8 +46,11 @@ export class Search {
 //     }
 //   }
   
-  onInput() {
+  onInput(changedKey?: string) {
     this.searchChange.emit(this.values);
+    if (changedKey) {
+      this.fieldChange.emit({ key: changedKey, value: this.values[changedKey] });
+    }
   }
 
   // clear() {

@@ -33,9 +33,14 @@
           <input type="number"
                  class="company-text-input"
                  [(ngModel)]="form.countryHead" />
+
+                 @if(errors.countryHead){
+      <div class="validation-error" *ngIf="errors.countryHead">
+  {{ errors.countryHead }}
+</div>}
         </div>
       </div>
-
+      
       <!-- NSM -->
       <div class="company-field-row">
         <label class="field-label-text">
@@ -47,8 +52,14 @@
           <input type="number"
                  class="company-text-input"
                  [(ngModel)]="form.nsm" />
+                 @if(errors.nsm){
+      <div class="validation-error" *ngIf="errors.nsm">
+  {{ errors.nsm }}
+</div>}
         </div>
       </div>
+      
+
 
       <!-- RBM -->
       <div class="company-field-row">
@@ -61,8 +72,14 @@
           <input type="number"
                  class="company-text-input"
                  [(ngModel)]="form.rbm" />
+                 @if(errors.rbm){
+      <div class="validation-error" *ngIf="errors.rbm">
+  {{ errors.rbm }}
+</div>
+      }
         </div>
       </div>
+      
 
       <!-- BUTTONS -->
       <div class="form-action-buttons">

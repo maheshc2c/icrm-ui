@@ -6,15 +6,17 @@ body {
 /* FIXED: use .page-header (class), not page-header (tag) */
 .page-header {
   background: #fff;
-  padding: 1.5rem 2rem;
-  margin: 0px 0 20px 0; /* 70px top margin to clear the fixed top navbar */
+  padding: 3.5rem 2rem;
+  margin: 0 0 20px 0;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   width: calc(100% - 320px);
+  height: 40px;
   margin-left: 257px;
 }
 
 .page-title {
+  margin-top: 35px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

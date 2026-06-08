@@ -99,12 +99,12 @@ export class EditManageUserComponent implements OnInit {
 
       this.currentUser = user;
 
-      this.companies = companies.map((c: any) => ({
+      this.companies = (Array.isArray(companies) ? companies : []).map((c: any) => ({
         label: c.companyName,
         value: c.companyId
       }));
 
-      this.branches = branches.map((b: any) => ({
+      this.branches = (Array.isArray(branches) ? branches : []).map((b: any) => ({
         label: b.branchName,
         value: b.branchId
       }));

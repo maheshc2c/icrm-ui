@@ -12,19 +12,19 @@
       [type]="field.type || 'text'"
       [placeholder]="field.placeholder"
       [(ngModel)]="values[field.key]"
-      (input)="onInput()" />
+      (input)="onInput(field.key)" />
 
     <!-- 🔹 DROPDOWN FIELD -->
     <select
       *ngIf="field.type === 'select'"
       class="form-select"
       [(ngModel)]="values[field.key]"
-      (change)="onInput()">
+      (change)="onInput(field.key)">
 
       <!-- <option value="">Select</option> -->
         <!-- ✅ REAL PLACEHOLDER -->
   <option [ngValue]="null">
-  {{ field.placeholder || 'Select' }}
+  {{ field.placeholder }}
 </option>
 
       <option *ngFor="let opt of field.options"

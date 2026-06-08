@@ -1,0 +1,363 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div *ngIf="currentStep === 1" class="role-selection-container">
+    <div class="role-selection-card">
+        <h2 class="role-selection-title text-center">Choose User Role</h2>
+
+        <div class="form-group">
+            <label for="roleSelect" class="form-label">Role</label>
+            <select id="roleSelect" class="form-select" [(ngModel)]="selectedRole" name="role">
+                <option value="" disabled selected>select</option>
+                <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+            </select>
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="btn btn-primary" (click)="onNextStep()">Next</button>
+        </div>
+    </div>
+</div>
+
+<!-- STEP 2-4: Wizard Flow -->
+<div *ngIf="currentStep >= 2" class="wizard-container">
+
+    <!-- Angular Tabs Header -->
+    <div class="wizard-tabs-header">
+        <div class="tabs-list">
+            <div class="tab-item" [class.active]="currentStep === 2">
+                User Details
+            </div>
+            <div class="tab-item" [class.active]="currentStep === 3">
+                Location Details
+            </div>
+            <div class="tab-item" [class.active]="currentStep === 4">
+                Product Details
+            </div>
+            <div class="tab-item" *ngIf="isDistributor" [class.active]="currentStep === 5">
+                Distributor Details
+            </div>
+        </div>
+
+        <div class="tabs-actions">
+            <button class="nav-btn" (click)="handleStepCancel()">
+                <i class="fas fa-arrow-left"></i> Prev
+            </button>
+            <button class="nav-btn" (click)="handleStepSubmit(formInitialData)">
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Step 2: User Details Form -->
+    <div *ngIf="currentStep === 2" class="wizard-form-body">
+        <h3 class="section-title">User Info</h3>
+
+        <div class="wizard-form-container">
+            <form (ngSubmit)="handleStepSubmit(formInitialData)">
+
+                <div class="form-row" *ngFor="let field of userDetailsFields">
+                    <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required"
+                            class="text-danger">*</span></label>
+
+                    <ng-container [ngSwitch]="field.type">
+                        <!-- Standard Text / Email Input -->
+                        <div *ngSwitchCase="'text'" class="input-container">
+                            <input [type]="field.type" class="form-control" [placeholder]="field.placeholder"
+                                [(ngModel)]="formInitialData[field.name]" [name]="field.name"
+                                [required]="field.required">
+                        </div>
+                        <div *ngSwitchCase="'email'" class="input-container">
+                            <input [type]="field.type" class="form-control" [placeholder]="field.placeholder"
+                                [(ngModel)]="formInitialData[field.name]" [name]="field.name"
+                                [required]="field.required">
+                        </div>
+
+                        <!-- Phone / Mobile Input -->
+                        <div *ngSwitchCase="'phone'" class="input-container phone-input-group">
+                            <select class="form-select phone-code" [(ngModel)]="formInitialData[field.name + 'Code']"
+                                [name]="field.name + 'Code'">
+                                <option value="91">91</option>
+                            </select>
+                            <input type="text" class="form-control" [placeholder]="field.placeholder"
+                                [(ngModel)]="formInitialData[field.name]" [name]="field.name"
+                                [required]="field.required">
+                        </div>
+
+                        <!-- Select / Dropdown -->
+                        <div *ngSwitchCase="'select'" class="input-container">
+                            <select class="form-select" [(ngModel)]="formInitialData[field.name]" [name]="field.name"
+                                [required]="field.required" [attr.multiple]="$any(field).multiple ? true : null">
+                                <option value="" disabled selected>{{field.placeholder}}</option>
+                                <option *ngFor="let opt of field.options" [value]="opt">{{opt}}</option>
+                            </select>
+                        </div>
+
+                        <!-- Textarea -->
+                        <div *ngSwitchCase="'textarea'" class="input-container">
+                            <textarea class="form-control" rows="2" [(ngModel)]="formInitialData[field.name]"
+                                [name]="field.name" [required]="field.required"></textarea>
+                        </div>
+
+                        <!-- Default -->
+                        <div *ngSwitchDefault class="input-container">
+                            <input type="text" class="form-control" [placeholder]="field.placeholder"
+                                [(ngModel)]="formInitialData[field.name]" [name]="field.name"
+                                [required]="field.required">
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div class="form-actions mt-4">
+                    <button type="button" class="btn btn-outline-secondary btn-rounded"
+                        (click)="handleStepCancel()">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-rounded ms-3">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Step 3: Location Details (Cascading) -->
+    <div *ngIf="currentStep === 3" class="wizard-form-body">
+        <h3 class="section-title">Location Details</h3>
+        <div class="wizard-form-container">
+            <form (ngSubmit)="handleStepSubmit({})">
+
+                <!-- === WORLD-LEVEL ROLES: Admin Marketing / Global Head / Stockist / CIC === -->
+                <ng-container *ngIf="locationMode === 'world'">
+                    <div class="form-row">
+                        <label class="form-label inline-label text-right">Assign World <span
+                                class="text-danger">*</span></label>
+                        <div class="input-container">
+                            <select class="form-select" [(ngModel)]="selWorld" name="selWorld"
+                                (ngModelChange)="onWorldChange($event)">
+                                <option value="">-- Select World --</option>
+                                <option *ngFor="let w of worldOptions" [value]="w">{{w}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label inline-label text-right"></label>
+                        <div class="input-container">
+                            <p class="text-muted" style="font-size:13px; margin:0;">
+                                <i class="fas fa-info-circle"></i>
+                                This role has access to all locations under the selected World.
+                            </p>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- === GEO-LEVEL ROLES: Sales Director === -->
+                <ng-container *ngIf="locationMode === 'geo'">
+                    <div class="form-row">
+                        <label class="form-label inline-label text-right">Assign Geo <span
+                                class="text-danger">*</span></label>
+                        <div class="input-container">
+                            <select class="form-select" [(ngModel)]="selGeo" name="selGeo"
+                                (ngModelChange)="onGeoChange($event)">
+                                <option value="">-- Select Geo --</option>
+                                <option *ngFor="let g of geoOptions" [value]="g.locationName">{{g.locationName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label inline-label text-right"></label>
+                        <div class="input-container">
+                            <p class="text-muted" style="font-size:13px; margin:0;">
+                                <i class="fas fa-info-circle"></i>
+                                This role operates at Geo level. Select one Geo to assign.
+                            </p>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- === FULL CASCADE: All other roles === -->
+                <ng-container *ngIf="locationMode === 'cascade'">
+
+                    <!-- Geo -->
+                    <div class="form-row">
+                        <label class="form-label inline-label text-right">Assign Geo</label>
+                        <div class="input-container">
+                            <select class="form-select" [(ngModel)]="selGeo" name="selGeo"
+                                (ngModelChange)="onGeoChange($event)">
+                                <option value="">-- Select Geo --</option>
+                                <option *ngFor="let g of geoOptions" [value]="g.locationName">{{g.locationName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Country -->
+                    <div class="form-row" *ngIf="countryOptions.length">
+                        <label class="form-label inline-label text-right">Assign Country</label>
+                        <div class="input-container">
+                            <select class="form-select" [(ngModel)]="selCountry" name="selCountry"
+                                (ngModelChange)="onCountryChange($event)">
+                                <option value="">-- Select Country --</option>
+                                <option *ngFor="let c of countryOptions" [value]="c.locationName">{{c.locationName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Region -->
+                    <div class="form-row" *ngIf="regionOptions.length">
+                        <label class="form-label inline-label text-right">Assign Region</label>
+                        <div class="input-container">
+                            <select class="form-select" [(ngModel)]="selRegion" name="selRegion"
+                                (ngModelChange)="onRegionChange($event)">
+                                <option value="">-- Select Region --</option>
+                                <option *ngFor="let r of regionOptions" [value]="r.locationName">{{r.locationName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- States (checkboxes) -->
+                    <div class="form-row" *ngIf="stateOptions.length">
+                        <label class="form-label inline-label text-right">Assign States</label>
+                        <div class="input-container">
+                            <div class="checkbox-list">
+                                <div class="checkbox-item" *ngFor="let s of stateOptions">
+                                    <input type="checkbox" [id]="'state_' + s.locationName"
+                                        [checked]="selStates.includes(s.locationName)"
+                                        (change)="onStateCheck($event, s.locationName)">
+                                    <label [for]="'state_' + s.locationName">{{s.locationName}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Districts (checkboxes) -->
+                    <div class="form-row" *ngIf="districtOptions.length">
+                        <label class="form-label inline-label text-right">Assign Districts</label>
+                        <div class="input-container">
+                            <div class="checkbox-list">
+                                <div class="checkbox-item" *ngFor="let d of districtOptions">
+                                    <input type="checkbox" [id]="'dist_' + d.locationName"
+                                        [checked]="selDistricts.includes(d.locationName)"
+                                        (change)="onDistrictCheck($event, d.locationName)">
+                                    <label [for]="'dist_' + d.locationName">{{d.locationName}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cities (checkboxes) -->
+                    <div class="form-row" *ngIf="cityOptions.length">
+                        <label class="form-label inline-label text-right">Assign Cities</label>
+                        <div class="input-container">
+                            <div class="checkbox-list">
+                                <div class="checkbox-item" *ngFor="let c of cityOptions">
+                                    <input type="checkbox" [id]="'city_' + c.locationName"
+                                        [checked]="selCities.includes(c.locationName)"
+                                        (change)="onCityCheck($event, c.locationName)">
+                                    <label [for]="'city_' + c.locationName">{{c.locationName}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </ng-container>
+                <!-- End cascade ng-container -->
+
+                <!-- Form Actions (shared for all modes) -->
+                <div class="form-actions mt-4">
+                    <button type="button" class="btn btn-outline-secondary btn-rounded"
+                        (click)="handleStepCancel()">Previous</button>
+                    <button type="submit" class="btn btn-primary btn-rounded ms-3">Next Step</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Step 4: Product Details (Cascading) -->
+    <div *ngIf="currentStep === 4" class="wizard-form-body">
+        <h3 class="section-title">Product Details</h3>
+        <div class="wizard-form-container">
+            <form (ngSubmit)="handleStepSubmit({})">
+
+                <!-- Categories (checkboxes) -->
+                <div class="form-row">
+                    <label class="form-label inline-label text-right">Assign Categories</label>
+                    <div class="input-container">
+                        <div class="checkbox-list">
+                            <div class="checkbox-item" *ngFor="let c of categories">
+                                <input type="checkbox" [id]="'cat_' + c"
+                                    [checked]="selCategories.includes(c)"
+                                    (change)="onCategoryCheck($event, c)">
+                                <label [for]="'cat_' + c">{{c}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Groups (checkboxes) -->
+                <div class="form-row" *ngIf="groupOptions.length">
+                    <label class="form-label inline-label text-right">Assign Groups</label>
+                    <div class="input-container">
+                        <div class="checkbox-list">
+                            <div class="checkbox-item" *ngFor="let g of groupOptions">
+                                <input type="checkbox" [id]="'grp_' + g.groupName"
+                                    [checked]="selGroups.includes(g.groupName)"
+                                    (change)="onGroupCheck($event, g.groupName)">
+                                <label [for]="'grp_' + g.groupName">{{g.groupName}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products (checkboxes) -->
+                <div class="form-row" *ngIf="productOptions.length">
+                    <label class="form-label inline-label text-right">Assign Products</label>
+                    <div class="input-container">
+                        <div class="checkbox-list">
+                            <div class="checkbox-item" *ngFor="let p of productOptions">
+                                <input type="checkbox" [id]="'prod_' + p"
+                                    [checked]="selProducts.includes(p)"
+                                    (change)="onProductCheck($event, p)">
+                                <label [for]="'prod_' + p">{{p}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions mt-4">
+                    <button type="button" class="btn btn-outline-secondary btn-rounded"
+                        (click)="handleStepCancel()">Previous</button>
+                    <button type="submit" class="btn btn-primary btn-rounded ms-3">
+                        {{ isDistributor ? 'Next Step' : 'Submit' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Step 5: Distributor Details Form (only shown when role = Distributor) -->
+    <div *ngIf="currentStep === 5 && isDistributor" class="wizard-form-body">
+        <h3 class="section-title">Distributor Details</h3>
+        <div class="wizard-form-container">
+            <form (ngSubmit)="handleStepSubmit(formInitialData)">
+                <div class="form-row" *ngFor="let field of distributorDetailsFields">
+                    <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required"
+                            class="text-danger">*</span></label>
+                    <div class="input-container">
+                        <input type="text" class="form-control" [placeholder]="field.placeholder"
+                            [(ngModel)]="formInitialData[field.name]" [name]="field.name" [required]="field.required">
+                    </div>
+                </div>
+                <div class="form-actions mt-4">
+                    <button type="button" class="btn btn-outline-secondary btn-rounded"
+                        (click)="handleStepCancel()">Previous</button>
+                    <button type="submit" class="btn btn-primary btn-rounded ms-3">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
