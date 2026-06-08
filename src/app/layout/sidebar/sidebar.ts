@@ -59,7 +59,7 @@ constructor() {
         label: 'Manage User',
         // icon: 'fas fa-users',
         icon: 'fas fa-users-cog',
-        route: '/superadmin/company',
+        route: '/admin/manage-users',
         // children: [
         //   { label: 'Admin Users', icon: 'fas fa-user', route: '/admin-users' },
         //   { label: 'Create User', icon: 'fas fa-user-plus', route: '/create-user' }
@@ -99,9 +99,9 @@ constructor() {
         icon: 'fas fa-user-group',
         route: '/openleads',
         children: [
-          { label: 'Customer', icon: 'fas fa-user', route: '/admin-users' },
-          { label: 'Contact', icon: 'fas fa-address-book', route: '/create-user' },
-          { label: 'Speciality', icon: 'fas fa-star', route: '/admin-users' }
+          { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
+          { label: 'Contact', icon: 'fas fa-address-book', route: '/admin/contact' },
+          { label: 'Speciality', icon: 'fas fa-star', route: '/admin/speciality' }
         ]
       },
             {
@@ -189,7 +189,7 @@ constructor() {
           icon: 'fas fa-users-cog',
           route: '/adminmarketingdashboard',
           children: [
-            { label: 'Customer', icon: 'fas fa-user-friends', route: '/adminmarketing/manage-customer' },
+            { label: 'Customer', icon: 'fas fa-user-friends', route: '/customer' },
             { label: 'Contact', icon: 'fas fa-address-book', route: '/adminmarketing/manage-contact' },
             { label: 'Speciality', icon: 'fas fa-star', route: '/adminmarketing/manage-speciality' }
           ]
@@ -731,7 +731,7 @@ constructor() {
       {
         label: 'Home',
         icon: 'fas fa-home',
-        route: '/salesmanagerdashboard'
+        route: '/sales-manager-dashboard'
       },
       {
         label: 'Dashboards',

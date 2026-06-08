@@ -19,7 +19,7 @@ export class BranchService {
   getBranches(): Observable<any[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<any[]>(
-      `${this.baseUrl}/superadmin/getBranch`,
+      `${this.baseUrl}/superadmin/branch-dropdown`,
       { headers }
     );
   }

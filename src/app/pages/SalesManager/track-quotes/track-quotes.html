@@ -1,0 +1,12 @@
+<app-data-table
+  title="Quote Tracking"
+  [breadcrumbs]="breadcrumbs"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  (searchChange)="onSearch($event)"
+  [showImport]="false"
+  [showAdd]="false"
+  (download)="onDownload()"
+  (editRow)="onEdit($event)">
+</app-data-table>

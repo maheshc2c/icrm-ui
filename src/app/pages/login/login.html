@@ -20,6 +20,18 @@
         />
       </div>
 
+      <!-- Alert Container -->
+      <div class="alert-container" *ngIf="successMessage || errorMessage">
+        <div class="alert alert-success" *ngIf="successMessage">
+          <i class="fas fa-check-circle"></i>
+          <span>{{ successMessage }}</span>
+        </div>
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+      </div>
+
       <form (ngSubmit)="onLogin()" #loginForm="ngForm">
         <div class="form-group">
           <label for="username">Employee ID</label>
@@ -28,6 +40,7 @@
             id="username"
             name="username"
             [(ngModel)]="username"
+            [disabled]="isLoading"
             required
           />
         </div>
@@ -39,18 +52,23 @@
             id="password"
             name="password"
             [(ngModel)]="password"
+            [disabled]="isLoading"
             required
           />
         </div>
 
-        <button type="submit" class="login-btn">Login</button>
+        <button type="submit" class="login-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Login</span>
+          <span *ngIf="isLoading" class="spinner-container">
+            <span class="spinner"></span>
+            <span>Logging in...</span>
+          </span>
+        </button>
       </form>
 
       <div>
         <a routerLink="/forgotpassword" class="forgot-password">Forgot Password</a>
       </div>
-
-      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
     </div>
   </div>
 </div>

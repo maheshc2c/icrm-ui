@@ -106,11 +106,10 @@
             <!-- CHECKBOX GROUP (🔥 NEW) -->
             <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container">
               <div *ngFor="let opt of field.options" class="checkbox-item">
-                <input type="checkbox" [id]="field.name + '_' + opt.value" [ngModel]="formData[field.name][opt.value]"
-                  (ngModelChange)="
-                    formData[field.name][opt.value] = $event;
-                    fieldChange.emit({ name: field.name, value: formData[field.name] })
-                  " [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
+                <input type="checkbox" [id]="field.name + '_' + opt.value" 
+                  [ngModel]="getCheckboxValue(field.name, opt.value)"
+                  (ngModelChange)="onCheckboxChange(field.name, opt.value, $event)"
+                  [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
                 <label [for]="field.name + '_' + opt.value" class="checkbox-label">
                   {{ opt.label }}
                 </label>

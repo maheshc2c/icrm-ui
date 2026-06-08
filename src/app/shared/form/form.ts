@@ -67,6 +67,21 @@ export class Form implements OnChanges {
   });
 }
 
+  getCheckboxValue(fieldName: string, optionValue: string): boolean {
+    if (!this.formData[fieldName]) {
+      this.formData[fieldName] = {};
+    }
+    return !!this.formData[fieldName][optionValue];
+  }
+
+  onCheckboxChange(fieldName: string, optionValue: string, isChecked: boolean) {
+    if (!this.formData[fieldName]) {
+      this.formData[fieldName] = {};
+    }
+    this.formData[fieldName][optionValue] = isChecked;
+    this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
+  }
+
   submit() {
 
   this.errors = {};

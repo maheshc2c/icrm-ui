@@ -254,7 +254,7 @@ activateCustomer(id: number) {
       `${this.baseUrl}/customer/search`,
       {
         headers: this.getAuthHeaders(),
-        params: { name: name } // ✅ MATCHES BACKEND
+        params: { name: name } 
       }
     );
   }
@@ -285,6 +285,21 @@ activateCustomer(id: number) {
     return this.http.post<any>(
       `${this.baseUrl}/customer/search`,
       payload,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  // ================= CATEGORY & SUBCATEGORY DROPDOWNS (ManageCustomer) =================
+  getCategoryDropdown(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/customer/categories`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getSubCategoryDropdown(categoryId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/customer/subcategory/${categoryId}`,
       { headers: this.getAuthHeaders() }
     );
   }

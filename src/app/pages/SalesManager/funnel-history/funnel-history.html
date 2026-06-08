@@ -1,0 +1,18 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  title="Opportunity Status"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  (searchChange)="onSearch($event)"
+  [showImport]="true"
+  [showAdd]="false"
+  (download)="onDownload()"
+  (editRow)="onEdit($event)">
+</app-data-table>

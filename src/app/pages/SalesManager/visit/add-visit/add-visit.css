@@ -1,0 +1,38 @@
+.add-visit-content {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 70px);
+  margin-left: 287px;
+  width: calc(100% - 287px);
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f4f7f6;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: none;
+}
+
+.form-label {
+  font-size: 14px;
+  color: #444;
+  font-weight: 600;
+}
+
+.form-select, .form-control {
+  font-size: 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.form-select:focus, .form-control:focus {
+  border-color: #448aff;
+  box-shadow: 0 0 0 0.2rem rgba(68, 138, 255, 0.25);
+}
+
+.input-group-text {
+  border: none;
+}

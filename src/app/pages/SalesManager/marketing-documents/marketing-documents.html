@@ -1,0 +1,12 @@
+<app-data-table
+  title="Marketing Documents"
+  [breadcrumbs]="breadcrumbs"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  (searchChange)="onSearch($event)"
+  [showImport]="false"
+  [showAdd]="false"
+  [showRefresh]="false"
+  (editRow)="onEdit($event)">
+</app-data-table>
