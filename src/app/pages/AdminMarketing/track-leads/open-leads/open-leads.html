@@ -1,0 +1,440 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="wizard-tabs-container">
+  <!-- Wizard Navigation -->
+  <div class="wizard-navigation-bar">
+    <div class="wizard-step-item" [class.step-active]="activeTab === 'leadDetails'" (click)="showTab('leadDetails')">Lead Details</div>
+    <div class="wizard-step-item" [class.step-active]="activeTab === 'opportunities'" (click)="showTab('opportunities')">Opportunities</div>
+    <div class="wizard-step-item" [class.step-active]="activeTab === 'quote'" (click)="showTab('quote')">Quote</div>
+    <div class="wizard-step-item" [class.step-active]="activeTab === 'contractNote'" (click)="showTab('contractNote')">Contract Note</div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content-wrapper">
+    <!-- Lead Details Tab -->
+    <div class="tab-panel-content" [class.content-active]="activeTab === 'leadDetails'">
+      <!-- Page Header with Action Buttons -->
+      <div class="page-header-wrapper">
+        <div class="page-heading-text">Lead Details</div>
+        <div class="header-action-buttons">
+          <button type="button" class="action-btn btn-info-primary" (click)="navigateToOpenLeads()" title="Back to Open Leads">
+            <span class="icon-font fa fa-arrow-left"></span>
+          </button>
+          <button type="button" class="action-btn btn-info-primary" (click)="onLeadHeaderAction('showDetails')" title="Show Details">
+            <span class="icon-font fa fa-info"></span>
+          </button>
+          <button type="button" class="action-btn btn-reroute-action" (click)="onLeadHeaderAction('rerouteLead')" title="Reroute Lead">
+            <span>➤</span>
+          </button>
+          <button type="button" class="action-btn btn-drop-danger" (click)="onLeadHeaderAction('dropLead')" title="Drop Lead">
+            <span class="icon-font fa fa-trash-alt"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Section -->
+      <div class="form-details-section">
+        <form (ngSubmit)="saveLeadDetails(leadDetailsModel)">
+          <!-- Source of Lead -->
+          <div class="detail-form-row">
+            <label class="form-field-label">
+              Source of Lead<span class="required-mark">*</span>
+            </label>
+            <div class="form-field-input-wrapper full-width">
+              <select class="detail-select-field" name="source" [(ngModel)]="leadDetailsModel.source" disabled>
+                <option value="">Select Source of Lead</option>
+                <option value="1">Visit</option>
+                <option value="2">Marketing Campaign</option>
+                <option value="3">Referral</option>
+                <option value="4">Telephonic</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Campaign -->
+          <div class="detail-form-row">
+            <label class="form-field-label">
+              Campaign<span class="required-mark">*</span>
+            </label>
+            <div class="form-field-input-wrapper full-width">
+              <input type="text" class="detail-input-field" [(ngModel)]="leadDetailsModel.campaign" name="campaign" disabled>
+            </div>
+          </div>
+
+          <!-- Customer -->
+          <div class="detail-form-row">
+            <label class="form-field-label">
+              Customer<span class="required-mark">*</span>
+            </label>
+            <div class="form-field-input-wrapper">
+              <input type="text" class="detail-input-field" [(ngModel)]="leadDetailsModel.customer" name="customer" disabled style="flex: 1;">
+              <button type="button" class="icon-button-small" title="Customer Details" (click)="onLeadFieldIconAction('customerDetails')">
+                <span class="icon-font fa fa-info"></span>
+              </button>
+              <button type="button" class="icon-button-small" title="Installation Base" (click)="onLeadFieldIconAction('installationBase')">
+                <span class="icon-font fa fa-book"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Contact Person 1 -->
+          <div class="detail-form-row">
+            <label class="form-field-label">
+              Contact Person 1<span class="required-mark">*</span>
+            </label>
+            <div class="form-field-input-wrapper full-width">
+              <input type="text" class="detail-input-field" [(ngModel)]="leadDetailsModel.contactPerson1" name="contactPerson1" disabled>
+            </div>
+          </div>
+
+          <!-- Contact Person 2 -->
+          <div class="detail-form-row">
+            <label class="form-field-label">Contact Person 2</label>
+            <div class="form-field-input-wrapper full-width">
+              <input type="text" class="detail-input-field" [(ngModel)]="leadDetailsModel.contactPerson2" name="contactPerson2" disabled>
+            </div>
+          </div>
+
+          <!-- Contact Person 3 -->
+          <div class="detail-form-row">
+            <label class="form-field-label">Contact Person 3</label>
+            <div class="form-field-input-wrapper full-width">
+              <input type="text" class="detail-input-field" [(ngModel)]="leadDetailsModel.contactPerson3" name="contactPerson3" disabled>
+            </div>
+          </div>
+
+          <!-- Remarks1 -->
+          <div class="detail-form-row">
+            <label class="form-field-label">Remarks1</label>
+            <div class="form-field-input-wrapper full-width">
+              <textarea class="detail-textarea-field" name="remarks1" [(ngModel)]="leadDetailsModel.remarks1" maxlength="255"></textarea>
+            </div>
+          </div>
+
+          <!-- Remarks2 -->
+          <div class="detail-form-row">
+            <label class="form-field-label">Remarks2</label>
+            <div class="form-field-input-wrapper full-width">
+              <textarea class="detail-textarea-field" name="remarks2" [(ngModel)]="leadDetailsModel.remarks2" maxlength="255"></textarea>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="form-submit-buttons">
+            <button type="submit" class="action-btn primary-submit-btn">
+              <span>✓</span> Update
+            </button>
+            <button type="button" class="action-btn cancel-form-btn" (click)="cancelLeadDetails()">
+              <span>✕</span> Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Opportunities Tab -->
+    <div class="tab-panel-content" [class.content-active]="activeTab === 'opportunities'">
+      <table class="opportunities-data-table">
+        <thead class="table-header-section">
+          <tr>
+            <th class="table-header-column center-text">ID</th>
+            <th class="table-header-column">Product</th>
+            <th class="table-header-column center-text">Quantity</th>
+            <th class="table-header-column">Stage</th>
+            <th class="table-header-column">Category</th>
+            <th class="table-header-column">Probability</th>
+            <th class="table-header-column center-text">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-data-section">
+          <tr *ngFor="let opp of opportunities" class="table-row-data">
+            <td class="table-cell-data center-text">{{ opp.id }}</td>
+            <td class="table-cell-data">{{ opp.product }}</td>
+            <td class="table-cell-data center-text">{{ opp.quantity }}</td>
+            <td class="table-cell-data">{{ opp.stage }}</td>
+            <td class="table-cell-data">{{ opp.category }}</td>
+            <td class="table-cell-data">{{ opp.probability }}%</td>
+            <td class="table-cell-data center-text">
+              <button class="action-icon-button info-btn" title="Info" (click)="openOpportunityInfo(opp)">ℹ️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Quote Tab -->
+    <div class="tab-panel-content" [class.content-active]="activeTab === 'quote'">
+      <table class="quote-data-table">
+        <thead class="table-header-section">
+          <tr>
+            <th class="table-header-column">Quote ID</th>
+            <th class="table-header-column">Opportunity Details</th>
+            <th class="table-header-column center-text">Discount</th>
+            <th class="table-header-column">Current Stage</th>
+            <th class="table-header-column">Status</th>
+            <th class="table-header-column">Final Approver</th>
+            <th class="table-header-column center-text">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-data-section">
+          <tr *ngFor="let quote of quotes" class="table-row-data">
+            <td class="table-cell-data">{{ quote.quoteId }}</td>
+            <td class="table-cell-data">{{ quote.opportunityDetails }}</td>
+            <td class="table-cell-data center-text">{{ quote.discount }}</td>
+            <td class="table-cell-data">{{ quote.currentStage }}</td>
+            <td class="table-cell-data">{{ quote.status }}</td>
+            <td class="table-cell-data">{{ quote.finalApprover }}</td>
+            <td class="table-cell-data center-text">
+              <button class="action-icon-button revision-btn" title="Revisions" (click)="openRevisions(quote.revisionKey)">📋</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Contract Note Tab -->
+    <div class="tab-panel-content" [class.content-active]="activeTab === 'contractNote'">
+      <table class="contract-note-data-table">
+        <thead class="table-header-section">
+          <tr>
+            <th class="table-header-column center-text">C Note ID</th>
+            <th class="table-header-column">Quote Ref ID</th>
+            <th class="table-header-column">Billing</th>
+            <th class="table-header-column center-text">Discount</th>
+            <th class="table-header-column">PO Number</th>
+            <th class="table-header-column center-text">PO Date</th>
+            <th class="table-header-column">SO Number</th>
+            <th class="table-header-column">Stage</th>
+            <th class="table-header-column center-text">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-data-section">
+          <tr *ngFor="let note of contractNotes" class="table-row-data">
+            <td class="table-cell-data center-text">{{ note.cNoteId }}</td>
+            <td class="table-cell-data">{{ note.quoteRefId }}</td>
+            <td class="table-cell-data">{{ note.billing }}</td>
+            <td class="table-cell-data center-text">{{ note.discount }}</td>
+            <td class="table-cell-data">{{ note.poNumber }}</td>
+            <td class="table-cell-data center-text">{{ note.poDate }}</td>
+            <td class="table-cell-data">{{ note.soNumber }}</td>
+            <td class="table-cell-data">{{ note.stage }}</td>
+            <td class="table-cell-data center-text">
+              <button class="action-icon-button cloud-btn" title="Download" (click)="downloadContractNote(note)">☁️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Opportunity Details Modal -->
+<div class="modal-overlay" *ngIf="uxModal === 'opportunityDetails'">
+  <div class="modal-content-box" style="max-width: 1000px;">
+    <div class="modal-header-section">
+      <div class="modal-title-text">Opportunity Details</div>
+      <button class="modal-close-button" (click)="closeUxModal()">×</button>
+    </div>
+    <div class="modal-body-section">
+      <div class="customer-details-grid">
+        <div class="customer-field-group">
+          <div class="customer-field-label">Product</div>
+          <div class="customer-field-value">{{ uxModalData?.product }}</div>
+        </div>
+        <div class="customer-field-group">
+          <div class="customer-field-label">Quantity</div>
+          <div class="customer-field-value">{{ uxModalData?.quantity }}</div>
+        </div>
+        <div class="customer-field-group">
+          <div class="customer-field-label">Stage</div>
+          <div class="customer-field-value">{{ uxModalData?.stage }}</div>
+        </div>
+        <div class="customer-field-group">
+          <div class="customer-field-label">Category</div>
+          <div class="customer-field-value">{{ uxModalData?.category }}</div>
+        </div>
+        <div class="customer-field-group">
+          <div class="customer-field-label">Probability</div>
+          <div class="customer-field-value">{{ uxModalData?.probability }}%</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer-section">
+      <button type="button" class="action-btn primary-submit-btn" (click)="closeUxModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quote Revision History Modal -->
+<div class="modal-overlay" *ngIf="uxModal === 'quoteRevisions'">
+  <div class="modal-container" style="width: 900px;">
+    <div class="modal-header">
+      <h2 class="modal-title">Quote Revision History</h2>
+      <button class="modal-close-btn" (click)="closeUxModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="revision-info">
+        <span class="revision-label">Quote ID:</span>
+        <span class="revision-value">{{ uxModalData?.revisionKey }}</span>
+      </div>
+      <table class="revision-table">
+        <thead>
+          <tr>
+            <th>Revision</th>
+            <th>Billing</th>
+            <th>Discount</th>
+            <th>Total Price (Rs)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Company</td>
+            <td>0%</td>
+            <td>300</td>
+            <td>MRP Quote</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Company</td>
+            <td>4%</td>
+            <td>288</td>
+            <td>Current Quote</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-primary" (click)="closeUxModal()">Ok</button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Details Modal -->
+<div class="modal-overlay" *ngIf="uxModal === 'customerDetails'">
+  <div class="modal-content-box">
+    <div class="modal-header-section">
+      <div class="modal-title-text">Customer Details</div>
+      <button class="modal-close-button" (click)="closeUxModal()">×</button>
+    </div>
+    <div class="modal-body-section">
+      <div class="customer-details-grid">
+        <div class="customer-field-group">
+          <div class="customer-field-label">Customer Name</div>
+          <div class="customer-field-value">{{ leadDetailsModel.customer }}</div>
+        </div>
+        <div class="customer-field-group">
+          <div class="customer-field-label">Category</div>
+          <div class="customer-field-value">Government</div>
+        </div>
+        <div class="customer-field-group">
+          <div class="customer-field-label">Email</div>
+          <div class="customer-field-value">test@example.com</div>
+        </div>
+        <div class="customer-field-group">
+          <div class="customer-field-label">Telephone</div>
+          <div class="customer-field-value">+91-1234567890</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer-section">
+      <button type="button" class="action-btn primary-submit-btn" (click)="closeUxModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Installation Base Modal -->
+<div class="modal-overlay" *ngIf="uxModal === 'installationBase'">
+  <div class="modal-content-box">
+    <div class="modal-header-section">
+      <div class="modal-title-text">Installation Base</div>
+      <button class="modal-close-button" (click)="closeUxModal()">×</button>
+    </div>
+    <div class="modal-body-section">
+      <div class="customer-details-grid">
+        <div class="customer-field-group">
+          <div class="customer-field-label">Customer</div>
+          <div class="customer-field-value">{{ leadDetailsModel.customer }}</div>
+        </div>
+        <div class="customer-field-group">
+          <div class="customer-field-label">Installation Details</div>
+          <div class="customer-field-value">No installation data available</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer-section">
+      <button type="button" class="action-btn primary-submit-btn" (click)="closeUxModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reroute Modal -->
+<div class="modal-overlay" *ngIf="uxModal === 'reroute'">
+  <div class="modal-content-box">
+    <div class="modal-header-section">
+      <div class="modal-title-text">Reroute Lead</div>
+      <button class="modal-close-button" (click)="closeUxModal()">×</button>
+    </div>
+    <div class="modal-body-section">
+      <div class="detail-form-row">
+        <label class="form-field-label">Reroute To User</label>
+        <div class="form-field-input-wrapper full-width">
+          <input type="text" class="detail-input-field" [(ngModel)]="rerouteToUser" placeholder="Enter username">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer-section">
+      <button type="button" class="action-btn primary-submit-btn" (click)="closeUxModal()">Submit</button>
+      <button type="button" class="action-btn cancel-form-btn" (click)="closeUxModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Drop Lead Modal -->
+<div class="modal-overlay" *ngIf="uxModal === 'drop'">
+  <div class="modal-content-box">
+    <div class="modal-header-section">
+      <div class="modal-title-text">Drop Lead</div>
+      <button class="modal-close-button" (click)="closeUxModal()">×</button>
+    </div>
+    <div class="modal-body-section">
+      <p>Are you sure you want to drop this lead?</p>
+    </div>
+    <div class="modal-footer-section">
+      <button type="button" class="action-btn primary-submit-btn" (click)="closeUxModal()">Yes, Drop</button>
+      <button type="button" class="action-btn cancel-form-btn" (click)="closeUxModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Timeline Modal -->
+<div class="modal-overlay" *ngIf="uxModal === 'timeline'">
+  <div class="modal-content-box">
+    <div class="modal-header-section">
+      <div class="modal-title-text">Lead Timeline</div>
+      <button class="modal-close-button" (click)="closeUxModal()">×</button>
+    </div>
+    <div class="modal-body-section">
+      <div class="customer-details-grid">
+        <div class="customer-field-group">
+          <div class="customer-field-label">Lead ID</div>
+          <div class="customer-field-value">{{ leadDetailsModel.customer }}</div>
+        </div>
+        <div class="customer-field-group">
+          <div class="customer-field-label">Timeline</div>
+          <div class="customer-field-value">Lead created and approved</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer-section">
+      <button type="button" class="action-btn primary-submit-btn" (click)="closeUxModal()">Close</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="dashboard-content">
+  <div class="form-header-actions">
+    <button class="btn btn-action" (click)="onAddCustomer()">
+      <i class="fas fa-plus"></i> Add Customer
+    </button>
+    <button class="btn btn-action" (click)="onAddContact()">
+      <i class="fas fa-plus"></i> Add Contact
+    </button>
+  </div>
+
+  <app-form
+    [title]="'Enter the Below Details to assign the lead'"
+    [fields]="assignLeadFields"
+    [model]="formInitialData"
+    (fieldChange)="onFormFieldChange($event)"
+    (formSubmit)="saveAssignLead($event)"
+    (cancelForm)="onCancel()">
+  </app-form>
+</div>

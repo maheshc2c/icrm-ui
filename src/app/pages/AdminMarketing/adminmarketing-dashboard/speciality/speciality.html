@@ -11,18 +11,13 @@
   [columns]="columns"
   [rows]="rows"
   [searchFields]="searchFields"
-  [showImport]="true"
+  [showImport]="false"
   [showAdd]="true"
+  [showStatusToggle]="true"
   (search)="onSearch($event)"
   (add)="onAdd()"
   (editRow)="onEdit($event)"
-  (download)="onImport()"
   (deleteRow)="onDelete($event)"
-  [totalElements]="totalElements"
-  [currentPage]="currentPage"
-  (pageChange)="onPageChange($event)"
-  (pageSizeChange)="onPageSizeChange($event)">
+  (statusToggle)="onStatusToggle($event)"
+  (download)="onDownload()">
 </app-data-table>
-
-<!-- (search)="onSearch($event)" 
-  (download)="onImport()" -->

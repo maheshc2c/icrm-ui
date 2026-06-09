@@ -1,0 +1,474 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="add-campaign-page" (click)="closeAllDropdowns()">
+  <div class="page-card">
+    <!-- <div class="card-header">
+      <h4>Add New Campaign</h4>
+    </div> -->
+    <div class="card-body">
+
+      <!-- Campaign Type -->
+      <div class="form-row">
+        <div class="form-label">Campaign Type<span class="req">*</span></div>
+        <div class="form-control-wrap">
+          <div class="radio-group">
+            <label class="radio-label" [class.active]="formData.campaignType === 'offline'" (click)="selectType('offline')">
+              <input type="radio" name="campaign_type" value="offline" [checked]="formData.campaignType === 'offline'">
+              <span class="radio-dot"></span> Offline
+            </label>
+            <label class="radio-label" [class.active]="formData.campaignType === 'mass_mailing'" (click)="selectType('mass_mailing')">
+              <input type="radio" name="campaign_type" value="mass_mailing" [checked]="formData.campaignType === 'mass_mailing'">
+              <span class="radio-dot"></span> Mass Mailing
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== OFFLINE SECTION ===== -->
+      <div class="section" [class.active]="formData.campaignType === 'offline'" *ngIf="formData.campaignType === 'offline'">
+        <!-- Speciality -->
+        <div class="form-row">
+          <div class="form-label">Speciality<span class="req">*</span></div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.offline.speciality" (click)="toggleDropdown('offline', 'speciality', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.offline.selectedSpecialities.length === 0">Select specialities...</span>
+                <span class="tag" *ngFor="let spec of formData.offline.selectedSpecialities">
+                  {{ spec }} <span class="tag-x" (click)="removeTag('offline', 'speciality', spec, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.offline.speciality" (click)="$event.stopPropagation()">
+                <div class="ms-search">
+                  <input type="text" placeholder="Search specialities..." [(ngModel)]="searchQueries.offline.speciality" (click)="$event.stopPropagation()">
+                </div>
+                <div class="ms-option" *ngFor="let opt of getFilteredOptions('offline', 'speciality', specialityOptions)" 
+                     [class.selected]="isOptionSelected('offline', 'speciality', opt.value)"
+                     (click)="selectOption('offline', 'speciality', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
+                  <span>{{ opt.label }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- GEO -->
+        <div class="form-row">
+          <div class="form-label">GEO<span class="req">*</span></div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.offline.geo" (click)="toggleDropdown('offline', 'geo', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.offline.selectedGeos.length === 0">Select GEO...</span>
+                <span class="tag" *ngFor="let geo of formData.offline.selectedGeos">
+                  {{ geo }} <span class="tag-x" (click)="removeTag('offline', 'geo', geo, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.offline.geo" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of getFilteredOptions('offline', 'geo', geoOptions)" 
+                     [class.selected]="isOptionSelected('offline', 'geo', opt.value)"
+                     (click)="selectOption('offline', 'geo', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Country -->
+        <div class="form-row" *ngIf="formData.offline.selectedGeos.length > 0">
+          <div class="form-label">Country</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.offline.country" (click)="toggleDropdown('offline', 'country', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.offline.selectedCountries.length === 0">Select Country...</span>
+                <span class="tag" *ngFor="let c of formData.offline.selectedCountries">
+                  {{ c }} <span class="tag-x" (click)="removeTag('offline', 'country', c, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.offline.country" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of getFilteredOptions('offline', 'country', countryOptions.offline)" 
+                     [class.selected]="isOptionSelected('offline', 'country', opt.value)"
+                     (click)="selectOption('offline', 'country', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="formData.offline.selectedGeos.length > 0 && countryOptions.offline.length === 0">No countries found for selected GEO</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Region -->
+        <div class="form-row" *ngIf="formData.offline.selectedCountries.length > 0">
+          <div class="form-label">Region</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.offline.region" (click)="toggleDropdown('offline', 'region', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.offline.selectedRegions.length === 0">Select Region...</span>
+                <span class="tag" *ngFor="let r of formData.offline.selectedRegions">
+                  {{ r }} <span class="tag-x" (click)="removeTag('offline', 'region', r, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.offline.region" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of getFilteredOptions('offline', 'region', regionOptions.offline)" 
+                     [class.selected]="isOptionSelected('offline', 'region', opt.value)"
+                     (click)="selectOption('offline', 'region', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="formData.offline.selectedCountries.length > 0 && regionOptions.offline.length === 0">No regions found for selected Country</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- State -->
+        <div class="form-row" *ngIf="formData.offline.selectedRegions.length > 0">
+          <div class="form-label">State</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.offline.state" (click)="toggleDropdown('offline', 'state', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.offline.selectedStates.length === 0">Select State...</span>
+                <span class="tag" *ngFor="let s of formData.offline.selectedStates">
+                  {{ s }} <span class="tag-x" (click)="removeTag('offline', 'state', s, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.offline.state" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of stateOptions.offline"
+                     [class.selected]="isOptionSelected('offline', 'state', opt.value)"
+                     (click)="selectOption('offline', 'state', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="stateOptions.offline.length === 0">No states found for selected Region</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- District -->
+        <div class="form-row" *ngIf="formData.offline.selectedStates.length > 0">
+          <div class="form-label">District</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.offline.district" (click)="toggleDropdown('offline', 'district', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.offline.selectedDistricts.length === 0">Select District...</span>
+                <span class="tag" *ngFor="let d of formData.offline.selectedDistricts">
+                  {{ d }} <span class="tag-x" (click)="removeTag('offline', 'district', d, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.offline.district" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of districtOptions.offline"
+                     [class.selected]="isOptionSelected('offline', 'district', opt.value)"
+                     (click)="selectOption('offline', 'district', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="districtOptions.offline.length === 0">No districts found for selected State</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- City -->
+        <div class="form-row" *ngIf="formData.offline.selectedDistricts.length > 0">
+          <div class="form-label">City</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.offline.city" (click)="toggleDropdown('offline', 'city', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.offline.selectedCities.length === 0">Select City...</span>
+                <span class="tag" *ngFor="let c of formData.offline.selectedCities">
+                  {{ c }} <span class="tag-x" (click)="removeTag('offline', 'city', c, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.offline.city" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of cityOptions.offline" 
+                     [class.selected]="isOptionSelected('offline', 'city', opt.value)"
+                     (click)="selectOption('offline', 'city', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="cityOptions.offline.length === 0">No cities found for selected District</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Name<span class="req">*</span></div>
+          <div class="form-control-wrap"><input type="text" [(ngModel)]="formData.offline.campaignName" placeholder="Name"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Description</div>
+          <div class="form-control-wrap"><input type="text" [(ngModel)]="formData.offline.campaignDescription" placeholder="Description"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Campaign date<span class="req">*</span></div>
+          <div class="form-control-wrap"><input type="date" [(ngModel)]="formData.offline.campaignDate"></div>
+        </div>
+      </div>
+      <!-- END OFFLINE -->
+
+      <!-- ===== MASS MAILING SECTION ===== -->
+      <div class="section" [class.active]="formData.campaignType === 'mass_mailing'" *ngIf="formData.campaignType === 'mass_mailing'">
+        <!-- Speciality -->
+        <div class="form-row">
+          <div class="form-label">Speciality<span class="req">*</span></div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.mass_mailing.speciality" (click)="toggleDropdown('mass_mailing', 'speciality', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.mass_mailing.selectedSpecialities.length === 0">Select specialities...</span>
+                <span class="tag" *ngFor="let spec of formData.mass_mailing.selectedSpecialities">
+                  {{ spec }} <span class="tag-x" (click)="removeTag('mass_mailing', 'speciality', spec, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.mass_mailing.speciality" (click)="$event.stopPropagation()">
+                <div class="ms-search">
+                  <input type="text" placeholder="Search specialities..." [(ngModel)]="searchQueries.mass_mailing.speciality" (click)="$event.stopPropagation()">
+                </div>
+                <div class="ms-option" *ngFor="let opt of getFilteredOptions('mass_mailing', 'speciality', specialityOptions)" 
+                     [class.selected]="isOptionSelected('mass_mailing', 'speciality', opt.value)"
+                     (click)="selectOption('mass_mailing', 'speciality', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
+                  <span>{{ opt.label }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- GEO -->
+        <div class="form-row">
+          <div class="form-label">GEO<span class="req">*</span></div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.mass_mailing.geo" (click)="toggleDropdown('mass_mailing', 'geo', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.mass_mailing.selectedGeos.length === 0">Select GEO...</span>
+                <span class="tag" *ngFor="let geo of formData.mass_mailing.selectedGeos">
+                  {{ geo }} <span class="tag-x" (click)="removeTag('mass_mailing', 'geo', geo, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.mass_mailing.geo" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of getFilteredOptions('mass_mailing', 'geo', geoOptions)" 
+                     [class.selected]="isOptionSelected('mass_mailing', 'geo', opt.value)"
+                     (click)="selectOption('mass_mailing', 'geo', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Country -->
+        <div class="form-row" *ngIf="formData.mass_mailing.selectedGeos.length > 0">
+          <div class="form-label">Country</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.mass_mailing.country" (click)="toggleDropdown('mass_mailing', 'country', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.mass_mailing.selectedCountries.length === 0">Select Country...</span>
+                <span class="tag" *ngFor="let c of formData.mass_mailing.selectedCountries">
+                  {{ c }} <span class="tag-x" (click)="removeTag('mass_mailing', 'country', c, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.mass_mailing.country" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of getFilteredOptions('mass_mailing', 'country', countryOptions.mass_mailing)" 
+                     [class.selected]="isOptionSelected('mass_mailing', 'country', opt.value)"
+                     (click)="selectOption('mass_mailing', 'country', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="formData.mass_mailing.selectedGeos.length > 0 && countryOptions.mass_mailing.length === 0">No countries found for selected GEO</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Region -->
+        <div class="form-row" *ngIf="formData.mass_mailing.selectedCountries.length > 0">
+          <div class="form-label">Region</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.mass_mailing.region" (click)="toggleDropdown('mass_mailing', 'region', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.mass_mailing.selectedRegions.length === 0">Select Region...</span>
+                <span class="tag" *ngFor="let r of formData.mass_mailing.selectedRegions">
+                  {{ r }} <span class="tag-x" (click)="removeTag('mass_mailing', 'region', r, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.mass_mailing.region" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of getFilteredOptions('mass_mailing', 'region', regionOptions.mass_mailing)" 
+                     [class.selected]="isOptionSelected('mass_mailing', 'region', opt.value)"
+                     (click)="selectOption('mass_mailing', 'region', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="formData.mass_mailing.selectedCountries.length > 0 && regionOptions.mass_mailing.length === 0">No regions found for selected Country</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- State -->
+        <div class="form-row" *ngIf="formData.mass_mailing.selectedRegions.length > 0">
+          <div class="form-label">State</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.mass_mailing.state" (click)="toggleDropdown('mass_mailing', 'state', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.mass_mailing.selectedStates.length === 0">Select State...</span>
+                <span class="tag" *ngFor="let s of formData.mass_mailing.selectedStates">
+                  {{ s }} <span class="tag-x" (click)="removeTag('mass_mailing', 'state', s, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.mass_mailing.state" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of stateOptions.mass_mailing"
+                     [class.selected]="isOptionSelected('mass_mailing', 'state', opt.value)"
+                     (click)="selectOption('mass_mailing', 'state', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="stateOptions.mass_mailing.length === 0">No states found for selected Region</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- District -->
+        <div class="form-row" *ngIf="formData.mass_mailing.selectedStates.length > 0">
+          <div class="form-label">District</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.mass_mailing.district" (click)="toggleDropdown('mass_mailing', 'district', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.mass_mailing.selectedDistricts.length === 0">Select District...</span>
+                <span class="tag" *ngFor="let d of formData.mass_mailing.selectedDistricts">
+                  {{ d }} <span class="tag-x" (click)="removeTag('mass_mailing', 'district', d, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.mass_mailing.district" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of districtOptions.mass_mailing"
+                     [class.selected]="isOptionSelected('mass_mailing', 'district', opt.value)"
+                     (click)="selectOption('mass_mailing', 'district', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="districtOptions.mass_mailing.length === 0">No districts found for selected State</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- City -->
+        <div class="form-row" *ngIf="formData.mass_mailing.selectedDistricts.length > 0">
+          <div class="form-label">City</div>
+          <div class="form-control-wrap">
+            <div class="ms-wrap" [class.open]="dropdowns.mass_mailing.city" (click)="toggleDropdown('mass_mailing', 'city', $event)">
+              <div class="ms-box">
+                <span class="ms-placeholder" *ngIf="formData.mass_mailing.selectedCities.length === 0">Select City...</span>
+                <span class="tag" *ngFor="let c of formData.mass_mailing.selectedCities">
+                  {{ c }} <span class="tag-x" (click)="removeTag('mass_mailing', 'city', c, $event)">×</span>
+                </span>
+              </div>
+              <span class="ms-arrow">▼</span>
+              <div class="ms-dropdown" *ngIf="dropdowns.mass_mailing.city" (click)="$event.stopPropagation()">
+                <div class="ms-option" *ngFor="let opt of cityOptions.mass_mailing" 
+                     [class.selected]="isOptionSelected('mass_mailing', 'city', opt.value)"
+                     (click)="selectOption('mass_mailing', 'city', opt.value, $event)">
+                  <span>{{ opt.label }}</span>
+                </div>
+                <div class="ms-empty" *ngIf="cityOptions.mass_mailing.length === 0">No cities found for selected District</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Get Contacts -->
+        <div class="form-row">
+          <div class="form-label"></div>
+          <div class="form-control-wrap">
+            <button class="btn btn-primary" (click)="onGetContacts()">Get Contacts</button>
+          </div>
+        </div>
+        <div class="form-row" *ngIf="contactsCountDisp.mass_mailing">
+          <div class="form-label"></div>
+          <div class="form-control-wrap"><span class="contacts-count">{{ contactsCountDisp.mass_mailing }}</span></div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Name<span class="req">*</span></div>
+          <div class="form-control-wrap"><input type="text" [(ngModel)]="formData.mass_mailing.campaignName" placeholder="Name"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Description</div>
+          <div class="form-control-wrap"><input type="text" [(ngModel)]="formData.mass_mailing.campaignDescription" placeholder="Description"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Campaign date<span class="req">*</span></div>
+          <div class="form-control-wrap"><input type="date" [(ngModel)]="formData.mass_mailing.campaignDate"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Mail To<span class="req">*</span></div>
+          <div class="form-control-wrap"><textarea [(ngModel)]="formData.mass_mailing.mailTo" rows="2" placeholder="Enter recipient email addresses..."></textarea></div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Subject<span class="req">*</span></div>
+          <div class="form-control-wrap"><textarea [(ngModel)]="formData.mass_mailing.campaignSubject" rows="2" placeholder="Email subject..."></textarea></div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Mail content<span class="req">*</span></div>
+          <div class="form-control-wrap">
+            <div class="ck-editor-wrap">
+              <div class="ck-toolbar">
+                <button class="ck-btn" title="Cut">&#9986;</button>
+                <button class="ck-btn" title="Copy">&#10697;</button>
+                <button class="ck-btn" title="Paste">&#128203;</button>
+                <div class="ck-sep"></div>
+                <button class="ck-btn" title="Undo" (click)="formatText('undo')">&#8617;</button>
+                <button class="ck-btn" title="Redo" (click)="formatText('redo')">&#8618;</button>
+                <div class="ck-sep"></div>
+                <button class="ck-btn" title="Bold" (click)="formatText('bold')"><b>B</b></button>
+                <button class="ck-btn" title="Italic" (click)="formatText('italic')"><i>I</i></button>
+                <button class="ck-btn" title="Strikethrough" (click)="formatText('strikeThrough')"><s>S</s></button>
+                <div class="ck-sep"></div>
+                <button class="ck-btn" title="Numbered List" (click)="formatText('insertOrderedList')">&#8470;</button>
+                <button class="ck-btn" title="Bulleted List" (click)="formatText('insertUnorderedList')">&#8226;&#8801;</button>
+                <div class="ck-sep"></div>
+                <button class="ck-btn" title="Link" (click)="insertLink()">&#128279;</button>
+                <button class="ck-btn" title="Image" (click)="insertImage()">&#128247;</button>
+                <div class="ck-sep"></div>
+                <select class="ck-combo" (change)="formatBlock($event)">
+                  <option value="">Styles</option>
+                  <option value="h1">Heading 1</option>
+                  <option value="h2">Heading 2</option>
+                  <option value="h3">Heading 3</option>
+                  <option value="p">Paragraph</option>
+                </select>
+                <select class="ck-combo" (change)="applyFontSize($event)">
+                  <option value="">Format</option>
+                  <option value="1">Small</option>
+                  <option value="3">Normal</option>
+                  <option value="5">Large</option>
+                  <option value="7">Huge</option>
+                </select>
+              </div>
+              <div class="ck-body" id="mail_content" contenteditable="true" (input)="onMailContentChange($event)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">Attachments</div>
+          <div class="form-control-wrap">
+            <div class="file-upload-wrapper">
+              <input type="file" multiple id="campaign-files" class="file-input-hidden" (change)="onFileChange($event)">
+              <label for="campaign-files" class="file-upload-btn">Choose Files</label>
+              <span class="file-upload-status">{{ selectedFileName }}</span>
+            </div>
+            <p class="file-hint">(Allowed types: jpg, png, gif, pdf, doc, docx, xls, xlsx &mdash; Max size: 2MB)</p>
+          </div>
+        </div>
+      </div>
+      <!-- END MASS MAILING -->
+
+      <div class="btn-row">
+        <button class="btn btn-primary" (click)="onSubmit()" [disabled]="isSaving">
+          <span *ngIf="!isSaving">&#10003; Submit</span>
+          <span *ngIf="isSaving">Saving...</span>
+        </button>
+        <button class="btn btn-danger" (click)="onCancel()">&#10005; Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>

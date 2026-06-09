@@ -1,0 +1,16 @@
+<div class="modal-overlay" [ngStyle]="{'display': isVisible ? 'flex' : 'none'}">
+  <div class="modal-box">
+    <div class="modal-header-content">
+      <div class="icon-container" [ngClass]="type">
+        <i class="fas" [ngClass]="{'fa-check': type === 'approve', 'fa-times': type === 'reject', 'fa-info': type === 'info'}"></i>
+      </div>
+      <h3 class="modal-title">{{ title }}</h3>
+      <p class="modal-message">{{ message }}</p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="onCancel()">{{ cancelButtonText }}</button>
+      <button class="btn-confirm" [ngClass]="type" (click)="onConfirm()">{{ confirmButtonText }}</button>
+    </div>
+  </div>
+</div>

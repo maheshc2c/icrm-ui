@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* container in which toolbar sits (parent should be full width) */
 .filter-actions {
   display: flex;

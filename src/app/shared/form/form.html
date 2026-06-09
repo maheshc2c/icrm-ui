@@ -3,142 +3,157 @@
 <app-header></app-header>
 <app-sidebar></app-sidebar>
 
-<div class="form-wrapper">
+<div class="form-wrapper" (click)="hostClick()">
   <div class="company-form-container">
 
-    <div class="form-header-block">
+    <!-- <div class="form-header-block">
       <h4 class="form-title-heading">{{ title }}</h4>
-    </div>
+    </div> -->
 
     <div class="form-body-section">
-      <form (ngSubmit)="submit()">
+      <form #form="ngForm" (ngSubmit)="submit(form)">
 
-        <!-- LOOP ALL FIELDS -->
-        <div class="company-field-row" *ngFor="let field of fields">
+        <div class="form-grid-container">
+          <!-- LOOP ALL FIELDS -->
+          <div class="company-field-row" *ngFor="let field of fields" [class.full-width]="field.type === 'textarea'">
 
-          <!-- LABEL -->
-          <label class="field-label-text">
-            {{ field.label }}
-            <span *ngIf="field.required" class="mandatory-star">*</span>
-          </label>
+            <!-- LABEL -->
+            <label class="field-label-text">
+              {{ field.label }}
+              <span *ngIf="field.required" class="mandatory-star">*</span>
+            </label>
 
-            <!-- DATE -->
-            <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
-              [(ngModel)]="formData[field.name]" [name]="field.name" />
- 
-            <!-- DATETIME-LOCAL -->
-            <input *ngIf="field.type === 'datetime-local'" type="datetime-local" class="company-text-input"
-              [(ngModel)]="formData[field.name]" [name]="field.name" />
- 
-         
+            <div class="field-input-area">
 
+              <!-- TEXT / NUMBER / EMAIL -->
+              <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
+                [type]="field.type" class="company-text-input" [placeholder]="field.placeholder || ''"
+                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required" 
+                [pattern]="field.pattern || '.*'"/>
 
-
-
-          <div class="field-input-area">
-
-            <!-- TEXT / NUMBER / EMAIL -->
-            <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
-              [type]="field.type" class="company-text-input" [placeholder]="field.placeholder"
-              [(ngModel)]="formData[field.name]" [name]="field.name" />
-
-            <!-- DATE -->
-            <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
-              [(ngModel)]="formData[field.name]" [name]="field.name" />
+              <!-- DATE -->
+              <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
+                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required" />
 
               <!-- TIME -->
-<input *ngIf="field.type === 'time'"
-  type="time"
-  class="company-text-input"
-  [(ngModel)]="formData[field.name]"
-  [name]="field.name" />
+              <input *ngIf="field.type === 'time'"
+                type="time"
+                class="company-text-input"
+                [(ngModel)]="formData[field.name]"
+                [name]="field.name" [required]="field.required" />
 
-            <!-- TEXTAREA -->
-            <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder"
-              [(ngModel)]="formData[field.name]" [name]="field.name">
-            </textarea>
+              <!-- TEXTAREA -->
+              <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder || ''"
+                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required">
+              </textarea>
 
-            <!-- STATIC DROPDOWN (🔥 FIXED) -->
-            <select *ngIf="field.type === 'select'" 
-  class="company-text-input" 
-  [(ngModel)]="formData[field.name]"
-  (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
-  [name]="field.name">
+              <!-- CUSTOM SEARCHABLE DROPDOWN -->
+              <div *ngIf="field.type === 'select'" class="custom-dropdown-container">
+                <div class="dropdown-trigger" 
+                     [class.active]="openDropdown === field.name"
+                     (click)="toggleDropdown(field.name, $event)">
+                  <span class="trigger-text">
+                    {{ formData[field.name] || (field.placeholder || 'Select') }}
+                  </span>
+                  <i class="fas fa-chevron-down arrow-icon"></i>
+                </div>
 
-  <option value="">-- Select --</option>
-  <option *ngFor="let opt of field.options" [value]="opt.value">
-    {{ opt.label }}
+                <!-- DROPDOWN PANEL (Visible only when open) -->
+                <div class="dropdown-panel" *ngIf="openDropdown === field.name" (click)="$event.stopPropagation()">
+                  <div class="search-box-wrapper" *ngIf="field.searchable">
+                    <div class="search-panel">
+                      <div class="search-input-wrapper">
+                        <input type="text" 
+                               class="dropdown-search-input" 
+                               [placeholder]="'Search...'"
+                               (input)="filterDropdownOptions(field, $event)">
+                      </div>
+                      <div class="search-helper-text">Please enter 1 or more characters</div>
+                    </div>
+                  </div>
 
-              </option>
-            </select>
+                  <ul class="options-list">
+                    <li class="option-item" 
+                        *ngFor="let opt of field.options" 
+                        (click)="selectOption(field, opt)">
+                      {{ opt.label }}
+                    </li>
+                    <li class="no-results" *ngIf="field.options.length === 0">No results found</li>
+                  </ul>
+                </div>
+              </div>
 
-            <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
-            <select *ngIf="field.type === 'select-dynamic'" 
-  [(ngModel)]="formData[field.name]"
-              (ngModelChange)="
-                formData[field.name] = $event;
-                fieldChange.emit({ name: field.name, value: $event });
-                field.onChange?.($event)
-              " [name]="field.name">
+              <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
+              <select *ngIf="field.type === 'select-dynamic'" 
+                [(ngModel)]="formData[field.name]"
+                (ngModelChange)="
+                  formData[field.name] = $event;
+                  fieldChange.emit({ name: field.name, value: $event });
+                  field.onChange?.($event)
+                " [name]="field.name" [required]="field.required">
 
-              <option value="">-- Select --</option>
+                <option value="">-- Select --</option>
 
-              <ng-container *ngIf="
-                formData[field.dependsOn] &&
-                field.optionsMap[formData[field.dependsOn]]
-              ">
-                <option *ngFor="let opt of field.optionsMap[formData[field.dependsOn]]" [value]="opt.value">
-                  {{ opt.label }}
-                </option>
-              </ng-container>
+                <ng-container *ngIf="
+                  formData[field.dependsOn] &&
+                  field.optionsMap[formData[field.dependsOn]]
+                ">
+                  <option *ngFor="let opt of field.optionsMap[formData[field.dependsOn]]" [value]="opt.value">
+                    {{ opt.label }}
+                  </option>
+                </ng-container>
 
-            </select>
+              </select>
 
-            <!-- CHECKBOX GROUP (🔥 NEW) -->
-            <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container">
-              <div *ngFor="let opt of field.options" class="checkbox-item">
-                <input type="checkbox" [id]="field.name + '_' + opt.value" [ngModel]="formData[field.name][opt.value]"
-                  (ngModelChange)="
-                    formData[field.name][opt.value] = $event;
-                    fieldChange.emit({ name: field.name, value: formData[field.name] })
-                  " [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
-                <label [for]="field.name + '_' + opt.value" class="checkbox-label">
-                  {{ opt.label }}
-                </label>
+              <!-- CHECKBOX GROUP -->
+              <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container">
+                <div *ngFor="let opt of field.options" class="checkbox-item">
+                  <input type="checkbox" [id]="field.name + '_' + opt.value" 
+                    [ngModel]="formData[field.name][opt.value]"
+                    (ngModelChange)="
+                      formData[field.name][opt.value] = $event;
+                      fieldChange.emit({ name: field.name, value: formData[field.name] })
+                    " [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
+                  <label [for]="field.name + '_' + opt.value" class="checkbox-label">
+                    {{ opt.label }}
+                  </label>
+                </div>
+              </div>
+
+              <!-- RADIO GROUP -->
+              <div *ngIf="field.type === 'radio'" class="checkbox-group-container">
+                <div *ngFor="let opt of field.options" class="checkbox-item">
+                  <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
+                    [(ngModel)]="formData[field.name]" [name]="field.name"
+                    (ngModelChange)="fieldChange.emit({ name: field.name, value: $event })"
+                    class="company-checkbox-input" />
+                  <label [for]="field.name + '_' + opt.value" class="checkbox-label">
+                    {{ opt.label }}
+                  </label>
+                </div>
+              </div>
+
+              <!-- ERROR MESSAGE -->
+              <div *ngIf="form.controls[field.name] && form.controls[field.name].invalid && (form.controls[field.name].touched || form.submitted)" class="error-message">
+                <span *ngIf="form.controls[field.name].errors?.['required']">{{ field.label }} is required.</span>
+                <span *ngIf="form.controls[field.name].errors?.['pattern']">Invalid {{ field.label }} format.</span>
               </div>
             </div>
-
-            <!-- RADIO GROUP -->
-            <div *ngIf="field.type === 'radio'" class="checkbox-group-container">
-              <div *ngFor="let opt of field.options" class="checkbox-item">
-                <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
-                  [(ngModel)]="formData[field.name]" [name]="field.name"
-                  (ngModelChange)="fieldChange.emit({ name: field.name, value: $event })"
-                  class="company-checkbox-input" />
-                <label [for]="field.name + '_' + opt.value" class="checkbox-label">
-                  {{ opt.label }}
-                </label>
-              </div>
-            </div>
-
           </div>
         </div>
 
-
-        <!-- ACTION BUTTONS -->
+        <!-- BUTTONS -->
         <div class="form-action-buttons">
-          <button type="submit" class="submit-button">
-            <i class="fas fa-check"></i> Submit
-          </button>
-
-          <button type="button" class="cancel-button" (click)="cancel()">
+          <button type="button" class="btn-cancel-form" (click)="cancel()">
             <i class="fas fa-times"></i> Cancel
+          </button>
+          <button type="submit" class="btn-submit-form">
+            <i class="fas fa-check"></i> Save
           </button>
         </div>
 
       </form>
     </div>
-
 
   </div>
 </div>

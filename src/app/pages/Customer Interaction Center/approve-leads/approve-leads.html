@@ -10,15 +10,31 @@
   title="Approve Leads"
   [columns]="columns"
   [rows]="rows"
+  [totalElements]="totalElements"
   [searchFields]="searchFields"
   [showImport]="false"
   [showAdd]="false"
+  [showEdit]="true"
+  [showDelete]="false"
+  [showApprove]="true"
+  [showReject]="true"
   confirmItemType="Lead"
   (search)="onSearch()"
+  (searchChange)="onSearchChange($event)"
   (editRow)="onEdit($event)"
   (approveRow)="onApprove($event)"
   (rejectRow)="onReject($event)">
 </app-data-table>
+
+<app-popup
+  [isVisible]="isPopupVisible"
+  [title]="popupTitle"
+  [message]="popupMessage"
+  [type]="popupType"
+  [confirmButtonText]="confirmBtnText"
+  (confirm)="handleConfirm()"
+  (cancel)="handleCancel()">
+</app-popup>
 
   <!-- [showDelete]="false"
   [showSNo]="false"

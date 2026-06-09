@@ -61,6 +61,8 @@ export class DataTable
   @Input() showSearch = true;
   @Input() showEdit = true;
   @Input() showDelete = true;
+  @Input() showApprove = false;
+  @Input() showReject = false;
 
 
   /* ===== TOOLBAR EVENTS ===== */
@@ -70,6 +72,8 @@ export class DataTable
   @Output() editRow = new EventEmitter<any>();
    @Output() assignRow = new EventEmitter<any>();
   @Output() uploadRow = new EventEmitter<any>();
+  @Output() approveRow = new EventEmitter<any>();
+  @Output() rejectRow = new EventEmitter<any>();
 
     assign(row: any) {
     this.assignRow.emit(row);
@@ -79,8 +83,37 @@ export class DataTable
     this.uploadRow.emit(row);
   }
 
+  approve(row: any) {
+    this.approveRow.emit(row);
+  }
+
+  reject(row: any) {
+    this.rejectRow.emit(row);
+  }
+
 @Input() emptyMessage = 'No records found';
 
+  openPageSizeDropdown = false;
+  pageSizeOptions = [
+    { label: '10', value: 10 },
+    { label: '25', value: 25 },
+    { label: '50', value: 50 }
+  ];
+
+  togglePageSizeDropdown(event: Event) {
+    event.stopPropagation();
+    this.openPageSizeDropdown = !this.openPageSizeDropdown;
+  }
+
+  selectPageSize(size: number) {
+    this.changePageSize(size);
+    this.openPageSizeDropdown = false;
+  }
+
+  // Close dropdowns when clicking outside
+  hostClick() {
+    this.openPageSizeDropdown = false;
+  }
 
 //Download Fuctionality 
 @Output() download = new EventEmitter<void>();
@@ -291,15 +324,14 @@ onResetClick() {
 @Input() showStatusToggle = false;
 @Output() deleteRow = new EventEmitter<any>();
 delete(row: any) {
+  // If it's a status toggle, emit directly without confirmation
+  if (this.showStatusToggle) {
+    this.deleteRow.emit(row);
+    return;
+  }
 
-  const status = this.getRowStatus(row);
-
-  const action = status === 1 ? 'Deactivate' : 'Activate';
-
-  const confirmed = confirm(
-    `Are you sure you want to ${action}?`
-  );
-
+  // For actual deletion, keep the confirmation
+  const confirmed = confirm(`Are you sure you want to delete this record?`);
   if (confirmed) {
     this.deleteRow.emit(row);
   }

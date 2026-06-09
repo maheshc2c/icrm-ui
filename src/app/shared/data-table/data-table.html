@@ -3,7 +3,7 @@
 <!-- SIDEBAR -->
 <app-sidebar></app-sidebar>
 <!-- MAIN -->
-<main class="content">
+<main class="content" (click)="hostClick()">
 <div class="datatable-toolbar">
 
   @if (showSearch) {
@@ -35,7 +35,7 @@
                 @for (col of columns; track col) {
                   <th>{{ col.header }}</th>
                 }
-                <th style="width:120px;">Actions</th>
+                <th style="width:Auto;">Actions</th>
               </tr>
             </thead>
  <tbody>
@@ -76,6 +76,24 @@
 
         <!-- ACTIONS -->
         <td class="action-buttons">
+          @if (showApprove) {
+            <button
+              class="btn btn-sm btn-success approve-btn"
+              (click)="approve(row)"
+              title="Approve">
+              <i class="fas fa-check"></i>
+            </button>
+          }
+
+          @if (showReject) {
+            <button
+              class="btn btn-sm btn-danger reject-btn"
+              (click)="reject(row)"
+              title="Reject">
+              <i class="fas fa-times"></i>
+            </button>
+          }
+
           @if (showEdit) {
             <button
               class="btn btn-sm btn-warning edit-btn"
@@ -151,12 +169,25 @@
         </button>
       </div>
 
-      <!-- Page Size -->
-      <select (change)="changePageSize($any($event.target).value)">
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-      </select>
+      <!-- Custom Page Size Dropdown -->
+      <div class="custom-dropdown-container page-size-dropdown">
+        <div class="dropdown-trigger" 
+             [class.active]="openPageSizeDropdown"
+             (click)="togglePageSizeDropdown($event)">
+          <span class="trigger-text">{{ pageSize }}</span>
+          <i class="fas fa-chevron-down arrow-icon"></i>
+        </div>
+
+        <div class="dropdown-panel small-panel" *ngIf="openPageSizeDropdown">
+          <ul class="options-list">
+            <li class="option-item" 
+                *ngFor="let opt of pageSizeOptions" 
+                (click)="selectPageSize(opt.value)">
+              {{ opt.label }}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 

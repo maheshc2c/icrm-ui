@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* SEARCH GROUP CONTAINER */
 .search-group {
   display: flex;
@@ -15,7 +21,7 @@
 /* LABEL STYLE (MATCH TEXT TONE) */
 .search-label {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #6d28d9; /* same purple */
   margin-bottom: 4px;
@@ -24,7 +30,7 @@
 /* INPUT & SELECT COMMON STYLE */
 .search-field input,
 .search-field select {
-  height: 23px;
+  height: 35px;
   padding: 6px 10px;
   font-size: 14px;
   border-radius: 6px; /* same as button */
@@ -34,7 +40,18 @@
 
 /* PLACEHOLDER */
 .search-field input::placeholder {
-  color: #c3bbd8;
+  color: #a0aec0; /* standard placeholder gray */
+  opacity: 0.8;
+}
+
+/* DROPDOWN PLACEHOLDER STYLE */
+.search-field select.placeholder-active {
+  color: #a0aec0; /* Match input placeholder gray */
+}
+
+.search-field select option {
+  color: #2c3e50; /* Ensure actual options are always dark */
+  background-color: #fff;
 }
 
 /* FOCUS EFFECT (MATCH BUTTON HOVER FEEL) */
@@ -78,6 +95,117 @@
 .clear-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
+}
+
+/* ================= CUSTOM DROPDOWN ================= */
+.custom-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  width: 100%;
+  height: 35px;
+  padding: 6px 12px;
+  background: #ffffff;
+  border: 1px solid #eadcff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-trigger.active {
+  box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.1);
+}
+
+.trigger-text {
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+
+.dropdown-trigger.active .arrow-icon {
+  transform: rotate(180deg);
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0 0 6px 6px;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  margin-top: 2px;
+  min-width: 250px;
+}
+
+.search-box-wrapper {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.option-item {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.option-item:hover {
+  background: #f5f8fa;
+  color: #3498db;
+}
+
+.no-results {
+  padding: 15px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+}
+
+/* ================= DROPDOWN SEARCH ================= */
+.search-panel {
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.dropdown-search-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  font-size: 14px;
+  border: 2px solid #000; /* Matching the black border from image */
+  border-radius: 4px;
+  outline: none;
+}
+
+.search-helper-text {
+  font-size: 11px;
+  color: #888;
+  margin-top: 6px;
 }
 
 

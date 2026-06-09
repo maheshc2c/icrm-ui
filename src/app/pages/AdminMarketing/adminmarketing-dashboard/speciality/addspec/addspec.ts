@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Breadcrumb } from '../../../../../models/breadcrumb';
+import { SpecialityModel } from '../../../../../models/speciality-model';
 import { Header } from '../../../../../layout/header/header';
 import { Pageheader } from '../../../../../shared/pageheader/pageheader';
 import { Form } from '../../../../../shared/form/form';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../../../../../layout/sidebar/sidebar';
-import { Adminservice } from '../../../../../service/adminservice';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Breadcrumb } from '../../../../../models/breadcrumb';
-import { SpecialityModel } from '../../../../../models/speciality-model';
 import { adminMarketingservice } from '../../../../../service/adminmarketingservice';
+import { ToastService } from '../../../../../service/toast.service';
 
 @Component({
   selector: 'app-addspec',
@@ -23,7 +23,8 @@ export class Addspec {
   constructor(
     private adminmarketingService: adminMarketingservice,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
 
@@ -69,6 +70,11 @@ export class Addspec {
   } else {
     this.isEditMode = false;
     this.headerTitle = 'Add Speciality';
+    this.headerBreadcrumbs = [
+      { label: 'Home', route: '/adminmarketingdashboard' },
+      { label: 'Speciality', route: '/adminmarketing/speciality' },
+      { label: 'Add Speciality' }
+    ];
   }
 }
 
@@ -77,11 +83,12 @@ export class Addspec {
   private loadSpecialityById(id: number): void {
   this.adminmarketingService.getSpecialities().subscribe({
     next: (res: any) => {
-      const specialitys = Array.isArray(res) ? res : (res?.content || []);
-      const speciality = specialitys.find((c: any) => c.specialityId === id);
+      // ✅ Handle paginated response (res.content) or direct array
+      const specialities = Array.isArray(res) ? res : (res?.content || (res ? [res] : []));
+      const speciality = specialities.find((c: any) => c.specialityId === id);
 
       if (!speciality) {
-        alert('Speciality not found');
+        this.toastService.error('Speciality not found');
         this.router.navigate(['/adminmarketing/speciality']);
         return;
       }
@@ -92,7 +99,7 @@ export class Addspec {
       };
     },
     error: () => {
-      alert('Failed to load speciality');
+      this.toastService.error('Failed to load speciality');
       this.router.navigate(['/adminmarketing/speciality']);
     }
   });
@@ -108,18 +115,24 @@ export class Addspec {
 
   if (this.isEditMode) {
     this.adminmarketingService.updateSpeciality(this.specialityId, payload).subscribe({
-      next: () => this.router.navigate(['/adminmarketing/speciality']),
-      error: err => {
+      next: () => {
+        this.toastService.success('Speciality updated successfully');
+        this.router.navigate(['/adminmarketing/speciality']);
+      },
+      error: (err: any) => {
         console.error('Update failed:', err);
-        alert('Failed to update speciality');
+        this.toastService.error('Failed to update speciality');
       }
     });
   } else {
     this.adminmarketingService.createSpeciality(payload).subscribe({
-      next: () => this.router.navigate(['/adminmarketing/speciality']),
-      error: err => {
+      next: () => {
+        this.toastService.success('Speciality created successfully');
+        this.router.navigate(['/adminmarketing/speciality']);
+      },
+      error: (err: any) => {
         console.error('Create failed:', err);
-        alert('Failed to create speciality');
+        this.toastService.error('Failed to create speciality');
       }
     });
   }

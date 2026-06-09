@@ -5,14 +5,17 @@ import { Header } from '../../../layout/header/header';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../models/breadcrumb';
+import { ToastComponent } from '../../../shared/toast/toast.component';
 
 @Component({
   selector: 'app-adminmarketing-dashboard',
+  standalone: true,
   imports: [CommonModule,
     RouterModule,
- Header,
+    Header,
     Sidebar,
-    Pageheader,],
+    Pageheader,
+    ToastComponent],
   templateUrl: './adminmarketing-dashboard.html',
   styleUrl: './adminmarketing-dashboard.css',
 })

@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   border: 1px solid #e0e0e0;
   background-color: aliceblue;
@@ -6,13 +12,15 @@ body {
 /* FIXED: use .page-header (class), not page-header (tag) */
 .page-header {
   background: #fff;
-  padding: 1.5rem 2rem;
+  padding: 1.25rem 2rem;
   margin: 0 0 20px 0;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  width: calc(100% - 320px);
-  margin-left: 257px;
-  margin-top: -60px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  width: calc(100% - 280px); /* Match sidebar width */
+  margin-left: 280px;        /* Match sidebar width */
+  border-bottom: 1px solid #edf2f7;
+  display: flex;
+  align-items: center;
+  min-height: 100px;
 }
 
 .page-title {
@@ -20,38 +28,45 @@ body {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .page-title h1 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .breadcrumb {
-  font-size: 0.9rem;
-  color: #6c757d;
+  font-size: 0.85rem;
+  color: #718096;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .breadcrumb a {
-  color: #4f46e5;
+  color: #4a5568;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  font-weight: 500;
 }
 
 .breadcrumb a:hover {
-  color: #4338ca;
-  text-decoration: underline;
+  color: #4f46e5;
+}
+
+.breadcrumb i {
+  font-size: 0.9rem;
+  color: #4f46e5;
 }
 
 .breadcrumb span {
-  color: #b0b0b0;
+  color: #a0aec0;
+  font-weight: 400;
 }
