@@ -166,9 +166,73 @@ export class Leadservice {
     });
   }
 
+  /* ================= CREATE OPPORTUNITY ================= */
+  createOpportunity(leadId: number, opportunityDto: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/SalesEngineer/leadOopCreate/${leadId}`, opportunityDto, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   /* ================= GET ALL OPPORTUNITIES (TABLE) ================= */
   getOpportunityTable(): Observable<OpportunityTableModel[]> {
     return this.http.get<OpportunityTableModel[]>(`${this.baseUrl}/SalesEngineer/opportunity/table`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= SEARCH OPPORTUNITIES (TABLE) ================= */
+  searchOpportunitiesTable(params: any): Observable<OpportunityTableModel[]> {
+    let httpParams = new HttpParams();
+    Object.keys(params).forEach(key => {
+      if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+        httpParams = httpParams.set(key, params[key]);
+      }
+    });
+
+    return this.http.get<OpportunityTableModel[]>(`${this.baseUrl}/SalesEngineer/opportunity/search`, {
+      headers: this.getAuthHeaders(),
+      params: httpParams
+    });
+  }
+
+  /* ================= GET CATEGORIES DROPDOWN ================= */
+  getCategories(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/SalesEngineer/categories-dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= GET PRODUCT SEGMENTS DROPDOWN ================= */
+  getSegmentsByCategory(categoryId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/SalesEngineer/groups-by-category/${categoryId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= GET PRODUCTS BY SEGMENT ================= */
+  getProductsBySegment(groupId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/SalesEngineer/products-by-group/${groupId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= GET FUNDS DROPDOWN ================= */
+  getFunds(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/SalesEngineer/funds-dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= GET STATUS DROPDOWN ================= */
+  getStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/SalesEngineer/status-dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= GET REGIONS DROPDOWN ================= */
+  getRegions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=4`, {
       headers: this.getAuthHeaders()
     });
   }

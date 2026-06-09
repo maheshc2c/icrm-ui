@@ -25,7 +25,7 @@
     <div class="form-field-group" *ngFor="let field of oppFields">
       <label [for]="field.name">{{ field.label }} <span *ngIf="field.required" class="required">*</span></label>
       
-      <select *ngIf="field.type === 'select'" [(ngModel)]="oppModel[field.name]" [id]="field.name" class="form-control">
+      <select *ngIf="field.type === 'select'" [(ngModel)]="oppModel[field.name]" [id]="field.name" class="form-control" (ngModelChange)="onFieldChange(field.name, $event)">
         <option value="" disabled selected>Choose {{ field.label }}</option>
         <option *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label }}</option>
       </select>

@@ -39,9 +39,9 @@ export class OpportunitiesComponent implements OnInit {
     { key: 'customer', label: 'Customer', type: 'select', placeholder: 'Select Customer', options: [] },
     { key: 'productCategory', label: 'Product Category', type: 'select', placeholder: 'Select Product Category', options: [] },
     { key: 'stage', label: 'Stage', type: 'select', placeholder: 'Select Stage', options: [
-      { value: 'Qualification', label: 'Qualification' },
-      { value: 'Proposal', label: 'Proposal' },
-      { value: 'Negotiation', label: 'Negotiation' }
+      { value: 1, label: 'Qualification' },
+      { value: 2, label: 'Proposal' },
+      { value: 3, label: 'Negotiation' }
     ]},
     { key: 'category', label: 'Category', type: 'select', placeholder: 'Select Category', options: [
       { value: 'New Business', label: 'New Business' },
@@ -53,10 +53,6 @@ export class OpportunitiesComponent implements OnInit {
     { key: 'oppCreatedEndDate', label: 'Opp Created End Date', type: 'date', placeholder: 'End Date' },
     { key: 'orderConclusionStartDate', label: 'Order Conclusion Start Date', type: 'date', placeholder: 'Start Date' },
     { key: 'orderConclusionEndDate', label: 'Order Conclusion End Date', type: 'date', placeholder: 'End Date' },
-    { key: 'searchIn', label: 'Search In', type: 'select', placeholder: 'Search in All', options: [
-      { value: 'All', label: 'Search in All' },
-      { value: 'Active', label: 'Active Only' }
-    ]},
     { key: 'searchBy', label: 'Search By', type: 'text', placeholder: 'Search by text' }
   ];
 
@@ -155,6 +151,60 @@ export class OpportunitiesComponent implements OnInit {
         field.options = data.map(r => ({ label: r.relationshipName, value: r.relationshipId }));
       }
     });
+
+    // Load product categories
+    this.leadService.getCategories().subscribe(data => {
+      const field = this.oppFields.find(f => f.name === 'productCategoryId');
+      if (field && data) {
+        field.options = data.map(c => ({ label: c.categoryName, value: c.categoryId }));
+      }
+    });
+
+    // Load Funds
+    this.leadService.getFunds().subscribe(data => {
+      const field = this.oppFields.find(f => f.name === 'fundSourceId');
+      if (field && data) {
+        field.options = data.map(f => ({ label: f.fundSourceName || f.FundSourceName, value: f.fundSourceID || f.FundSourceID }));
+      }
+    });
+
+    // Load Status
+    this.leadService.getStatus().subscribe(data => {
+      const field = this.oppFields.find(f => f.name === 'status');
+      if (field && data) {
+        field.options = data.map(s => ({ label: s.oppName || s.OppName, value: s.oppStatusId || s.OppStatusId }));
+      }
+    });
+  }
+
+  /* ================= DYNAMIC FIELD CHANGE ================= */
+  onFieldChange(fieldName: string, value: any): void {
+    if (fieldName === 'productCategoryId' && value) {
+      // Clear out segment and product
+      this.oppModel.productGroupId = '';
+      this.oppModel.productId = '';
+
+      // Fetch new segments
+      this.leadService.getSegmentsByCategory(value).subscribe(data => {
+        const field = this.oppFields.find(f => f.name === 'productGroupId');
+        if (field && data) {
+          field.options = data.map(s => ({ label: s.groupName || s.GroupName, value: s.groupId || s.GroupId }));
+        }
+      });
+    }
+
+    if (fieldName === 'productGroupId' && value) {
+      // Clear out the previous product selection
+      this.oppModel.productId = '';
+      
+      // Fetch new products for this segment
+      this.leadService.getProductsBySegment(value).subscribe(data => {
+        const field = this.oppFields.find(f => f.name === 'productId');
+        if (field && data) {
+          field.options = data.map(p => ({ label: p.productName || p.ProductName || 'Unnamed Product', value: p.productId || p.ProductId }));
+        }
+      });
+    }
   }
 
   /* ================= LOAD OPPORTUNITIES ================= */
@@ -183,49 +233,31 @@ export class OpportunitiesComponent implements OnInit {
     this.leadService.getCustomers().subscribe(data => {
       const field = this.searchFields.find(f => f.key === 'customer');
       if (field && data) {
-        const uniqueNames = [...new Set(data.map(c => c.customerName))].sort();
-        field.options = uniqueNames.map(name => ({ value: name, label: name }));
+        field.options = data.map(c => ({ value: c.customerId, label: c.customerName }));
       }
     });
 
-    // 2. Extract product categories from loaded rows
-    const categories = new Set<string>();
-    this.opportunities.forEach(opp => {
-      if (opp.productAndCategory) {
-        const match = opp.productAndCategory.match(/\(([^)]+)\)/);
-        if (match && match[1]) {
-          categories.add(match[1]);
-        } else {
-          categories.add(opp.productAndCategory);
-        }
+    // 2. Load product categories from backend
+    this.leadService.getCategories().subscribe(data => {
+      const field = this.searchFields.find(f => f.key === 'productCategory');
+      if (field && data) {
+        field.options = data.map(c => ({ value: c.categoryId, label: c.categoryName }));
       }
     });
-    const pcField = this.searchFields.find(f => f.key === 'productCategory');
-    if (pcField) {
-      pcField.options = Array.from(categories).sort().map(c => ({ value: c, label: c }));
-    }
 
-    // 3. Extract regions from loaded rows
-    const regions = new Set<string>();
-    this.opportunities.forEach(opp => {
-      if (opp.leadDetails) {
-        const match = opp.leadDetails.match(/\(([^)]+)\)$/);
-        if (match && match[1]) {
-          regions.add(match[1]);
-        }
+    // 3. Load regions from backend
+    this.leadService.getRegions().subscribe(data => {
+      const field = this.searchFields.find(f => f.key === 'region');
+      if (field && data) {
+        field.options = data.map(r => ({ value: r.locationId, label: r.locationName }));
       }
     });
-    const regionField = this.searchFields.find(f => f.key === 'region');
-    if (regionField) {
-      regionField.options = Array.from(regions).sort().map(r => ({ value: r, label: r }));
-    }
 
     // 4. Load source of lead from leadService
     this.leadService.getSources().subscribe(data => {
       const field = this.searchFields.find(f => f.key === 'sourceOfLead');
       if (field && data) {
-        const uniqueSources = [...new Set(data.map(s => s.sourceName))].sort();
-        field.options = uniqueSources.map(name => ({ value: name, label: name }));
+        field.options = data.map(s => ({ value: s.sourceId, label: s.sourceName }));
       }
     });
   }
@@ -235,52 +267,33 @@ export class OpportunitiesComponent implements OnInit {
   }
 
   onSearch(): void {
-    this.filteredOpportunities = this.opportunities.filter(opp => {
-      // 1) Opp ID
-      if (this.currentFilters.oppId) {
-        if (!opp.id?.toString().includes(this.currentFilters.oppId)) return false;
-      }
+    const backendParams: any = {};
 
-      // 2) Customer
-      if (this.currentFilters.customer) {
-        const custName = this.extractCustomerName(opp.leadDetails);
-        if (!custName.toLowerCase().includes(this.currentFilters.customer.toLowerCase())) return false;
-      }
+    if (this.currentFilters.searchBy) backendParams.text = this.currentFilters.searchBy;
+    if (this.currentFilters.oppId) backendParams.text = this.currentFilters.oppId; 
+    if (this.currentFilters.customer) backendParams.customerId = this.currentFilters.customer;
+    if (this.currentFilters.productCategory) backendParams.productCategory = this.currentFilters.productCategory;
+    if (this.currentFilters.stage) backendParams.stage = this.currentFilters.stage;
+    if (this.currentFilters.sourceOfLead) backendParams.leadSource = this.currentFilters.sourceOfLead;
+    if (this.currentFilters.region) backendParams.region = this.currentFilters.region;
+    if (this.currentFilters.oppCreatedStartDate) backendParams.startDate = this.currentFilters.oppCreatedStartDate;
+    if (this.currentFilters.oppCreatedEndDate) backendParams.endDate = this.currentFilters.oppCreatedEndDate;
+    if (this.currentFilters.orderConclusionStartDate) backendParams.startOrder = this.currentFilters.orderConclusionStartDate;
+    if (this.currentFilters.orderConclusionEndDate) backendParams.endOrder = this.currentFilters.orderConclusionEndDate;
 
-      // 3) Product Category
-      if (this.currentFilters.productCategory) {
-        const categoryName = this.extractCategoryName(opp.productAndCategory);
-        if (categoryName.toLowerCase() !== this.currentFilters.productCategory.toLowerCase()) return false;
+    this.leadService.searchOpportunitiesTable(backendParams).subscribe({
+      next: (data) => {
+        this.filteredOpportunities = data.map(opp => ({
+          ...opp,
+          product: opp.productAndCategory,
+          lifeTime: opp.lifeTimeDays,
+          value: opp.value || (opp.qty ? opp.qty * 125000 : 0)
+        }));
+      },
+      error: (err) => {
+        console.error('Search failed:', err);
+        this.filteredOpportunities = [];
       }
-
-      // 4) Stage
-      if (this.currentFilters.stage) {
-        if (opp.stage?.toLowerCase() !== this.currentFilters.stage.toLowerCase()) return false;
-      }
-
-      // 5) Category
-      if (this.currentFilters.category) {
-        if (opp.category?.toLowerCase() !== this.currentFilters.category.toLowerCase()) return false;
-      }
-
-      // 6) Region
-      if (this.currentFilters.region) {
-        const regionName = this.extractRegionName(opp.leadDetails);
-        if (regionName.toLowerCase() !== this.currentFilters.region.toLowerCase()) return false;
-      }
-
-      // 7) Search By (Text Search)
-      if (this.currentFilters.searchBy) {
-        const search = this.currentFilters.searchBy.toLowerCase();
-        const matchesId = opp.id?.toString().includes(search);
-        const matchesLead = opp.leadDetails?.toLowerCase().includes(search);
-        const matchesProduct = opp.product?.toLowerCase().includes(search);
-        const matchesStage = opp.stage?.toLowerCase().includes(search);
-        const matchesCategory = opp.category?.toLowerCase().includes(search);
-        if (!(matchesId || matchesLead || matchesProduct || matchesStage || matchesCategory)) return false;
-      }
-
-      return true;
     });
   }
 
@@ -312,9 +325,80 @@ export class OpportunitiesComponent implements OnInit {
   }
 
   onSubmitOpp(formData: any): void {
-    console.log('Submitting Opportunity:', formData);
-    this.closeModal();
-    alert('Opportunity added successfully! (Simulation)');
+    if (!this.oppModel.leadId) {
+      alert('Please select a Lead first.');
+      return;
+    }
+    if (!this.oppModel.productCategoryId || !this.oppModel.productGroupId || !this.oppModel.productId) {
+      alert('Please select Category, Segment, and Product Name.');
+      return;
+    }
+    if (!this.oppModel.fundSourceId) {
+      alert('Please select a Source of Funding.');
+      return;
+    }
+    if (!this.oppModel.status) {
+      alert('Please select a Status.');
+      return;
+    }
+    if (!this.oppModel.relationshipId) {
+      alert('Please select a Relationship with Decision Maker.');
+      return;
+    }
+
+    // Helper to convert empty strings to null for backend Long/Integer fields
+    const toNullIfEmpty = (val: any) => (val === '' || val === undefined) ? null : val;
+
+    // Helper to extract the label (name) for dropdown fields
+    const getOptionLabel = (fieldName: string, value: any) => {
+      if (!value) return null;
+      const field = this.oppFields.find(f => f.name === fieldName);
+      if (field && field.options) {
+        const opt = field.options.find((o: any) => o.value == value);
+        return opt ? opt.label : null;
+      }
+      return null;
+    };
+
+    // Map frontend oppModel to backend OpportunityDto
+    const payload = {
+      oppLeadId: toNullIfEmpty(this.oppModel.leadId),
+      productId: toNullIfEmpty(this.oppModel.productId),
+      productName: getOptionLabel('productId', this.oppModel.productId),
+      productCategoryId: toNullIfEmpty(this.oppModel.productCategoryId),
+      categoryName: getOptionLabel('productCategoryId', this.oppModel.productCategoryId),
+      productGroupId: toNullIfEmpty(this.oppModel.productGroupId),
+      groupName: getOptionLabel('productGroupId', this.oppModel.productGroupId),
+      oppRequiredQuantity: toNullIfEmpty(this.oppModel.quantity),
+      oppFundSourceId: toNullIfEmpty(this.oppModel.fundSourceId),
+      fundSourceName: getOptionLabel('fundSourceId', this.oppModel.fundSourceId),
+      oppExpectedOrderConclusion: toNullIfEmpty(this.oppModel.expectedOrderConclusion),
+      oppExpectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
+      oppDecisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1),
+      oppDecisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2),
+      oppDecisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3),
+      oppDecisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4),
+      oppDecisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5),
+      oppRelationshipId: toNullIfEmpty(this.oppModel.relationshipId),
+      relationshipName: getOptionLabel('relationshipId', this.oppModel.relationshipId),
+      oppStatus: toNullIfEmpty(this.oppModel.status),
+      oppName: getOptionLabel('status', this.oppModel.status),
+      oppRemarks1: this.oppModel.competitors || null
+    };
+
+    this.leadService.createOpportunity(this.oppModel.leadId, payload).subscribe({
+      next: (res) => {
+        alert('Opportunity successfully saved to the database!');
+        this.closeModal();
+        // Refresh the table
+        this.loadOpportunities();
+      },
+      error: (err) => {
+        console.error('Error saving opportunity:', err);
+        const errorMessage = err.error ? (typeof err.error === 'string' ? err.error : err.error.message || JSON.stringify(err.error)) : 'Unknown error';
+        alert(`Failed to save Opportunity:\n\n${errorMessage}`);
+      }
+    });
   }
 
   onEdit(row: any): void {
