@@ -2,11 +2,12 @@
 .content {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 70px);
+  min-height: calc(100vh - 70px); /* Allow it to grow */
   margin-left: 287px;
   width: calc(100% - 287px);
   padding: 20px;
   box-sizing: border-box;
+  overflow-y: auto; /* Enable scrolling if constrained by parent */
 }
 
 /* ================= SHARED WIDTH COLUMN ================= */
@@ -65,9 +66,7 @@
 /* ================= TABLE BODY ================= */
 .table-responsive {
   width: 100%;
-  max-height: calc(100vh - 300px);
-  overflow-y: auto;
-  overflow-x: auto;
+  overflow-x: auto; /* keep horizontal scroll for small screens */
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-sizing: border-box;
