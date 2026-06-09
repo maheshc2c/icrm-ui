@@ -16,6 +16,7 @@ export class Button {
   @Input() showImport = true;
   @Input() showAdd = true;
   @Input() showView = true;
+  @Input() showRefresh = false;
   @Input() showReset = false;
 
   @Output() search = new EventEmitter<void>();

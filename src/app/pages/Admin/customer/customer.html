@@ -24,7 +24,11 @@
   (download)="onImport()"
   (add)="onAdd()"
   (editRow)="onEdit($event)"
-  (deleteRow)="onDelete($event)">
+  (deleteRow)="onDelete($event)"
+[showStatusToggle]="true"
+  [statusField]="'customerStatus'"
+  [trackByField]="'customerId'"
+  (reset)="onReset()">
 
 </app-data-table>
 

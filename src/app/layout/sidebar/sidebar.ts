@@ -731,7 +731,7 @@ constructor() {
       {
         label: 'Home',
         icon: 'fas fa-home',
-        route: '/salesmanagerdashboard'
+        route: '/sales-manager-dashboard'
       },
       {
         label: 'Dashboards',

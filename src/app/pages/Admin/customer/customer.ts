@@ -45,7 +45,6 @@ export class Customer {
   ];
 
 
-
   customers: CustomerModel[] = [];
   loading = false;
   errorMsg = '';
@@ -91,6 +90,7 @@ export class Customer {
 
         this.fullRows = customerList;
 
+<<<<<<< HEAD
         this.rows = customerList.map((c: any, index: number) => {
           const cust = c.customer || c; // Support both nested and flat responses
           return {
@@ -103,6 +103,17 @@ export class Customer {
             locationName: cust.locations?.map((l: any) => l.locationName).join(', ') ?? ''
           };
         });
+=======
+        this.rows = customerList.map((c: any, index: number) => ({
+          sno: (this.currentPage - 1) * this.pageSize + index + 1,
+          customerId: c.customerId,
+          customerName: c.customerName,
+          customerTelephone: c.customerTelephone,
+          customerMobile: c.customerMobile,
+          customerStatus: c.customerStatus,
+          locationName: c.locations?.map((l: any) => l.locationName).join(', ') ?? ''
+        }));
+>>>>>>> 8997ab571d7f69f8cb8094a7eb9029d751d9c99d
       },
       error: (err: any) => {
         this.loading = false;
@@ -183,6 +194,7 @@ export class Customer {
   isEditMode = false;
   customerId!: number;
 
+<<<<<<< HEAD
   async onDelete(row: any) {
     const action = row.customerStatus === 1 ? 'deactivate' : 'activate';
     const confirmed = await this.confirmService.confirm({
@@ -202,7 +214,41 @@ export class Customer {
         }
       });
     }
+=======
+  //actiavte and deactivate
+onDelete(row: any) {
+ 
+  const Id = row?.customerId;
+ 
+  if (!Id) {
+    return;
+>>>>>>> 8997ab571d7f69f8cb8094a7eb9029d751d9c99d
   }
+ 
+  const status = Number(row?.customerStatus);
+ 
+  const isActive = status === 1;
+ 
+  const apiCall = isActive
+    ? this.adminservice.deactivateCustomer(Id)
+    : this.adminservice.activateCustomer(Id);
+ 
+  apiCall.subscribe({
+    next: () => {
+ 
+      row.customerStatus = isActive ? 2 : 1;
+ 
+      this.rows = [...this.rows];
+      this.fullRows = [...this.fullRows];
+ 
+    },
+ 
+    error: (err) => {
+      console.error('Status update failed', err);
+      alert('Failed to update status');
+    }
+  });
+}
 
   searchFields: SearchFieldConfig[] = [
     {

@@ -1,7 +1,3 @@
-<!-- HEADER -->
-<app-header></app-header>
-<!-- SIDEBAR -->
-<app-sidebar></app-sidebar>
 <!-- MAIN -->
 <main class="content">
 <div class="datatable-toolbar">
@@ -42,20 +38,19 @@
             </thead>
  <tbody>
   @if (filteredRows.length === 0) {
-    <tr class="no-records-row">
-      <td [attr.colspan]="columns.length + 2">
-        <div class="no-records-content">
-          <i class="fas fa-search"></i>
-          {{ emptyMessage }}
-        </div>
-      </td>
-    </tr>
-  } @else {
-    @for (row of paginatedRows; track row.demoProductDetailId || row.customerId || row.competitorId || row.productId || row.qouteId || row.poId || row.id || $index; let i = $index) {
-      <tr>
-        <!-- S.NO -->
-        <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-
+  <tr class="no-records-row">
+    <td [attr.colspan]="columns.length + 2">
+      <div class="no-records-content">
+        <i class="fas fa-search"></i>
+        {{ emptyMessage }}
+      </div>
+    </td>
+  </tr>
+} @else {
+  @for (row of showPagination ? paginatedRows : filteredRows; track detectKey(row, i); let i = $index) {
+    <tr>
+      <!-- S.NO -->
+      <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
         <!-- DATA -->
         @for (col of columns; track col) {
           <td>
@@ -90,7 +85,9 @@
           @if (showEdit) {
             <button
               class="btn btn-sm btn-warning edit-btn"
-              (click)="edit(row)">
+              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
+              (click)="edit(row)"
+              title="Edit">
               <i class="fas fa-edit"></i>
             </button>
           }
@@ -107,13 +104,14 @@
           @if (showUpload) {
             <button
               class="btn btn-sm btn-success upload-btn"
+              style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; margin-right: 8px;"
               (click)="upload(row)"
               title="Upload Target">
               <i class="fas fa-upload"></i>
             </button>
           }
 
-          @if (showDelete) {
+          @if (showDelete && showDeleteButton) {
             @if (showStatusToggle && getRowStatus(row) !== undefined) {
               <button
                 class="btn btn-sm"
@@ -126,7 +124,10 @@
                 </i>
               </button>
             } @else {
-              <button class="btn btn-sm delete-btn" (click)="delete(row)" title="Delete">
+              <button
+                class="btn btn-sm delete-btn"
+                (click)="delete(row)"
+                title="Delete">
                 <i class="fas fa-trash-alt"></i>
               </button>
             }
