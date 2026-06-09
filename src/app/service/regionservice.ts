@@ -57,19 +57,26 @@ export class Regionservice {
       { headers }
     );
   }
+
+  // ================= GET REGIONS FOR COUNTRY =================
+  getRegionsForCountry(countryId: number): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any[]>(
+      `${this.baseUrl}/location/region/${countryId}`,
+      { headers }
+    );
+  }
  
   // ================= CREATE REGION =================
   createRegion(region: any): Observable<any> {
     const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
-    const body = {
-      countryName: region.countryName,
-      countryId: region.countryId,
+    const payload = {
       regionName: region.regionName,
-      serialNo: 1
+      countryId: region.countryId
     };
     return this.http.post<any>(
-      `${this.baseUrl}/admin/region-create`,
-      body,
+      `${this.baseUrl}/location/region`,
+      payload,
       { headers }
     );
   }

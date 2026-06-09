@@ -1,9 +1,9 @@
-<div class="search-group mb-3">
+<div class="search-group mb-3" (click)="hostClick()">
 
-  <div class="search-field"
-       *ngFor="let field of fields">
+  <ng-container *ngFor="let field of fields">
+    <div class="search-field" *ngIf="!field.dependsOn || values[field.dependsOn]">
 
-    <label class="search-label">{{ field.label }}</label>
+      <label class="search-label">{{ field.label }}</label>
 
     <!-- 🔹 INPUT FIELD -->
     <input
@@ -14,32 +14,46 @@
       [(ngModel)]="values[field.key]"
       (input)="onInput(field.key)" />
 
-    <!-- 🔹 DROPDOWN FIELD -->
-    <select
-      *ngIf="field.type === 'select'"
-      class="form-select"
-      [(ngModel)]="values[field.key]"
-      (change)="onInput(field.key)">
+    <!-- 🔹 CUSTOM SEARCHABLE DROPDOWN -->
+    <div *ngIf="field.type === 'select'" class="custom-dropdown-container">
+      <div class="dropdown-trigger" 
+           [class.active]="openDropdown === field.key"
+           (click)="toggleDropdown(field.key, $event)">
+        <span class="trigger-text">
+          {{ getSelectedLabel(field) || (field.placeholder || 'Select')}}
+        </span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
 
-      <!-- <option value="">Select</option> -->
-        <!-- ✅ REAL PLACEHOLDER -->
-  <option [ngValue]="null">
-  {{ field.placeholder || 'Select' }}
-</option>
+      <!-- DROPDOWN PANEL (Visible only when open) -->
+      <div class="dropdown-panel" *ngIf="openDropdown === field.key" (click)="$event.stopPropagation()">
+        <div class="search-box-wrapper" *ngIf="field.searchable !== false"> <!-- Default to searchable -->
+          <div class="search-panel">
+            <div class="search-input-wrapper">
+              <input type="text" 
+                     class="dropdown-search-input" 
+                     [placeholder]="'Search...'"
+                     (input)="filterDropdownOptions(field, $event)">
+            </div>
+            <div class="search-helper-text">Please enter 1 or more characters</div>
+          </div>
+        </div>
 
-      <option *ngFor="let opt of field.options"
-              [value]="opt.value">
-        {{ opt.label }}
-      </option>
+        <ul class="options-list">
+          <li class="option-item" (click)="selectOption(field, {label: field.placeholder || 'Select', value: null})">
+            -- {{ field.placeholder || 'Select' }} --
+          </li>
+          <li class="option-item" 
+              *ngFor="let opt of (field._filtered || field.options)" 
+              (click)="selectOption(field, opt)">
+            {{ opt.label }}
+          </li>
+          <li class="no-results" *ngIf="(field._filtered || field.options)?.length === 0">No results found</li>
+        </ul>
+      </div>
+    </div>
 
-    </select>
-
-  </div>
-
-  <!-- <button class="btn btn-sm btn-secondary clear-btn"
-          *ngIf="fields.length"
-          (click)="clear()">
-    Clear
-  </button> -->
+    </div>
+  </ng-container>
 
 </div>

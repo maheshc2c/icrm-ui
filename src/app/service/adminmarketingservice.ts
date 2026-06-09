@@ -1,9 +1,16 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 import { CustomerModel } from "../models/customer-model";
 import { AuthService } from "./auth-service";
 import { SpecialityModel } from "../models/speciality-model";
-import { Observable } from "rxjs";
+import { Observable, mergeMap } from "rxjs";
 import { Injectable } from "@angular/core";
+import { Contactmodel } from "../models/contactmodel";
+import { Campaign } from "../models/campaign.model";
+import { CampaignDocument } from "../models/campaign-document.model";
+import { TrackLeadApiRow } from "../models/track-leads.model";
+import { catchError, of, tap, Subject, map } from "rxjs";
+import * as XLSX from 'xlsx';
+import { DropdownOption } from "../models/assign-lead.model";
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +18,7 @@ import { Injectable } from "@angular/core";
 export class adminMarketingservice {
 
   private customerCache: CustomerModel[] | null = null;
+  public refreshSubject = new Subject<void>();
 
 
   private baseUrl = 'http://localhost:8080'; // ✅ no trailing slash
@@ -29,38 +37,27 @@ export class adminMarketingservice {
 //   : `Bearer ${token}`;
 //     return token
 //       ? new HttpHeaders({
-//         Authorization: `Bearer ${token}`,
-//         'Content-Type': 'application/json'
-//       })
-//       : new HttpHeaders({ 'Content-Type': 'application/json' });
-//   }
   private getAuthHeaders(): HttpHeaders {
-  const token = this.auth.getToken();
+    const token = localStorage.getItem('token');
 
-  const formattedToken = token?.startsWith('Bearer ')
-    ? token
-    : `Bearer ${token}`;
-
-  return token
-    ? new HttpHeaders({
-        Authorization: formattedToken,
+    if (token) {
+      return new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
-      })
-    : new HttpHeaders({ 'Content-Type': 'application/json' });
-}
+      });
+    }
+
+    return new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+  }
 
 
-  // ================= GET ALL Speciality =================
-  getSpecialities(pageNumber: number = 0, pageSize: number = 10): Observable<any> {
-    return this.http.get<any>(
-      `${this.baseUrl}/adminMarketing/view-Speciality`,
-      {
-        headers: this.getAuthHeaders(),
-        params: {
-          page: String(pageNumber),
-          size: String(pageSize)
-        }
-      }
+// ================= GET ALL Speciality =================
+  getSpecialities(): Observable<SpecialityModel[]> {
+    return this.http.get<SpecialityModel[]>(
+      `${this.baseUrl}/adminMarketing/view-Speciality`, // 
+      { headers: this.getAuthHeaders() }
     );
   }
 
@@ -80,7 +77,7 @@ export class adminMarketingservice {
   downloadSpecialityExcel(data: SpecialityModel[]): Observable<Blob> {
     return this.http.post(
       `${this.baseUrl}/adminMarketing/speciality-excel`,
-      data,    // ✅ send actual table data
+      data,    // 
       {
         headers: this.getAuthHeaders(),
         responseType: 'blob'
@@ -93,7 +90,7 @@ export class adminMarketingservice {
 
   updateSpeciality(id: number, data: SpecialityModel): Observable<SpecialityModel> {
     return this.http.put<SpecialityModel>(
-      `${this.baseUrl}/adminMarketing/update-Speciality/${id}`, // ⚠ backend spelling preserved
+      `${this.baseUrl}/adminMarketing/update-Speciality/${id}`, // 
       data,
       { headers: this.getAuthHeaders() }
     );
@@ -111,5 +108,485 @@ export class adminMarketingservice {
     );
   }
 
-  //contact
+  // ================= DEACTIVATE Speciality =================
+  deactivateSpeciality(id: number) {
+    return this.http.put<SpecialityModel>(
+      `${this.baseUrl}/adminMarketing/deactivate-Speciality/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  // ================= ACTIVATE Speciality =================
+  activateSpeciality(id: number) {
+    return this.http.put<SpecialityModel>(
+      `${this.baseUrl}/adminMarketing/activate-Speciality/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+getContact(): Observable<Contactmodel | Contactmodel[]> {
+    return this.http.get<Contactmodel | Contactmodel[]>(
+      `${this.baseUrl}/adminMarketing/view-contact`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+
+  searchContact(name: string) {
+    return this.http.get<Contactmodel>(
+      `${this.baseUrl}/adminMarketing/search-contact`,
+      {
+        headers: this.getAuthHeaders(),   // 
+        params: { name }
+      }
+    );
+  }
+
+  getSpecialityDropDown(): Observable<SpecialityModel[]> {
+    return this.http.get<SpecialityModel[]>(
+      `${this.baseUrl}/adminMarketing/dropdown-speciality`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  // getCustomerDropdown() {
+  //   return this.http.get<CustomerModel[]>(
+  //     `${this.baseUrl}/admin/dropdown-customer`,
+  //     { headers: this.getAuthHeaders() }
+  //   );
+  // }
+
+  searchContactByNumber(number: string) {
+    return this.http.get<Contactmodel[]>(
+      `${this.baseUrl}/adminMarketing/search-contact-by-number`,
+      {
+        headers: this.getAuthHeaders(),
+        params: { number }
+      }
+    );
+  }
+
+
+  createContact(data: any) {
+    return this.http.post(
+      `${this.baseUrl}/adminMarketing/create-contact`,
+      data,
+      {
+        headers: this.getAuthHeaders(),
+        responseType: 'text'
+      }
+    );
+  }
+
+updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
+  return this.http.put(
+    `${this.baseUrl}/adminMarketing/update-contact/${id}`,
+    data,
+    {
+      headers: this.getAuthHeaders(),
+      responseType: 'text'
+    }
+  );
+}
+  // updateContact(id: number, data: Contactmodel): Observable<any> {
+  //   return this.http.put(
+  //     `${this.baseUrl}/admin/update-contact/${id}`, // 
+  //     data,
+  //     {
+  //       headers: this.getAuthHeaders(),
+  //       responseType: 'text'
+  //     }
+  //   );
+  // }
+
+  getContactById(id: number): Observable<Contactmodel> {
+    const headers = this.getAuthHeaders();
+    const url = `${this.baseUrl}/adminMarketing/contact/${id}`;
+
+    return this.http.get<Contactmodel>(url, { headers });
+  }
+
+  downloadContact(data: Contactmodel[]): Observable<Blob> {
+    return this.http.post(
+      `${this.baseUrl}/adminMarketing/contact-excel`,
+      data,    // 
+      {
+        headers: this.getAuthHeaders(),
+        responseType: 'blob'
+      }
+    );
+  }
+
+  // ================= GET ALL CUSTOMERS =================
+  getCustomers(): Observable<CustomerModel[]> {
+    return this.http.get<CustomerModel[]>(
+      `${this.baseUrl}/adminMarketing/view-Customer`, // 
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  // ================= UPDATE CUSTOMER =================
+  updateCustomer(customerId: number, customer: any): Observable<CustomerModel> {
+    return this.http.put<CustomerModel>(
+      `${this.baseUrl}/adminMarketing/update-customer/${customerId}`,
+      customer,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+  // ================= CREATE CUSTOMER =================
+  createCustomer(customer: any): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/adminMarketing/create-customer`,
+      customer,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  downloadCustomer(data: CustomerModel[]): Observable<Blob> {
+    return this.http.post(
+      `${this.baseUrl}/adminMarketing/customer-excel`,
+      data,
+      {
+        headers: this.getAuthHeaders(),
+        responseType: 'blob'
+      }
+    );
+  }
+
+  // ================= SEARCH CUSTOMER =================
+  searchCustomer(name: string) {
+    return this.http.get<CustomerModel[]>(
+      `${this.baseUrl}/adminMarketing/search`,
+      {
+        headers: this.getAuthHeaders(),
+        params: { name: name }
+      }
+    );
+  }
+
+  // ================= CUSTOMER ACTIVATION/DEACTIVATION =================
+  deactivateCustomer(id: number) {
+    return this.http.put(
+      `${this.baseUrl}/adminMarketing/deactivate-customer/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  activateCustomer(id: number) {
+    return this.http.put(
+      `${this.baseUrl}/adminMarketing/activate-customer/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  // ================= CUSTOMER DROPDOWN METHODS =================
+  getSubCategories(categoryId: number): Observable<CustomerModel[]> {
+    return this.http.get<CustomerModel[]>(
+      `${this.baseUrl}/adminMarketing/dropdown-sub-categories/${categoryId}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getCustomerCategories(): Observable<CustomerModel[]> {
+    return this.http.get<CustomerModel[]>(
+      `${this.baseUrl}/adminMarketing/categories-dropdown`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getLocations(): Observable<CustomerModel[]> {
+    return this.http.get<CustomerModel[]>(
+      `${this.baseUrl}/adminMarketing/location-cities-dropdown`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  // ================= CAMPAIGN METHODS =================
+  getCampaigns(): Observable<Campaign[]> {
+    return this.http.get<Campaign[]>(`${this.baseUrl}/adminMarketing/view-campaign`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError((error) => {
+        console.error('Error fetching campaigns', error);
+        return of([]);
+      })
+    );
+  }
+
+  // ================= SEARCH CAMPAIGN =================
+  searchCampaign(name: string): Observable<Campaign[]> {
+    return this.http.get<Campaign[]>(
+      `${this.baseUrl}/adminMarketing/search-campaign`,
+      {
+        headers: this.getAuthHeaders(),
+        params: { name }
+      }
+    ).pipe(
+      catchError((error) => {
+        console.error('Error searching campaigns', error);
+        return of([]);
+      })
+    );
+  }
+
+  getGeos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/geos-dropdown`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(() => of([]))
+    );
+  }
+
+  getCampaignDropdownOptions(): Observable<DropdownOption[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/dropdown/campaigns`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map((campaigns: any[]) => {
+        const options = campaigns.map((c: any) => ({
+          label: c.campaignName || c.name || String(c.campaignId || c.id),
+          value: c.campaignName || c.name || String(c.campaignId || c.id)
+        }));
+        return [{ label: 'Select Campaign', value: '' }, ...options];
+      }),
+      catchError(() => of([{ label: 'Select Campaign', value: '' }]))
+    );
+  }
+
+  // Location dropdowns - matching backend endpoints
+  getCountries(geoId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${geoId}/countries-dropdown`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(() => of([]))
+    );
+  }
+
+  getRegions(countryId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${countryId}/regions-dropdown`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(() => of([]))
+    );
+  }
+
+  getStates(regionId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${regionId}/states-dropdown`, { headers: this.getAuthHeaders() }).pipe(
+      catchError((err) => {
+        return of([]);
+      })
+    );
+  }
+
+  getDistricts(stateId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${stateId}/districts-dropdown`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(() => of([]))
+    );
+  }
+
+  getCities(districtId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${districtId}/cities-dropdown`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(() => of([]))
+    );
+  }
+
+  createCampaign(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/adminMarketing/create-campaign`, payload, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      tap(() => this.triggerRefresh())
+    );
+  }
+
+  exportToExcel(data: any[], fileName: string): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  }
+
+  triggerRefresh() {
+    this.refreshSubject.next();
+  }
+
+  // ================= CAMPAIGN DOCUMENT METHODS =================
+  getCampaignDocuments(): Observable<CampaignDocument[]> {
+    return this.http.get<CampaignDocument[]>(`${this.baseUrl}/adminMarketing/view-campdoc`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError((error) => {
+        console.error('Error fetching campaign documents', error);
+        return of([]);
+      })
+    );
+  }
+
+  getDocumentById(id: number): Observable<CampaignDocument[]> {
+    return this.http.get<CampaignDocument[]>(`${this.baseUrl}/adminMarketing/view-campdoc`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  createDocument(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/adminMarketing/create-campDoc`, payload, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      tap(() => this.triggerRefresh())
+    );
+  }
+
+  updateDocument(id: number, payload: any): Observable<any> {
+    payload.campaignDocumentId = id;
+    return this.http.post(`${this.baseUrl}/adminMarketing/create-campDoc`, payload, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      tap(() => this.triggerRefresh())
+    );
+  }
+
+  deactivateCampdoc(id: number) {
+    return this.http.put<CampaignDocument>(
+      `${this.baseUrl}/adminMarketing/deactivate-campdoc/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  activateCampdoc(id: number) {
+    return this.http.put<CampaignDocument>(
+      `${this.baseUrl}/adminMarketing/activate-campdoc/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  // ================= CAMPAIGN ACTIVATION/DEACTIVATION =================
+  deactivateCampaign(id: number) {
+    return this.http.put(
+      `${this.baseUrl}/adminMarketing/deactivate-campaign/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  activateCampaign(id: number) {
+    return this.http.put(
+      `${this.baseUrl}/adminMarketing/activate-campaign/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getRoles(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/role-dropdown`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(() => of([
+        { id: 3, roleName: 'ADMINMARKETING' },
+        { id: 6, roleName: 'Regional Sales Manager' },
+        { id: 10, roleName: 'Sales Director' },
+        { id: 4, roleName: 'Sales Engineer' },
+        { id: 8, roleName: 'National Sales Manager' },
+        { id: 9, roleName: 'Country Head' },
+        { id: 5, roleName: 'Distributor' },
+        { id: 7, roleName: 'Regional Branch Head' }
+      ]))
+    );
+  }
+
+  // ================= TRACK LEADS METHODS =================
+  getTrackLeads(): Observable<TrackLeadApiRow[]> {
+    return this.http.get<TrackLeadApiRow[]>(`${this.baseUrl}/adminMarketing/view-trackLead`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      catchError((error) => {
+        console.error('Error fetching track leads', error);
+        return of([]);
+      })
+    );
+  }
+
+  // ================= ASSIGN LEADS & DROPDOWN HELPERS =================
+
+  assignLead(payload: any): Observable<any> {
+    const url = `${this.baseUrl}/adminMarketing/assign-lead`;
+
+    return this.http.post(url, payload, { headers: this.getAuthHeaders(), observe: 'response' }).pipe(
+      map((res: HttpResponse<any>) => res.body),
+      catchError((err: any) => {
+        return of({ error: true, message: err?.message ?? 'Request failed' });
+      })
+    );
+  }
+
+  // New dropdown methods with exact endpoint paths
+
+  getCustomerDropdown(): Observable<DropdownOption[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/dropdown/customers`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map((customers: any[]) => {
+        // ✅ Filter out inactive customers (where customerStatus is not 1)
+        const activeCustomers = customers.filter((c: any) => c.customerStatus === 1);
+        
+        const options = activeCustomers.map((c: any) => ({
+          label: c.customerName || c.name || String(c.customerId || c.id),
+          value: c.customerName || c.name || String(c.customerId || c.id)
+        }));
+        return [{ label: 'Select Customer', value: '' }, ...options];
+      }),
+      catchError(() => of([{ label: 'Select Customer', value: '' }]))
+    );
+  }
+
+  getContactsDropdown(): Observable<DropdownOption[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/dropdown/contacts`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map((contacts: any[]) => {
+        const options = contacts.map((c: any) => ({
+          label: c.contactFirstName || c.contactId || String(c),
+          value: c.contactFirstName || c.contactId || String(c)
+        }));
+        return [{ label: 'Select Contact Person', value: '' }, ...options];
+      }),
+      catchError(() => of([{ label: 'Select Contact Person', value: '' }]))
+    );
+  }
+
+  getContactPerson2Dropdown(): Observable<DropdownOption[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/contact-person2/dropdown`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map((contacts: any[]) => {
+        const options = contacts.map((c: any) => ({
+          label: c.contactFirstName || c.contactId || String(c),
+          value: c.contactFirstName || c.contactId || String(c)
+        }));
+        return [{ label: 'Select Contact Person 2', value: '' }, ...options];
+      }),
+      catchError(() => of([{ label: 'Select Contact Person 2', value: '' }]))
+    );
+  }
+
+  getUsernamesDropdown(): Observable<DropdownOption[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/dropdown/users`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map((users: any[]) => {
+        const options = users.map((u: any) => ({
+          label: u.username || u.firstName || String(u.id),
+          value: u.username || u.firstName || String(u.id)
+        }));
+        return [{ label: 'Select User to Assign', value: '' }, ...options];
+      }),
+      catchError(() => of([{ label: 'Select User to Assign', value: '' }]))
+    );
+  }
 }

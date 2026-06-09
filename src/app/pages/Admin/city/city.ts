@@ -32,8 +32,8 @@ export class CityComponent implements OnInit {
   headerTitle: string = 'City Management';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Territory', route: '/admin/city' },
-    { label: 'City', route: '/admin/city' }
+    { label: 'Manage Territory', route: '/city' },
+    { label: 'City', route: '/city' }
   ];
 
   /* ================= TABLE CONFIG ================= */
@@ -130,7 +130,7 @@ export class CityComponent implements OnInit {
     const searchTerm = typeof searchData === 'string' 
       ? searchData 
       : searchData?.locationName?.trim() || '';
-
+  
     if (!searchTerm) {
       console.log('Empty search, loading all cities');
       this.loadCities();
@@ -190,14 +190,14 @@ export class CityComponent implements OnInit {
 
   /* ================= ACTION HANDLERS ================= */
   onAdd(): void {
-    this.router.navigate(['/admin/addcity']);
+    this.router.navigate(['/addcity']);
   }
 
   onEdit(city: any): void {
     console.log('========== EDIT CITY CLICKED ==========');
     console.log('City object:', city);
     console.log('City ID:', city.id);
-    console.log('Navigating to:', `/admin/editcity/${city.id}`);
+    console.log('Navigating to:', `/editcity/${city.id}`);
     
     if (!city.id) {
       console.error('❌ No ID found in city object!');
@@ -205,7 +205,7 @@ export class CityComponent implements OnInit {
       return;
     }
     
-    this.router.navigate(['/admin/editcity', city.id]);
+    this.router.navigate(['/editcity', city.id]);
     console.log('========================================');
   }
 

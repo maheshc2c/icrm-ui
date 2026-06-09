@@ -1,0 +1,72 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  title="Campaign List"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  [showImport]="false"
+  [showAdd]="true"
+  [showStatusToggle]="true"
+  (searchChange)="onSearchChange($event)"
+  (search)="onSearch()"
+  (download)="onDownload()"
+  (add)="onAdd()"
+  (editRow)="onEdit($event)"
+  (statusToggle)="onStatusToggle($event)">
+</app-data-table>
+
+<!-- Campaign Details Modal -->
+<div class="modal-overlay" id="campaignModal" *ngIf="showModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>View Campaign Details</h2>
+      <button class="modal-close" (click)="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body" *ngIf="selected">
+      <div class="detail-row">
+        <div class="detail-label">Campaign Type</div>
+        <div class="detail-value">{{ selected.type }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Speciality</div>
+        <div class="detail-value">{{ selected.speciality }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Locations</div>
+        <div class="detail-value">{{ selected.locations }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Campaign Name</div>
+        <div class="detail-value">{{ selected.name }}</div>
+      </div>
+      <div class="detail-row" *ngIf="selected.description">
+        <div class="detail-label">Description</div>
+        <div class="detail-value">{{ selected.description }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Campaign date</div>
+        <div class="detail-value">{{ selected.date }}</div>
+      </div>
+      <div class="detail-row" *ngIf="selected.subject">
+        <div class="detail-label">Subject</div>
+        <div class="detail-value">{{ selected.subject }}</div>
+      </div>
+      <div class="detail-row" *ngIf="selected.mailContent">
+        <div class="detail-label">Mail Content</div>
+        <div class="detail-value" [innerHTML]="selected.mailContent"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-close" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</div>

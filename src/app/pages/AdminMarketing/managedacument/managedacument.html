@@ -1,0 +1,25 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  title="Documents List"
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  [showImport]="false"
+  [showAdd]="true"
+  [showStatusToggle]="true"
+  (searchChange)="onSearchChange($event)"
+  (search)="onSearch()"
+  (download)="onDownload()"
+  (add)="onAdd()"
+  (editRow)="onEdit($event)"
+  (statusToggle)="onStatusToggle($event)">
+</app-data-table>
+
+
+

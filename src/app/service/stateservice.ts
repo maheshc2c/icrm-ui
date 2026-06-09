@@ -80,29 +80,27 @@ export class Stateservice {
       { headers }
     );
   }
+
+  // ================= GET STATES FOR REGION =================
+  getStatesForRegion(regionId: number): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any[]>(
+      `${this.baseUrl}/location/state/${regionId}`,
+      { headers }
+    );
+  }
  
   // ================= CREATE STATE =================
   createState(state: any): Observable<State> {
     const jsonHeaders = this.getAuthHeaders().set('Content-Type', 'application/json');
-    console.log('Create State API Call:');
-    console.log('URL:', `${this.baseUrl}/admin/state-create`);
-    console.log('Headers:', jsonHeaders);
-    console.log('Auth header present:', jsonHeaders.has('Authorization'));
-    console.log('Payload:', state);
- 
-    const jsonBody = {
-      geoName: state.geoName || '',
-      countryName: state.countryName,
-      regionName: state.regionName,
+    const payload = {
       stateName: state.stateName,
-      countryId: state.countryId,
-      regionId: state.regionId,
-      serialNo: 1
+      regionId: state.regionId
     };
  
     return this.http.post<State>(
-      `${this.baseUrl}/admin/state-create`,
-      jsonBody,
+      `${this.baseUrl}/location/state`,
+      payload,
       { headers: jsonHeaders }
     );
   }

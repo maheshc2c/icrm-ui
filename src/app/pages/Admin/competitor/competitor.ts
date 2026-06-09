@@ -64,24 +64,51 @@ columns = [
 
   // ✅ LIST API ONLY
 private loadCompetitors(): void {
-  this.adminservice.getCompetitors().subscribe({
-    next: (competitors: any[]) => {
 
-      // ✅ keep FULL data untouched
-      this.fullRows = competitors;
+  this.adminservice
+    .getCompetitors(this.currentPage - 1, this.pageSize)
+    .subscribe({
 
-      // ✅ map only what table needs
-      this.rows = competitors.map((c, index) => ({
-        sno: index + 1,
-        competitorId: c.competitorId,
-        competitorName: c.competitorName,
-        competitorRating: c.competitorRating,
-        competitorStatus: c.competitorStatus
-      }));
-    }
-  });
+      next: (response: any) => {
+
+        const competitors = response.content;
+
+        this.totalElements = response.totalElements;
+        this.totalPages = response.totalPages;
+
+        this.fullRows = competitors;
+
+        this.rows = competitors.map((c: any, index: number) => ({
+          sno: (this.currentPage - 1) * this.pageSize + index + 1,
+          competitorId: c.competitorId,
+          competitorName: c.competitorName,
+          competitorRating: c.competitorRating,
+          competitorStatus: c.competitorStatus
+        }));
+      },
+
+      error: (err) => {
+        console.error(err);
+      }
+    });
 }
 
+//pagination
+totalElements = 0;
+currentPage = 1;
+pageSize = 10;
+totalPages = 1;
+
+onPageChange(page: number) {
+  this.currentPage = page;
+  this.loadCompetitors();
+}
+
+onPageSizeChange(size: number) {
+  this.pageSize = size;
+  this.currentPage = 1;
+  this.loadCompetitors();
+}
 
 //actiavte and deactivate
 

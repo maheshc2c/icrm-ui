@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Addlead } from './addlead';
+import { AddleadComponent } from './addlead';
 
-describe('Addlead', () => {
-  let component: Addlead;
-  let fixture: ComponentFixture<Addlead>;
+describe('AddleadComponent', () => {
+  let component: AddleadComponent;
+  let fixture: ComponentFixture<AddleadComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Addlead]
+      imports: [AddleadComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Addlead);
+    fixture = TestBed.createComponent(AddleadComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,3 +21,4 @@ describe('Addlead', () => {
     expect(component).toBeTruthy();
   });
 });
+

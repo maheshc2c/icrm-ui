@@ -24,24 +24,27 @@ export class Districtservice {
       { headers }
     );
   }
+
+  // ================= GET DISTRICTS FOR STATE =================
+  getDistrictsForState(stateId: number): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any[]>(
+      `${this.baseUrl}/location/district/${stateId}`,
+      { headers }
+    );
+  }
  
   // ================= CREATE DISTRICT =================
   createDistrict(district: any): Observable<District> {
     const headers = this.getAuthHeaders();
-    const body = {
-      countryName: district.countryName,
-      countryId: district.countryId,
-      regionName: district.regionName,
-      regionId: district.regionId,
-      stateName: district.stateName,
-      stateId: district.stateId,
+    const payload = {
       districtName: district.districtName,
-      serialNo: 1
+      stateId: district.stateId
     };
  
     return this.http.post<District>(
-      `${this.baseUrl}/admin/district-create`,
-      body,
+      `${this.baseUrl}/location/district`,
+      payload,
       { headers }
     );
   }

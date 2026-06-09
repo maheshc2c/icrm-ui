@@ -34,7 +34,7 @@ export class StateComponent implements OnInit {
   headerTitle = 'State';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Territory', route: '/admin/state' },
+    { label: 'Manage Territory', route: '/state' },
     { label: 'State' }
   ];
 
@@ -105,7 +105,7 @@ export class StateComponent implements OnInit {
   }
 
   onAdd() {
-    this.router.navigate(['/admin/addstate']);
+    this.router.navigate(['/addstate']);
   }
 
   onEdit(row: any) {
@@ -119,7 +119,7 @@ export class StateComponent implements OnInit {
     }
     
     console.log('Navigating to edit with ID:', id);
-    this.router.navigate(['/admin/editstate', id]);
+    this.router.navigate(['/editstate', id]);
   }
 
   onDelete(row: any) {

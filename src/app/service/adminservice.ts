@@ -112,12 +112,20 @@ activateCompetitor(id: number) {
   }
 
   // ================= GET ALL COMPETITORS =================
-  getCompetitors(): Observable<CompetitorModel[]> {
-    return this.http.get<CompetitorModel[]>(
-      `${this.baseUrl}/admin/get-competitors`, // ✅ FIXED
-      { headers: this.getAuthHeaders() }
-    );
-  }
+  // getCompetitors(): Observable<CompetitorModel[]> {
+  //   return this.http.get<CompetitorModel[]>(
+  //     `${this.baseUrl}/admin/get-competitors`, // ✅ FIXED
+  //     { headers: this.getAuthHeaders() }
+  //   );
+  // }
+  getCompetitors(page = 0, size = 10): Observable<any> {
+  return this.http.get<any>(
+    `${this.baseUrl}/admin/get-competitors?page=${page}&size=${size}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
 
   // ================= CREATE COMPETITORS =================
@@ -243,7 +251,7 @@ activateCustomer(id: number) {
   }
   searchCustomer(name: string) {
     return this.http.get<CustomerModel[]>(
-      `${this.baseUrl}/admin/search`,
+      `${this.baseUrl}/customer/search`,
       {
         headers: this.getAuthHeaders(),
         params: { name: name } 
@@ -313,16 +321,38 @@ activateCustomer(id: number) {
     );
   }
 
-  downloadCustomer(data: CustomerModel[]): Observable<Blob> {
-    return this.http.post(
-      `${this.baseUrl}/customer/download`,
-      data,    // ✅ send actual table data
-      {
-        headers: this.getAuthHeaders(),
-        responseType: 'blob'
-      }
-    );
-  }
+  // downloadCustomer(data: CustomerModel[]): Observable<Blob> {
+  //   return this.http.post(
+  //     `${this.baseUrl}/admin/customer-excel`,
+  //     data,    // ✅ send actual table data
+  //     {
+  //       headers: this.getAuthHeaders(),
+  //       responseType: 'blob'
+  //     }
+  //   );
+  // }
+
+  downloadCustomer(
+  customerName: string | null,
+  customerCategoryName: string | null,
+  subCategoryName: string | null,
+  cityName: string | null
+): Observable<Blob> {
+
+  return this.http.post(
+    `${this.baseUrl}/customer/download`,
+    {
+      customerName,
+      customerCategoryName,
+      subCategoryName,
+      cityName
+    },
+    {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    }
+  );
+}
 
   // ================= UPDATE CUSTOMER =================
   updateCustomer(customerId: number, customer: any) {
@@ -345,14 +375,14 @@ activateCustomer(id: number) {
   // ================= CUSTOMER DROPDOWN CATEGORY =================
   getSubCategories(categoryId: number): Observable<CustomerModel[]> {
     return this.http.get<CustomerModel[]>(
-      `${this.baseUrl}/admin/dropdown-sub-categories/${categoryId}`,
+      `${this.baseUrl}/customer/subcategory/${categoryId}`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   getCustomerCategories(): Observable<CustomerModel[]> {
     return this.http.get<CustomerModel[]>(
-      `${this.baseUrl}/admin/dropdown-customer`,
+      `${this.baseUrl}/customer/categories`,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -653,6 +683,23 @@ activateDemo(id: number) {
       }
     );
   }
+
+  //product
+  deactivateProduct(id: number) {
+  return this.http.put(
+    `${this.baseUrl}/admin/deactivate-product/${id}`,
+    {},
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+activateProduct(id: number) {
+  return this.http.put(
+    `${this.baseUrl}/admin/activate-product/${id}`,
+    {},
+    { headers: this.getAuthHeaders() }
+  );
+}
 
   //Demo Dropdowns
 
@@ -955,6 +1002,38 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
       { headers: this.getAuthHeaders() }
     );
   }
+  getChannelPartnerById(id: number) {
+  return this.http.get<ChannelPartnerModel>(
+    `${this.baseUrl}/admin/view-chanel/${id}`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+  deactivateChannelPartners(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<ChannelPartnerModel>(
+    `${this.baseUrl}/admin/deactivate-chanelpartner/${id}`,
+    {},
+    { headers }
+  );
+}
+
+activateChannelPartners(id: number) {
+  const token = localStorage.getItem('token'); // or your existing token key
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  return this.http.put<ChannelPartnerModel>(
+    `${this.baseUrl}/admin/activate-chanelpartner/${id}`,
+    {},
+    { headers }
+  );
+}
 
   // SEARCH
   searchChannelPartner(name: string) {

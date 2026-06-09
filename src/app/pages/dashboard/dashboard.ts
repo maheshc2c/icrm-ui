@@ -7,7 +7,7 @@ import { Pageheader } from '../../shared/pageheader/pageheader';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink, FormsModule, Pageheader],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })

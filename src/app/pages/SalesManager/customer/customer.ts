@@ -22,7 +22,7 @@ export class CustomerComponent implements OnInit {
       { value: 'Category A', label: 'Category A' },
       { value: 'Category B', label: 'Category B' }
     ]},
-    { key: 'subCategory', label: 'Sub Category', type: 'select', placeholder: 'Select Sub Category', options: [
+    { key: 'subCategory', label: 'Sub Category', dependsOn: 'category', type: 'select', placeholder: 'Select Sub Category', options: [
       { value: '', label: 'Select Sub Category' },
       { value: 'Sub A', label: 'Sub A' },
       { value: 'Sub B', label: 'Sub B' }

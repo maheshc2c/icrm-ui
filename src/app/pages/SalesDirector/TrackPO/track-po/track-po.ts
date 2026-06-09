@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-track-po',
   standalone: true,
-  imports: [Pageheader, DataTable, Header, Sidebar, Search],
+  imports: [Pageheader, DataTable, Header, Sidebar],
   templateUrl: './track-po.html',
   styleUrl: './track-po.css',
 })

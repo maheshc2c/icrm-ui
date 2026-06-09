@@ -73,6 +73,7 @@ export class Customer {
     {
       key: 'subCategory',
       label: 'Sub Category',
+      dependsOn: 'category',
       placeholder: 'Select Sub Category',
       type: 'select',
       options: []

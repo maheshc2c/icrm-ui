@@ -1,0 +1,64 @@
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px;
+  margin-left: 257px;
+  margin-right: 20px;
+  max-width: calc(100% - 277px);
+  gap: 20px;
+  box-sizing: border-box;
+  margin-top: 80px; /* Space for fixed header */
+}
+
+.form-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.btn-action {
+  height: 35px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background: #f5eaff;
+  color: #6d28d9;
+  border: 1px solid #eadcff;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(109, 40, 217, 0.1);
+}
+
+.btn-action:hover {
+  background: #e9dbff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(104, 13, 173, 0.15);
+}
+
+.btn-action i {
+  font-size: 12px;
+}
+
+/* Override app-form internal padding if needed */
+:host ::ng-deep .form-wrapper {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+:host ::ng-deep .company-form-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Remove duplicated header/sidebar from app-form */
+:host ::ng-deep app-form app-header,
+:host ::ng-deep app-form app-sidebar {
+  display: none !important;
+}

@@ -8,6 +8,8 @@ import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Countryservice } from '../../../../service/countryservice';
 import { Geoservice } from '../../../../service/geoservice';
 import { Country } from '../../../../models/country';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../../../../service/auth-service';
 
 @Component({
   selector: 'app-addcountry',
@@ -31,7 +33,9 @@ export class Addcountry implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private countryService: Countryservice,
-    private geoService: Geoservice
+    private geoService: Geoservice,
+    private http: HttpClient,
+    private auth: AuthService
   ) { }
 
   /* ================= ON INIT ================= */
@@ -56,28 +60,31 @@ export class Addcountry implements OnInit {
 
   /* ================= LOAD GEO OPTIONS ================= */
   loadGeoOptions(): void {
-    this.geoService.getGeos().subscribe({
-      next: (geos: any[]) => {
-        console.log('Geo options loaded:', geos);
+    const token = this.auth?.getToken?.();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
 
-        // Update the geo field with options
-        const geoField = this.countryFields.find(field => field.name === 'geoName');
-        if (geoField) {
-          geoField.options = geos.map(geo => {
-            const g = geo as any; // Cast to any to handle potential fallback fields
-            return {
-              label: g.locationName || g.name || g.geoName,
-              value: g.locationName || g.name || g.geoName
-            };
-          });
+    this.http.get<any[]>(`${'http://localhost:8080'}/location/locations?territoryLevelId=2`, { headers })
+      .subscribe({
+        next: (geos: any[]) => {
+          console.log('Geo options loaded:', geos);
+
+          const geoField = this.countryFields.find(field => field.name === 'geoId');
+          if (geoField) {
+            geoField.options = geos.map(geo => {
+              const g = geo as any;
+              return {
+                label: g.locationName || g.name || g.geoName,
+                value: String(g.locationId ?? g.id)
+              };
+            });
+          }
+
+          console.log('Updated country fields:', this.countryFields);
+        },
+        error: (err: any) => {
+          console.error('Failed to load geo options:', err);
         }
-
-        console.log('Updated country fields:', this.countryFields);
-      },
-      error: (err: any) => {
-        console.error('Failed to load geo options:', err);
-      }
-    });
+      });
   }
 
   /* ================= MODE SETUP ================= */
@@ -88,8 +95,8 @@ export class Addcountry implements OnInit {
     this.headerTitle = 'Edit Country';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
-      { label: 'Manage Territory', route: '/admin/country' },
-      { label: 'Country', route: '/admin/country' },
+      { label: 'Manage Territory', route: '/country' },
+      { label: 'Country', route: '/country' },
       { label: 'Edit Country' }
     ];
 
@@ -102,8 +109,8 @@ export class Addcountry implements OnInit {
     this.headerTitle = 'Add New Country';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
-      { label: 'Manage Territory', route: '/admin/country' },
-      { label: 'Country', route: '/admin/country' },
+      { label: 'Manage Territory', route: '/country' },
+      { label: 'Country', route: '/country' },
       { label: 'Add Country' }
     ];
   }
@@ -111,7 +118,7 @@ export class Addcountry implements OnInit {
   /* ================= FORM FIELDS ================= */
   countryFields: any[] = [
     {
-      name: 'geoName', // Changed from geoId to geoName because backend expects name
+      name: 'geoId',
       label: 'Geo',
       placeholder: 'Select Geo',
       type: 'select',
@@ -129,20 +136,17 @@ export class Addcountry implements OnInit {
 
   /* ================= SAVE ================= */
   saveCountry(data: any): void {
-    // data contains { geoName: "...", countryName: "..." }
     const payload = {
-      ...data,
-      locationStatus: 1, // Default to Active
-      // territoryLevelId is handled by backend or we can send it if needed, but createCountry logic implies it sets it (3L)
+      countryName: data.countryName,
+      geoId: +data.geoId
     };
-    // delete payload.geoName; // Keep geoName as backend expects it (if DTO has geoName)
     console.log('Saving Country with payload:', payload);
 
     if (this.isEditMode) {
       this.countryService.updateCountry(this.countryId, payload).subscribe({
         next: (response: any) => {
           console.log('Update Country Success:', response);
-          this.router.navigate(['/admin/country']);
+          this.router.navigate(['/country']);
         },
         error: (error: any) => {
           console.error('Failed to update country:', error);
@@ -153,7 +157,7 @@ export class Addcountry implements OnInit {
       this.countryService.createCountry(payload).subscribe({
         next: (response: any) => {
           console.log('Create Country Success:', response);
-          this.router.navigate(['/admin/country']);
+          this.router.navigate(['/country']);
         },
         error: (error: any) => {
           console.error('Failed to create country:', error);
@@ -165,7 +169,7 @@ export class Addcountry implements OnInit {
 
   /* ================= CANCEL ================= */
   onCancel(): void {
-    this.router.navigate(['/admin/country']);
+    this.router.navigate(['/country']);
   }
 
   /* ================= LOAD COUNTRY ================= */
@@ -174,62 +178,25 @@ export class Addcountry implements OnInit {
       next: (countries: any[]) => {
         console.log('Edit Mode - Requested ID:', id, 'Type:', typeof id);
 
-        // Find country by ID or locationId, handling type mismatch
         const country = countries.find(c => {
-          // console.log(`Checking country: id=${c.id}, locationId=${c.locationId}`);
           return String(c.id) === String(id) || String(c.locationId) === String(id);
         });
 
         if (!country) {
-          console.error('Country not found! Available IDs:', countries.map((c: any) => ({ id: c.id, locationId: c.locationId })));
+          console.error('Country not found!');
           alert('Country not found');
-          this.router.navigate(['/admin/country']);
+          this.router.navigate(['/country']);
           return;
         }
 
-        // We need to fetch the parent Geo name to populate the dropdown
-        // The country object has 'parentId'. We need to find the Geo with that ID.
-        // Robust parentId resolution
         const parentId = country.parentId || country.parentLocation?.id || country.parentLocation?.locationId;
 
         console.log('Edit Mode - Resolved Parent ID:', parentId);
 
-        if (!parentId) {
-          console.warn('Edit Mode - No Parent ID found for country:', country);
-          this.model = {
-            countryName: country.locationName,
-            geoName: ''
-          };
-          return;
-        }
-
-        this.geoService.getGeos().subscribe(geos => {
-          // Robust Geo finding
-          const parentGeo = geos.find(g =>
-            String(g.id) === String(parentId) ||
-            String(g.locationId) === String(parentId)
-          );
-
-          if (parentGeo) {
-            // Must match the value format in loadGeoOptions
-            // Cast to any to avoid TS errors if 'name' or 'geoName' are not in interface
-            const g = parentGeo as any;
-            const geoValue = g.locationName || g.name || g.geoName;
-            console.log('Edit Mode - Found Parent Geo:', parentGeo);
-            console.log('Edit Mode - Setting Geo Value:', geoValue);
-
-            this.model = {
-              countryName: country.locationName,
-              geoName: geoValue
-            };
-          } else {
-            console.warn(`Edit Mode - Parent Geo not found for ID: ${parentId}`);
-            this.model = {
-              countryName: country.locationName,
-              geoName: ''
-            };
-          }
-        });
+        this.model = {
+          countryName: country.locationName || country.countryName,
+          geoId: parentId ? String(parentId) : ''
+        };
       },
       error: (err: any) => {
         console.error('Error loading country:', err);

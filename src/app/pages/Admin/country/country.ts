@@ -32,7 +32,7 @@ export class CountryComponent implements OnInit {
   headerTitle = 'Country';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Territory', route: '/admin/country' },
+    { label: 'Manage Territory', route: '/country' },
     { label: 'Country' }
   ];
  
@@ -126,7 +126,7 @@ export class CountryComponent implements OnInit {
  
   /* ================= ACTIONS ================= */
   onAdd() {
-    this.router.navigate(['/admin/addcountry']);
+    this.router.navigate(['/addcountry']);
   }
  
   onEdit(row: any) {
@@ -138,7 +138,7 @@ export class CountryComponent implements OnInit {
       return;
     }
  
-    this.router.navigate(['/admin/editcountry', id]);
+    this.router.navigate(['/editcountry', id]);
   }
  
   onDelete(row: any) {

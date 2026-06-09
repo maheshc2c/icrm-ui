@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from
 import { FormsModule } from '@angular/forms';
 import { Button } from "../button/button";
 import { Search, SearchFieldConfig } from "../search/search";
+import { ConfirmDialogService } from '../../service/confirm-dialog.service';
 @Component({
   selector: 'app-data-table',
    standalone: true,
@@ -71,6 +72,9 @@ export class DataTable
   @Input() showSearch = true;
   @Input() showEdit = true;
   @Input() showDelete = true;
+  @Input() showApprove = false;
+  @Input() showReject = false;
+
   @Input() showView = false;
   @Input() showDownload = true;
 
@@ -82,6 +86,8 @@ export class DataTable
   @Output() viewRow = new EventEmitter<any>();
   @Output() assignRow = new EventEmitter<any>();
   @Output() uploadRow = new EventEmitter<any>();
+  @Output() approveRow = new EventEmitter<any>();
+  @Output() rejectRow = new EventEmitter<any>();
 
   assign(row: any) {
     this.assignRow.emit(row);
@@ -91,8 +97,37 @@ export class DataTable
     this.uploadRow.emit(row);
   }
 
+  approve(row: any) {
+    this.approveRow.emit(row);
+  }
+
+  reject(row: any) {
+    this.rejectRow.emit(row);
+  }
+
 @Input() emptyMessage = 'No records found';
 
+  openPageSizeDropdown = false;
+  pageSizeOptions = [
+    { label: '10', value: 10 },
+    { label: '25', value: 25 },
+    { label: '50', value: 50 }
+  ];
+
+  togglePageSizeDropdown(event: Event) {
+    event.stopPropagation();
+    this.openPageSizeDropdown = !this.openPageSizeDropdown;
+  }
+
+  selectPageSize(size: number) {
+    this.changePageSize(size);
+    this.openPageSizeDropdown = false;
+  }
+
+  // Close dropdowns when clicking outside
+  hostClick() {
+    this.openPageSizeDropdown = false;
+  }
 
 //Download Fuctionality 
 @Output() download = new EventEmitter<void>();
@@ -134,30 +169,29 @@ onSearchFromChild(values: any) {
 //automates the search method 
 detectKey(row: any, index: number) {
   return (
-    row?.startDate??
-    row?.endDate??
-    row?.subcategoryName??
-    row?.businessCategory??
-    row?.segmentName??
-    row?.locationName??
-    row?.product??
-    row?.status??
-    row?.distributor??
-    row?.poId??
-    row?.customer??
-    row?.opportunity??
-    row?.subcategoryName??
-    row?.qouteId??
-    row?.customerName??
-    row?.contactFirstName ??
-    row?.productName ??
-    row?.fyId ??
-    row?.demoId ??
-    row?.specialityId ??
-    row?.competitorId ??
-    row?.customerId ??
-    row?.companyId ??
-    row?.id ??
+    row?.id ||
+    row?.customerId ||
+    row?.startDate ||
+    row?.endDate ||
+    row?.subcategoryName ||
+    row?.businessCategory ||
+    row?.segmentName ||
+    row?.locationName ||
+    row?.product ||
+    row?.status ||
+    row?.distributor ||
+    row?.poId ||
+    row?.customer ||
+    row?.opportunity ||
+    row?.qouteId ||
+    row?.customerName ||
+    row?.contactFirstName ||
+    row?.productName ||
+    row?.fyId ||
+    row?.demoId ||
+    row?.specialityId ||
+    row?.competitorId ||
+    row?.companyId ||
     index
   );
 }
@@ -168,10 +202,10 @@ detectKey(row: any, index: number) {
 @Input() set totalItems(value: number | null) {
   this.totalElements = value;
 }
-get totalItems(): number | null {
-  return this.totalElements;
-}
-@Input() showPagination = true;
+  get totalItems(): number | null {
+    return this.totalElements;
+  }
+  // Removed duplicate showPagination
 @Output() pageChange = new EventEmitter<number>();
 @Output() pageSizeChange = new EventEmitter<number>();
 
@@ -179,70 +213,68 @@ get totalItems(): number | null {
   @Input() currentPage = 1;
 @Input() totalPages = 1;
 paginatedRows: any[] = [];
-
+ 
 updatePagination() {
   if (this.totalElements !== null) {
     this.totalPages = Math.ceil(this.totalElements / this.pageSize);
     this.paginatedRows = this.filteredRows;
   } else {
     this.totalPages = Math.ceil(this.filteredRows.length / this.pageSize);
-
+ 
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
-
+ 
     this.paginatedRows = this.filteredRows.slice(start, end);
   }
 }
-
 getStartRecord(): number {
   const total = this.totalElements !== null ? this.totalElements : this.filteredRows.length;
   if (total === 0) return 0;
   return (this.currentPage - 1) * this.pageSize + 1;
 }
-
+ 
 getEndRecord(): number {
   const total = this.totalElements !== null ? this.totalElements : this.filteredRows.length;
   return Math.min(this.currentPage * this.pageSize, total);
 }
-
+ 
 getVisiblePages(): (number | string)[] {
   const pages: (number | string)[] = [];
   const maxVisible = 7;
-
+ 
   if (this.totalPages <= maxVisible) {
     for (let i = 1; i <= this.totalPages; i++) {
       pages.push(i);
     }
   } else {
     pages.push(1);
-
+ 
     let start = Math.max(2, this.currentPage - 1);
     let end = Math.min(this.totalPages - 1, this.currentPage + 1);
-
+ 
     if (this.currentPage <= 3) {
       end = 4;
     } else if (this.currentPage >= this.totalPages - 2) {
       start = this.totalPages - 3;
     }
-
+ 
     if (start > 2) {
       pages.push('...');
     }
-
+ 
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-
+ 
     if (end < this.totalPages - 1) {
       pages.push('...');
     }
-
+ 
     pages.push(this.totalPages);
   }
-
+ 
   return pages;
 }
-
 goToPage(page: number | string) {
   if (typeof page === 'number') {
     this.currentPage = page;
@@ -253,7 +285,7 @@ goToPage(page: number | string) {
     }
   }
 }
-
+ 
 // Page navigation
 prevPage() {
   if (this.currentPage > 1) {
@@ -265,7 +297,7 @@ prevPage() {
     }
   }
 }
-
+ 
 nextPage() {
   if (this.currentPage < this.totalPages) {
     this.currentPage++;
@@ -276,8 +308,8 @@ nextPage() {
     }
   }
 }
-
-//  Page size change
+ 
+// Page size change
 changePageSize(size: number) {
   this.pageSize = Number(size);
   this.currentPage = 1;
@@ -301,37 +333,46 @@ onResetClick() {
   }
   this.searchChange.emit({});
   this.reset.emit();
+
 }
 
 //delete 
 @Input() trackByField: string = '';
 @Input() showStatusToggle = false;
 @Output() deleteRow = new EventEmitter<any>();
+
+constructor(private confirmService: ConfirmDialogService) {}
+
 delete(row: any) {
-
-  const status = this.getRowStatus(row);
-
-  const action = status === 1 ? 'Deactivate' : 'Activate';
-
-  const confirmed = confirm(
-    `Are you sure you want to ${action}?`
-  );
-
-  if (confirmed) {
+  // If it's a status toggle, emit directly without confirmation
+  if (this.showStatusToggle) {
     this.deleteRow.emit(row);
+    return;
   }
+
+  // For actual deletion, keep the confirmation using our global ConfirmDialog
+  this.confirmService.confirm({
+    title: 'Confirm Deletion',
+    message: `Are you sure you want to delete this record?`
+  }).then((confirmed) => {
+    if (confirmed) {
+      this.deleteRow.emit(row);
+    }
+  });
 }
 
 @Input() statusField: string = 'status';
-getRowStatus(row: any): number | undefined {
-  return row?.competitorStatus
-    ?? row?.specialityStatus
-    ?? row?.status
-    ?? row?.customerStatus
-    ?? row?.contactStatus
-    ?? row?.demoProductDetailStatus
-    ?? row?.leadStatus;
-}
+  getRowStatus(row: any): number | undefined {
+    return row?.competitorStatus
+      ?? row?.specialityStatus
+      ?? row?.status
+      ?? row?.customerStatus
+      ?? row?.contactStatus
+      ?? row?.demoProductDetailStatus
+      ?? row?.productStatus
+      ?? row?.categoryStatus
+      ?? row?.leadStatus;
+  }
 
 
 }

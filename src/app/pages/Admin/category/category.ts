@@ -73,7 +73,8 @@ export class CategoryComponent implements OnInit {
         this.rows = categories.map((c, index) => ({
           id: c.categoryId,
           categoryName: c.categoryName || 'N/A',
-          categoryDescription: c.categoryDescription || 'N/A'
+          categoryDescription: c.categoryDescription || 'N/A',
+          categoryStatus: c.categoryStatus
         }));
         
         console.log('Total rows created:', this.rows.length);
@@ -108,7 +109,8 @@ export class CategoryComponent implements OnInit {
         this.rows = results.map((c) => ({
           id: c.categoryId,
           categoryName: c.categoryName || 'N/A',
-          categoryDescription: c.categoryDescription || 'N/A'
+          categoryDescription: c.categoryDescription || 'N/A',
+          categoryStatus: c.categoryStatus
         }));
       },
       error: (err: any) => {
@@ -132,17 +134,24 @@ export class CategoryComponent implements OnInit {
     this.router.navigate(['/admin/editcategory', category.id]);
   }
 
-  async onDelete(category: any): Promise<void> {
-    const confirmed = await this.confirmService.confirm({
-      title: 'Confirm Delete',
-      message: `Are you sure you want to delete ${category.categoryName}?`,
-      confirmText: 'Delete'
-    });
-    
-    if (confirmed) {
-      console.log('Delete category:', category);
-      alert('Delete functionality not implemented yet');
+  onDelete(category: any): void {
+    if (!category.id) {
+      return;
     }
+
+    const apiCall =
+      category.categoryStatus === 1
+        ? this.categoryService.deactivateCategory(category.id)
+        : this.categoryService.activateCategory(category.id);
+
+    apiCall.subscribe({
+      next: () => {
+        this.loadCategories();
+      },
+      error: (err: any) => {
+        console.error('Status update failed', err);
+      }
+    });
   }
 
   onImport(): void {

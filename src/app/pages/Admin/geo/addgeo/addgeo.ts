@@ -58,8 +58,8 @@ export class Addgeo implements OnInit {
     this.headerTitle = 'Edit Geo';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
-      { label: 'Manage Territory', route: '/admin/geo' },
-      { label: 'Geo', route: '/admin/geo' },
+      { label: 'Manage Territory', route: '/geo' },
+      { label: 'Geo', route: '/geo' },
       { label: 'Edit Geo' }
     ];
 
@@ -72,8 +72,8 @@ export class Addgeo implements OnInit {
     this.headerTitle = 'Add New Geo';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
-      { label: 'Manage Territory', route: '/admin/geo' },
-      { label: 'Geo', route: '/admin/geo' },
+      { label: 'Manage Territory', route: '/geo' },
+      { label: 'Geo', route: '/geo' },
       { label: 'Add Geo' }
     ];
   }
@@ -97,7 +97,7 @@ export class Addgeo implements OnInit {
       this.geoService.updateGeo(this.geoId, payload).subscribe({
         next: (response) => {
           console.log('Update Geo Success:', response);
-          this.router.navigate(['/admin/geo']);
+          this.router.navigate(['/geo']);
         },
         error: (error) => {
           console.error('Failed to update geo:', error);
@@ -108,7 +108,7 @@ export class Addgeo implements OnInit {
       this.geoService.createGeo(payload).subscribe({
         next: (response) => {
           console.log('Create Geo Success:', response);
-          this.router.navigate(['/admin/geo']);
+          this.router.navigate(['/geo']);
         },
         error: (error) => {
           console.error('Failed to create geo:', error);
@@ -120,7 +120,7 @@ export class Addgeo implements OnInit {
 
   /* ================= CANCEL ================= */
   onCancel(): void {
-    this.router.navigate(['/admin/geo']);
+    this.router.navigate(['/geo']);
   }
 
   /* ================= LOAD GEO ================= */
@@ -135,7 +135,7 @@ export class Addgeo implements OnInit {
 
         if (!geo) {
           alert('Geo not found');
-          this.router.navigate(['/admin/geo']);
+          this.router.navigate(['/geo']);
           return;
         }
 

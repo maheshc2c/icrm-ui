@@ -47,6 +47,7 @@ export class Addcustomer implements OnInit {
     {
       name: 'customerCategory',
       label: 'Category',
+      placeholder: 'Select-Category',
       type: 'select',
       required: false,
       options: [],
@@ -54,6 +55,7 @@ export class Addcustomer implements OnInit {
     {
       name: 'subCategory',
       label: 'Sub Category',
+      dependsOn: 'customerCategory',
       type: 'select',
       required: false,
       options: [],

@@ -1,5 +1,5 @@
 <!-- MAIN -->
-<main class="content">
+<main class="content" (click)="hostClick()">
 <div class="datatable-toolbar">
 
   @if (showSearch) {
@@ -33,110 +33,131 @@
                 @for (col of columns; track col) {
                   <th>{{ col.header }}</th>
                 }
-                <th style="width:120px;">Actions</th>
+                <th style="width:Auto;">Actions</th>
               </tr>
             </thead>
- <tbody>
-  @if (filteredRows.length === 0) {
-  <tr class="no-records-row">
-    <td [attr.colspan]="columns.length + 2">
-      <div class="no-records-content">
-        <i class="fas fa-search"></i>
-        {{ emptyMessage }}
-      </div>
-    </td>
-  </tr>
-} @else {
-  @for (row of showPagination ? paginatedRows : filteredRows; track detectKey(row, i); let i = $index) {
-    <tr>
-      <!-- S.NO -->
-      <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
-        <!-- DATA -->
-        @for (col of columns; track col) {
-          <td>
-            @if (col.field === 'probability') {
-              <div class="progress">
-                <div
-                  class="progress-bar"
-                  [class.progress-hot]="row[col.field] >= 70"
-                  [class.progress-warm]="row[col.field] >= 40 && row[col.field] < 70"
-                  [class.progress-cold]="row[col.field] < 40"
-                  [style.width.%]="row[col.field] || 0">
-                  {{ row[col.field] }}%
-                </div>
-              </div>
-            } @else {
-              {{ row[col.field] }}
-            }
-          </td>
-        }
+            <tbody>
+              @if (filteredRows.length === 0) {
+                <tr class="no-records-row">
+                  <td [attr.colspan]="columns.length + 2">
+                    <div class="no-records-content">
+                      <i class="fas fa-search"></i>
+                      {{ emptyMessage }}
+                    </div>
+                  </td>
+                </tr>
+              } @else {
+                @for (row of (showPagination ? paginatedRows : filteredRows); track detectKey(row, $index); let i = $index) {
+                  <tr>
+                    <!-- S.NO -->
+                    <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
 
-        <!-- ACTIONS -->
-        <td class="action-buttons">
-          @if (showView) {
-            <button
-              class="btn btn-sm btn-info view-btn"
-              (click)="view(row)"
-              title="View">
-              <i class="fas fa-eye"></i>
-            </button>
-          }
+                    <!-- DATA -->
+                    @for (col of columns; track col) {
+                      <td>
+                        @if (col.field === 'probability') {
+                          <div class="progress">
+                            <div
+                              class="progress-bar"
+                              [class.progress-hot]="row[col.field] >= 70"
+                              [class.progress-warm]="row[col.field] >= 40 && row[col.field] < 70"
+                              [class.progress-cold]="row[col.field] < 40"
+                              [style.width.%]="row[col.field] || 0">
+                              {{ row[col.field] }}%
+                            </div>
+                          </div>
+                        } @else {
+                          {{ row[col.field] }}
+                        }
+                      </td>
+                    }
 
-          @if (showEdit) {
-            <button
-              class="btn btn-sm btn-warning edit-btn"
-              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
-              (click)="edit(row)"
-              title="Edit">
-              <i class="fas fa-edit"></i>
-            </button>
-          }
+                    <!-- ACTIONS -->
+                    <td class="action-cell">
+                      <div class="action-buttons">
+                        @if (showApprove) {
+                          <button
+                            class="btn btn-sm btn-success approve-btn"
+                            (click)="approve(row)"
+                            title="Approve">
+                            <i class="fas fa-check"></i>
+                          </button>
+                        }
 
-          @if (showAssign) {
-            <button
-              class="btn btn-sm btn-primary assign-btn"
-              (click)="assign(row)"
-              title="Assign Target">
-              <i class="fas fa-user-plus"></i>
-            </button>
-          }
+                        @if (showReject) {
+                          <button
+                            class="btn btn-sm btn-danger reject-btn"
+                            (click)="reject(row)"
+                            title="Reject">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        }
 
-          @if (showUpload) {
-            <button
-              class="btn btn-sm btn-success upload-btn"
-              style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; margin-right: 8px;"
-              (click)="upload(row)"
-              title="Upload Target">
-              <i class="fas fa-upload"></i>
-            </button>
-          }
+                        @if (showView) {
+                          <button
+                            class="btn btn-sm btn-info view-btn"
+                            (click)="view(row)"
+                            title="View">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                        }
 
-          @if (showDelete && showDeleteButton) {
-            @if (showStatusToggle && getRowStatus(row) !== undefined) {
-              <button
-                class="btn btn-sm"
-                [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
-                (click)="delete(row)"
-                [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
-                <i
-                  class="fas"
-                  [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
-                </i>
-              </button>
-            } @else {
-              <button
-                class="btn btn-sm delete-btn"
-                (click)="delete(row)"
-                title="Delete">
-                <i class="fas fa-trash-alt"></i>
-              </button>
-            }
-          }
-        </td>
-      </tr>
-    }
-  }
-</tbody>
+                        @if (showEdit) {
+                          <button
+                            class="btn btn-sm btn-warning edit-btn"
+                            style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
+                            (click)="edit(row)"
+                            title="Edit">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                        }
+
+                        @if (showAssign) {
+                          <button
+                            class="btn btn-sm btn-primary assign-btn"
+                            (click)="assign(row)"
+                            title="Assign Target">
+                            <i class="fas fa-user-plus"></i>
+                          </button>
+                        }
+
+                        @if (showUpload) {
+                          <button
+                            class="btn btn-sm btn-success upload-btn"
+                            style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; margin-right: 8px;"
+                            (click)="upload(row)"
+                            title="Upload Target">
+                            <i class="fas fa-upload"></i>
+                          </button>
+                        }
+
+                        @if (showDelete && showDeleteButton) {
+                          @if (showStatusToggle && getRowStatus(row) !== undefined) {
+                            <button
+                              class="btn btn-sm"
+                              [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
+                              (click)="delete(row)"
+                              [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
+                              <i
+                                class="fas"
+                                [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+                              </i>
+                            </button>
+                          } @else {
+                            <button
+                              class="btn btn-sm delete-btn"
+                              (click)="delete(row)"
+                              title="Delete">
+                              <i class="fas fa-trash-alt"></i>
+                            </button>
+                          }
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
           </table>
         </div>
       </div>
@@ -171,12 +192,25 @@
           </button>
         </div>
 
-        <!-- Page Size -->
-        <select (change)="changePageSize($any($event.target).value)">
-          <option value="10">10</option>
-          <option value="25">25</option>
-          <option value="50">50</option>
-        </select>
+        <!-- Custom Page Size Dropdown -->
+        <div class="custom-dropdown-container page-size-dropdown">
+          <div class="dropdown-trigger" 
+               [class.active]="openPageSizeDropdown"
+               (click)="togglePageSizeDropdown($event)">
+            <span class="trigger-text">{{ pageSize }}</span>
+            <i class="fas fa-chevron-down arrow-icon"></i>
+          </div>
+
+          <div class="dropdown-panel small-panel" *ngIf="openPageSizeDropdown">
+            <ul class="options-list">
+              <li class="option-item" 
+                  *ngFor="let opt of pageSizeOptions" 
+                  (click)="selectPageSize(opt.value)">
+                {{ opt.label }}
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   }

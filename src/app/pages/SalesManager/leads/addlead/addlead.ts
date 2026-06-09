@@ -7,7 +7,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Header } from '../../../../layout/header/header';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
-import { Form } from '../../../../shared/form/form';
 import { ModalComponent } from '../../../../shared/modal/modal';
 
 // Services
@@ -15,6 +14,7 @@ import { Leadservice } from '../../../../service/leadservice';
 import { AuthService } from '../../../../service/auth-service';
 import { Customerservice } from '../../../../service/customerservice';
 import { LeadPayload } from '../../../../models/lead-model';
+import { ConfirmDialogService } from '../../../../service/confirm-dialog.service';
 
 interface FormField {
   name: string;
@@ -28,8 +28,9 @@ interface FormField {
 @Component({
   selector: 'app-addlead',
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, Form, ModalComponent],
-  templateUrl: './addlead.html'
+  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, ModalComponent],
+  templateUrl: './addlead.html',
+  styleUrl: './addlead.css'
 })
 export class AddleadComponent implements OnInit {
   
@@ -57,7 +58,7 @@ export class AddleadComponent implements OnInit {
   contactPersonsData: any[] = [];
   filteredContactPersons: any[] = [];
 
-  leadForm = {
+  leadForm: any = {
     source: '',
     // campaign: '', // Commented out
     customer: '' as string | number,
@@ -180,7 +181,8 @@ export class AddleadComponent implements OnInit {
     private route: ActivatedRoute,
     private leadservice: Leadservice,
     private auth: AuthService,
-    private customerService: Customerservice
+    private customerService: Customerservice,
+    private confirmService: ConfirmDialogService
   ) {}
 
   /* ================= INIT ================= */
@@ -296,9 +298,9 @@ export class AddleadComponent implements OnInit {
       next: (data: LeadPayload) => {
         console.log('Loaded Lead Data:', data);
         this.originalLeadData = data;
-        
+
         // Auto-detect closed/dropped leads and force read-only
-        if (data.leadStatus === 2 || data.leadStatus === 3) {
+        if (data.leadStatus === 21 || data.leadStatus === 22 || data.leadStatus === 3) {
           this.isReadOnly = true;
           this.breadcrumbs = [
             { label: 'Home', route: '/sales-manager-dashboard' },
@@ -365,7 +367,8 @@ export class AddleadComponent implements OnInit {
   /* ================= HANDLE FIELD CHANGES ================= */
   onFieldChange(event: {name: string, value: any}): void {
     if (event.name === 'customer') {
-      // Future filter logic can go here
+      this.showInstallationBaseDetailsModal = false;
+      this.installationBaseDetails = [];
     }
   }
 
@@ -495,66 +498,71 @@ export class AddleadComponent implements OnInit {
   }
 
   onDropLead(): void {
-    if (confirm('Are you sure you want to drop this lead?')) {
-      if (this.leadId && this.leadForm) {
-        
-        // Helper to get labels
-        const getLabel = (fieldName: string, value: any) => {
-          const field = this.leadFields.find(f => f.name === fieldName);
-          if (field && field.options) {
-             if (!value || value === '') {
-                const firstRealOption = field.options.find(o => o.value !== '');
-                return firstRealOption ? firstRealOption.label : '';
-             }
-             const option = field.options.find(o => o.value == value);
-             return option ? option.label : value;
-          }
-          return value || '';
-        };
+    this.confirmService.confirm({
+      title: 'Confirm Drop',
+      message: 'Are you sure you want to drop this lead?'
+    }).then((confirmed) => {
+      if (confirmed) {
+        if (this.leadId && this.leadForm) {
+          
+          // Helper to get labels
+          const getLabel = (fieldName: string, value: any) => {
+            const field = this.leadFields.find(f => f.name === fieldName);
+            if (field && field.options) {
+               if (!value || value === '') {
+                  const firstRealOption = field.options.find(o => o.value !== '');
+                  return firstRealOption ? firstRealOption.label : '';
+               }
+               const option = field.options.find(o => o.value == value);
+               return option ? option.label : value;
+            }
+            return value || '';
+          };
 
-        const getContactFirstName = (contactId: any) => {
-          const contact = this.contactPersonsData.find(c => (c.contactId || c.id) == contactId);
-          return contact ? contact.contactFirstName : '';
-        };
+          const getContactFirstName = (contactId: any) => {
+            const contact = this.contactPersonsData.find(c => (c.contactId || c.id) == contactId);
+            return contact ? contact.contactFirstName : '';
+          };
 
-        const getCustomerName = (customerId: any) => {
-          const customer = this.leadFields.find(f => f.name === 'customer')?.options?.find(o => o.value == customerId);
-          return customer ? customer.label : '';
-        };
+          const getCustomerName = (customerId: any) => {
+            const customer = this.leadFields.find(f => f.name === 'customer')?.options?.find(o => o.value == customerId);
+            return customer ? customer.label : '';
+          };
 
-        const payload: LeadPayload = {
-          customerId: Number(this.leadForm.customer),
-          contactId: Number(this.leadForm.contact1),
-          contact2Id: this.leadForm.contact2 ? Number(this.leadForm.contact2) : null,
-          customerName: getCustomerName(this.leadForm.customer),
-          contactFirstName: getContactFirstName(this.leadForm.contact1),
-          sourceName: getLabel('source', this.leadForm.source),
-          campaignName: getLabel('campaign', (this.leadForm as any).campaign),
-          siteReadinessName: getLabel('siteReadiness', this.leadForm.siteReadiness),
-          distributorName: getLabel('distributor', this.leadForm.distributor),
-          relationshipName: getLabel('rapportWithCustomer', this.leadForm.rapportWithCustomer),
-          username: this.getUsernameFromToken(),
-          leadPurchasePotential: Number(this.leadForm.purchasePotentialRs) || 0,
-          leadVisitRequirement: this.leadForm.visitRequirement === 'Yes' ? 1 : 0,
-          leadResourceRequirement: this.leadForm.resourceRequirement === 'Yes' ? 1 : 0,
-          leadCmdLine1: this.leadForm.commentLine1 || '',
-          leadCmdLine2: this.leadForm.commentLine2 || '',
-          leadCmdLine3: this.leadForm.purchasePotential || '',
-          leadStatus: 3 // 3 represents Dropped
-        };
+          const payload: LeadPayload = {
+            customerId: Number(this.leadForm.customer),
+            contactId: Number(this.leadForm.contact1),
+            contact2Id: this.leadForm.contact2 ? Number(this.leadForm.contact2) : null,
+            customerName: getCustomerName(this.leadForm.customer),
+            contactFirstName: getContactFirstName(this.leadForm.contact1),
+            sourceName: getLabel('source', this.leadForm.source),
+            campaignName: getLabel('campaign', (this.leadForm as any).campaign),
+            siteReadinessName: getLabel('siteReadiness', this.leadForm.siteReadiness),
+            distributorName: getLabel('distributor', this.leadForm.distributor),
+            relationshipName: getLabel('rapportWithCustomer', this.leadForm.rapportWithCustomer),
+            username: this.getUsernameFromToken(),
+            leadPurchasePotential: Number(this.leadForm.purchasePotentialRs) || 0,
+            leadVisitRequirement: this.leadForm.visitRequirement === 'Yes' ? 1 : 0,
+            leadResourceRequirement: this.leadForm.resourceRequirement === 'Yes' ? 1 : 0,
+            leadCmdLine1: this.leadForm.commentLine1 || '',
+            leadCmdLine2: this.leadForm.commentLine2 || '',
+            leadCmdLine3: this.leadForm.purchasePotential || '',
+            leadStatus: 3 // 3 represents Dropped
+          };
 
-        this.leadservice.updateLead(this.leadId, payload).subscribe({
-          next: () => {
-            alert('Lead has been dropped successfully.');
-            this.router.navigate(['/salesmanager/closed-leads']);
-          },
-          error: (err) => {
-            console.error('Failed to drop lead:', err);
-            alert('Failed to drop lead.');
-          }
-        });
+          this.leadservice.updateLead(this.leadId, payload).subscribe({
+            next: () => {
+              alert('Lead has been dropped successfully.');
+              this.router.navigate(['/salesmanager/closed-leads']);
+            },
+            error: (err) => {
+              console.error('Failed to drop lead:', err);
+              alert('Failed to drop lead.');
+            }
+          });
+        }
       }
-    }
+    });
   }
 
   onAddCustomer() {
@@ -571,16 +579,18 @@ export class AddleadComponent implements OnInit {
       alert('No customer selected');
       return;
     }
-    
-    // Find the customer details in our pre-loaded customersData
-    const customer = this.customersData.find(c => (c.customerId || c.id) == customerId);
-    if (customer) {
-      this.selectedCustomer = customer;
-      this.showCustomerDetailsModal = true;
-      console.log('Opening Customer Details Modal for:', customer);
-    } else {
-      alert('Customer details not found locally');
-    }
+
+    this.customerService.getCustomerById(Number(customerId)).subscribe({
+      next: (customer) => {
+        this.selectedCustomer = customer;
+        this.showCustomerDetailsModal = true;
+        console.log('Opening Customer Details Modal for:', customer);
+      },
+      error: (err) => {
+        console.error('Failed to load customer details:', err);
+        alert('Failed to load customer details from server.');
+      }
+    });
   }
 
   onCustomerAction2(customerId: any): void {
@@ -589,14 +599,15 @@ export class AddleadComponent implements OnInit {
       alert('No customer selected');
       return;
     }
+    
     this.customerService.getInstallationBase(Number(customerId)).subscribe({
       next: (records: any[]) => {
         this.installationBaseDetails = records;
         this.showInstallationBaseDetailsModal = true;
-        console.log('Loaded customer installation base for details popup:', this.installationBaseDetails);
+        console.log('Loaded customer installation base from backend:', this.installationBaseDetails);
       },
       error: (err) => {
-        console.error('Failed to load customer installation base details:', err);
+        console.error('Failed to load customer installation base details from backend:', err);
         this.installationBaseDetails = [];
         this.showInstallationBaseDetailsModal = true;
       }

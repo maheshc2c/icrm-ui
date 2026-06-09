@@ -213,28 +213,14 @@ export const routes: Routes = [
     import('./pages/Admin/speciality/speciality').then(m => m.Speciality)
 },
 {
-  path: 'adminmarketing/speciality',
-  loadComponent: () =>
-    import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/speciality').then(m => m.Speciality)
-},
-{
   path: 'speciality/add',
   loadComponent: () =>
     import('./pages/Admin/speciality/addspec/addspec').then(m => m.Addspec)
 },
 {
-  path: 'adminmarketing/speciality/add',
-  loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec)
-},
-{
   path: 'speciality/edit/:id',
   loadComponent: () =>
     import('./pages/Admin/speciality/addspec/addspec').then(m => m.Addspec)
-},
-{
-  path: 'adminmarketing/speciality/edit/:id',
-  loadComponent: () =>
-    import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec)
 },
 
 
@@ -345,53 +331,53 @@ export const routes: Routes = [
 },
 //Geo
 {
-  path: 'admin/geo',
+  path: 'geo',
   loadComponent: () =>
     import('./pages/Admin/geo/geo').then(m => m.Geo),
 },
 {
-  path: 'admin/addgeo',
+  path: 'addgeo',
   loadComponent: () =>
     import('./pages/Admin/geo/addgeo/addgeo').then(m => m.Addgeo),
 },
 {
-  path: 'admin/editgeo/:id',
+  path: 'editgeo/:id',
   loadComponent: () =>
     import('./pages/Admin/geo/addgeo/addgeo').then(m => m.Addgeo),
 },
 
 //Country
 {
-  path: 'admin/country',
+  path: 'country',
   loadComponent: () =>
     import('./pages/Admin/country/country').then(m => m.CountryComponent),
  
 },
 {
-  path: 'admin/addcountry',
+  path: 'addcountry',
   loadComponent: () =>
     import('./pages/Admin/country/addcountry/addcountry').then(m => m.Addcountry),
 
 },
 {
-  path: 'admin/editcountry/:id',
+  path: 'editcountry/:id',
   loadComponent: () =>
     import('./pages/Admin/country/addcountry/addcountry').then(m => m.Addcountry),
 },
 //Region
 {
-  path: 'admin/region',
+  path: 'region',
   loadComponent: () =>
     import('./pages/Admin/region/region').then(m => m.RegionComponent),
   
 },
 {
-  path: 'admin/addregion',
+  path: 'addregion',
   loadComponent: () =>
     import('./pages/Admin/region/addregion/addregion').then(m => m.Addregion),
 },
 {
-  path: 'admin/editregion/:id',
+  path: 'editregion/:id',
   loadComponent: () =>
     import('./pages/Admin/region/addregion/addregion').then(m => m.Addregion),
 },
@@ -418,73 +404,55 @@ export const routes: Routes = [
 
 //State
 {
-  path: 'admin/state',
+  path: 'state',
   loadComponent: () =>
     import('./pages/Admin/state/state').then(m => m.StateComponent),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/addstate',
+  path: 'addstate',
   loadComponent: () =>
     import('./pages/Admin/state/addstate/addstate').then(m => m.Addstate),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/editstate/:id',
+  path: 'editstate/:id',
   loadComponent: () =>
     import('./pages/Admin/state/addstate/addstate').then(m => m.Addstate),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
  // District
 {
-  path: 'admin/district',
+  path: 'district',
   loadComponent: () =>
     import('./pages/Admin/district/district').then(m => m.DistrictComponent),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/adddistrict',
+  path: 'adddistrict',
   loadComponent: () =>
     import('./pages/Admin/district/adddistrict/adddistrict').then(m => m.Adddistrict),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/editdistrict/:id',
+  path: 'editdistrict/:id',
   loadComponent: () =>
     import('./pages/Admin/district/adddistrict/adddistrict').then(m => m.Adddistrict),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
  
 //City
 
 {
-  path: 'admin/city',
+  path: 'city',
   loadComponent: () =>
     import('./pages/Admin/city/city').then(m => m.CityComponent),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 {
-  path: 'admin/addcity',
+  path: 'addcity',
   loadComponent: () =>
     import('./pages/Admin/city/addcity/addcity').then(m => m.Addcity),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 
 
 {
-  path: 'admin/editcity/:id',
+  path: 'editcity/:id',
   loadComponent: () =>
     import('./pages/Admin/city/addcity/addcity').then(m => m.Addcity),
-  canActivate: [authGuard],
-  data: { roles: ['ADMIN'] }
 },
 
 
@@ -764,6 +732,21 @@ export const routes: Routes = [
         data: { roles: ['Regional Branch Head'] }
       },
 
+      {
+        path: 'quotes-view',
+        loadComponent: () => import('./pages/Regional-Branch-Head/quote-approval/quote-approval').then(m => m.QuoteApproval),
+      },
+      {
+        path: 'c-note',
+        loadComponent: () => import('./pages/Regional-Branch-Head/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
+      },
+      {
+        path: 'PO-Approval',
+        loadComponent: () => import('./pages/Regional-Branch-Head/purchase-order-approval/purchase-order-approval').then(m => m.PurchaseOrderApproval),
+      },
+
+
+
         {
         path: 'regional-sales-manager-dashboard',
         loadComponent: () => import('./pages/Regional-Sales-Manager/regional-sales-manager-dashboard/regional-sales-manager-dashboard').then(m => m.RegionalSalesManagerDashboard),
@@ -813,6 +796,120 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['ADMINMARKETING'] }
       },
+
+      {
+          path: 'adminmarketing/compaign',
+          loadComponent: () => import('./pages/AdminMarketing/compaign/compaign').then(m => m.ManageCompaign),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/compaign/add',
+          loadComponent: () => import('./pages/AdminMarketing/compaign/addcompaign/addcompaign').then(m => m.AddCompaign),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/compaign/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/compaign/addcompaign/addcompaign').then(m => m.AddCompaign),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/managedacument',
+          loadComponent: () => import('./pages/AdminMarketing/managedacument/managedacument').then(m => m.UploadDocument),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/managedacument/add',
+          loadComponent: () => import('./pages/AdminMarketing/managedacument/adddocument/adddocument').then(m => m.AddDocument),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/managedacument/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/managedacument/adddocument/adddocument').then(m => m.AddDocument),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/assing-leads',
+          loadComponent: () => import('./pages/AdminMarketing/assing-leads/assing-leads').then(m => m.AssignLeads),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/track-leads',
+          loadComponent: () => import('./pages/AdminMarketing/track-leads/track-leads').then(m => m.TrackLeads),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/track-leads/open-leads',
+          loadComponent: () => import('./pages/AdminMarketing/track-leads/open-leads/open-leads').then(m => m.OpenLeads),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/customer',
+          loadComponent: () => import('./pages/AdminMarketing/customer/customer').then(m => m.Customer),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/customer/add',
+          loadComponent: () => import('./pages/AdminMarketing/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/customer/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/contact',
+          loadComponent: () => import('./pages/AdminMarketing/contact/contact').then(m => m.Contact),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/contact/add',
+          loadComponent: () => import('./pages/AdminMarketing/contact/addcontact/addcontact').then(m => m.Addcontact),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/contact/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/contact/addcontact/addcontact').then(m => m.Addcontact),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/speciality',
+          loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/speciality').then(m => m.Speciality),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/speciality/add',
+          loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/speciality/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
 
       { path: '**', redirectTo: 'login' },
 
