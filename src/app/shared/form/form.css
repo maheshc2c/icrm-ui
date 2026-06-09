@@ -3,7 +3,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
  
 /* ================= FORM WRAPPER ================= */
@@ -71,27 +70,36 @@
  
 /* ================= BODY ================= */
 .form-body-section {
-  padding: 30px 48px;
+  padding: 30px 40px;
 }
- 
- 
+
+.form-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 40px;
+  row-gap: 15px;
+}
+
 /* ================= FIELD ROW ================= */
 .company-field-row {
-  display: grid;
-  grid-template-columns: 180px 1fr; /* ⬅️ reduced from 220px */
-  align-items: center;
-  column-gap: 24px;                /* ⬅️ reduced from 20px */
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 15px;
 }
+
+.company-field-row.full-width {
+  grid-column: span 2;
+}
+
 /* ================= LABEL ================= */
 .field-label-text {
-  text-align: right;        /* ✅ aligns text naturally */
-  margin-left: 0;         /* ✅ remove forced shift */
+  text-align: left;
   font-size: 14px;
-  font-weight: 500;
-  color: #555;
-  line-height: 1.3;
-  white-space: nowrap;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+  display: block;
 }
  
  
@@ -109,79 +117,86 @@
 .company-text-input,
 .company-textarea-input {
   width: 100%;
-  height: 35px;
+  height: 40px; /* Increased height to match image */
   padding: 8px 12px;
   font-size: 14px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid #e0e0e0; /* Lighter border to match image */
   border-radius: 4px;
-  background: #fff;
-  color: #555;
-  transition: border-color 0.2s, background-color 0.2s;
+  background: #fdfdfd; /* Slightly off-white background */
+  color: #333;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
- 
+
+.company-text-input:focus,
+.company-textarea-input:focus {
+  border-color: #3498db;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+  outline: none;
+}
+
 .company-textarea-input {
   height: auto;
   min-height: 90px;
   resize: vertical;
 }
- 
+
 .company-text-input::placeholder,
 .company-textarea-input::placeholder {
-  color: #999;
+  color: #bbb;
 }
- 
-.company-text-input:focus,
-.company-textarea-input:focus {
-  outline: none;
-  border-color: #4a90e2;
-  background-color: #f6f9ff;
+
+.company-text-input.ng-invalid.ng-touched,
+.company-textarea-input.ng-invalid.ng-touched {
+  border-color: #e74c3c;
 }
- 
-/* ================= ACTION BUTTONS ================= */
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* ================= BUTTONS ================= */
 .form-action-buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 16px;
-  margin-top: 32px;
-  padding-right: 0; /* aligned with inputs */
+  gap: 12px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
 }
- 
-/* ================= BUTTONS ================= */
-.submit-button,
-.cancel-button {
-  min-width: 120px;
-  height: 40px;
-  padding: 0 22px;
+
+.btn-submit-form {
+  padding: 8px 24px;
   font-size: 14px;
   font-weight: 500;
-  border-radius: 4px;
+  color: #fff;
+  background: #3498db;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.25s ease;
+  transition: background 0.2s;
 }
- 
-.submit-button {
-  background: #5b9bd5;
-  color: #fff;
+
+.btn-submit-form:hover {
+  background: #2980b9;
 }
- 
-.submit-button:hover {
-  background: #4a8cc2;
-  transform: translateY(-1px);
+
+.btn-cancel-form {
+  padding: 8px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  background: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
- 
-.cancel-button {
-  background: #d9534f;
-  color: #fff;
-}
- 
-.cancel-button:hover {
-  background: #c9302c;
-  transform: translateY(-1px);
+
+.btn-cancel-form:hover {
+  background: #e5e5e5;
 }
  
 /* ================= RESPONSIVE ================= */
@@ -196,9 +211,17 @@
   }
  
   .company-field-row {
-    grid-template-columns: 1fr;
     row-gap: 6px;
     align-items: flex-start;
+  }
+
+  .form-grid-container {
+    grid-template-columns: 1fr;
+    row-gap: 15px;
+  }
+
+  .company-field-row.full-width {
+    grid-column: span 1;
   }
  
   .field-label-text {
@@ -263,11 +286,117 @@
   cursor: pointer;
 }
  
-.checkbox-label {
-  font-size: 13.5px;
-  color: #555;
+/* ================= CUSTOM DROPDOWN ================= */
+.custom-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  width: 100%;
+  height: 40px;
+  padding: 8px 12px;
+  background: #fdfdfd;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   cursor: pointer;
-  user-select: none;
+  transition: all 0.2s;
+}
+
+.dropdown-trigger.active {
+  border-color: #3498db;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+.trigger-text {
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  color: #999;
+  transition: transform 0.2s;
+}
+
+.dropdown-trigger.active .arrow-icon {
+  transform: rotate(180deg);
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0 0 4px 4px;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  margin-top: -1px;
+}
+
+.search-box-wrapper {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.option-item {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.option-item:hover {
+  background: #f5f8fa;
+  color: #3498db;
+}
+
+.no-results {
+  padding: 15px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+}
+
+/* ================= DROPDOWN SEARCH ================= */
+.search-panel {
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.dropdown-search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 14px;
+  border: 2px solid #000; /* Matching the black border from image */
+  border-radius: 4px;
+  outline: none;
+}
+
+.search-helper-text {
+  font-size: 12px;
+  color: #888;
+  margin-top: 8px;
 }
 
 .validation-error {

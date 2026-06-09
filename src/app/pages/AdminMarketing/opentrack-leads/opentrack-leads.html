@@ -1,0 +1,181 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+  <div class="dashboard-content">
+<div class="leads-table-container">
+  <!-- Filter Section -->
+  <div class="filter-section-wrapper">
+    <form (ngSubmit)="onSearch()">
+      <!-- First Row -->
+      <div class="filter-row-group">
+        <div class="filter-input-small">
+          <input type="text" class="text-input-filter" [(ngModel)]="filterForm.leadId" name="leadId" placeholder="Lead ID">
+        </div>
+        <div class="filter-input-large">
+          <select class="dropdown-filter" [(ngModel)]="filterForm.customer" name="customer">
+            <option value="">Select Customer</option>
+            <option *ngFor="let opt of customerOptions" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+        <div class="filter-input-medium">
+          <select class="dropdown-filter" [(ngModel)]="filterForm.owner" name="owner">
+            <option value="">Select Owner</option>
+            <option *ngFor="let opt of ownerOptions" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+        <div class="filter-input-medium">
+          <select class="dropdown-filter" [(ngModel)]="filterForm.status" name="status">
+            <option value="">Select Status</option>
+            <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="filter-row-group">
+        <div class="filter-input-medium">
+          <select class="dropdown-filter" [(ngModel)]="filterForm.campaign" name="campaign">
+            <option value="">Select Campaign</option>
+            <option *ngFor="let opt of campaignOptions" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+        <div class="filter-input-medium">
+          <input type="date" class="date-input-filter" [(ngModel)]="filterForm.startDate" name="startDate">
+        </div>
+        <div class="filter-input-medium">
+          <input type="date" class="date-input-filter" [(ngModel)]="filterForm.endDate" name="endDate">
+        </div>
+        <div class="filter-actions">
+          <button type="submit" class="btn btn-search" title="Search">
+            <i class="fas fa-search"></i>
+          </button>
+          <button type="button" class="btn btn-download" title="Download" (click)="onImport()">
+            <i class="fas fa-download"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Table Section -->
+  <div class="data-table-section">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Lead ID</th>
+          <th>Customer</th>
+          <th>Contact Person</th>
+          <th>Owner</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows; let i = index">
+          <td>{{ row.leadId }}</td>
+          <td>{{ row.customer }}</td>
+          <td>{{ row.contactPerson }}</td>
+          <td>{{ row.owner }}</td>
+          <td [innerHTML]="row.status"></td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn btn-info" title="Info" (click)="onEdit(row)">
+                <i class="fas fa-info"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Sample Row 1 -->
+        <tr>
+          <td>1001</td>
+          <td>ABC Corp</td>
+          <td>John Doe</td>
+          <td>Alice Johnson</td>
+          <td>
+            <div class="status-progress-wrapper">
+              <div class="progress-segment status-complete" style="width: 19%;">Lead</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-complete" style="width: 19%;">Approved</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-complete" style="width: 19%;">Opportunity</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-pending" style="width: 19%;">Quote</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-pending" style="width: 20%;">C Note</div>
+            </div>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn btn-info" title="Info" (click)="onEdit({leadId: '1001', customer: 'ABC Corp', contactPerson: 'John Doe', owner: 'Alice Johnson', status: 'Opportunity'})">
+                <i class="fas fa-info"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Sample Row 2 -->
+        <tr>
+          <td>1002</td>
+          <td>Global Logistics</td>
+          <td>Jane Smith</td>
+          <td>Bob Wilson</td>
+          <td>
+            <div class="status-progress-wrapper">
+              <div class="progress-segment status-complete" style="width: 19%;">Lead</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-pending" style="width: 19%;">Approved</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-pending" style="width: 19%;">Opportunity</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-pending" style="width: 19%;">Quote</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-pending" style="width: 20%;">C Note</div>
+            </div>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn btn-info" title="Info" (click)="onEdit({leadId: '1002', customer: 'Global Logistics', contactPerson: 'Jane Smith', owner: 'Bob Wilson', status: 'Lead'})">
+                <i class="fas fa-info"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Sample Row 3 -->
+        <tr>
+          <td>1003</td>
+          <td>Innovate Solutions</td>
+          <td>Mike Ross</td>
+          <td>Charlie Brown</td>
+          <td>
+            <div class="status-progress-wrapper">
+              <div class="progress-segment status-complete" style="width: 19%;">Lead</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-complete" style="width: 19%;">Approved</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-complete" style="width: 19%;">Opportunity</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-complete" style="width: 19%;">Quote</div>
+              <div class="progress-segment status-divider" style="width: 1%;"></div>
+              <div class="progress-segment status-pending" style="width: 20%;">C Note</div>
+            </div>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="action-btn btn-info" title="Info" (click)="onEdit({leadId: '1003', customer: 'Innovate Solutions', contactPerson: 'Mike Ross', owner: 'Charlie Brown', status: 'Quote'})">
+                <i class="fas fa-info"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>

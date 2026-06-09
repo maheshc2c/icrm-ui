@@ -1,4 +1,4 @@
-<div class="search-group mb-3">
+<div class="search-group mb-3" (click)="hostClick()">
 
   <div class="search-field"
        *ngFor="let field of fields">
@@ -14,6 +14,41 @@
       [(ngModel)]="values[field.key]"
       (input)="onInput(field.key)" />
 
+    <!-- 🔹 CUSTOM SEARCHABLE DROPDOWN -->
+    <div *ngIf="field.type === 'select'" class="custom-dropdown-container">
+      <div class="dropdown-trigger" 
+           [class.active]="openDropdown === field.key"
+           (click)="toggleDropdown(field.key, $event)">
+        <span class="trigger-text">
+          {{ values[field.key] || (field.placeholder || 'Select')}}
+        </span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+
+      <!-- DROPDOWN PANEL (Visible only when open) -->
+      <div class="dropdown-panel" *ngIf="openDropdown === field.key" (click)="$event.stopPropagation()">
+        <div class="search-box-wrapper" *ngIf="field.searchable !== false"> <!-- Default to searchable -->
+          <div class="search-panel">
+            <div class="search-input-wrapper">
+              <input type="text" 
+                     class="dropdown-search-input" 
+                     [placeholder]="'Search...'"
+                     (input)="filterDropdownOptions(field, $event)">
+            </div>
+            <div class="search-helper-text">Please enter 1 or more characters</div>
+          </div>
+        </div>
+
+        <ul class="options-list">
+          <li class="option-item" 
+              *ngFor="let opt of field.options" 
+              (click)="selectOption(field, opt)">
+            {{ opt.label }}
+          </li>
+          <li class="no-results" *ngIf="field.options && field.options.length === 0">No results found</li>
+        </ul>
+      </div>
+    </div>
     <!-- 🔹 DROPDOWN FIELD -->
     <select
       *ngIf="field.type === 'select'"
@@ -35,11 +70,5 @@
     </select>
 
   </div>
-
-  <!-- <button class="btn btn-sm btn-secondary clear-btn"
-          *ngIf="fields.length"
-          (click)="clear()">
-    Clear
-  </button> -->
 
 </div>

@@ -213,28 +213,14 @@ export const routes: Routes = [
     import('./pages/Admin/speciality/speciality').then(m => m.Speciality)
 },
 {
-  path: 'adminmarketing/speciality',
-  loadComponent: () =>
-    import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/speciality').then(m => m.Speciality)
-},
-{
   path: 'speciality/add',
   loadComponent: () =>
     import('./pages/Admin/speciality/addspec/addspec').then(m => m.Addspec)
 },
 {
-  path: 'adminmarketing/speciality/add',
-  loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec)
-},
-{
   path: 'speciality/edit/:id',
   loadComponent: () =>
     import('./pages/Admin/speciality/addspec/addspec').then(m => m.Addspec)
-},
-{
-  path: 'adminmarketing/speciality/edit/:id',
-  loadComponent: () =>
-    import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec)
 },
 
 
@@ -810,6 +796,120 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['ADMINMARKETING'] }
       },
+
+      {
+          path: 'adminmarketing/compaign',
+          loadComponent: () => import('./pages/AdminMarketing/compaign/compaign').then(m => m.ManageCompaign),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/compaign/add',
+          loadComponent: () => import('./pages/AdminMarketing/compaign/addcompaign/addcompaign').then(m => m.AddCompaign),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/compaign/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/compaign/addcompaign/addcompaign').then(m => m.AddCompaign),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/managedacument',
+          loadComponent: () => import('./pages/AdminMarketing/managedacument/managedacument').then(m => m.UploadDocument),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/managedacument/add',
+          loadComponent: () => import('./pages/AdminMarketing/managedacument/adddocument/adddocument').then(m => m.AddDocument),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/managedacument/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/managedacument/adddocument/adddocument').then(m => m.AddDocument),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/assing-leads',
+          loadComponent: () => import('./pages/AdminMarketing/assing-leads/assing-leads').then(m => m.AssignLeads),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/track-leads',
+          loadComponent: () => import('./pages/AdminMarketing/track-leads/track-leads').then(m => m.TrackLeads),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/track-leads/open-leads',
+          loadComponent: () => import('./pages/AdminMarketing/track-leads/open-leads/open-leads').then(m => m.OpenLeads),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/customer',
+          loadComponent: () => import('./pages/AdminMarketing/customer/customer').then(m => m.Customer),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/customer/add',
+          loadComponent: () => import('./pages/AdminMarketing/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/customer/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/contact',
+          loadComponent: () => import('./pages/AdminMarketing/contact/contact').then(m => m.Contact),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/contact/add',
+          loadComponent: () => import('./pages/AdminMarketing/contact/addcontact/addcontact').then(m => m.Addcontact),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/contact/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/contact/addcontact/addcontact').then(m => m.Addcontact),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+  
+        {
+          path: 'adminmarketing/speciality',
+          loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/speciality').then(m => m.Speciality),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/speciality/add',
+          loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
+        {
+          path: 'adminmarketing/speciality/edit/:id',
+          loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec),
+          canActivate: [authGuard],
+          data: { roles: ['ADMINMARKETING'] }
+        },
 
       { path: '**', redirectTo: 'login' },
 

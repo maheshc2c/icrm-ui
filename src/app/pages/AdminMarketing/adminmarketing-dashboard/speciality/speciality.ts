@@ -4,10 +4,11 @@ import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { DataTable } from '../../../../shared/data-table/data-table';
-import { Adminservice } from '../../../../service/adminservice';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../../shared/search/search';
 import { adminMarketingservice } from '../../../../service/adminmarketingservice';
+import { ToastService } from '../../../../service/toast.service';
+import * as XLSX from 'xlsx';
 
 
 @Component({
@@ -21,7 +22,8 @@ export class Speciality {
   constructor(
     private adminmarketingService: adminMarketingservice,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService
   ) {}
 
   headerTitle = 'Manage Speciality';
@@ -34,16 +36,14 @@ export class Speciality {
     // 🔹 Table Columns
   columns = [
     { header: 'Name', field: 'specialityName' },
-
   ];
 
   
   rows: any[] = [];
+  // allRows: any[] = []; // 🔹 master copy
   fullRows: any[] = [];   // ✅ full API data (for Excel)
 
-  totalElements = 0;
-  currentPage = 1;
-  pageSize = 10;
+
 
    ngOnInit(): void {
     this.loadSpeciality();
@@ -51,19 +51,20 @@ export class Speciality {
 
   // ✅ LIST API ONLY
 private loadSpeciality(): void {
-  this.adminmarketingService.getSpecialities(this.currentPage - 1, this.pageSize).subscribe({
+  this.adminmarketingService.getSpecialities().subscribe({
     next: (res: any) => {
-      const specialities = Array.isArray(res) ? res : (res?.content || []);
-      this.totalElements = Array.isArray(res) ? res.length : (res?.totalElements || 0);
+      // ✅ Handle paginated response (res.content) or direct array
+      const specialities = Array.isArray(res) ? res : (res?.content || (res ? [res] : []));
 
       // ✅ keep FULL data untouched
       this.fullRows = specialities;
 
       // ✅ map only what table needs
       this.rows = specialities.map((c: any, index: number) => ({
-        sno: (this.currentPage - 1) * this.pageSize + index + 1,
+        sno: index + 1,
         specialityId: c.specialityId,
         specialityName: c.specialityName,
+        specialityStatus: c.specialityStatus ?? (c.isActive ? 1 : 0),
       }));
     }
   });
@@ -82,6 +83,21 @@ specialityId!: number
 
   onDelete(row: any) {
     console.log('Delete row:', row);
+  }
+
+  onStatusToggle(row: any) {
+    if (row.specialityStatus === 1) {
+      this.adminmarketingService.deactivateSpeciality(row.specialityId).subscribe({
+        next: () => this.loadSpeciality(),
+        error: (err) => console.error('Deactivate failed', err),
+      });
+      return;
+    }
+
+    this.adminmarketingService.activateSpeciality(row.specialityId).subscribe({
+      next: () => this.loadSpeciality(),
+      error: (err) => console.error('Activate failed', err),
+    });
   }
 
   
@@ -107,18 +123,18 @@ onSearch(keyword: string) {
     return;
   }
 
-  this.currentPage = 1;
-
   this.adminmarketingService.searchSpeciality(value).subscribe({
-    next: (results: any) => {
-      const data = Array.isArray(results) ? results : (results?.content || []);
+    next: (res: any) => {
+      // ✅ Handle paginated response (res.content) or direct array
+      const results = Array.isArray(res) ? res : (res?.content || (res ? [res] : []));
 
-      this.fullRows = data;
+      this.fullRows = results;
 
-      this.rows = data.map((c: any, index: number) => ({
+      this.rows = results.map((c: any, index: number) => ({
         sno: index + 1,
         specialityId: c.specialityId,
         specialityName: c.specialityName,
+        specialityStatus: c.specialityStatus ?? (c.isActive ? 1 : 0),
       }));
     },
     error: (err) => {
@@ -126,44 +142,24 @@ onSearch(keyword: string) {
     }
   });
 }
+ onDownload() {
 
-
-//Download
- onImport() {
-
-  if (!this.fullRows || this.fullRows.length === 0) {
-    alert('No data available to download');
+  if (!this.rows || this.rows.length === 0) {
+    this.toastService.warning('No data available to download');
     return;
   }
 
-  this.adminmarketingService.downloadSpecialityExcel(this.fullRows).subscribe({
-    next: (blob: Blob) => {
+  const exportData = this.rows.map(row => ({
+    'S.No': row.sno,
+    'Speciality Name': row.specialityName,
+    'Status': row.specialityStatus === 1 ? 'Active' : 'Inactive'
+  }));
 
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'Speciality.xlsx';
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-    },
-    error: (err) => {
-      console.error('Download failed:', err);
-      alert(`Download failed: ${err.status}`);
-    }
-  });
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Specialities');
+  XLSX.writeFile(workbook, 'Specialities_' + new Date().toISOString().slice(0, 10) + '.xlsx');
 }
 
-onPageChange(page: number) {
-  this.currentPage = page;
-  this.loadSpeciality();
-}
-
-onPageSizeChange(size: number) {
-  this.pageSize = size;
-  this.currentPage = 1;
-  this.loadSpeciality();
-}
 
 }
-

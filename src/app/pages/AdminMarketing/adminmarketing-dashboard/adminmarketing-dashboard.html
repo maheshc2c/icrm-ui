@@ -1,4 +1,5 @@
 <app-header></app-header>
+<app-toast></app-toast>
 <app-sidebar></app-sidebar>
 <app-pageheader
   [title]="'Admin MarketingDashboard'"
@@ -12,12 +13,12 @@
       <!-- Manage Section -->
       <div class="section-block">
         <div class="section-header-title">
-          <i class="fas fa-cogs"></i>
+          <i class="fas fa-calendar-alt"></i>
           <span>Manage</span>
         </div>
         <div class="section-cards">
           <div class="dashboard-card campaign-card">
-            <a routerLink="/adminmarketing/manage-campaign"></a>
+            <a routerLink="/adminmarketing/compaign"></a>
             <div class="card-header">
               <div class="card-icon campaign-bg">
                 <i class="fas fa-calendar-alt"></i>
@@ -38,7 +39,7 @@
         </div>
         <div class="section-cards">
           <div class="dashboard-card document-card">
-            <a routerLink="/adminmarketing/upload-document"></a>
+            <a routerLink="/adminmarketing/managedacument"></a>
             <div class="card-header">
               <div class="card-icon document-bg">
                 <i class="fas fa-upload"></i>
@@ -59,7 +60,7 @@
         </div>
         <div class="section-cards">
           <div class="dashboard-card leads-card">
-            <a routerLink="/adminmarketing/assign-leads"></a>
+            <a routerLink="/adminmarketing/assing-leads"></a>
             <div class="card-header">
               <div class="card-icon leads-assign-bg">
                 <i class="fas fa-user-plus"></i>
@@ -70,7 +71,7 @@
             </div>
           </div>
           <div class="dashboard-card leads-card">
-            <a routerLink="/admin-marketing/track-leads"></a>
+            <a routerLink="/adminmarketing/track-leads"></a>
             <div class="card-header">
               <div class="card-icon leads-track-bg">
                 <i class="fas fa-calendar-check"></i>

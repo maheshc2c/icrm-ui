@@ -1,3 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* ================= MAIN CONTENT ================= */
 .content {
   display: flex;
@@ -71,6 +77,8 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-sizing: border-box;
+  /* align-items: center; */
+  text-align: center;
 }
 
 .table {
@@ -126,7 +134,36 @@
   background: #ffebee;
   color: #d32f2f;
 }
+.action-buttons .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
 
+.action-buttons .btn:active {
+  transform: translateY(0);
+}
+
+/* Approve */
+.approve-btn {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.approve-btn:hover {
+  background: #c8e6c9;
+  color: #1b5e20;
+}
+
+/* Reject */
+.reject-btn {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.reject-btn:hover {
+  background: #ffcdd2;
+  color: #b71c1c;
+}
 
 /* ================= NO RECORDS FOUND (MATCHES TABLE DESIGN) ================= */
 
@@ -299,11 +336,85 @@
   transition: 0.2s;
 }
 
-/* Focus */
-.pagination-container select:focus {
+.pagination-right select:focus {
   outline: none;
-  border-color: #6d28d9;
-  box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.15);
+  border-color: #ffd0ca;
+}
+
+/* ================= CUSTOM DROPDOWN (PAGINATION) ================= */
+.page-size-dropdown {
+  width: 80px !important;
+}
+
+.custom-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  width: 100%;
+  height: 35px;
+  padding: 6px 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-trigger.active {
+  border-color: #ffd0ca;
+  box-shadow: 0 0 0 2px rgba(255, 208, 202, 0.2);
+}
+
+.trigger-text {
+  font-size: 14px;
+  color: #333;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  color: #666;
+  transition: transform 0.2s;
+}
+
+.dropdown-trigger.active .arrow-icon {
+  transform: rotate(180deg);
+}
+
+.dropdown-panel {
+  position: absolute;
+  bottom: 100%; /* Open upwards in pagination */
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px 6px 0 0;
+  z-index: 1000;
+  box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+  margin-bottom: 2px;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.option-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.option-item:hover {
+  background: #f5f8fa;
+  color: #e74c3c; /* Match table red theme */
 }
 
 

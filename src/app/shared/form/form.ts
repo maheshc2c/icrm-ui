@@ -30,6 +30,8 @@ export class Form implements OnChanges {
   @Output() fieldChange = new EventEmitter<{ name: string, value: any }>();
 
   formData: any = {};
+  originalOptions: { [key: string]: any[] } = {};
+  openDropdown: string | null = null;
   errors: any = {};
 
   // ngOnChanges(changes: SimpleChanges) {
@@ -47,15 +49,47 @@ export class Form implements OnChanges {
   // }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['model'] && changes['model'].currentValue) {
+      this.formData = { ...this.model };
+    }
 
-  if (changes['model'] && changes['model'].currentValue) {
-    this.formData = { ...this.model };
+    if (changes['fields']) {
+      this.fields.forEach(field => {
+        if (field.type === 'select' && field.options?.length > 0) {
+          // Cache the original options
+          this.originalOptions[field.name] = [...field.options];
+        }
+        
+        // Initialize nested objects for checkboxes if not present
+        if (field.type === 'checkbox' && !this.formData[field.name]) {
+          this.formData[field.name] = {};
+        }
+      });
+    }
   }
 
-  if (changes['fields']) {
-    console.log('FIELDS UPDATED:', this.fields);
+  toggleDropdown(fieldName: string, event: Event) {
+    event.stopPropagation();
+    this.openDropdown = this.openDropdown === fieldName ? null : fieldName;
   }
 
+  selectOption(field: any, option: any) {
+    this.formData[field.name] = option.value;
+    this.fieldChange.emit({ name: field.name, value: option.value });
+    field.onChange?.(option.value);
+    this.openDropdown = null;
+    
+    // Reset filtered options when selection is made
+    if (this.originalOptions[field.name]) {
+      field.options = [...this.originalOptions[field.name]];
+    }
+  }
+
+  filterDropdownOptions(field: any, event: any) {
+    const searchText = event.target.value.toLowerCase();
+    
+    if (!this.originalOptions[field.name]) {
+      this.originalOptions[field.name] = [...field.options];
   this.fields.forEach(field => {
 
     if (this.formData[field.name] === undefined) {
@@ -64,9 +98,29 @@ export class Form implements OnChanges {
     if (field.type === 'checkbox' && !this.formData[field.name]) {
       this.formData[field.name] = {};
     }
-  });
-}
 
+    if (!searchText) {
+      field.options = [...this.originalOptions[field.name]];
+    } else {
+      field.options = this.originalOptions[field.name].filter(opt => 
+        opt.label.toLowerCase().includes(searchText)
+      );
+    }
+  }
+
+  // Close dropdowns when clicking outside
+  hostClick() {
+    this.openDropdown = null;
+  }
+
+  submit(form: any) {
+    if (form.valid) {
+      this.formSubmit.emit(this.formData);
+    } else {
+      Object.values(form.controls).forEach((control: any) => {
+        control.markAsTouched();
+      });
+    }
   getCheckboxValue(fieldName: string, optionValue: string): boolean {
     if (!this.formData[fieldName]) {
       this.formData[fieldName] = {};
@@ -106,6 +160,7 @@ export class Form implements OnChanges {
   cancel() {
     this.cancelForm.emit();
   }
+}
 
   //helper for validation
   validateField(field: any): string | null {

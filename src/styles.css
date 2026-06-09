@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  font-family: "Open Sans", sans-serif;
+  margin: 0;
+}
+
+/* Ensure Font Awesome icons use their own font-family */
+.fa, .fas, .far, .fab, .fa-solid, .fa-regular, .fa-brands, .fa-classic {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "Font Awesome 5 Free", sans-serif !important;
+}
+

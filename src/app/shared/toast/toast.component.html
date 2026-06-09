@@ -1,0 +1,34 @@
+<div class="toast-container">
+  <div class="toast-card" *ngFor="let toast of toasts" [class]="toast.type">
+    <div class="toast-body">
+      <!-- Icon -->
+      <div class="toast-icon-wrapper" [class]="toast.type">
+        <i *ngIf="toast.type === 'success'" class="fas fa-check-circle"></i>
+        <i *ngIf="toast.type === 'error'" class="fas fa-exclamation-circle"></i>
+        <i *ngIf="toast.type === 'warning'" class="fas fa-exclamation-triangle"></i>
+        <i *ngIf="toast.type === 'info'" class="fas fa-info-circle"></i>
+        <i *ngIf="toast.type === 'confirm'" class="fas fa-question-circle"></i>
+      </div>
+      
+      <!-- Content Area -->
+      <div class="toast-content-area">
+        <div class="toast-message">{{ toast.message }}</div>
+        
+        <!-- Action Buttons (Confirm Type Only) -->
+        <div *ngIf="toast.type === 'confirm'" class="toast-actions">
+          <button class="toast-btn btn-confirm" (click)="toast.onConfirm ? toast.onConfirm() : onDismiss(toast.id)">
+            Confirm
+          </button>
+          <button class="toast-btn btn-cancel" (click)="toast.onCancel ? toast.onCancel() : onDismiss(toast.id)">
+            Cancel
+          </button>
+        </div>
+      </div>
+      
+      <!-- Close Button (Only for Non-Confirm Toasts) -->
+      <button *ngIf="toast.type !== 'confirm'" class="toast-close" (click)="onDismiss(toast.id)">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+</div>

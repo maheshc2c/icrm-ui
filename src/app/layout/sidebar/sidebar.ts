@@ -168,20 +168,20 @@ constructor() {
         {
           label: 'Manage Campaign',
           icon: 'fas fa-calendar-alt',
-          route: '/adminmarketing/manage-campaign',
+          route: '/adminmarketing/compaign',
         },
         {
           label: 'Upload Documents',
-          icon: 'fas fa-file-alt',
-          route: '/adminmarketing/upload-document',
+          icon: 'fas fa-upload',
+          route: '/adminmarketing/managedacument',
         },
         {
           label: 'Leads',
-          icon: 'fas fa-users',
+          icon: 'fas fa-user-tag',
           route: '/adminmarketingdashboard',
           children: [
-            { label: 'Assign Leads', icon: 'fas fa-user-plus', route: '/adminmarketing/assign-leads' },
-            { label: 'Track Leads', icon: 'fas fa-calendar-check', route: '/adminmarketing/track-leads' }
+            { label: 'Assign Leads', icon: 'fas fa-user-plus', route: '/adminmarketing/assing-leads' },
+            { label: 'Track Leads', icon: 'fas fa-chart-line', route: '/adminmarketing/track-leads' },
           ]
         },
         {
@@ -190,8 +190,8 @@ constructor() {
           route: '/adminmarketingdashboard',
           children: [
             { label: 'Customer', icon: 'fas fa-user-friends', route: '/customer' },
-            { label: 'Contact', icon: 'fas fa-address-book', route: '/adminmarketing/manage-contact' },
-            { label: 'Speciality', icon: 'fas fa-star', route: '/adminmarketing/manage-speciality' }
+            { label: 'Contact', icon: 'fas fa-address-book', route: '/adminmarketing/contact' },
+            { label: 'Speciality', icon: 'fas fa-star', route: '/adminmarketing/speciality' }
           ]
         }
       );
@@ -715,11 +715,11 @@ constructor() {
       },
       {
         label: 'So Number Entry',
-        icon: 'fas fa-house',
+        icon: 'fa  fa-pencil',
         route: '/Approve-Leads',
         children: [
-            { label: 'Open', icon: 'fas fa-calendar-day', route: `/SO-Number-Open` },
-            { label: 'Close', icon: 'fas fa-calendar-week', route: `/SO-Number-close` }
+            { label: 'Open', icon: 'fas fa-folder-open', route: `/SO-Number-Open` },
+            { label: 'Close', icon: 'fas fa-folder', route: `/SO-Number-close` }
           ]
       },
     );
