@@ -12,7 +12,7 @@ import { Citymodel } from '../../../models/citymodel';
 
 @Component({
   selector: 'app-territory',
-  imports: [Pageheader, Header, Sidebar, DataTable],
+  imports: [Pageheader, Header, Sidebar],
   templateUrl: './territory.html',
   styleUrl: './territory.css',
 })

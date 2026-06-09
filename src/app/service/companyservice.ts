@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthService } from './auth-service';
 import { Company } from '../models/company';
 
@@ -58,9 +59,16 @@ downloadCompanyExcel(data: Company[]): Observable<Blob> {
   // ================= GET ALL COMPANIES =================
   getCompanies(): Observable<Company[]> {
     const headers = this.getAuthHeaders();
-    return this.http.get<Company[]>(
-      `${this.baseUrl}/superadmin/getCompany`,
+    return this.http.get<any>(
+      `${this.baseUrl}/superadmin/getCompany?size=100000`,
       { headers }
+    ).pipe(
+      map(res => {
+        if (Array.isArray(res)) return res;
+        if (res && Array.isArray(res.content)) return res.content;
+        if (res && Array.isArray(res.data)) return res.data;
+        return [];
+      })
     );
   }
 

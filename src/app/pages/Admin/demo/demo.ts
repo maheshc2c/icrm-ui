@@ -231,32 +231,45 @@ onSearch(filters: any): void {
 
       this.rows = results.map((c: any, index: number) => {
 
-        // 🔥 FIND MATCH FROM FULL DATA
         const match = this.fullRows.find(f =>
-          f.demoProductDetailSerialNumber === c.serialNo ||
-          f.productName === c.product
+          f.demoProductDetailSerialNumber === c.serialNo
         );
 
         return {
           sno: index + 1,
-          demoProductDetailId: match?.demoProductDetailId ?? c.demoProductDetailId,
-          demoProductDetailStatus: match?.demoProductDetailStatus ?? c.demoProductDetailStatus,
 
-          productName: c.product ?? '-',
-          demoProductDetailSerialNumber: c.serialNo ?? '-',
-          demoProductDetailLocation: c.location ?? '-',
+          demoProductDetailId:
+            match?.demoProductDetailId ?? null,
 
-          // ✅ TAKE FROM FULL DATA
-          cityName: match?.cityName ?? '-',
-          branchName: match?.branchName ?? '-',
+          demoProductDetailStatus:
+            match?.demoProductDetailStatus ?? 1,
 
-          regionName: c.region ?? '-'
+          productName:
+            c.productName ?? '-',
+
+          demoProductDetailSerialNumber:
+            c.serialNo ?? '-',
+
+          demoProductDetailLocation:
+            c.location ?? '-',
+
+          cityName:
+            match?.cityName ?? '-',
+
+          branchName:
+            match?.branchName ?? '-',
+
+          regionName:
+            c.regionName ?? '-'
         };
       });
+
+    },
+    error: (err) => {
+      console.error('Search failed', err);
     }
   });
 }
-
 
 
 

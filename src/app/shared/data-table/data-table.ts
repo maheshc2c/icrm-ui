@@ -1,32 +1,41 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, SimpleChanges } from '@angular/core';
-import {  Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Header } from "../../layout/header/header";
-import { Sidebar } from "../../layout/sidebar/sidebar";
 import { Button } from "../button/button";
 import { Search, SearchFieldConfig } from "../search/search";
 @Component({
   selector: 'app-data-table',
    standalone: true,
-  imports: [CommonModule, FormsModule, Header, Sidebar, Button, Search],
+  imports: [CommonModule, FormsModule, Button, Search],
   templateUrl: './data-table.html',
   styleUrl: './data-table.css'
 })
 
 export class DataTable
 {
+  @ViewChild(Search) searchComponent?: Search;
+
   @Input() columns: any[] = [];   // column headers
   @Input() rows: any[] = [];      // data rows
   @Input() title = '';            // optional title
+  @Input() breadcrumbs: any[] = [];
+  @Input() showRefresh: boolean = false;
+  @Input() showSerialNumber: boolean = true;
+  @Input() showDeleteButton: boolean = true;
+  @Input() showEditButton: boolean = true;
+  @Input() showViewButton: boolean = false;
 
    filteredRows = [...this.rows];
 
-   edit(row: any) {
+  edit(row: any) {
     console.log("Edit clicked:", row);
     this.editRow.emit(row);
   }
 
+  view(row: any) {
+    console.log("View clicked:", row);
+    this.viewRow.emit(row);
+  }
 
   //   ngOnChanges(changes: SimpleChanges) {
   //   if (changes['rows']) {
@@ -56,6 +65,7 @@ export class DataTable
 
   @Input() showImport = true;
   @Input() showAdd = true;
+  @Input() showPagination = true;
   @Input() showAssign = false;
   @Input() showUpload = false;
   @Input() showSearch = true;
@@ -64,18 +74,21 @@ export class DataTable
   @Input() showApprove = false;
   @Input() showReject = false;
 
+  @Input() showView = false;
+  @Input() showDownload = true;
 
   /* ===== TOOLBAR EVENTS ===== */
 
   @Output() import = new EventEmitter<void>();
   @Output() add = new EventEmitter<void>();
   @Output() editRow = new EventEmitter<any>();
-   @Output() assignRow = new EventEmitter<any>();
+  @Output() viewRow = new EventEmitter<any>();
+  @Output() assignRow = new EventEmitter<any>();
   @Output() uploadRow = new EventEmitter<any>();
   @Output() approveRow = new EventEmitter<any>();
   @Output() rejectRow = new EventEmitter<any>();
 
-    assign(row: any) {
+  assign(row: any) {
     this.assignRow.emit(row);
   }
 
@@ -134,6 +147,7 @@ onSearchClick() {
 
 @Input() searchFields: SearchFieldConfig[] = [];
 @Output() searchChange = new EventEmitter<any>();
+@Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
 
 
 onSearchFromChild(values: any) {
@@ -181,87 +195,86 @@ detectKey(row: any, index: number) {
     index
   );
 }
-@Output() viewRow = new EventEmitter<any>();
-
-view(row: any) {
-  console.log('View clicked:', row);
-  this.viewRow.emit(row);
-}
 
 
 //[pagination]
 @Input() totalElements: number | null = null;
+@Input() set totalItems(value: number | null) {
+  this.totalElements = value;
+}
+  get totalItems(): number | null {
+    return this.totalElements;
+  }
+  // Removed duplicate showPagination
 @Output() pageChange = new EventEmitter<number>();
 @Output() pageSizeChange = new EventEmitter<number>();
 
-  pageSize = 10;
+  @Input() pageSize = 10;
   @Input() currentPage = 1;
-totalPages = 1;
+@Input() totalPages = 1;
 paginatedRows: any[] = [];
-
+ 
 updatePagination() {
   if (this.totalElements !== null) {
     this.totalPages = Math.ceil(this.totalElements / this.pageSize);
     this.paginatedRows = this.filteredRows;
   } else {
     this.totalPages = Math.ceil(this.filteredRows.length / this.pageSize);
-
+ 
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
-
+ 
     this.paginatedRows = this.filteredRows.slice(start, end);
   }
 }
-
 getStartRecord(): number {
   const total = this.totalElements !== null ? this.totalElements : this.filteredRows.length;
   if (total === 0) return 0;
   return (this.currentPage - 1) * this.pageSize + 1;
 }
-
+ 
 getEndRecord(): number {
   const total = this.totalElements !== null ? this.totalElements : this.filteredRows.length;
   return Math.min(this.currentPage * this.pageSize, total);
 }
-
+ 
 getVisiblePages(): (number | string)[] {
   const pages: (number | string)[] = [];
   const maxVisible = 7;
-
+ 
   if (this.totalPages <= maxVisible) {
     for (let i = 1; i <= this.totalPages; i++) {
       pages.push(i);
     }
   } else {
     pages.push(1);
-
+ 
     let start = Math.max(2, this.currentPage - 1);
     let end = Math.min(this.totalPages - 1, this.currentPage + 1);
-
+ 
     if (this.currentPage <= 3) {
       end = 4;
     } else if (this.currentPage >= this.totalPages - 2) {
       start = this.totalPages - 3;
     }
-
+ 
     if (start > 2) {
       pages.push('...');
     }
-
+ 
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-
+ 
     if (end < this.totalPages - 1) {
       pages.push('...');
     }
-
+ 
     pages.push(this.totalPages);
   }
-
+ 
   return pages;
 }
-
 goToPage(page: number | string) {
   if (typeof page === 'number') {
     this.currentPage = page;
@@ -272,7 +285,7 @@ goToPage(page: number | string) {
     }
   }
 }
-
+ 
 // ✅ Page navigation
 prevPage() {
   if (this.currentPage > 1) {
@@ -284,7 +297,7 @@ prevPage() {
     }
   }
 }
-
+ 
 nextPage() {
   if (this.currentPage < this.totalPages) {
     this.currentPage++;
@@ -295,7 +308,7 @@ nextPage() {
     }
   }
 }
-
+ 
 // ✅ Page size change
 changePageSize(size: number) {
   this.pageSize = Number(size);
@@ -315,8 +328,12 @@ onResetClick() {
   this.searchText = '';
   this.pendingSearchValues = {};
   this.currentPage = 1;
+  if (this.searchComponent) {
+    this.searchComponent.clear();
+  }
   this.searchChange.emit({});
   this.reset.emit();
+
 }
 
 //delete 
@@ -338,15 +355,17 @@ delete(row: any) {
 }
 
 @Input() statusField: string = 'status';
-getRowStatus(row: any): number | undefined {
-  return row?.competitorStatus
-    ?? row?.specialityStatus
-    ?? row?.status
-    ?? row?.customerStatus
-    ?? row?.contactStatus
-    ?? row?.demoProductDetailStatus
-    ?? row?.leadStatus;
-}
+  getRowStatus(row: any): number | undefined {
+    return row?.competitorStatus
+      ?? row?.specialityStatus
+      ?? row?.status
+      ?? row?.customerStatus
+      ?? row?.contactStatus
+      ?? row?.demoProductDetailStatus
+      ?? row?.productStatus
+      ?? row?.categoryStatus
+      ?? row?.leadStatus;
+  }
 
 
 }

@@ -18,6 +18,8 @@ export class Login {
   username = '';
   password = '';
   errorMessage = '';
+  successMessage = '';
+  isLoading = false;
 
   constructor(
     private authService: AuthService,
@@ -25,6 +27,12 @@ export class Login {
   ) {}
   
   onLogin(): void {
+    if (this.isLoading) return;
+
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.isLoading = true;
+
     this.authService.login({
       username: this.username,
       password: this.password
@@ -44,72 +52,81 @@ export class Login {
           localStorage.setItem('firstName', decoded.firstName);
           localStorage.setItem('lastName', decoded.lastName);
 
-          // ROLE BASED NAVIGATION
-          switch (decoded.role) {
+          this.successMessage = 'Login successful! Redirecting...';
+          this.isLoading = false;
 
-            case 'ADMIN':
-              this.router.navigateByUrl('/admindashboard');
-              break;
+          // ROLE BASED NAVIGATION (Delayed by 1200ms for premium visual transition)
+          setTimeout(() => {
+            switch (decoded.role) {
 
-            case 'SUPERADMIN':
-              this.router.navigateByUrl('/superadmindashboard');
-              break;
-              
+              case 'ADMIN':
+                this.router.navigateByUrl('/admindashboard');
+                break;
+
+              case 'SUPERADMIN':
+                this.router.navigateByUrl('/superadmindashboard');
+                break;
+                
               case 'Sales Director':
-              this.router.navigateByUrl('/sddashboard');
-              break;
+                this.router.navigateByUrl('/sddashboard');
+                break;
 
               case 'Sales Engineer':
+              case 'Sales Manager':
+              case 'SALES_MANAGER':
+              case 'SALESMANAGER':
               this.router.navigateByUrl('/sales-manager-dashboard');
               break;
 
               case 'ADMINMARKETING':
-              this.router.navigateByUrl('/adminmarketingdashboard');
-              break;
+                this.router.navigateByUrl('/adminmarketingdashboard');
+                break;
 
               case 'National Sales Manager':
-              this.router.navigateByUrl('/national-sales-manager-dashboard');
-              break;
+                this.router.navigateByUrl('/national-sales-manager-dashboard');
+                break;
 
               case 'Regional Branch Head':
-              this.router.navigateByUrl('/regional-branch-head-dashboard');
-              break;
-              
+                this.router.navigateByUrl('/regional-branch-head-dashboard');
+                break;
+                
               case 'Regional Sales Manager':
-              this.router.navigateByUrl('/regional-sales-manager-dashboard');
-              break;
+                this.router.navigateByUrl('/regional-sales-manager-dashboard');
+                break;
 
               case 'Global Head':
-              this.router.navigateByUrl('/globalhead-dashboard');
-              break;
+                this.router.navigateByUrl('/globalhead-dashboard');
+                break;
 
               case 'Country Head':
-              this.router.navigateByUrl('/country-head');
-              break;
+                this.router.navigateByUrl('/country-head');
+                break;
 
               case 'Customer Interaction Center':
-              this.router.navigateByUrl('/Approve-Leads');
-              break;
+                this.router.navigateByUrl('/Approve-Leads');
+                break;
 
               case 'OTR':
-              this.router.navigateByUrl('/Cnotedownload');
-              break;
-              
+                this.router.navigateByUrl('/Cnotedownload');
+                break;
+                
 
-            default:
-              this.router.navigateByUrl('/login');
-              break;
-          }
-          
+              default:
+                this.router.navigateByUrl('/login');
+                break;
+            }
+          }, 1200);
 
         } catch (e) {
           console.error('JWT decode error', e);
           this.errorMessage = 'Invalid token';
+          this.isLoading = false;
         }
       },
 
       error: (err) => {
-        this.errorMessage = err.error || 'Login failed';
+        this.isLoading = false;
+        this.errorMessage = err.error || 'Login failed. Please check your credentials.';
       }
 
     });

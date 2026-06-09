@@ -5,8 +5,8 @@
   [title]="headerTitle"
   [breadcrumbs]="headerBreadcrumbs">
 </app-pageheader>
-
 <app-form
+  *ngIf="!isEditMode || formInitialData"
   [title]="isEditMode ? 'Edit Channel Partner' : 'Add Channel Partner'"
   [fields]="channelFields"
   [model]="formInitialData"

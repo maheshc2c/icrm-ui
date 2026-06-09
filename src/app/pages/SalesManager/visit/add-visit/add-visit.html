@@ -1,0 +1,20 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader 
+  [title]="isEditMode ? 'Update Visit' : 'Plan New Visit'" 
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<div style="padding: 20px;">
+  <app-form
+    [title]="isEditMode ? 'Edit Visit' : 'Plan New Visit'"
+    [fields]="visitFields"
+    [model]="visitForm"
+    (formSubmit)="onSubmit($event)"
+    (cancelForm)="onCancel()">
+  </app-form>
+</div>
+
+
+

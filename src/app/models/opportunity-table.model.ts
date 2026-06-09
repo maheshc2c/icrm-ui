@@ -8,4 +8,7 @@ export interface OpportunityTableModel {
   category: string | null;
   probability: number | null;
   lifeTimeDays: number | null;
+  product?: string | null;
+  lifeTime?: number | null;
+  value?: number | null;
 }

@@ -60,18 +60,27 @@ export class Countryservice {
       { headers }
     );
   }
+
+  // ================= GET COUNTRIES FOR GEO =================
+  getCountriesForGeo(geoId: number): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any[]>(
+      `${this.baseUrl}/location/country/${geoId}`,
+      { headers }
+    );
+  }
  
   // ================= CREATE COUNTRY =================
-  createCountry(country: Country): Observable<Country> {
+  createCountry(country: any): Observable<any> {
     const headers = this.getAuthHeaders();
-    console.log('Create Country API Call:');
-    console.log('URL:', `${this.baseUrl}/admin/country-add`);
-    console.log('Headers:', headers);
-    console.log('Payload:', country);
+    const payload = {
+      countryName: country.countryName,
+      geoId: country.geoId
+    };
    
-    return this.http.post<Country>(
-      `${this.baseUrl}/admin/country-add`,
-      country,
+    return this.http.post<any>(
+      `${this.baseUrl}/location/country`,
+      payload,
       { headers }
     );
   }

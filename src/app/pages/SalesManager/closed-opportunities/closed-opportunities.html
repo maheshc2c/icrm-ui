@@ -1,0 +1,18 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [columns]="columns"
+  [rows]="filteredOpportunities"
+  [searchFields]="searchFields"
+  [showImport]="true"
+  [showAdd]="false"
+  (searchChange)="onSearchChange($event)"
+  (search)="onSearch()"
+  (download)="downloadExcel()"
+  (editRow)="viewOpportunity($event.id)">
+</app-data-table>

@@ -22,7 +22,10 @@
   (add)="onAdd()"
  
    (editRow)="onEdit($event)"
-  (deleteRow)="onDelete($event)">
+  (deleteRow)="onDelete($event)"
+  [showStatusToggle]="true"
+  [statusField]="'productStatus'"
+  [trackByField]="'productId'">
 </app-data-table>
   <!-- [showSearch]="true"
   

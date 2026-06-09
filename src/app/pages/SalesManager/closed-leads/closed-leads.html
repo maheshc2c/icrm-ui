@@ -1,0 +1,21 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  title="Closed Leads"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [columns]="columns"
+  [rows]="filteredLeads"
+  [searchFields]="searchFields"
+  [showImport]="true"
+  [showAdd]="false"
+  [showEditButton]="false"
+  [showDeleteButton]="false"
+  [showViewButton]="true"
+  (searchChange)="onSearchChange($event)"
+  (download)="downloadExcel()"
+  (viewRow)="viewLead($event?.leadId)">
+</app-data-table>

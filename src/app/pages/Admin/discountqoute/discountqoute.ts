@@ -6,10 +6,11 @@ import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { Adminservice } from '../../../service/adminservice';
 import { Router } from '@angular/router';
 import { DiscountQuoteModel } from '../../../models/discountqoute-model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-discountqoute',
-  imports: [Header, Sidebar, Pageheader, FormsModule],
+  imports: [Header, Sidebar, Pageheader, FormsModule, CommonModule],
   templateUrl: './discountqoute.html',
   styleUrl: './discountqoute.css',
 })
@@ -56,8 +57,35 @@ export class Discountqoute {
     });
   }
 
+  errors = {
+  rbm: '',
+  nsm: '',
+  countryHead: ''
+};
+
   // ✅ SUBMIT (DYNAMIC + BACKEND COMPATIBLE)
   onSubmit() {
+    this.errors = {
+  rbm: '',
+  nsm: '',
+  countryHead: ''
+};
+    
+    if (!this.form.rbm) {
+  this.errors.rbm = 'This value is required';
+}
+
+if (!this.form.nsm) {
+  this.errors.nsm = 'This value is required';
+}
+
+if (!this.form.countryHead) {
+  this.errors.countryHead = 'This value is required';
+}
+
+if (this.errors.rbm || this.errors.nsm || this.errors.countryHead) {
+  return;
+}
 
     const rbm = Number(this.form.rbm);
     const nsm = Number(this.form.nsm);

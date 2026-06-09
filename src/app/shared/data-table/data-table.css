@@ -89,16 +89,26 @@
 
 /* ================= TABLE HEADER ================= */
 .soft-header thead th {
-  background-color: #ffd0ca !important;
-  color: #495057 !important;
-  font-weight: 600;
-  padding: 12px 16px;
+  background: rgba(40, 129, 219, 0.7) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  color: #1e293b !important;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #cbd5e1;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
 /* ================= ACTION BUTTONS ================= */
+.action-cell {
+  text-align: center;
+}
+
 .action-buttons {
   display: inline-flex;
   gap: 6px;
@@ -498,4 +508,187 @@
 .status-deactive {
   background: #ffebee;
   color: #d32f2f;
+}
+
+
+/* =========================================
+   RESPONSIVE MEDIA QUERIES
+   ========================================= */
+
+/* Large Laptops & Small Desktops */
+@media (max-width: 1400px) {
+  .content {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+  }
+}
+
+/* Tablets Landscape */
+@media (max-width: 1200px) {
+
+  .content {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    padding: 16px;
+  }
+
+  .datatable-toolbar {
+    gap: 12px;
+  }
+
+  .pagination-container {
+    padding: 10px 14px;
+  }
+}
+
+/* Tablets Portrait */
+@media (max-width: 992px) {
+
+  .content {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .datatable-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .datatable-toolbar app-search,
+  .datatable-toolbar app-button {
+    width: 100%;
+  }
+
+  .table th,
+  .table td {
+    white-space: nowrap;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .pagination-right {
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+/* Mobile Landscape */
+@media (max-width: 768px) {
+
+  .content {
+    padding: 12px;
+  }
+
+  .card {
+    border-radius: 6px;
+  }
+
+  .table-responsive {
+    max-height: none;
+  }
+
+  .soft-header thead th {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .table td {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .action-buttons {
+    gap: 4px;
+  }
+
+  .action-buttons .btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .pagination-right {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .pagination-controls {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .pagination-container select {
+    width: 100%;
+  }
+}
+
+/* Mobile Portrait */
+@media (max-width: 576px) {
+
+  .content {
+    padding: 10px;
+  }
+
+  .datatable-toolbar {
+    gap: 10px;
+  }
+
+  .soft-header thead th {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .table td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .pagination-info {
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+  }
+
+  .pagination-controls button {
+    min-width: 36px;
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+
+  .action-buttons .btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+}
+
+/* Very Small Devices */
+@media (max-width: 400px) {
+
+  .content {
+    padding: 8px;
+  }
+
+  .pagination-controls {
+    gap: 4px;
+  }
+
+  .pagination-controls button {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+
+  .pagination-container {
+    padding: 8px;
+  }
+
+  .table td,
+  .table th {
+    font-size: 11px;
+  }
 }

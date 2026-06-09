@@ -26,9 +26,16 @@ export class SegmentService {
   }
  
     getSegments(): Observable<Segment[]> {
-    return this.http.get<Segment[]>(
+    return this.http.get<any>(
       `${this.baseUrl}/view-group`,
       { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => {
+        if (Array.isArray(res)) return res;
+        if (res && Array.isArray(res.content)) return res.content;
+        if (res && Array.isArray(res.data)) return res.data;
+        return [];
+      })
     );
   }
  
@@ -91,9 +98,16 @@ export class SegmentService {
  
   // Fetch existing competitors for dropdown
   getCompetitors(): Observable<Competitor[]> {
-    return this.http.get<Competitor[]>(
-      `${this.baseUrl}/get-competitors`,
+    return this.http.get<any>(
+      `${this.baseUrl}/get-competitors?size=1000`,
       { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => {
+        if (Array.isArray(res)) return res;
+        if (res && Array.isArray(res.content)) return res.content;
+        if (res && Array.isArray(res.data)) return res.data;
+        return [];
+      })
     );
   }
 }

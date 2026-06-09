@@ -1,3 +1,4 @@
+// addcp.ts
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Header } from '../../../../layout/header/header';
@@ -5,8 +6,7 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Form } from '../../../../shared/form/form';
 import { Adminservice } from '../../../../service/adminservice';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { ChannelPartnerModel } from '../../../../models/channel-partner-model';
 
@@ -16,15 +16,12 @@ import { ChannelPartnerModel } from '../../../../models/channel-partner-model';
   templateUrl: './addcp.html',
   styleUrl: './addcp.css',
 })
-export class Addcp implements OnInit{
-
-    constructor(
+export class Addcp implements OnInit {
+  constructor(
     private adminService: Adminservice,
     private route: ActivatedRoute,
     private router: Router
   ) {}
-
-  /* ================= HEADER ================= */
 
   headerTitle = 'Add Channel Partner';
 
@@ -33,63 +30,47 @@ export class Addcp implements OnInit{
     { label: 'Channel Partner', route: '/admin/channelpartner' }
   ];
 
-  /* ================= STATE ================= */
-
   isEditMode = false;
   channelPartnerId!: number;
   formInitialData: Partial<ChannelPartnerModel> = {};
 
-  /* ================= FORM FIELDS ================= */
+ channelFields = [
+  { name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Enter channel partner name' },
 
-  channelFields = [
-    { name: 'name', label: 'Name', type: 'text', required: true },
+  { name: 'bankName', label: 'Bank Name', type: 'text', placeholder: 'Enter bank name' },
 
-    { name: 'bankName', label: 'Bank Name', type: 'text' },
-    { name: 'bankAddress', label: 'Bank Address', type: 'text' },
-    { name: 'ifscCode', label: 'IFSC Code', type: 'text' },
+  { name: 'bankAddress', label: 'Bank Address', type: 'text', placeholder: 'Enter bank address' },
 
-    { name: 'accountType', label: 'Account Type', type: 'text' },
-    { name: 'accountNumber', label: 'Account Number', type: 'number' },
+  { name: 'ifscCode', label: 'IFSC Code', type: 'text', placeholder: 'Enter IFSC code' },
 
-    { name: 'city', label: 'City', type: 'text' },
+  { name: 'accountType', label: 'Account Type', type: 'text', placeholder: 'Enter account type' },
 
-    { name: 'benificiaryName', label: 'Beneficiary Name', type: 'text' },
-    { name: 'benificiaryAddress', label: 'Beneficiary Address', type: 'text' },
+  { name: 'accountNumber', label: 'Account Number', type: 'number', placeholder: 'Enter account number' },
 
-    { name: 'communicationAddress', label: 'Communication Address', type: 'text' },
+  { name: 'city', label: 'City', type: 'text', placeholder: 'Enter city name' },
 
-    // { name: 'type', label: 'Type', type: 'number' },
-    // { name: 'companyId', label: 'Company ID', type: 'number' },
+  { name: 'benificiaryName', label: 'Beneficiary Name', type: 'text', placeholder: 'Enter beneficiary name' },
 
-    // { name: 'status', label: 'Status', type: 'number' }
-  ];
+  { name: 'benificiaryAddress', label: 'Beneficiary Address', type: 'text', placeholder: 'Enter beneficiary address' },
 
-  /* ================= INIT ================= */
+  { name: 'communicationAddress', label: 'Communication Address', type: 'text', placeholder: 'Enter communication address' }
+];
 
   ngOnInit(): void {
-
     const idParam = this.route.snapshot.paramMap.get('id');
 
     if (idParam) {
       this.isEditMode = true;
       this.channelPartnerId = Number(idParam);
-
       this.headerTitle = 'Edit Channel Partner';
-
       this.loadChannelPartnerById(this.channelPartnerId);
     }
   }
 
-  /* ================= LOAD FOR EDIT ================= */
-
   private loadChannelPartnerById(id: number) {
-
     this.adminService.getChannelPartners().subscribe({
-      next: (partners) => {
-
-        const partner = Array.isArray(partners)
-          ? partners.find(p => p.channelPartnerId === id)
-          : partners;
+      next: (partners: any[]) => {
+        const partner = partners.find(p => Number(p.channelPartnerId) === id);
 
         if (!partner) {
           alert('Channel Partner not found');
@@ -106,51 +87,46 @@ export class Addcp implements OnInit{
     });
   }
 
-  /* ================= SAVE ================= */
-
   saveChannelPartner(data: Partial<ChannelPartnerModel>) {
-
-  if (!data.name || !data.name.trim()) {
+  if (!data.name?.trim()) {
     alert('Channel Partner Name is required');
     return;
   }
 
-  const payload: any = {
-  name: data.name,
-  bankName: data.bankName ?? null,
-  bankAddress: data.bankAddress ?? null,
-  ifscCode: data.ifscCode ?? null,
-  accountType: data.accountType ?? null,
-  accountNumber: data.accountNumber ?? null,
-  city: data.city ?? null,
-  benificiaryName: data.benificiaryName ?? null,
-  benificiaryAddress: data.benificiaryAddress ?? null,
-  communicationAddress: data.communicationAddress ?? null,
-  // type: data.type ?? null,
-  // companyId: data.companyId ?? null,
-  status: 1
-};
+  const payload = {
+    name: data.name.trim(),
+    bankName: data.bankName?.trim() || null,
+    bankAddress: data.bankAddress?.trim() || null,
+    ifscCode: data.ifscCode?.trim() || null,
+    accountType: data.accountType?.trim() || null,
+    accountNumber: data.accountNumber ? Number(data.accountNumber) : null,
+    city: data.city?.trim() || null,
+    benificiaryName: data.benificiaryName?.trim() || null,
+    benificiaryAddress: data.benificiaryAddress?.trim() || null,
+    communicationAddress: data.communicationAddress?.trim() || null,
 
-  if (this.isEditMode) {
-    this.adminService.updateChannelPartner(this.channelPartnerId, payload)
-      .subscribe({
-        next: () => this.router.navigate(['/admin/channelpartner']),
-        error: () => alert('Update failed')
-      });
-  } else {
-    this.adminService.createChannelPartner(payload)
-      .subscribe({
-        next: () => this.router.navigate(['/admin/channelpartner']),
-        error: () => alert('Create failed')
-      });
-  }
+    // add these only if backend expects them
+    type: 1,
+    companyId: 1,
+    status: 1
+  };
+
+  console.log('CREATE/UPDATE PAYLOAD =>', payload);
+
+  const req = this.isEditMode
+    ? this.adminService.updateChannelPartner(this.channelPartnerId, payload as ChannelPartnerModel)
+    : this.adminService.createChannelPartner(payload as ChannelPartnerModel);
+
+  req.subscribe({
+    next: () => this.router.navigate(['/admin/channelpartner']),
+    error: (err) => {
+      console.error('SAVE FAILED =>', err);
+      alert(err?.error?.message || 'Save failed');
+    }
+  });
 }
-
-
-  /* ================= CANCEL ================= */
 
   onCancel() {
     this.router.navigate(['/admin/channelpartner']);
   }
-
 }

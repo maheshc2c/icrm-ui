@@ -30,6 +30,7 @@ export class Search implements OnInit, OnChanges {
   openDropdown: string | null = null;
 
   @Output() searchChange = new EventEmitter<any>();
+  @Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
 
 
   ngOnInit() {
@@ -51,8 +52,11 @@ export class Search implements OnInit, OnChanges {
     }
   }
   
-  onInput() {
+  onInput(changedKey?: string) {
     this.searchChange.emit(this.values);
+    if (changedKey) {
+      this.fieldChange.emit({ key: changedKey, value: this.values[changedKey] });
+    }
   }
 
   toggleDropdown(fieldKey: string, event: Event) {

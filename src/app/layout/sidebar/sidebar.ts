@@ -59,7 +59,7 @@ constructor() {
         label: 'Manage User',
         // icon: 'fas fa-users',
         icon: 'fas fa-users-cog',
-        route: '/superadmin/company',
+        route: '/admin/manage-users',
         // children: [
         //   { label: 'Admin Users', icon: 'fas fa-user', route: '/admin-users' },
         //   { label: 'Create User', icon: 'fas fa-user-plus', route: '/create-user' }
@@ -85,12 +85,12 @@ constructor() {
         icon: 'fas fa-map-location-dot',
         route: '/openleads',
         children: [
-          { label: 'Geo', icon: 'fas fa-globe', route: '/admin/geo' },
-          { label: 'Country', icon: 'fas fa-flag', route: '/admin/country' },
-          { label: 'Region', icon: 'fas fa-map', route: '/admin/region' },
-          { label: 'State', icon: 'fas fa-map-marked-alt', route: '/admin/state' },
-          { label: 'District', icon: 'fas fa-location-dot', route: '/admin/district' },
-          { label: 'City/Town', icon: 'fas fa-city', route: '/admin/city' }
+          { label: 'Geo', icon: 'fas fa-globe', route: '/geo' },
+          { label: 'Country', icon: 'fas fa-flag', route: '/country' },
+          { label: 'Region', icon: 'fas fa-map', route: '/region' },
+          { label: 'State', icon: 'fas fa-map-marked-alt', route: '/state' },
+          { label: 'District', icon: 'fas fa-location-dot', route: '/district' },
+          { label: 'City/Town', icon: 'fas fa-city', route: '/city' }
 
         ]
       },
@@ -99,9 +99,9 @@ constructor() {
         icon: 'fas fa-user-group',
         route: '/openleads',
         children: [
-          { label: 'Customer', icon: 'fas fa-user', route: '/admin-users' },
-          { label: 'Contact', icon: 'fas fa-address-book', route: '/create-user' },
-          { label: 'Speciality', icon: 'fas fa-star', route: '/admin-users' }
+          { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
+          { label: 'Contact', icon: 'fas fa-address-book', route: '/admin/contact' },
+          { label: 'Speciality', icon: 'fas fa-star', route: '/admin/speciality' }
         ]
       },
             {
@@ -189,7 +189,7 @@ constructor() {
           icon: 'fas fa-users-cog',
           route: '/adminmarketingdashboard',
           children: [
-            { label: 'Customer', icon: 'fas fa-user-friends', route: '/adminmarketing/customer' },
+            { label: 'Customer', icon: 'fas fa-user-friends', route: '/customer' },
             { label: 'Contact', icon: 'fas fa-address-book', route: '/adminmarketing/contact' },
             { label: 'Speciality', icon: 'fas fa-star', route: '/adminmarketing/speciality' }
           ]
@@ -275,9 +275,9 @@ constructor() {
           icon: 'fas fa-check-circle',
           route: '/regional-branch-head/quote-approval',
           children: [
-            { label: 'C-Note Approval', icon: 'fas fa-file-signature', route: '/regional-branch-head/c-note-approval' },
-            { label: 'Quote Approval', icon: 'fas fa-file-signature', route: '/regional-branch-head/quote-approval' },
-            { label: 'Purchase Order Approval', icon: 'fas fa-file-contract', route: '/regional-branch-head/purchase-order-approval' }
+            { label: 'C-Note Approval', icon: 'fas fa-file-signature', route: '/c-note' },
+            { label: 'Quote Approval', icon: 'fas fa-file-signature', route: '/quotes-view' },
+            { label: 'Purchase Order Approval', icon: 'fas fa-file-contract', route: '/PO-Approval' }
           ]
         },
         {
@@ -731,7 +731,7 @@ constructor() {
       {
         label: 'Home',
         icon: 'fas fa-home',
-        route: '/salesmanagerdashboard'
+        route: '/sales-manager-dashboard'
       },
       {
         label: 'Dashboards',
