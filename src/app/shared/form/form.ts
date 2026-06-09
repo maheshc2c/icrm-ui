@@ -84,4 +84,28 @@ export class Form implements OnChanges {
     this.cancelForm.emit();
   }
 
+  /* ================= SEARCHABLE DROPDOWN ================= */
+  onSearchInput(field: any, keyword: string): void {
+    const term = (keyword || '').toLowerCase();
+    if (term.length >= 1) {
+      field._filtered = (field.options || []).filter((opt: any) =>
+        opt.label.toLowerCase().includes(term)
+      );
+    } else {
+      field._filtered = field.options || [];
+    }
+    field._open = true;
+    this.fieldChange.emit({ name: field.name, value: keyword });
+  }
+
+  selectSearchableOption(field: any, opt: any): void {
+    this.formData[field.name] = opt.value;
+    field._open = false;
+    field._filtered = null;
+    this.fieldChange.emit({ name: field.name, value: opt.value });
+  }
+
+  closeDropdownDelayed(field: any): void {
+    setTimeout(() => { field._open = false; }, 200);
+  }
 }

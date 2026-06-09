@@ -115,7 +115,7 @@ onSearchFromChild(values: any) {
   }
   this.pendingSearchValues = values;
 
-  // ✅ Pick the first NON-empty string value
+  // Pick the first NON-empty string value
   const activeValue = Object.values(values)
     .find((v): v is string => typeof v === 'string' && v.trim().length > 0);
 
@@ -251,7 +251,7 @@ goToPage(page: number | string) {
   }
 }
 
-// ✅ Page navigation
+// Page navigation
 prevPage() {
   if (this.currentPage > 1) {
     this.currentPage--;
@@ -274,7 +274,7 @@ nextPage() {
   }
 }
 
-// ✅ Page size change
+//  Page size change
 changePageSize(size: number) {
   this.pageSize = Number(size);
   this.currentPage = 1;

@@ -9,6 +9,7 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { Search, SearchFieldConfig } from "../../../shared/search/search";
 import { Adminservice } from '../../../service/adminservice';
 import { CustomerModel } from '../../../models/customer-model';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-customer',
@@ -24,8 +25,8 @@ export class Customer {
 
   constructor(
     private router: Router,
-    private adminservice: Adminservice
-
+    private adminservice: Adminservice,
+    private confirmService: ConfirmDialogService
   ) {}
    headerTitle = 'Customer List';
 
@@ -90,14 +91,18 @@ export class Customer {
 
         this.fullRows = customerList;
 
-        this.rows = customerList.map((c: any, index: number) => ({
-          sno: (this.currentPage - 1) * this.pageSize + index + 1,
-          customerId: c.customerId,
-          customerName: c.customerName,
-          customerTelephone: c.customerTelephone,
-          customerMobile: c.customerMobile,
-          locationName: c.locations?.map((l: any) => l.locationName).join(', ') ?? ''
-        }));
+        this.rows = customerList.map((c: any, index: number) => {
+          const cust = c.customer || c; // Support both nested and flat responses
+          return {
+            sno: (this.currentPage - 1) * this.pageSize + index + 1,
+            customerId: cust.customerId,
+            customerName: cust.customerName,
+            customerTelephone: cust.customerTelephone,
+            customerMobile: cust.customerMobile,
+            customerStatus: cust.customerStatus,
+            locationName: cust.locations?.map((l: any) => l.locationName).join(', ') ?? ''
+          };
+        });
       },
       error: (err: any) => {
         this.loading = false;
@@ -159,14 +164,44 @@ export class Customer {
   }
 
   onEdit(row: any) {
-    this.router.navigate(['customer/edit', row.customerId]);
+    const fullCustomer = this.fullRows.find((c: any) => 
+      (c.customer?.customerId === row.customerId) || (c.customerId === row.customerId)
+    );
+    
+    // Merge the wrapper object back into a flat object for addcustomer.ts to consume easily
+    let mergedCustomer = fullCustomer;
+    if (fullCustomer && fullCustomer.customer) {
+      mergedCustomer = {
+        ...fullCustomer.customer,
+        customerInstalledBaseDTO: fullCustomer.installedBases // map it back to DTO name expected by frontend
+      };
+    }
+
+    this.router.navigate(['customer/edit', row.customerId], { state: { customerData: mergedCustomer } });
   }
 
   isEditMode = false;
   customerId!: number;
 
-  onDelete(row: any) {
-    console.log('Delete row:', row);
+  async onDelete(row: any) {
+    const action = row.customerStatus === 1 ? 'deactivate' : 'activate';
+    const confirmed = await this.confirmService.confirm({
+      title: `Confirm ${action === 'deactivate' ? 'Deactivation' : 'Activation'}`,
+      message: `Are you sure you want to ${action} this customer?`,
+      confirmText: action === 'deactivate' ? 'Deactivate' : 'Activate'
+    });
+    
+    if (confirmed) {
+      this.adminservice.deleteCustomer(row.customerId).subscribe({
+        next: () => {
+          this.loadCustomers();
+        },
+        error: (err: any) => {
+          console.error('Failed to change status:', err);
+          alert('Failed to change status');
+        }
+      });
+    }
   }
 
   searchFields: SearchFieldConfig[] = [

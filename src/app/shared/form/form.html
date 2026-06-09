@@ -6,9 +6,7 @@
 <div class="form-wrapper">
   <div class="company-form-container">
 
-    <div class="form-header-block">
-      <h4 class="form-title-heading">{{ title }}</h4>
-    </div>
+    <!-- Form title removed per user request -->
 
     <div class="form-body-section">
       <form (ngSubmit)="submit()">
@@ -39,7 +37,7 @@
 
             <!-- TEXT / NUMBER / EMAIL -->
             <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
-              [type]="field.type" class="company-text-input" [placeholder]="field.placeholder"
+              [type]="field.type" class="company-text-input" 
               [(ngModel)]="formData[field.name]" [name]="field.name" />
 
             <!-- DATE -->
@@ -54,12 +52,12 @@
   [name]="field.name" />
 
             <!-- TEXTAREA -->
-            <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder"
+            <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input"
               [(ngModel)]="formData[field.name]" [name]="field.name">
             </textarea>
 
             <!-- STATIC DROPDOWN (🔥 FIXED) -->
-            <select *ngIf="field.type === 'select'" 
+            <select *ngIf="field.type === 'select' && !field.searchable" 
   class="company-text-input" 
   [(ngModel)]="formData[field.name]"
   (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
@@ -71,6 +69,29 @@
 
               </option>
             </select>
+
+            <!-- SEARCHABLE DROPDOWN (CUSTOM) -->
+            <ng-container *ngIf="field.type === 'select' && field.searchable">
+              <div class="searchable-dropdown-wrapper">
+                <input type="text"
+                  class="company-text-input"
+                  [placeholder]="'--Select Location--'"
+                  autocomplete="off"
+                  [(ngModel)]="formData[field.name]"
+                  (input)="onSearchInput(field, formData[field.name])"
+                  (focus)="field._open = true"
+                  (blur)="closeDropdownDelayed(field)"
+                  [name]="field.name" />
+                <div class="searchable-dropdown-list" *ngIf="field._open && (field._filtered || field.options)?.length">
+                  <div class="searchable-dropdown-hint">Please enter 1 or more characters</div>
+                  <div class="searchable-dropdown-item"
+                    *ngFor="let opt of (field._filtered || field.options)"
+                    (mousedown)="selectSearchableOption(field, opt)">
+                    {{ opt.label }}
+                  </div>
+                </div>
+              </div>
+            </ng-container>
 
             <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
             <select *ngIf="field.type === 'select-dynamic'" 

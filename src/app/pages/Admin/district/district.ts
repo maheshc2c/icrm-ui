@@ -12,6 +12,7 @@ import { Regionservice } from '../../../service/regionservice';
 import { Stateservice } from '../../../service/stateservice';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-district',
@@ -66,7 +67,8 @@ export class DistrictComponent implements OnInit {
     private countryService: Countryservice,
     private regionService: Regionservice,
     private stateService: Stateservice,
-    private router: Router
+    private router: Router,
+    private confirmService: ConfirmDialogService
   ) { }
 
   /* ================= ON INIT ================= */
@@ -197,8 +199,14 @@ export class DistrictComponent implements OnInit {
     console.log('========================================');
   }
 
-  onDelete(district: any): void {
-    if (confirm(`Are you sure you want to delete ${district.districtName}?`)) {
+  async onDelete(district: any): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Confirm Delete',
+      message: `Are you sure you want to delete ${district.districtName}?`,
+      confirmText: 'Delete'
+    });
+    
+    if (confirmed) {
       console.log('Delete district:', district);
       // TODO: Implement delete functionality
       alert('Delete functionality not implemented yet');

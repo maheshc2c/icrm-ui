@@ -9,6 +9,7 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { UserTargetService } from '../../../service/user-target.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
     standalone: true,
@@ -60,7 +61,8 @@ export class ManageUsersComponent implements OnInit {
     constructor(
         private userTargetService: UserTargetService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private confirmService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -203,7 +205,7 @@ export class ManageUsersComponent implements OnInit {
         this.router.navigate(['/admin/edit-user', row.userId]);
     }
 
-    onDelete(row: any) {
+    async onDelete(row: any) {
         console.log('Toggle status clicked for user:', row);
         if (!row.userId) {
             alert("Unable to change status: User ID not found.");
@@ -211,7 +213,13 @@ export class ManageUsersComponent implements OnInit {
         }
 
         const actionText = row.status === 'ACTIVE' ? 'deactivate' : 'activate';
-        if (confirm(`Are you sure you want to ${actionText} user ${row.name}?`)) {
+        const confirmed = await this.confirmService.confirm({
+            title: `Confirm ${actionText === 'deactivate' ? 'Deactivation' : 'Activation'}`,
+            message: `Are you sure you want to ${actionText} user ${row.name}?`,
+            confirmText: actionText === 'deactivate' ? 'Deactivate' : 'Activate'
+        });
+
+        if (confirmed) {
             this.userTargetService.toggleUserStatus(row.userId).subscribe({
                 next: (response: any) => {
                     alert(response.message || `User status changed successfully!`);

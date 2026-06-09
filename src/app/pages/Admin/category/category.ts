@@ -8,6 +8,7 @@ import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Categoryservice } from '../../../service/categoryservice';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-category',
@@ -49,7 +50,8 @@ export class CategoryComponent implements OnInit {
 
   constructor(
     private categoryService: Categoryservice,
-    private router: Router
+    private router: Router,
+    private confirmService: ConfirmDialogService
   ) { }
 
   ngOnInit(): void {
@@ -130,8 +132,14 @@ export class CategoryComponent implements OnInit {
     this.router.navigate(['/admin/editcategory', category.id]);
   }
 
-  onDelete(category: any): void {
-    if (confirm(`Are you sure you want to delete ${category.categoryName}?`)) {
+  async onDelete(category: any): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Confirm Delete',
+      message: `Are you sure you want to delete ${category.categoryName}?`,
+      confirmText: 'Delete'
+    });
+    
+    if (confirmed) {
       console.log('Delete category:', category);
       alert('Delete functionality not implemented yet');
     }

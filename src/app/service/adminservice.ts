@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ContentChildDecorator, Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, shareReplay } from 'rxjs';
 import { CompetitorModel } from '../models/competitor-model';
 import { AuthService } from './auth-service';
 import { CustomerModel } from '../models/customer-model';
@@ -256,11 +256,15 @@ activateCompetitor(id: number) {
   }
 
   // ================= CATEGORY & SUBCATEGORY DROPDOWNS (ManageCustomer) =================
+  private categoryDropdownCache$: Observable<any[]> | null = null;
   getCategoryDropdown(): Observable<any[]> {
-    return this.http.get<any[]>(
-      `${this.baseUrl}/customer/categories`,
-      { headers: this.getAuthHeaders() }
-    );
+    if (!this.categoryDropdownCache$) {
+      this.categoryDropdownCache$ = this.http.get<any[]>(
+        `${this.baseUrl}/customer/categories`,
+        { headers: this.getAuthHeaders() }
+      ).pipe(shareReplay(1));
+    }
+    return this.categoryDropdownCache$;
   }
 
   getSubCategoryDropdown(categoryId: number): Observable<any[]> {
@@ -273,15 +277,11 @@ activateCompetitor(id: number) {
 
   // ================= CREATE CUSTOMER =================
   createCustomer(customer: any): Observable<any> {
-
-    const token = localStorage.getItem('token'); // or sessionStorage
-
     const headers = this.getAuthHeaders();
-
-    console.log('🧪 CREATE CUSTOMER HEADERS:', headers);
-
+    console.log('🔑 CREATE CUSTOMER HEADERS:', headers);
+    console.log('🔑 CREATE CUSTOMER TOKEN:', this.auth.getToken());
     return this.http.post(
-      `${this.baseUrl}/admin/create-customer`,
+      `${this.baseUrl}/customer`,
       customer,
       { headers }
     );
@@ -289,7 +289,7 @@ activateCompetitor(id: number) {
 
   downloadCustomer(data: CustomerModel[]): Observable<Blob> {
     return this.http.post(
-      `${this.baseUrl}/admin/customer-excel`,
+      `${this.baseUrl}/customer/download`,
       data,    // ✅ send actual table data
       {
         headers: this.getAuthHeaders(),
@@ -301,11 +301,18 @@ activateCompetitor(id: number) {
   // ================= UPDATE CUSTOMER =================
   updateCustomer(customerId: number, customer: any) {
     const headers = this.getAuthHeaders();
-
     return this.http.put<CustomerModel>(
-      `${this.baseUrl}/admin/update-customer/${customerId}`,
+      `${this.baseUrl}/customer/${customerId}`,
       customer,
       { headers }
+    );
+  }
+
+  // ================= DELETE CUSTOMER =================
+  deleteCustomer(id: number) {
+    return this.http.delete(
+      `${this.baseUrl}/customer/${id}`,
+      { headers: this.getAuthHeaders() }
     );
   }
 
@@ -761,22 +768,46 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
   }
 
   downloadContact(data: Contactmodel[]): Observable<Blob> {
-    return this.http.post(
-      `${this.baseUrl}/admin/contact-excel`,
-      data,    // ✅ send actual table data
-      {
-        headers: this.getAuthHeaders(),
-        responseType: 'blob'
-      }
-    );
+      return this.http.post(
+        `${this.baseUrl}/customer/download`,
+        data,
+        {
+          headers: this.getAuthHeaders(),
+          responseType: 'blob'
+        }
+      );
   }
 
 
+  private cityCache$: Observable<Citymodel[]> | null = null;
   getCity(): Observable<Citymodel[]> {
-    return this.http.get<Citymodel[]>(
-      `${this.baseUrl}/admin/city-view`, // ✅ FIXED
-      { headers: this.getAuthHeaders() }
-    );
+    if (!this.cityCache$) {
+      this.cityCache$ = this.http.get<Citymodel[]>(
+        `${this.baseUrl}/admin/city-view`, // ✅ FIXED
+        { headers: this.getAuthHeaders() }
+      ).pipe(shareReplay(1));
+    }
+    return this.cityCache$;
+  }
+
+  // ================= NEW CITY DROPDOWN (Location Controller) =================
+  private cityDropdownCache$: Observable<any[]> | null = null;
+  getLocationCityDropdown(cityName: string = ''): Observable<any[]> {
+    if (!this.cityDropdownCache$ || cityName !== '') {
+      const request$ = this.http.get<any[]>(
+        `${this.baseUrl}/location/all-locations`,
+        { 
+          headers: this.getAuthHeaders(),
+          params: { cityName }
+        }
+      );
+      if (cityName === '') {
+        this.cityDropdownCache$ = request$.pipe(shareReplay(1));
+        return this.cityDropdownCache$;
+      }
+      return request$;
+    }
+    return this.cityDropdownCache$;
   }
 
 

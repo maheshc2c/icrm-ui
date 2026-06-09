@@ -38,6 +38,8 @@ export class Customer {
     { header: 'Customer Name', field: 'customerName' },
     { header: 'Telephone', field: 'customerTelephone' },
     { header: 'Mobile', field: 'customerMobile' },
+    { header: 'Category', field: 'category' },
+    { header: 'Sub Category', field: 'subCategory' },
     { header: 'Location', field: 'locationName' },
   ];
 
