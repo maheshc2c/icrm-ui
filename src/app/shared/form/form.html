@@ -34,7 +34,6 @@
 
 
 
-
           <div class="field-input-area">
 
             <!-- TEXT / NUMBER / EMAIL -->
@@ -74,12 +73,9 @@
   </option>
 
 </select>
-<div
-  *ngIf="errors[field.name]"
-  class="validation-error"
->
-  {{ errors[field.name] }}
-</div>
+<div *ngIf="errors[field.name]" class="validation-error">
+      {{ errors[field.name] }}
+   </div>
 
             <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
             <select *ngIf="field.type === 'select-dynamic'" 

@@ -140,6 +140,24 @@ export class Form implements OnChanges {
     return `${field.label} must be less than ${field.max}`;
   }
 
+   // Email Validation
+  if (
+    field.type === 'email' &&
+    value &&
+    !/^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/.test(value)
+  ) {
+    return 'Please enter a valid email address';
+  }
+
+  //mobile validation
+  if (
+  field.name === 'contactMobileNo' &&
+  value &&
+  !/^\d{10}$/.test(value)
+) {
+  return 'Mobile number must be 10 digits';
+}
+
   return null;
 }
 

@@ -112,6 +112,13 @@ export class Addcontact implements OnInit {
  
   /* ================= SAVE ================= */
   saveContact(data: any): void {
+
+    const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
+
+  if (data.contactEmail && !emailRegex.test(data.contactEmail.trim())) {
+    alert('Please enter a valid email address');
+    return;
+  }
  
     const payload: any = {
       contactId: this.isEditMode ? this.contactId : 0,

@@ -260,7 +260,7 @@ export const routes: Routes = [
 
 //Contact
 {
-  path: 'admin/contact',
+  path: 'contact',
   loadComponent: () =>
     import('./pages/Admin/contact/contact').then(m => m.Contact)
 },

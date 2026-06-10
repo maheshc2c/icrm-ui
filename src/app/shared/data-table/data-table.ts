@@ -154,6 +154,7 @@ detectKey(row: any, index: number) {
     row?.fyId ??
     row?.demoId ??
     row?.specialityId ??
+    row?.specialityName ??
     row?.competitorId ??
     row?.customerId ??
     row?.companyId ??
