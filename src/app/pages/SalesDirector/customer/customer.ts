@@ -99,7 +99,7 @@ export class Customer {
       customerMobile: c.customerMobile,
       category: c.customerCategory?.customerCategoryName ?? '',
       subCategory: c.subCategory?.subcategoryName ?? '',
-      locationName: c.locations?.map((l: { locationName: string }) => l.locationName).join(', ') ?? ''
+      locationName: Array.from(new Set(c.locations?.map((l: { locationName: string }) => l.locationName) || [])).filter(Boolean).join(', ')
     }));
   }
 

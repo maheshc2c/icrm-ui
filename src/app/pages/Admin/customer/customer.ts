@@ -68,51 +68,59 @@ export class Customer {
     this.loadDropdowns();
   }
 
+  private loadCustomersTimeout: any;
+
   private loadCustomers(): void {
-    this.loading = true;
+    if (this.loadCustomersTimeout) {
+      clearTimeout(this.loadCustomersTimeout);
+    }
 
-    // Check if we have active search filters
-    const hasSearch = Object.values(this.searchFilters).some(v => v && String(v).trim().length > 0);
+    this.loadCustomersTimeout = setTimeout(() => {
+      this.loading = true;
 
-    const apiCall = hasSearch
-      ? this.adminservice.searchCustomersPaged(
-          this.searchFilters.customerName || null,
-          this.searchFilters.customerCategoryName || null,
-          this.searchFilters.subCategoryName || null,
-          this.searchFilters.cityName || null,
-          this.currentPage - 1,
-          this.pageSize
-        )
-      : this.adminservice.getCustomers(this.currentPage - 1, this.pageSize);
+      // Check if we have active search filters
+      const hasSearch = Object.values(this.searchFilters).some(v => v && String(v).trim().length > 0);
 
-    apiCall.subscribe({
-      next: (res: any) => {
-        this.loading = false;
-        const customerList = Array.isArray(res) ? res : (res?.content || []);
-        this.totalElements = Array.isArray(res) ? res.length : (res?.totalElements || 0);
+      const apiCall = hasSearch
+        ? this.adminservice.searchCustomersPaged(
+            this.searchFilters.customerName || null,
+            this.searchFilters.customerCategoryName || null,
+            this.searchFilters.subCategoryName || null,
+            this.searchFilters.cityName || null,
+            this.currentPage - 1,
+            this.pageSize
+          )
+        : this.adminservice.getCustomers(this.currentPage - 1, this.pageSize);
 
-        this.fullRows = customerList;
+      apiCall.subscribe({
+        next: (res: any) => {
+          this.loading = false;
+          const customerList = Array.isArray(res) ? res : (res?.content || []);
+          this.totalElements = Array.isArray(res) ? res.length : (res?.totalElements || 0);
 
-        this.rows = customerList.map((c: any, index: number) => {
-          const cust = c.customer ? c.customer : c;
-          return {
-            sno: (this.currentPage - 1) * this.pageSize + index + 1,
-            customerId: cust.customerId,
-            customerName: cust.customerName,
-            customerCategory: cust.customerCategory?.customerCategoryName || cust.customerCategoryName || cust.category || '',
-            subCategory: cust.subCategory?.subcategoryName || cust.subcategoryName || cust.subCategory || '',
-            customerTelephone: cust.customerTelephone,
-            customerMobile: cust.customerMobile,
-            customerStatus: cust.customerStatus,
-            locationName: cust.locations?.map((l: any) => l.locationName).join(', ') || ''
-          };
-        });
-      },
-      error: (err: any) => {
-        this.loading = false;
-        console.error('Customer API Error:', err);
-      }
-    });
+          this.fullRows = customerList;
+
+          this.rows = customerList.map((c: any, index: number) => {
+            const cust = c.customer ? c.customer : c;
+            return {
+              sno: (this.currentPage - 1) * this.pageSize + index + 1,
+              customerId: cust.customerId,
+              customerName: cust.customerName,
+              customerCategory: cust.customerCategory?.customerCategoryName || cust.customerCategoryName || cust.category || '',
+              subCategory: cust.subCategory?.subcategoryName || cust.subcategoryName || cust.subCategory || '',
+              customerTelephone: cust.customerTelephone,
+              customerMobile: cust.customerMobile,
+              customerStatus: cust.customerStatus,
+              locationName: Array.from(new Set(cust.locations?.map((l: any) => l.locationName) || [])).filter(Boolean).join(', ')
+            };
+          });
+        },
+        error: (err: any) => {
+          this.loading = false;
+          console.error('Customer API Error:', err);
+        }
+      });
+    }, 50); // 50ms debounce
   }
 
   private loadDropdowns(): void {
@@ -199,7 +207,8 @@ export class Customer {
 
     this.confirmService.confirm({
       title: 'Confirm',
-      message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this customer?`
+      message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this customer?`,
+      confirmText: isActive ? 'Deactivate' : 'Activate'
     }).then((confirmed) => {
       if (!confirmed) return;
 

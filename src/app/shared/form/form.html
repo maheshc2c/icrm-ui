@@ -12,7 +12,6 @@
           <!-- LOOP ALL FIELDS -->
           <ng-container *ngFor="let field of fields">
             <div class="company-field-row" 
-                 *ngIf="!field.dependsOn || formData[field.dependsOn]"
                  [class.full-width]="field.type === 'textarea'">
 
               <!-- LABEL -->
@@ -109,10 +108,6 @@
                 </ng-container>
 
               </select>
-              <div *ngIf="errors[field.name]" class="validation-error">
-                {{ errors[field.name] }}
-              </div>
-
               <!-- CHECKBOX GROUP (🔥 NEW) -->
               <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container">
                 <div *ngFor="let opt of field.options" class="checkbox-item">
