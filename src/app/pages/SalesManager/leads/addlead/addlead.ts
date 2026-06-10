@@ -14,6 +14,7 @@ import { Leadservice } from '../../../../service/leadservice';
 import { AuthService } from '../../../../service/auth-service';
 import { Customerservice } from '../../../../service/customerservice';
 import { LeadPayload } from '../../../../models/lead-model';
+import { ConfirmDialogService } from '../../../../service/confirm-dialog.service';
 
 interface FormField {
   name: string;
@@ -180,7 +181,8 @@ export class AddleadComponent implements OnInit {
     private route: ActivatedRoute,
     private leadservice: Leadservice,
     private auth: AuthService,
-    private customerService: Customerservice
+    private customerService: Customerservice,
+    private confirmService: ConfirmDialogService
   ) {}
 
   /* ================= INIT ================= */
@@ -496,66 +498,71 @@ export class AddleadComponent implements OnInit {
   }
 
   onDropLead(): void {
-    if (confirm('Are you sure you want to drop this lead?')) {
-      if (this.leadId && this.leadForm) {
-        
-        // Helper to get labels
-        const getLabel = (fieldName: string, value: any) => {
-          const field = this.leadFields.find(f => f.name === fieldName);
-          if (field && field.options) {
-             if (!value || value === '') {
-                const firstRealOption = field.options.find(o => o.value !== '');
-                return firstRealOption ? firstRealOption.label : '';
-             }
-             const option = field.options.find(o => o.value == value);
-             return option ? option.label : value;
-          }
-          return value || '';
-        };
+    this.confirmService.confirm({
+      title: 'Confirm Drop',
+      message: 'Are you sure you want to drop this lead?'
+    }).then((confirmed) => {
+      if (confirmed) {
+        if (this.leadId && this.leadForm) {
+          
+          // Helper to get labels
+          const getLabel = (fieldName: string, value: any) => {
+            const field = this.leadFields.find(f => f.name === fieldName);
+            if (field && field.options) {
+               if (!value || value === '') {
+                  const firstRealOption = field.options.find(o => o.value !== '');
+                  return firstRealOption ? firstRealOption.label : '';
+               }
+               const option = field.options.find(o => o.value == value);
+               return option ? option.label : value;
+            }
+            return value || '';
+          };
 
-        const getContactFirstName = (contactId: any) => {
-          const contact = this.contactPersonsData.find(c => (c.contactId || c.id) == contactId);
-          return contact ? contact.contactFirstName : '';
-        };
+          const getContactFirstName = (contactId: any) => {
+            const contact = this.contactPersonsData.find(c => (c.contactId || c.id) == contactId);
+            return contact ? contact.contactFirstName : '';
+          };
 
-        const getCustomerName = (customerId: any) => {
-          const customer = this.leadFields.find(f => f.name === 'customer')?.options?.find(o => o.value == customerId);
-          return customer ? customer.label : '';
-        };
+          const getCustomerName = (customerId: any) => {
+            const customer = this.leadFields.find(f => f.name === 'customer')?.options?.find(o => o.value == customerId);
+            return customer ? customer.label : '';
+          };
 
-        const payload: LeadPayload = {
-          customerId: Number(this.leadForm.customer),
-          contactId: Number(this.leadForm.contact1),
-          contact2Id: this.leadForm.contact2 ? Number(this.leadForm.contact2) : null,
-          customerName: getCustomerName(this.leadForm.customer),
-          contactFirstName: getContactFirstName(this.leadForm.contact1),
-          sourceName: getLabel('source', this.leadForm.source),
-          campaignName: getLabel('campaign', (this.leadForm as any).campaign),
-          siteReadinessName: getLabel('siteReadiness', this.leadForm.siteReadiness),
-          distributorName: getLabel('distributor', this.leadForm.distributor),
-          relationshipName: getLabel('rapportWithCustomer', this.leadForm.rapportWithCustomer),
-          username: this.getUsernameFromToken(),
-          leadPurchasePotential: Number(this.leadForm.purchasePotentialRs) || 0,
-          leadVisitRequirement: this.leadForm.visitRequirement === 'Yes' ? 1 : 0,
-          leadResourceRequirement: this.leadForm.resourceRequirement === 'Yes' ? 1 : 0,
-          leadCmdLine1: this.leadForm.commentLine1 || '',
-          leadCmdLine2: this.leadForm.commentLine2 || '',
-          leadCmdLine3: this.leadForm.purchasePotential || '',
-          leadStatus: 3 // 3 represents Dropped
-        };
+          const payload: LeadPayload = {
+            customerId: Number(this.leadForm.customer),
+            contactId: Number(this.leadForm.contact1),
+            contact2Id: this.leadForm.contact2 ? Number(this.leadForm.contact2) : null,
+            customerName: getCustomerName(this.leadForm.customer),
+            contactFirstName: getContactFirstName(this.leadForm.contact1),
+            sourceName: getLabel('source', this.leadForm.source),
+            campaignName: getLabel('campaign', (this.leadForm as any).campaign),
+            siteReadinessName: getLabel('siteReadiness', this.leadForm.siteReadiness),
+            distributorName: getLabel('distributor', this.leadForm.distributor),
+            relationshipName: getLabel('rapportWithCustomer', this.leadForm.rapportWithCustomer),
+            username: this.getUsernameFromToken(),
+            leadPurchasePotential: Number(this.leadForm.purchasePotentialRs) || 0,
+            leadVisitRequirement: this.leadForm.visitRequirement === 'Yes' ? 1 : 0,
+            leadResourceRequirement: this.leadForm.resourceRequirement === 'Yes' ? 1 : 0,
+            leadCmdLine1: this.leadForm.commentLine1 || '',
+            leadCmdLine2: this.leadForm.commentLine2 || '',
+            leadCmdLine3: this.leadForm.purchasePotential || '',
+            leadStatus: 3 // 3 represents Dropped
+          };
 
-        this.leadservice.updateLead(this.leadId, payload).subscribe({
-          next: () => {
-            alert('Lead has been dropped successfully.');
-            this.router.navigate(['/salesmanager/closed-leads']);
-          },
-          error: (err) => {
-            console.error('Failed to drop lead:', err);
-            alert('Failed to drop lead.');
-          }
-        });
+          this.leadservice.updateLead(this.leadId, payload).subscribe({
+            next: () => {
+              alert('Lead has been dropped successfully.');
+              this.router.navigate(['/salesmanager/closed-leads']);
+            },
+            error: (err) => {
+              console.error('Failed to drop lead:', err);
+              alert('Failed to drop lead.');
+            }
+          });
+        }
       }
-    }
+    });
   }
 
   onAddCustomer() {

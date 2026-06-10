@@ -13,6 +13,7 @@ import { SearchFieldConfig } from '../../../shared/search/search';
 import { adminMarketingservice } from '../../../service/adminmarketingservice';
 import { CampaignDocument } from '../../../models/campaign-document.model';
 import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 interface DocumentRow {
   id: number;
@@ -36,7 +37,8 @@ export class UploadDocument {
   constructor(
     private adminMarketingservice: adminMarketingservice,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private confirmService: ConfirmDialogService
   ) {}
   headerTitle = 'Upload Documents';
   headerBreadcrumbs: Breadcrumb[] = [
@@ -102,9 +104,14 @@ export class UploadDocument {
   }
   onDelete(row: DocumentRow) { 
     console.log('Delete document:', row);
-    if (confirm(`Are you sure you want to delete ${row.name}?`)) {
-      // Implement delete logic here if needed
-    }
+    this.confirmService.confirm({
+      title: 'Confirm Deletion',
+      message: `Are you sure you want to delete ${row.name}?`
+    }).then((confirmed) => {
+      if (confirmed) {
+        // Implement delete logic here if needed
+      }
+    });
   }
 
   onStatusToggle(row: any) {

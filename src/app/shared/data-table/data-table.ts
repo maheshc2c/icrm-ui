@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from
 import { FormsModule } from '@angular/forms';
 import { Button } from "../button/button";
 import { Search, SearchFieldConfig } from "../search/search";
+import { ConfirmDialogService } from '../../service/confirm-dialog.service';
 @Component({
   selector: 'app-data-table',
    standalone: true,
@@ -158,7 +159,7 @@ onSearchFromChild(values: any) {
   }
   this.pendingSearchValues = values;
 
-  // ✅ Pick the first NON-empty string value
+  // Pick the first NON-empty string value
   const activeValue = Object.values(values)
     .find((v): v is string => typeof v === 'string' && v.trim().length > 0);
 
@@ -168,30 +169,29 @@ onSearchFromChild(values: any) {
 //automates the search method 
 detectKey(row: any, index: number) {
   return (
-    row?.startDate??
-    row?.endDate??
-    row?.subcategoryName??
-    row?.businessCategory??
-    row?.segmentName??
-    row?.locationName??
-    row?.product??
-    row?.status??
-    row?.distributor??
-    row?.poId??
-    row?.customer??
-    row?.opportunity??
-    row?.subcategoryName??
-    row?.qouteId??
-    row?.customerName??
-    row?.contactFirstName ??
-    row?.productName ??
-    row?.fyId ??
-    row?.demoId ??
-    row?.specialityId ??
-    row?.competitorId ??
-    row?.customerId ??
-    row?.companyId ??
-    row?.id ??
+    row?.id ||
+    row?.customerId ||
+    row?.startDate ||
+    row?.endDate ||
+    row?.subcategoryName ||
+    row?.businessCategory ||
+    row?.segmentName ||
+    row?.locationName ||
+    row?.product ||
+    row?.status ||
+    row?.distributor ||
+    row?.poId ||
+    row?.customer ||
+    row?.opportunity ||
+    row?.qouteId ||
+    row?.customerName ||
+    row?.contactFirstName ||
+    row?.productName ||
+    row?.fyId ||
+    row?.demoId ||
+    row?.specialityId ||
+    row?.competitorId ||
+    row?.companyId ||
     index
   );
 }
@@ -286,7 +286,7 @@ goToPage(page: number | string) {
   }
 }
  
-// ✅ Page navigation
+// Page navigation
 prevPage() {
   if (this.currentPage > 1) {
     this.currentPage--;
@@ -309,7 +309,7 @@ nextPage() {
   }
 }
  
-// ✅ Page size change
+// Page size change
 changePageSize(size: number) {
   this.pageSize = Number(size);
   this.currentPage = 1;
@@ -340,6 +340,9 @@ onResetClick() {
 @Input() trackByField: string = '';
 @Input() showStatusToggle = false;
 @Output() deleteRow = new EventEmitter<any>();
+
+constructor(private confirmService: ConfirmDialogService) {}
+
 delete(row: any) {
   // If it's a status toggle, emit directly without confirmation
   if (this.showStatusToggle) {
@@ -347,11 +350,15 @@ delete(row: any) {
     return;
   }
 
-  // For actual deletion, keep the confirmation
-  const confirmed = confirm(`Are you sure you want to delete this record?`);
-  if (confirmed) {
-    this.deleteRow.emit(row);
-  }
+  // For actual deletion, keep the confirmation using our global ConfirmDialog
+  this.confirmService.confirm({
+    title: 'Confirm Deletion',
+    message: `Are you sure you want to delete this record?`
+  }).then((confirmed) => {
+    if (confirmed) {
+      this.deleteRow.emit(row);
+    }
+  });
 }
 
 @Input() statusField: string = 'status';

@@ -1,0 +1,8372 @@
+﻿[
+    {
+        "cityName":  "Car Nicobar",
+        "label":  "Car Nicobar",
+        "value":  "Car Nicobar"
+    },
+    {
+        "cityName":  "Mayabunder",
+        "label":  "Mayabunder",
+        "value":  "Mayabunder"
+    },
+    {
+        "cityName":  "Port Blair",
+        "label":  "Port Blair",
+        "value":  "Port Blair"
+    },
+    {
+        "cityName":  "Anantapur",
+        "label":  "Anantapur",
+        "value":  "Anantapur"
+    },
+    {
+        "cityName":  "Chittoor",
+        "label":  "Chittoor",
+        "value":  "Chittoor"
+    },
+    {
+        "cityName":  "Cuddapah",
+        "label":  "Cuddapah",
+        "value":  "Cuddapah"
+    },
+    {
+        "cityName":  "Kakinada",
+        "label":  "Kakinada",
+        "value":  "Kakinada"
+    },
+    {
+        "cityName":  "Guntur",
+        "label":  "Guntur",
+        "value":  "Guntur"
+    },
+    {
+        "cityName":  "Machilipatnam",
+        "label":  "Machilipatnam",
+        "value":  "Machilipatnam"
+    },
+    {
+        "cityName":  "Kurnool",
+        "label":  "Kurnool",
+        "value":  "Kurnool"
+    },
+    {
+        "cityName":  "Nellore",
+        "label":  "Nellore",
+        "value":  "Nellore"
+    },
+    {
+        "cityName":  "Ongole",
+        "label":  "Ongole",
+        "value":  "Ongole"
+    },
+    {
+        "cityName":  "Srikakulam",
+        "label":  "Srikakulam",
+        "value":  "Srikakulam"
+    },
+    {
+        "cityName":  "Visakhapatnam",
+        "label":  "Visakhapatnam",
+        "value":  "Visakhapatnam"
+    },
+    {
+        "cityName":  "Vizianagaram",
+        "label":  "Vizianagaram",
+        "value":  "Vizianagaram"
+    },
+    {
+        "cityName":  "Eluru",
+        "label":  "Eluru",
+        "value":  "Eluru"
+    },
+    {
+        "cityName":  "Hawai",
+        "label":  "Hawai",
+        "value":  "Hawai"
+    },
+    {
+        "cityName":  "Changlang",
+        "label":  "Changlang",
+        "value":  "Changlang"
+    },
+    {
+        "cityName":  "Pangin",
+        "label":  "Pangin",
+        "value":  "Pangin"
+    },
+    {
+        "cityName":  "Seppa",
+        "label":  "Seppa",
+        "value":  "Seppa"
+    },
+    {
+        "cityName":  "Pasighat",
+        "label":  "Pasighat",
+        "value":  "Pasighat"
+    },
+    {
+        "cityName":  "Koloriang",
+        "label":  "Koloriang",
+        "value":  "Koloriang"
+    },
+    {
+        "cityName":  "Tezu",
+        "label":  "Tezu",
+        "value":  "Tezu"
+    },
+    {
+        "cityName":  "Longding",
+        "label":  "Longding",
+        "value":  "Longding"
+    },
+    {
+        "cityName":  "Anini",
+        "label":  "Anini",
+        "value":  "Anini"
+    },
+    {
+        "cityName":  "Ziro",
+        "label":  "Ziro",
+        "value":  "Ziro"
+    },
+    {
+        "cityName":  "Yupia",
+        "label":  "Yupia",
+        "value":  "Yupia"
+    },
+    {
+        "cityName":  "Tawang Town",
+        "label":  "Tawang Town",
+        "value":  "Tawang Town"
+    },
+    {
+        "cityName":  "Khonsa",
+        "label":  "Khonsa",
+        "value":  "Khonsa"
+    },
+    {
+        "cityName":  "Yingkiong",
+        "label":  "Yingkiong",
+        "value":  "Yingkiong"
+    },
+    {
+        "cityName":  "Daporijo",
+        "label":  "Daporijo",
+        "value":  "Daporijo"
+    },
+    {
+        "cityName":  "Bomdila",
+        "label":  "Bomdila",
+        "value":  "Bomdila"
+    },
+    {
+        "cityName":  "Along",
+        "label":  "Along",
+        "value":  "Along"
+    },
+    {
+        "cityName":  "Mushalpur",
+        "label":  "Mushalpur",
+        "value":  "Mushalpur"
+    },
+    {
+        "cityName":  "Barpeta",
+        "label":  "Barpeta",
+        "value":  "Barpeta"
+    },
+    {
+        "cityName":  "Bongaigaon",
+        "label":  "Bongaigaon",
+        "value":  "Bongaigaon"
+    },
+    {
+        "cityName":  "Silchar",
+        "label":  "Silchar",
+        "value":  "Silchar"
+    },
+    {
+        "cityName":  "Kajalgaon",
+        "label":  "Kajalgaon",
+        "value":  "Kajalgaon"
+    },
+    {
+        "cityName":  "Mangaldoi",
+        "label":  "Mangaldoi",
+        "value":  "Mangaldoi"
+    },
+    {
+        "cityName":  "Dhemaji",
+        "label":  "Dhemaji",
+        "value":  "Dhemaji"
+    },
+    {
+        "cityName":  "Dhubri",
+        "label":  "Dhubri",
+        "value":  "Dhubri"
+    },
+    {
+        "cityName":  "Dibrugarh",
+        "label":  "Dibrugarh",
+        "value":  "Dibrugarh"
+    },
+    {
+        "cityName":  "Haflong",
+        "label":  "Haflong",
+        "value":  "Haflong"
+    },
+    {
+        "cityName":  "Goalpara",
+        "label":  "Goalpara",
+        "value":  "Goalpara"
+    },
+    {
+        "cityName":  "Golaghat",
+        "label":  "Golaghat",
+        "value":  "Golaghat"
+    },
+    {
+        "cityName":  "Hailakandi",
+        "label":  "Hailakandi",
+        "value":  "Hailakandi"
+    },
+    {
+        "cityName":  "Jorhat",
+        "label":  "Jorhat",
+        "value":  "Jorhat"
+    },
+    {
+        "cityName":  "Guwahati",
+        "label":  "Guwahati",
+        "value":  "Guwahati"
+    },
+    {
+        "cityName":  "Goroimari",
+        "label":  "Goroimari",
+        "value":  "Goroimari"
+    },
+    {
+        "cityName":  "Diphu",
+        "label":  "Diphu",
+        "value":  "Diphu"
+    },
+    {
+        "cityName":  "Karimganj",
+        "label":  "Karimganj",
+        "value":  "Karimganj"
+    },
+    {
+        "cityName":  "Kokrajhar",
+        "label":  "Kokrajhar",
+        "value":  "Kokrajhar"
+    },
+    {
+        "cityName":  "North Lakhimpur",
+        "label":  "North Lakhimpur",
+        "value":  "North Lakhimpur"
+    },
+    {
+        "cityName":  "Marigaon",
+        "label":  "Marigaon",
+        "value":  "Marigaon"
+    },
+    {
+        "cityName":  "Nagaon",
+        "label":  "Nagaon",
+        "value":  "Nagaon"
+    },
+    {
+        "cityName":  "Nalbari",
+        "label":  "Nalbari",
+        "value":  "Nalbari"
+    },
+    {
+        "cityName":  "Sibsagar",
+        "label":  "Sibsagar",
+        "value":  "Sibsagar"
+    },
+    {
+        "cityName":  "Tezpur",
+        "label":  "Tezpur",
+        "value":  "Tezpur"
+    },
+    {
+        "cityName":  "Tinsukia",
+        "label":  "Tinsukia",
+        "value":  "Tinsukia"
+    },
+    {
+        "cityName":  "Udalguri",
+        "label":  "Udalguri",
+        "value":  "Udalguri"
+    },
+    {
+        "cityName":  "Araria",
+        "label":  "Araria",
+        "value":  "Araria"
+    },
+    {
+        "cityName":  "Arwal",
+        "label":  "Arwal",
+        "value":  "Arwal"
+    },
+    {
+        "cityName":  "Abdulpur",
+        "label":  "Abdulpur",
+        "value":  "Abdulpur"
+    },
+    {
+        "cityName":  "Banka",
+        "label":  "Banka",
+        "value":  "Banka"
+    },
+    {
+        "cityName":  "Begusarai",
+        "label":  "Begusarai",
+        "value":  "Begusarai"
+    },
+    {
+        "cityName":  "Bhagalpur",
+        "label":  "Bhagalpur",
+        "value":  "Bhagalpur"
+    },
+    {
+        "cityName":  "Arrah",
+        "label":  "Arrah",
+        "value":  "Arrah"
+    },
+    {
+        "cityName":  "Buxar",
+        "label":  "Buxar",
+        "value":  "Buxar"
+    },
+    {
+        "cityName":  "Darbhanga",
+        "label":  "Darbhanga",
+        "value":  "Darbhanga"
+    },
+    {
+        "cityName":  "Motihari",
+        "label":  "Motihari",
+        "value":  "Motihari"
+    },
+    {
+        "cityName":  "Gaya",
+        "label":  "Gaya",
+        "value":  "Gaya"
+    },
+    {
+        "cityName":  "Gopalganj",
+        "label":  "Gopalganj",
+        "value":  "Gopalganj"
+    },
+    {
+        "cityName":  "Jamui",
+        "label":  "Jamui",
+        "value":  "Jamui"
+    },
+    {
+        "cityName":  "Jehanabad",
+        "label":  "Jehanabad",
+        "value":  "Jehanabad"
+    },
+    {
+        "cityName":  "Bhabua",
+        "label":  "Bhabua",
+        "value":  "Bhabua"
+    },
+    {
+        "cityName":  "Katihar",
+        "label":  "Katihar",
+        "value":  "Katihar"
+    },
+    {
+        "cityName":  "Khagaria",
+        "label":  "Khagaria",
+        "value":  "Khagaria"
+    },
+    {
+        "cityName":  "Kishanganj",
+        "label":  "Kishanganj",
+        "value":  "Kishanganj"
+    },
+    {
+        "cityName":  "Lakhisarai",
+        "label":  "Lakhisarai",
+        "value":  "Lakhisarai"
+    },
+    {
+        "cityName":  "Madhepura",
+        "label":  "Madhepura",
+        "value":  "Madhepura"
+    },
+    {
+        "cityName":  "Madhubani",
+        "label":  "Madhubani",
+        "value":  "Madhubani"
+    },
+    {
+        "cityName":  "Munger",
+        "label":  "Munger",
+        "value":  "Munger"
+    },
+    {
+        "cityName":  "Muzaffarpur",
+        "label":  "Muzaffarpur",
+        "value":  "Muzaffarpur"
+    },
+    {
+        "cityName":  "Bihar Sharif",
+        "label":  "Bihar Sharif",
+        "value":  "Bihar Sharif"
+    },
+    {
+        "cityName":  "Nawada",
+        "label":  "Nawada",
+        "value":  "Nawada"
+    },
+    {
+        "cityName":  "Patna",
+        "label":  "Patna",
+        "value":  "Patna"
+    },
+    {
+        "cityName":  "Purnia",
+        "label":  "Purnia",
+        "value":  "Purnia"
+    },
+    {
+        "cityName":  "Sasaram",
+        "label":  "Sasaram",
+        "value":  "Sasaram"
+    },
+    {
+        "cityName":  "Saharsa",
+        "label":  "Saharsa",
+        "value":  "Saharsa"
+    },
+    {
+        "cityName":  "Samastipur",
+        "label":  "Samastipur",
+        "value":  "Samastipur"
+    },
+    {
+        "cityName":  "Chhapra",
+        "label":  "Chhapra",
+        "value":  "Chhapra"
+    },
+    {
+        "cityName":  "Sheikhpura",
+        "label":  "Sheikhpura",
+        "value":  "Sheikhpura"
+    },
+    {
+        "cityName":  "Sheohar",
+        "label":  "Sheohar",
+        "value":  "Sheohar"
+    },
+    {
+        "cityName":  "Sitamarhi",
+        "label":  "Sitamarhi",
+        "value":  "Sitamarhi"
+    },
+    {
+        "cityName":  "Siwan",
+        "label":  "Siwan",
+        "value":  "Siwan"
+    },
+    {
+        "cityName":  "Supaul",
+        "label":  "Supaul",
+        "value":  "Supaul"
+    },
+    {
+        "cityName":  "Hajipur",
+        "label":  "Hajipur",
+        "value":  "Hajipur"
+    },
+    {
+        "cityName":  "Bettiah",
+        "label":  "Bettiah",
+        "value":  "Bettiah"
+    },
+    {
+        "cityName":  "Chandigarh",
+        "label":  "Chandigarh",
+        "value":  "Chandigarh"
+    },
+    {
+        "cityName":  "Balod",
+        "label":  "Balod",
+        "value":  "Balod"
+    },
+    {
+        "cityName":  "Baloda Bazar",
+        "label":  "Baloda Bazar",
+        "value":  "Baloda Bazar"
+    },
+    {
+        "cityName":  "Balrampur",
+        "label":  "Balrampur",
+        "value":  "Balrampur"
+    },
+    {
+        "cityName":  "Jagdalpur",
+        "label":  "Jagdalpur",
+        "value":  "Jagdalpur"
+    },
+    {
+        "cityName":  "Bemetara",
+        "label":  "Bemetara",
+        "value":  "Bemetara"
+    },
+    {
+        "cityName":  "Bijapur",
+        "label":  "Bijapur",
+        "value":  "Bijapur"
+    },
+    {
+        "cityName":  "Bilaspur",
+        "label":  "Bilaspur",
+        "value":  "Bilaspur"
+    },
+    {
+        "cityName":  "Dantewada",
+        "label":  "Dantewada",
+        "value":  "Dantewada"
+    },
+    {
+        "cityName":  "Dhamtari",
+        "label":  "Dhamtari",
+        "value":  "Dhamtari"
+    },
+    {
+        "cityName":  "Durg",
+        "label":  "Durg",
+        "value":  "Durg"
+    },
+    {
+        "cityName":  "Gariaband",
+        "label":  "Gariaband",
+        "value":  "Gariaband"
+    },
+    {
+        "cityName":  "Naila Janjgir",
+        "label":  "Naila Janjgir",
+        "value":  "Naila Janjgir"
+    },
+    {
+        "cityName":  "Jashpur Nagar",
+        "label":  "Jashpur Nagar",
+        "value":  "Jashpur Nagar"
+    },
+    {
+        "cityName":  "Kawardha",
+        "label":  "Kawardha",
+        "value":  "Kawardha"
+    },
+    {
+        "cityName":  "Kanker",
+        "label":  "Kanker",
+        "value":  "Kanker"
+    },
+    {
+        "cityName":  "Kondagaon",
+        "label":  "Kondagaon",
+        "value":  "Kondagaon"
+    },
+    {
+        "cityName":  "Korba",
+        "label":  "Korba",
+        "value":  "Korba"
+    },
+    {
+        "cityName":  "Baikunthpur",
+        "label":  "Baikunthpur",
+        "value":  "Baikunthpur"
+    },
+    {
+        "cityName":  "Mahasamund",
+        "label":  "Mahasamund",
+        "value":  "Mahasamund"
+    },
+    {
+        "cityName":  "Mungeli",
+        "label":  "Mungeli",
+        "value":  "Mungeli"
+    },
+    {
+        "cityName":  "Narayanpur",
+        "label":  "Narayanpur",
+        "value":  "Narayanpur"
+    },
+    {
+        "cityName":  "Raigarh",
+        "label":  "Raigarh",
+        "value":  "Raigarh"
+    },
+    {
+        "cityName":  "Raipur",
+        "label":  "Raipur",
+        "value":  "Raipur"
+    },
+    {
+        "cityName":  "Rajnandgaon",
+        "label":  "Rajnandgaon",
+        "value":  "Rajnandgaon"
+    },
+    {
+        "cityName":  "Sukma",
+        "label":  "Sukma",
+        "value":  "Sukma"
+    },
+    {
+        "cityName":  "Surajpur",
+        "label":  "Surajpur",
+        "value":  "Surajpur"
+    },
+    {
+        "cityName":  "Surguja",
+        "label":  "Surguja",
+        "value":  "Surguja"
+    },
+    {
+        "cityName":  "Silvassa",
+        "label":  "Silvassa",
+        "value":  "Silvassa"
+    },
+    {
+        "cityName":  "Daman",
+        "label":  "Daman",
+        "value":  "Daman"
+    },
+    {
+        "cityName":  "Diu",
+        "label":  "Diu",
+        "value":  "Diu"
+    },
+    {
+        "cityName":  "Daryaganj",
+        "label":  "Daryaganj",
+        "value":  "Daryaganj"
+    },
+    {
+        "cityName":  "Preet Vihar",
+        "label":  "Preet Vihar",
+        "value":  "Preet Vihar"
+    },
+    {
+        "cityName":  "Connaught Place",
+        "label":  "Connaught Place",
+        "value":  "Connaught Place"
+    },
+    {
+        "cityName":  "Sadar Bazaar",
+        "label":  "Sadar Bazaar",
+        "value":  "Sadar Bazaar"
+    },
+    {
+        "cityName":  "Shahdara",
+        "label":  "Shahdara",
+        "value":  "Shahdara"
+    },
+    {
+        "cityName":  "Kanjhawala",
+        "label":  "Kanjhawala",
+        "value":  "Kanjhawala"
+    },
+    {
+        "cityName":  "Saket",
+        "label":  "Saket",
+        "value":  "Saket"
+    },
+    {
+        "cityName":  "Vasant Vihar",
+        "label":  "Vasant Vihar",
+        "value":  "Vasant Vihar"
+    },
+    {
+        "cityName":  "Rajouri Garden",
+        "label":  "Rajouri Garden",
+        "value":  "Rajouri Garden"
+    },
+    {
+        "cityName":  "Panaji",
+        "label":  "Panaji",
+        "value":  "Panaji"
+    },
+    {
+        "cityName":  "Margao",
+        "label":  "Margao",
+        "value":  "Margao"
+    },
+    {
+        "cityName":  "Ahmedabad",
+        "label":  "Ahmedabad",
+        "value":  "Ahmedabad"
+    },
+    {
+        "cityName":  "Amreli",
+        "label":  "Amreli",
+        "value":  "Amreli"
+    },
+    {
+        "cityName":  "Anand",
+        "label":  "Anand",
+        "value":  "Anand"
+    },
+    {
+        "cityName":  "Modasa",
+        "label":  "Modasa",
+        "value":  "Modasa"
+    },
+    {
+        "cityName":  "Palanpur",
+        "label":  "Palanpur",
+        "value":  "Palanpur"
+    },
+    {
+        "cityName":  "Bharuch",
+        "label":  "Bharuch",
+        "value":  "Bharuch"
+    },
+    {
+        "cityName":  "Bhavnagar",
+        "label":  "Bhavnagar",
+        "value":  "Bhavnagar"
+    },
+    {
+        "cityName":  "Botad",
+        "label":  "Botad",
+        "value":  "Botad"
+    },
+    {
+        "cityName":  "Chhota Udaipur",
+        "label":  "Chhota Udaipur",
+        "value":  "Chhota Udaipur"
+    },
+    {
+        "cityName":  "Dahod",
+        "label":  "Dahod",
+        "value":  "Dahod"
+    },
+    {
+        "cityName":  "Ahwa",
+        "label":  "Ahwa",
+        "value":  "Ahwa"
+    },
+    {
+        "cityName":  "Khambhalia",
+        "label":  "Khambhalia",
+        "value":  "Khambhalia"
+    },
+    {
+        "cityName":  "Gandhinagar",
+        "label":  "Gandhinagar",
+        "value":  "Gandhinagar"
+    },
+    {
+        "cityName":  "Veraval",
+        "label":  "Veraval",
+        "value":  "Veraval"
+    },
+    {
+        "cityName":  "Jamnagar",
+        "label":  "Jamnagar",
+        "value":  "Jamnagar"
+    },
+    {
+        "cityName":  "Junagadh",
+        "label":  "Junagadh",
+        "value":  "Junagadh"
+    },
+    {
+        "cityName":  "Bhuj",
+        "label":  "Bhuj",
+        "value":  "Bhuj"
+    },
+    {
+        "cityName":  "Nadiad",
+        "label":  "Nadiad",
+        "value":  "Nadiad"
+    },
+    {
+        "cityName":  "Lunavada",
+        "label":  "Lunavada",
+        "value":  "Lunavada"
+    },
+    {
+        "cityName":  "Mehsana",
+        "label":  "Mehsana",
+        "value":  "Mehsana"
+    },
+    {
+        "cityName":  "Morbi",
+        "label":  "Morbi",
+        "value":  "Morbi"
+    },
+    {
+        "cityName":  "Rajpipla",
+        "label":  "Rajpipla",
+        "value":  "Rajpipla"
+    },
+    {
+        "cityName":  "Navsari",
+        "label":  "Navsari",
+        "value":  "Navsari"
+    },
+    {
+        "cityName":  "Godhra",
+        "label":  "Godhra",
+        "value":  "Godhra"
+    },
+    {
+        "cityName":  "Patan",
+        "label":  "Patan",
+        "value":  "Patan"
+    },
+    {
+        "cityName":  "Porbandar",
+        "label":  "Porbandar",
+        "value":  "Porbandar"
+    },
+    {
+        "cityName":  "Rajkot",
+        "label":  "Rajkot",
+        "value":  "Rajkot"
+    },
+    {
+        "cityName":  "Himatnagar",
+        "label":  "Himatnagar",
+        "value":  "Himatnagar"
+    },
+    {
+        "cityName":  "Surat",
+        "label":  "Surat",
+        "value":  "Surat"
+    },
+    {
+        "cityName":  "Surendranagar",
+        "label":  "Surendranagar",
+        "value":  "Surendranagar"
+    },
+    {
+        "cityName":  "Vyara",
+        "label":  "Vyara",
+        "value":  "Vyara"
+    },
+    {
+        "cityName":  "Vadodara",
+        "label":  "Vadodara",
+        "value":  "Vadodara"
+    },
+    {
+        "cityName":  "Valsad",
+        "label":  "Valsad",
+        "value":  "Valsad"
+    },
+    {
+        "cityName":  "Ambala",
+        "label":  "Ambala",
+        "value":  "Ambala"
+    },
+    {
+        "cityName":  "Bhiwani",
+        "label":  "Bhiwani",
+        "value":  "Bhiwani"
+    },
+    {
+        "cityName":  "Faridabad",
+        "label":  "Faridabad",
+        "value":  "Faridabad"
+    },
+    {
+        "cityName":  "Fatehabad",
+        "label":  "Fatehabad",
+        "value":  "Fatehabad"
+    },
+    {
+        "cityName":  "Gurgaon",
+        "label":  "Gurgaon",
+        "value":  "Gurgaon"
+    },
+    {
+        "cityName":  "Hissar",
+        "label":  "Hissar",
+        "value":  "Hissar"
+    },
+    {
+        "cityName":  "Jhajjar",
+        "label":  "Jhajjar",
+        "value":  "Jhajjar"
+    },
+    {
+        "cityName":  "Jind",
+        "label":  "Jind",
+        "value":  "Jind"
+    },
+    {
+        "cityName":  "Kaithal",
+        "label":  "Kaithal",
+        "value":  "Kaithal"
+    },
+    {
+        "cityName":  "Karnal",
+        "label":  "Karnal",
+        "value":  "Karnal"
+    },
+    {
+        "cityName":  "Kurukshetra",
+        "label":  "Kurukshetra",
+        "value":  "Kurukshetra"
+    },
+    {
+        "cityName":  "Narnaul",
+        "label":  "Narnaul",
+        "value":  "Narnaul"
+    },
+    {
+        "cityName":  "Nuh",
+        "label":  "Nuh",
+        "value":  "Nuh"
+    },
+    {
+        "cityName":  "Palwal",
+        "label":  "Palwal",
+        "value":  "Palwal"
+    },
+    {
+        "cityName":  "Panchkula",
+        "label":  "Panchkula",
+        "value":  "Panchkula"
+    },
+    {
+        "cityName":  "Panipat",
+        "label":  "Panipat",
+        "value":  "Panipat"
+    },
+    {
+        "cityName":  "Rewari",
+        "label":  "Rewari",
+        "value":  "Rewari"
+    },
+    {
+        "cityName":  "Rohtak",
+        "label":  "Rohtak",
+        "value":  "Rohtak"
+    },
+    {
+        "cityName":  "Sirsa",
+        "label":  "Sirsa",
+        "value":  "Sirsa"
+    },
+    {
+        "cityName":  "Sonipat",
+        "label":  "Sonipat",
+        "value":  "Sonipat"
+    },
+    {
+        "cityName":  "Yamunanagar",
+        "label":  "Yamunanagar",
+        "value":  "Yamunanagar"
+    },
+    {
+        "cityName":  "Bilaspur",
+        "label":  "Bilaspur",
+        "value":  "Bilaspur"
+    },
+    {
+        "cityName":  "Chamba",
+        "label":  "Chamba",
+        "value":  "Chamba"
+    },
+    {
+        "cityName":  "Hamirpur",
+        "label":  "Hamirpur",
+        "value":  "Hamirpur"
+    },
+    {
+        "cityName":  "Dharamshala",
+        "label":  "Dharamshala",
+        "value":  "Dharamshala"
+    },
+    {
+        "cityName":  "Reckong Peo",
+        "label":  "Reckong Peo",
+        "value":  "Reckong Peo"
+    },
+    {
+        "cityName":  "Kullu",
+        "label":  "Kullu",
+        "value":  "Kullu"
+    },
+    {
+        "cityName":  "Keylong",
+        "label":  "Keylong",
+        "value":  "Keylong"
+    },
+    {
+        "cityName":  "Mandi",
+        "label":  "Mandi",
+        "value":  "Mandi"
+    },
+    {
+        "cityName":  "Shimla",
+        "label":  "Shimla",
+        "value":  "Shimla"
+    },
+    {
+        "cityName":  "Nahan",
+        "label":  "Nahan",
+        "value":  "Nahan"
+    },
+    {
+        "cityName":  "Solan",
+        "label":  "Solan",
+        "value":  "Solan"
+    },
+    {
+        "cityName":  "Una",
+        "label":  "Una",
+        "value":  "Una"
+    },
+    {
+        "cityName":  "Anantnag",
+        "label":  "Anantnag",
+        "value":  "Anantnag"
+    },
+    {
+        "cityName":  "Bandipore",
+        "label":  "Bandipore",
+        "value":  "Bandipore"
+    },
+    {
+        "cityName":  "Baramulla",
+        "label":  "Baramulla",
+        "value":  "Baramulla"
+    },
+    {
+        "cityName":  "Badgam",
+        "label":  "Badgam",
+        "value":  "Badgam"
+    },
+    {
+        "cityName":  "Doda",
+        "label":  "Doda",
+        "value":  "Doda"
+    },
+    {
+        "cityName":  "Ganderbal",
+        "label":  "Ganderbal",
+        "value":  "Ganderbal"
+    },
+    {
+        "cityName":  "Jammu",
+        "label":  "Jammu",
+        "value":  "Jammu"
+    },
+    {
+        "cityName":  "Kargil",
+        "label":  "Kargil",
+        "value":  "Kargil"
+    },
+    {
+        "cityName":  "Kathua",
+        "label":  "Kathua",
+        "value":  "Kathua"
+    },
+    {
+        "cityName":  "Kishtwar",
+        "label":  "Kishtwar",
+        "value":  "Kishtwar"
+    },
+    {
+        "cityName":  "Kulgam",
+        "label":  "Kulgam",
+        "value":  "Kulgam"
+    },
+    {
+        "cityName":  "Kupwara",
+        "label":  "Kupwara",
+        "value":  "Kupwara"
+    },
+    {
+        "cityName":  "Leh",
+        "label":  "Leh",
+        "value":  "Leh"
+    },
+    {
+        "cityName":  "Poonch",
+        "label":  "Poonch",
+        "value":  "Poonch"
+    },
+    {
+        "cityName":  "Pulwama",
+        "label":  "Pulwama",
+        "value":  "Pulwama"
+    },
+    {
+        "cityName":  "Rajouri",
+        "label":  "Rajouri",
+        "value":  "Rajouri"
+    },
+    {
+        "cityName":  "Ramban",
+        "label":  "Ramban",
+        "value":  "Ramban"
+    },
+    {
+        "cityName":  "Reasi",
+        "label":  "Reasi",
+        "value":  "Reasi"
+    },
+    {
+        "cityName":  "Samba",
+        "label":  "Samba",
+        "value":  "Samba"
+    },
+    {
+        "cityName":  "Shupiyan",
+        "label":  "Shupiyan",
+        "value":  "Shupiyan"
+    },
+    {
+        "cityName":  "Srinagar",
+        "label":  "Srinagar",
+        "value":  "Srinagar"
+    },
+    {
+        "cityName":  "Udhampur",
+        "label":  "Udhampur",
+        "value":  "Udhampur"
+    },
+    {
+        "cityName":  "Bokaro",
+        "label":  "Bokaro",
+        "value":  "Bokaro"
+    },
+    {
+        "cityName":  "Chatra",
+        "label":  "Chatra",
+        "value":  "Chatra"
+    },
+    {
+        "cityName":  "Deoghar",
+        "label":  "Deoghar",
+        "value":  "Deoghar"
+    },
+    {
+        "cityName":  "Dhanbad",
+        "label":  "Dhanbad",
+        "value":  "Dhanbad"
+    },
+    {
+        "cityName":  "Dumka",
+        "label":  "Dumka",
+        "value":  "Dumka"
+    },
+    {
+        "cityName":  "Jamshedpur",
+        "label":  "Jamshedpur",
+        "value":  "Jamshedpur"
+    },
+    {
+        "cityName":  "Garhwa",
+        "label":  "Garhwa",
+        "value":  "Garhwa"
+    },
+    {
+        "cityName":  "Giridih",
+        "label":  "Giridih",
+        "value":  "Giridih"
+    },
+    {
+        "cityName":  "Godda",
+        "label":  "Godda",
+        "value":  "Godda"
+    },
+    {
+        "cityName":  "Gumla",
+        "label":  "Gumla",
+        "value":  "Gumla"
+    },
+    {
+        "cityName":  "Hazaribag",
+        "label":  "Hazaribag",
+        "value":  "Hazaribag"
+    },
+    {
+        "cityName":  "Jamtara",
+        "label":  "Jamtara",
+        "value":  "Jamtara"
+    },
+    {
+        "cityName":  "Khunti",
+        "label":  "Khunti",
+        "value":  "Khunti"
+    },
+    {
+        "cityName":  "Koderma",
+        "label":  "Koderma",
+        "value":  "Koderma"
+    },
+    {
+        "cityName":  "Latehar",
+        "label":  "Latehar",
+        "value":  "Latehar"
+    },
+    {
+        "cityName":  "Lohardaga",
+        "label":  "Lohardaga",
+        "value":  "Lohardaga"
+    },
+    {
+        "cityName":  "Pakur",
+        "label":  "Pakur",
+        "value":  "Pakur"
+    },
+    {
+        "cityName":  "Daltonganj",
+        "label":  "Daltonganj",
+        "value":  "Daltonganj"
+    },
+    {
+        "cityName":  "Ramgarh",
+        "label":  "Ramgarh",
+        "value":  "Ramgarh"
+    },
+    {
+        "cityName":  "Ranchi",
+        "label":  "Ranchi",
+        "value":  "Ranchi"
+    },
+    {
+        "cityName":  "Sahebganj",
+        "label":  "Sahebganj",
+        "value":  "Sahebganj"
+    },
+    {
+        "cityName":  "Seraikela",
+        "label":  "Seraikela",
+        "value":  "Seraikela"
+    },
+    {
+        "cityName":  "Simdega",
+        "label":  "Simdega",
+        "value":  "Simdega"
+    },
+    {
+        "cityName":  "Chaibasa",
+        "label":  "Chaibasa",
+        "value":  "Chaibasa"
+    },
+    {
+        "cityName":  "Bagalkot",
+        "label":  "Bagalkot",
+        "value":  "Bagalkot"
+    },
+    {
+        "cityName":  "Bangalore",
+        "label":  "Bangalore",
+        "value":  "Bangalore"
+    },
+    {
+        "cityName":  "Bangalore",
+        "label":  "Bangalore",
+        "value":  "Bangalore"
+    },
+    {
+        "cityName":  "Belgaum",
+        "label":  "Belgaum",
+        "value":  "Belgaum"
+    },
+    {
+        "cityName":  "Bellary",
+        "label":  "Bellary",
+        "value":  "Bellary"
+    },
+    {
+        "cityName":  "Bidar",
+        "label":  "Bidar",
+        "value":  "Bidar"
+    },
+    {
+        "cityName":  "Bijapur",
+        "label":  "Bijapur",
+        "value":  "Bijapur"
+    },
+    {
+        "cityName":  "Chamarajanagar",
+        "label":  "Chamarajanagar",
+        "value":  "Chamarajanagar"
+    },
+    {
+        "cityName":  "Chickmagalur",
+        "label":  "Chickmagalur",
+        "value":  "Chickmagalur"
+    },
+    {
+        "cityName":  "Chikballapur",
+        "label":  "Chikballapur",
+        "value":  "Chikballapur"
+    },
+    {
+        "cityName":  "Chitradurga",
+        "label":  "Chitradurga",
+        "value":  "Chitradurga"
+    },
+    {
+        "cityName":  "Mangalore",
+        "label":  "Mangalore",
+        "value":  "Mangalore"
+    },
+    {
+        "cityName":  "Davangere",
+        "label":  "Davangere",
+        "value":  "Davangere"
+    },
+    {
+        "cityName":  "Dharwad",
+        "label":  "Dharwad",
+        "value":  "Dharwad"
+    },
+    {
+        "cityName":  "Gadag-Betageri",
+        "label":  "Gadag-Betageri",
+        "value":  "Gadag-Betageri"
+    },
+    {
+        "cityName":  "Gulbarga",
+        "label":  "Gulbarga",
+        "value":  "Gulbarga"
+    },
+    {
+        "cityName":  "Hassan",
+        "label":  "Hassan",
+        "value":  "Hassan"
+    },
+    {
+        "cityName":  "Haveri",
+        "label":  "Haveri",
+        "value":  "Haveri"
+    },
+    {
+        "cityName":  "Madikeri",
+        "label":  "Madikeri",
+        "value":  "Madikeri"
+    },
+    {
+        "cityName":  "Kolar",
+        "label":  "Kolar",
+        "value":  "Kolar"
+    },
+    {
+        "cityName":  "Koppal",
+        "label":  "Koppal",
+        "value":  "Koppal"
+    },
+    {
+        "cityName":  "Mandya",
+        "label":  "Mandya",
+        "value":  "Mandya"
+    },
+    {
+        "cityName":  "Mysore",
+        "label":  "Mysore",
+        "value":  "Mysore"
+    },
+    {
+        "cityName":  "Raichur",
+        "label":  "Raichur",
+        "value":  "Raichur"
+    },
+    {
+        "cityName":  "Ramnagara",
+        "label":  "Ramnagara",
+        "value":  "Ramnagara"
+    },
+    {
+        "cityName":  "Shimoga",
+        "label":  "Shimoga",
+        "value":  "Shimoga"
+    },
+    {
+        "cityName":  "Tumkur",
+        "label":  "Tumkur",
+        "value":  "Tumkur"
+    },
+    {
+        "cityName":  "Udupi",
+        "label":  "Udupi",
+        "value":  "Udupi"
+    },
+    {
+        "cityName":  "Karwar",
+        "label":  "Karwar",
+        "value":  "Karwar"
+    },
+    {
+        "cityName":  "Yadgir",
+        "label":  "Yadgir",
+        "value":  "Yadgir"
+    },
+    {
+        "cityName":  "Alappuzha",
+        "label":  "Alappuzha",
+        "value":  "Alappuzha"
+    },
+    {
+        "cityName":  "Kakkanad",
+        "label":  "Kakkanad",
+        "value":  "Kakkanad"
+    },
+    {
+        "cityName":  "Painavu",
+        "label":  "Painavu",
+        "value":  "Painavu"
+    },
+    {
+        "cityName":  "Kannur",
+        "label":  "Kannur",
+        "value":  "Kannur"
+    },
+    {
+        "cityName":  "Kasaragod",
+        "label":  "Kasaragod",
+        "value":  "Kasaragod"
+    },
+    {
+        "cityName":  "Kollam",
+        "label":  "Kollam",
+        "value":  "Kollam"
+    },
+    {
+        "cityName":  "Kottayam",
+        "label":  "Kottayam",
+        "value":  "Kottayam"
+    },
+    {
+        "cityName":  "Kozhikode",
+        "label":  "Kozhikode",
+        "value":  "Kozhikode"
+    },
+    {
+        "cityName":  "Malappuram",
+        "label":  "Malappuram",
+        "value":  "Malappuram"
+    },
+    {
+        "cityName":  "Palakkad",
+        "label":  "Palakkad",
+        "value":  "Palakkad"
+    },
+    {
+        "cityName":  "Pathanamthitta",
+        "label":  "Pathanamthitta",
+        "value":  "Pathanamthitta"
+    },
+    {
+        "cityName":  "Thiruvananthapuram",
+        "label":  "Thiruvananthapuram",
+        "value":  "Thiruvananthapuram"
+    },
+    {
+        "cityName":  "Thrissur",
+        "label":  "Thrissur",
+        "value":  "Thrissur"
+    },
+    {
+        "cityName":  "Kalpetta",
+        "label":  "Kalpetta",
+        "value":  "Kalpetta"
+    },
+    {
+        "cityName":  "Kavaratti",
+        "label":  "Kavaratti",
+        "value":  "Kavaratti"
+    },
+    {
+        "cityName":  "Alirajpur",
+        "label":  "Alirajpur",
+        "value":  "Alirajpur"
+    },
+    {
+        "cityName":  "Anuppur",
+        "label":  "Anuppur",
+        "value":  "Anuppur"
+    },
+    {
+        "cityName":  "Ashok Nagar",
+        "label":  "Ashok Nagar",
+        "value":  "Ashok Nagar"
+    },
+    {
+        "cityName":  "Balaghat",
+        "label":  "Balaghat",
+        "value":  "Balaghat"
+    },
+    {
+        "cityName":  "Barwani",
+        "label":  "Barwani",
+        "value":  "Barwani"
+    },
+    {
+        "cityName":  "Betul",
+        "label":  "Betul",
+        "value":  "Betul"
+    },
+    {
+        "cityName":  "Bhind",
+        "label":  "Bhind",
+        "value":  "Bhind"
+    },
+    {
+        "cityName":  "Bhopal",
+        "label":  "Bhopal",
+        "value":  "Bhopal"
+    },
+    {
+        "cityName":  "Burhanpur",
+        "label":  "Burhanpur",
+        "value":  "Burhanpur"
+    },
+    {
+        "cityName":  "Chhatarpur",
+        "label":  "Chhatarpur",
+        "value":  "Chhatarpur"
+    },
+    {
+        "cityName":  "Chhindwara",
+        "label":  "Chhindwara",
+        "value":  "Chhindwara"
+    },
+    {
+        "cityName":  "Damoh",
+        "label":  "Damoh",
+        "value":  "Damoh"
+    },
+    {
+        "cityName":  "Datia",
+        "label":  "Datia",
+        "value":  "Datia"
+    },
+    {
+        "cityName":  "Dewas",
+        "label":  "Dewas",
+        "value":  "Dewas"
+    },
+    {
+        "cityName":  "Dhar",
+        "label":  "Dhar",
+        "value":  "Dhar"
+    },
+    {
+        "cityName":  "Dindori",
+        "label":  "Dindori",
+        "value":  "Dindori"
+    },
+    {
+        "cityName":  "Guna",
+        "label":  "Guna",
+        "value":  "Guna"
+    },
+    {
+        "cityName":  "Gwalior",
+        "label":  "Gwalior",
+        "value":  "Gwalior"
+    },
+    {
+        "cityName":  "Harda",
+        "label":  "Harda",
+        "value":  "Harda"
+    },
+    {
+        "cityName":  "Hoshangabad",
+        "label":  "Hoshangabad",
+        "value":  "Hoshangabad"
+    },
+    {
+        "cityName":  "Indore",
+        "label":  "Indore",
+        "value":  "Indore"
+    },
+    {
+        "cityName":  "Jabalpur",
+        "label":  "Jabalpur",
+        "value":  "Jabalpur"
+    },
+    {
+        "cityName":  "Jhabua",
+        "label":  "Jhabua",
+        "value":  "Jhabua"
+    },
+    {
+        "cityName":  "Katni",
+        "label":  "Katni",
+        "value":  "Katni"
+    },
+    {
+        "cityName":  "Khandwa",
+        "label":  "Khandwa",
+        "value":  "Khandwa"
+    },
+    {
+        "cityName":  "Khargone",
+        "label":  "Khargone",
+        "value":  "Khargone"
+    },
+    {
+        "cityName":  "Mandla",
+        "label":  "Mandla",
+        "value":  "Mandla"
+    },
+    {
+        "cityName":  "Mandsaur",
+        "label":  "Mandsaur",
+        "value":  "Mandsaur"
+    },
+    {
+        "cityName":  "Morena",
+        "label":  "Morena",
+        "value":  "Morena"
+    },
+    {
+        "cityName":  "Narsinghpur",
+        "label":  "Narsinghpur",
+        "value":  "Narsinghpur"
+    },
+    {
+        "cityName":  "Neemuch",
+        "label":  "Neemuch",
+        "value":  "Neemuch"
+    },
+    {
+        "cityName":  "Panna",
+        "label":  "Panna",
+        "value":  "Panna"
+    },
+    {
+        "cityName":  "Raisen",
+        "label":  "Raisen",
+        "value":  "Raisen"
+    },
+    {
+        "cityName":  "Rajgarh",
+        "label":  "Rajgarh",
+        "value":  "Rajgarh"
+    },
+    {
+        "cityName":  "Ratlam",
+        "label":  "Ratlam",
+        "value":  "Ratlam"
+    },
+    {
+        "cityName":  "Rewa",
+        "label":  "Rewa",
+        "value":  "Rewa"
+    },
+    {
+        "cityName":  "Sagar",
+        "label":  "Sagar",
+        "value":  "Sagar"
+    },
+    {
+        "cityName":  "Satna",
+        "label":  "Satna",
+        "value":  "Satna"
+    },
+    {
+        "cityName":  "Sehore",
+        "label":  "Sehore",
+        "value":  "Sehore"
+    },
+    {
+        "cityName":  "Seoni",
+        "label":  "Seoni",
+        "value":  "Seoni"
+    },
+    {
+        "cityName":  "Shahdol",
+        "label":  "Shahdol",
+        "value":  "Shahdol"
+    },
+    {
+        "cityName":  "Shajapur",
+        "label":  "Shajapur",
+        "value":  "Shajapur"
+    },
+    {
+        "cityName":  "Sheopur",
+        "label":  "Sheopur",
+        "value":  "Sheopur"
+    },
+    {
+        "cityName":  "Shivpuri",
+        "label":  "Shivpuri",
+        "value":  "Shivpuri"
+    },
+    {
+        "cityName":  "Sidhi",
+        "label":  "Sidhi",
+        "value":  "Sidhi"
+    },
+    {
+        "cityName":  "Waidhan",
+        "label":  "Waidhan",
+        "value":  "Waidhan"
+    },
+    {
+        "cityName":  "Tikamgarh",
+        "label":  "Tikamgarh",
+        "value":  "Tikamgarh"
+    },
+    {
+        "cityName":  "Ujjain",
+        "label":  "Ujjain",
+        "value":  "Ujjain"
+    },
+    {
+        "cityName":  "Umaria",
+        "label":  "Umaria",
+        "value":  "Umaria"
+    },
+    {
+        "cityName":  "Vidisha",
+        "label":  "Vidisha",
+        "value":  "Vidisha"
+    },
+    {
+        "cityName":  "Ahmednagar",
+        "label":  "Ahmednagar",
+        "value":  "Ahmednagar"
+    },
+    {
+        "cityName":  "Akola",
+        "label":  "Akola",
+        "value":  "Akola"
+    },
+    {
+        "cityName":  "Amravati",
+        "label":  "Amravati",
+        "value":  "Amravati"
+    },
+    {
+        "cityName":  "Aurangabad",
+        "label":  "Aurangabad",
+        "value":  "Aurangabad"
+    },
+    {
+        "cityName":  "Beed",
+        "label":  "Beed",
+        "value":  "Beed"
+    },
+    {
+        "cityName":  "Bhandara",
+        "label":  "Bhandara",
+        "value":  "Bhandara"
+    },
+    {
+        "cityName":  "Buldhana",
+        "label":  "Buldhana",
+        "value":  "Buldhana"
+    },
+    {
+        "cityName":  "Chandrapur",
+        "label":  "Chandrapur",
+        "value":  "Chandrapur"
+    },
+    {
+        "cityName":  "Dhule",
+        "label":  "Dhule",
+        "value":  "Dhule"
+    },
+    {
+        "cityName":  "Gadchiroli",
+        "label":  "Gadchiroli",
+        "value":  "Gadchiroli"
+    },
+    {
+        "cityName":  "Gondia",
+        "label":  "Gondia",
+        "value":  "Gondia"
+    },
+    {
+        "cityName":  "Hingoli",
+        "label":  "Hingoli",
+        "value":  "Hingoli"
+    },
+    {
+        "cityName":  "Jalgaon",
+        "label":  "Jalgaon",
+        "value":  "Jalgaon"
+    },
+    {
+        "cityName":  "Jalna",
+        "label":  "Jalna",
+        "value":  "Jalna"
+    },
+    {
+        "cityName":  "Kolhapur",
+        "label":  "Kolhapur",
+        "value":  "Kolhapur"
+    },
+    {
+        "cityName":  "Latur",
+        "label":  "Latur",
+        "value":  "Latur"
+    },
+    {
+        "cityName":  "Mumbai",
+        "label":  "Mumbai",
+        "value":  "Mumbai"
+    },
+    {
+        "cityName":  "Bandra (East)",
+        "label":  "Bandra (East)",
+        "value":  "Bandra (East)"
+    },
+    {
+        "cityName":  "Nagpur",
+        "label":  "Nagpur",
+        "value":  "Nagpur"
+    },
+    {
+        "cityName":  "Nanded",
+        "label":  "Nanded",
+        "value":  "Nanded"
+    },
+    {
+        "cityName":  "Nandurbar",
+        "label":  "Nandurbar",
+        "value":  "Nandurbar"
+    },
+    {
+        "cityName":  "Nashik",
+        "label":  "Nashik",
+        "value":  "Nashik"
+    },
+    {
+        "cityName":  "Osmanabad",
+        "label":  "Osmanabad",
+        "value":  "Osmanabad"
+    },
+    {
+        "cityName":  "Parbhani",
+        "label":  "Parbhani",
+        "value":  "Parbhani"
+    },
+    {
+        "cityName":  "Pune",
+        "label":  "Pune",
+        "value":  "Pune"
+    },
+    {
+        "cityName":  "Alibag",
+        "label":  "Alibag",
+        "value":  "Alibag"
+    },
+    {
+        "cityName":  "Ratnagiri",
+        "label":  "Ratnagiri",
+        "value":  "Ratnagiri"
+    },
+    {
+        "cityName":  "Sangli",
+        "label":  "Sangli",
+        "value":  "Sangli"
+    },
+    {
+        "cityName":  "Satara",
+        "label":  "Satara",
+        "value":  "Satara"
+    },
+    {
+        "cityName":  "Oros",
+        "label":  "Oros",
+        "value":  "Oros"
+    },
+    {
+        "cityName":  "Solapur",
+        "label":  "Solapur",
+        "value":  "Solapur"
+    },
+    {
+        "cityName":  "Thane",
+        "label":  "Thane",
+        "value":  "Thane"
+    },
+    {
+        "cityName":  "Wardha",
+        "label":  "Wardha",
+        "value":  "Wardha"
+    },
+    {
+        "cityName":  "Washim",
+        "label":  "Washim",
+        "value":  "Washim"
+    },
+    {
+        "cityName":  "Yavatmal",
+        "label":  "Yavatmal",
+        "value":  "Yavatmal"
+    },
+    {
+        "cityName":  "Bishnupur",
+        "label":  "Bishnupur",
+        "value":  "Bishnupur"
+    },
+    {
+        "cityName":  "Chandel",
+        "label":  "Chandel",
+        "value":  "Chandel"
+    },
+    {
+        "cityName":  "Churachandpur",
+        "label":  "Churachandpur",
+        "value":  "Churachandpur"
+    },
+    {
+        "cityName":  "Porompat",
+        "label":  "Porompat",
+        "value":  "Porompat"
+    },
+    {
+        "cityName":  "Lamphelpat",
+        "label":  "Lamphelpat",
+        "value":  "Lamphelpat"
+    },
+    {
+        "cityName":  "Senapati",
+        "label":  "Senapati",
+        "value":  "Senapati"
+    },
+    {
+        "cityName":  "Tamenglong",
+        "label":  "Tamenglong",
+        "value":  "Tamenglong"
+    },
+    {
+        "cityName":  "Thoubal",
+        "label":  "Thoubal",
+        "value":  "Thoubal"
+    },
+    {
+        "cityName":  "Ukhrul",
+        "label":  "Ukhrul",
+        "value":  "Ukhrul"
+    },
+    {
+        "cityName":  "Williamnagar",
+        "label":  "Williamnagar",
+        "value":  "Williamnagar"
+    },
+    {
+        "cityName":  "Khleihriat",
+        "label":  "Khleihriat",
+        "value":  "Khleihriat"
+    },
+    {
+        "cityName":  "Shillong",
+        "label":  "Shillong",
+        "value":  "Shillong"
+    },
+    {
+        "cityName":  "Resubelpara",
+        "label":  "Resubelpara",
+        "value":  "Resubelpara"
+    },
+    {
+        "cityName":  "Nongpoh",
+        "label":  "Nongpoh",
+        "value":  "Nongpoh"
+    },
+    {
+        "cityName":  "Baghmara",
+        "label":  "Baghmara",
+        "value":  "Baghmara"
+    },
+    {
+        "cityName":  "Ampati",
+        "label":  "Ampati",
+        "value":  "Ampati"
+    },
+    {
+        "cityName":  "Mawkyrwat",
+        "label":  "Mawkyrwat",
+        "value":  "Mawkyrwat"
+    },
+    {
+        "cityName":  "Tura",
+        "label":  "Tura",
+        "value":  "Tura"
+    },
+    {
+        "cityName":  "Jowai",
+        "label":  "Jowai",
+        "value":  "Jowai"
+    },
+    {
+        "cityName":  "Nongstoin",
+        "label":  "Nongstoin",
+        "value":  "Nongstoin"
+    },
+    {
+        "cityName":  "Aizawl",
+        "label":  "Aizawl",
+        "value":  "Aizawl"
+    },
+    {
+        "cityName":  "Champhai",
+        "label":  "Champhai",
+        "value":  "Champhai"
+    },
+    {
+        "cityName":  "Kolasib",
+        "label":  "Kolasib",
+        "value":  "Kolasib"
+    },
+    {
+        "cityName":  "Lawngtlai",
+        "label":  "Lawngtlai",
+        "value":  "Lawngtlai"
+    },
+    {
+        "cityName":  "Lunglei",
+        "label":  "Lunglei",
+        "value":  "Lunglei"
+    },
+    {
+        "cityName":  "Mamit",
+        "label":  "Mamit",
+        "value":  "Mamit"
+    },
+    {
+        "cityName":  "Saiha",
+        "label":  "Saiha",
+        "value":  "Saiha"
+    },
+    {
+        "cityName":  "Serchhip",
+        "label":  "Serchhip",
+        "value":  "Serchhip"
+    },
+    {
+        "cityName":  "Dimapur",
+        "label":  "Dimapur",
+        "value":  "Dimapur"
+    },
+    {
+        "cityName":  "Kiphire",
+        "label":  "Kiphire",
+        "value":  "Kiphire"
+    },
+    {
+        "cityName":  "Kohima",
+        "label":  "Kohima",
+        "value":  "Kohima"
+    },
+    {
+        "cityName":  "Longleng",
+        "label":  "Longleng",
+        "value":  "Longleng"
+    },
+    {
+        "cityName":  "Mokokchung",
+        "label":  "Mokokchung",
+        "value":  "Mokokchung"
+    },
+    {
+        "cityName":  "Mon",
+        "label":  "Mon",
+        "value":  "Mon"
+    },
+    {
+        "cityName":  "Peren",
+        "label":  "Peren",
+        "value":  "Peren"
+    },
+    {
+        "cityName":  "Phek",
+        "label":  "Phek",
+        "value":  "Phek"
+    },
+    {
+        "cityName":  "Tuensang",
+        "label":  "Tuensang",
+        "value":  "Tuensang"
+    },
+    {
+        "cityName":  "Wokha",
+        "label":  "Wokha",
+        "value":  "Wokha"
+    },
+    {
+        "cityName":  "Zunheboto",
+        "label":  "Zunheboto",
+        "value":  "Zunheboto"
+    },
+    {
+        "cityName":  "Angul",
+        "label":  "Angul",
+        "value":  "Angul"
+    },
+    {
+        "cityName":  "Balangir",
+        "label":  "Balangir",
+        "value":  "Balangir"
+    },
+    {
+        "cityName":  "Balasore",
+        "label":  "Balasore",
+        "value":  "Balasore"
+    },
+    {
+        "cityName":  "Bargarh",
+        "label":  "Bargarh",
+        "value":  "Bargarh"
+    },
+    {
+        "cityName":  "Bhadrak",
+        "label":  "Bhadrak",
+        "value":  "Bhadrak"
+    },
+    {
+        "cityName":  "Boudh",
+        "label":  "Boudh",
+        "value":  "Boudh"
+    },
+    {
+        "cityName":  "Cuttack",
+        "label":  "Cuttack",
+        "value":  "Cuttack"
+    },
+    {
+        "cityName":  "Debagarh",
+        "label":  "Debagarh",
+        "value":  "Debagarh"
+    },
+    {
+        "cityName":  "Dhenkanal",
+        "label":  "Dhenkanal",
+        "value":  "Dhenkanal"
+    },
+    {
+        "cityName":  "Paralakhemundi",
+        "label":  "Paralakhemundi",
+        "value":  "Paralakhemundi"
+    },
+    {
+        "cityName":  "Chhatrapur",
+        "label":  "Chhatrapur",
+        "value":  "Chhatrapur"
+    },
+    {
+        "cityName":  "Jagatsinghapur",
+        "label":  "Jagatsinghapur",
+        "value":  "Jagatsinghapur"
+    },
+    {
+        "cityName":  "Panikoili",
+        "label":  "Panikoili",
+        "value":  "Panikoili"
+    },
+    {
+        "cityName":  "Jharsuguda",
+        "label":  "Jharsuguda",
+        "value":  "Jharsuguda"
+    },
+    {
+        "cityName":  "Bhawanipatna",
+        "label":  "Bhawanipatna",
+        "value":  "Bhawanipatna"
+    },
+    {
+        "cityName":  "Phulbani",
+        "label":  "Phulbani",
+        "value":  "Phulbani"
+    },
+    {
+        "cityName":  "Kendrapara",
+        "label":  "Kendrapara",
+        "value":  "Kendrapara"
+    },
+    {
+        "cityName":  "Kendujhar",
+        "label":  "Kendujhar",
+        "value":  "Kendujhar"
+    },
+    {
+        "cityName":  "Khordha",
+        "label":  "Khordha",
+        "value":  "Khordha"
+    },
+    {
+        "cityName":  "Koraput",
+        "label":  "Koraput",
+        "value":  "Koraput"
+    },
+    {
+        "cityName":  "Malkangiri",
+        "label":  "Malkangiri",
+        "value":  "Malkangiri"
+    },
+    {
+        "cityName":  "Baripada",
+        "label":  "Baripada",
+        "value":  "Baripada"
+    },
+    {
+        "cityName":  "Nabarangpur",
+        "label":  "Nabarangpur",
+        "value":  "Nabarangpur"
+    },
+    {
+        "cityName":  "Nayagarh",
+        "label":  "Nayagarh",
+        "value":  "Nayagarh"
+    },
+    {
+        "cityName":  "Nuapada",
+        "label":  "Nuapada",
+        "value":  "Nuapada"
+    },
+    {
+        "cityName":  "Puri",
+        "label":  "Puri",
+        "value":  "Puri"
+    },
+    {
+        "cityName":  "Rayagada",
+        "label":  "Rayagada",
+        "value":  "Rayagada"
+    },
+    {
+        "cityName":  "Sambalpur",
+        "label":  "Sambalpur",
+        "value":  "Sambalpur"
+    },
+    {
+        "cityName":  "Subarnapur",
+        "label":  "Subarnapur",
+        "value":  "Subarnapur"
+    },
+    {
+        "cityName":  "Sundargarh",
+        "label":  "Sundargarh",
+        "value":  "Sundargarh"
+    },
+    {
+        "cityName":  "Karaikal",
+        "label":  "Karaikal",
+        "value":  "Karaikal"
+    },
+    {
+        "cityName":  "Mah",
+        "label":  "Mah",
+        "value":  "Mah"
+    },
+    {
+        "cityName":  "Pondicherry",
+        "label":  "Pondicherry",
+        "value":  "Pondicherry"
+    },
+    {
+        "cityName":  "Yanam",
+        "label":  "Yanam",
+        "value":  "Yanam"
+    },
+    {
+        "cityName":  "Amritsar",
+        "label":  "Amritsar",
+        "value":  "Amritsar"
+    },
+    {
+        "cityName":  "Barnala",
+        "label":  "Barnala",
+        "value":  "Barnala"
+    },
+    {
+        "cityName":  "Bathinda",
+        "label":  "Bathinda",
+        "value":  "Bathinda"
+    },
+    {
+        "cityName":  "Faridkot",
+        "label":  "Faridkot",
+        "value":  "Faridkot"
+    },
+    {
+        "cityName":  "Fatehgarh Sahib",
+        "label":  "Fatehgarh Sahib",
+        "value":  "Fatehgarh Sahib"
+    },
+    {
+        "cityName":  "Fazilka",
+        "label":  "Fazilka",
+        "value":  "Fazilka"
+    },
+    {
+        "cityName":  "Ferozepur",
+        "label":  "Ferozepur",
+        "value":  "Ferozepur"
+    },
+    {
+        "cityName":  "Gurdaspur",
+        "label":  "Gurdaspur",
+        "value":  "Gurdaspur"
+    },
+    {
+        "cityName":  "Hoshiarpur",
+        "label":  "Hoshiarpur",
+        "value":  "Hoshiarpur"
+    },
+    {
+        "cityName":  "Jalandhar",
+        "label":  "Jalandhar",
+        "value":  "Jalandhar"
+    },
+    {
+        "cityName":  "Kapurthala",
+        "label":  "Kapurthala",
+        "value":  "Kapurthala"
+    },
+    {
+        "cityName":  "Ludhiana",
+        "label":  "Ludhiana",
+        "value":  "Ludhiana"
+    },
+    {
+        "cityName":  "Mansa",
+        "label":  "Mansa",
+        "value":  "Mansa"
+    },
+    {
+        "cityName":  "Moga",
+        "label":  "Moga",
+        "value":  "Moga"
+    },
+    {
+        "cityName":  "Muktsar",
+        "label":  "Muktsar",
+        "value":  "Muktsar"
+    },
+    {
+        "cityName":  "Nawanshahr",
+        "label":  "Nawanshahr",
+        "value":  "Nawanshahr"
+    },
+    {
+        "cityName":  "Pathankot",
+        "label":  "Pathankot",
+        "value":  "Pathankot"
+    },
+    {
+        "cityName":  "Patiala",
+        "label":  "Patiala",
+        "value":  "Patiala"
+    },
+    {
+        "cityName":  "Rupnagar",
+        "label":  "Rupnagar",
+        "value":  "Rupnagar"
+    },
+    {
+        "cityName":  "Sangrur",
+        "label":  "Sangrur",
+        "value":  "Sangrur"
+    },
+    {
+        "cityName":  "Ajitgarh",
+        "label":  "Ajitgarh",
+        "value":  "Ajitgarh"
+    },
+    {
+        "cityName":  "Tarn Taran Sahib",
+        "label":  "Tarn Taran Sahib",
+        "value":  "Tarn Taran Sahib"
+    },
+    {
+        "cityName":  "Ajmer",
+        "label":  "Ajmer",
+        "value":  "Ajmer"
+    },
+    {
+        "cityName":  "Alwar",
+        "label":  "Alwar",
+        "value":  "Alwar"
+    },
+    {
+        "cityName":  "Banswara",
+        "label":  "Banswara",
+        "value":  "Banswara"
+    },
+    {
+        "cityName":  "Baran",
+        "label":  "Baran",
+        "value":  "Baran"
+    },
+    {
+        "cityName":  "Barmer",
+        "label":  "Barmer",
+        "value":  "Barmer"
+    },
+    {
+        "cityName":  "Bharatpur",
+        "label":  "Bharatpur",
+        "value":  "Bharatpur"
+    },
+    {
+        "cityName":  "Bhilwara",
+        "label":  "Bhilwara",
+        "value":  "Bhilwara"
+    },
+    {
+        "cityName":  "Bikaner",
+        "label":  "Bikaner",
+        "value":  "Bikaner"
+    },
+    {
+        "cityName":  "Bundi",
+        "label":  "Bundi",
+        "value":  "Bundi"
+    },
+    {
+        "cityName":  "Chittorgarh",
+        "label":  "Chittorgarh",
+        "value":  "Chittorgarh"
+    },
+    {
+        "cityName":  "Churu",
+        "label":  "Churu",
+        "value":  "Churu"
+    },
+    {
+        "cityName":  "Dausa",
+        "label":  "Dausa",
+        "value":  "Dausa"
+    },
+    {
+        "cityName":  "Dholpur",
+        "label":  "Dholpur",
+        "value":  "Dholpur"
+    },
+    {
+        "cityName":  "Dungarpur",
+        "label":  "Dungarpur",
+        "value":  "Dungarpur"
+    },
+    {
+        "cityName":  "Hanumangarh",
+        "label":  "Hanumangarh",
+        "value":  "Hanumangarh"
+    },
+    {
+        "cityName":  "Jaipur",
+        "label":  "Jaipur",
+        "value":  "Jaipur"
+    },
+    {
+        "cityName":  "Jaisalmer",
+        "label":  "Jaisalmer",
+        "value":  "Jaisalmer"
+    },
+    {
+        "cityName":  "Jalore",
+        "label":  "Jalore",
+        "value":  "Jalore"
+    },
+    {
+        "cityName":  "Jhalawar",
+        "label":  "Jhalawar",
+        "value":  "Jhalawar"
+    },
+    {
+        "cityName":  "Jhunjhunu",
+        "label":  "Jhunjhunu",
+        "value":  "Jhunjhunu"
+    },
+    {
+        "cityName":  "Jodhpur",
+        "label":  "Jodhpur",
+        "value":  "Jodhpur"
+    },
+    {
+        "cityName":  "Karauli",
+        "label":  "Karauli",
+        "value":  "Karauli"
+    },
+    {
+        "cityName":  "Kota",
+        "label":  "Kota",
+        "value":  "Kota"
+    },
+    {
+        "cityName":  "Nagaur",
+        "label":  "Nagaur",
+        "value":  "Nagaur"
+    },
+    {
+        "cityName":  "Pali",
+        "label":  "Pali",
+        "value":  "Pali"
+    },
+    {
+        "cityName":  "Pratapgarh",
+        "label":  "Pratapgarh",
+        "value":  "Pratapgarh"
+    },
+    {
+        "cityName":  "Rajsamand",
+        "label":  "Rajsamand",
+        "value":  "Rajsamand"
+    },
+    {
+        "cityName":  "Sawai Madhopur",
+        "label":  "Sawai Madhopur",
+        "value":  "Sawai Madhopur"
+    },
+    {
+        "cityName":  "Sikar",
+        "label":  "Sikar",
+        "value":  "Sikar"
+    },
+    {
+        "cityName":  "Sirohi",
+        "label":  "Sirohi",
+        "value":  "Sirohi"
+    },
+    {
+        "cityName":  "Ganganagar",
+        "label":  "Ganganagar",
+        "value":  "Ganganagar"
+    },
+    {
+        "cityName":  "Tonk",
+        "label":  "Tonk",
+        "value":  "Tonk"
+    },
+    {
+        "cityName":  "Udaipur",
+        "label":  "Udaipur",
+        "value":  "Udaipur"
+    },
+    {
+        "cityName":  "Gangtok",
+        "label":  "Gangtok",
+        "value":  "Gangtok"
+    },
+    {
+        "cityName":  "Mangan",
+        "label":  "Mangan",
+        "value":  "Mangan"
+    },
+    {
+        "cityName":  "Namchi",
+        "label":  "Namchi",
+        "value":  "Namchi"
+    },
+    {
+        "cityName":  "Geyzing",
+        "label":  "Geyzing",
+        "value":  "Geyzing"
+    },
+    {
+        "cityName":  "Ariyalur",
+        "label":  "Ariyalur",
+        "value":  "Ariyalur"
+    },
+    {
+        "cityName":  "Chennai (Madras)",
+        "label":  "Chennai (Madras)",
+        "value":  "Chennai (Madras)"
+    },
+    {
+        "cityName":  "Coimbatore",
+        "label":  "Coimbatore",
+        "value":  "Coimbatore"
+    },
+    {
+        "cityName":  "Cuddalore",
+        "label":  "Cuddalore",
+        "value":  "Cuddalore"
+    },
+    {
+        "cityName":  "Dharmapuri",
+        "label":  "Dharmapuri",
+        "value":  "Dharmapuri"
+    },
+    {
+        "cityName":  "Dindigul",
+        "label":  "Dindigul",
+        "value":  "Dindigul"
+    },
+    {
+        "cityName":  "Erode",
+        "label":  "Erode",
+        "value":  "Erode"
+    },
+    {
+        "cityName":  "Kanchipuram",
+        "label":  "Kanchipuram",
+        "value":  "Kanchipuram"
+    },
+    {
+        "cityName":  "Nagercoil",
+        "label":  "Nagercoil",
+        "value":  "Nagercoil"
+    },
+    {
+        "cityName":  "Karur",
+        "label":  "Karur",
+        "value":  "Karur"
+    },
+    {
+        "cityName":  "Krishnagiri",
+        "label":  "Krishnagiri",
+        "value":  "Krishnagiri"
+    },
+    {
+        "cityName":  "Madurai",
+        "label":  "Madurai",
+        "value":  "Madurai"
+    },
+    {
+        "cityName":  "Nagapattinam",
+        "label":  "Nagapattinam",
+        "value":  "Nagapattinam"
+    },
+    {
+        "cityName":  "Namakkal",
+        "label":  "Namakkal",
+        "value":  "Namakkal"
+    },
+    {
+        "cityName":  "Udagamandalam (Ootacamund/Ooty)",
+        "label":  "Udagamandalam (Ootacamund/Ooty)",
+        "value":  "Udagamandalam (Ootacamund/Ooty)"
+    },
+    {
+        "cityName":  "Perambalur",
+        "label":  "Perambalur",
+        "value":  "Perambalur"
+    },
+    {
+        "cityName":  "Pudukkottai",
+        "label":  "Pudukkottai",
+        "value":  "Pudukkottai"
+    },
+    {
+        "cityName":  "Ramanathapuram",
+        "label":  "Ramanathapuram",
+        "value":  "Ramanathapuram"
+    },
+    {
+        "cityName":  "Salem",
+        "label":  "Salem",
+        "value":  "Salem"
+    },
+    {
+        "cityName":  "Sivaganga",
+        "label":  "Sivaganga",
+        "value":  "Sivaganga"
+    },
+    {
+        "cityName":  "Thanjavur",
+        "label":  "Thanjavur",
+        "value":  "Thanjavur"
+    },
+    {
+        "cityName":  "Theni",
+        "label":  "Theni",
+        "value":  "Theni"
+    },
+    {
+        "cityName":  "Thoothukudi (Tuticorin)",
+        "label":  "Thoothukudi (Tuticorin)",
+        "value":  "Thoothukudi (Tuticorin)"
+    },
+    {
+        "cityName":  "Tiruchirappalli",
+        "label":  "Tiruchirappalli",
+        "value":  "Tiruchirappalli"
+    },
+    {
+        "cityName":  "Tirunelveli",
+        "label":  "Tirunelveli",
+        "value":  "Tirunelveli"
+    },
+    {
+        "cityName":  "Tiruppur",
+        "label":  "Tiruppur",
+        "value":  "Tiruppur"
+    },
+    {
+        "cityName":  "Tiruvallur",
+        "label":  "Tiruvallur",
+        "value":  "Tiruvallur"
+    },
+    {
+        "cityName":  "Tiruvannaamalai",
+        "label":  "Tiruvannaamalai",
+        "value":  "Tiruvannaamalai"
+    },
+    {
+        "cityName":  "Tiruvarur",
+        "label":  "Tiruvarur",
+        "value":  "Tiruvarur"
+    },
+    {
+        "cityName":  "Vellore",
+        "label":  "Vellore",
+        "value":  "Vellore"
+    },
+    {
+        "cityName":  "Viluppuram",
+        "label":  "Viluppuram",
+        "value":  "Viluppuram"
+    },
+    {
+        "cityName":  "Virudhunagar",
+        "label":  "Virudhunagar",
+        "value":  "Virudhunagar"
+    },
+    {
+        "cityName":  "Adilabad",
+        "label":  "Adilabad",
+        "value":  "Adilabad"
+    },
+    {
+        "cityName":  "Hyderabad",
+        "label":  "Hyderabad",
+        "value":  "Hyderabad"
+    },
+    {
+        "cityName":  "Karimnagar",
+        "label":  "Karimnagar",
+        "value":  "Karimnagar"
+    },
+    {
+        "cityName":  "Khammam",
+        "label":  "Khammam",
+        "value":  "Khammam"
+    },
+    {
+        "cityName":  "Mahabubnagar",
+        "label":  "Mahabubnagar",
+        "value":  "Mahabubnagar"
+    },
+    {
+        "cityName":  "Sangareddi",
+        "label":  "Sangareddi",
+        "value":  "Sangareddi"
+    },
+    {
+        "cityName":  "Nalgonda",
+        "label":  "Nalgonda",
+        "value":  "Nalgonda"
+    },
+    {
+        "cityName":  "Nizamabad",
+        "label":  "Nizamabad",
+        "value":  "Nizamabad"
+    },
+    {
+        "cityName":  "Hyderabad",
+        "label":  "Hyderabad",
+        "value":  "Hyderabad"
+    },
+    {
+        "cityName":  "Warangal",
+        "label":  "Warangal",
+        "value":  "Warangal"
+    },
+    {
+        "cityName":  "Ambassa",
+        "label":  "Ambassa",
+        "value":  "Ambassa"
+    },
+    {
+        "cityName":  "Udaipur, Tripura",
+        "label":  "Udaipur, Tripura",
+        "value":  "Udaipur, Tripura"
+    },
+    {
+        "cityName":  "Khowai",
+        "label":  "Khowai",
+        "value":  "Khowai"
+    },
+    {
+        "cityName":  "Dharmanagar",
+        "label":  "Dharmanagar",
+        "value":  "Dharmanagar"
+    },
+    {
+        "cityName":  "Bishramganj",
+        "label":  "Bishramganj",
+        "value":  "Bishramganj"
+    },
+    {
+        "cityName":  "Belonia",
+        "label":  "Belonia",
+        "value":  "Belonia"
+    },
+    {
+        "cityName":  "Kailashahar",
+        "label":  "Kailashahar",
+        "value":  "Kailashahar"
+    },
+    {
+        "cityName":  "Agartala",
+        "label":  "Agartala",
+        "value":  "Agartala"
+    },
+    {
+        "cityName":  "Agra",
+        "label":  "Agra",
+        "value":  "Agra"
+    },
+    {
+        "cityName":  "Aligarh",
+        "label":  "Aligarh",
+        "value":  "Aligarh"
+    },
+    {
+        "cityName":  "Allahabad",
+        "label":  "Allahabad",
+        "value":  "Allahabad"
+    },
+    {
+        "cityName":  "Akbarpur",
+        "label":  "Akbarpur",
+        "value":  "Akbarpur"
+    },
+    {
+        "cityName":  "Auraiya",
+        "label":  "Auraiya",
+        "value":  "Auraiya"
+    },
+    {
+        "cityName":  "Azamgarh",
+        "label":  "Azamgarh",
+        "value":  "Azamgarh"
+    },
+    {
+        "cityName":  "Baghpat",
+        "label":  "Baghpat",
+        "value":  "Baghpat"
+    },
+    {
+        "cityName":  "Bahraich",
+        "label":  "Bahraich",
+        "value":  "Bahraich"
+    },
+    {
+        "cityName":  "Ballia",
+        "label":  "Ballia",
+        "value":  "Ballia"
+    },
+    {
+        "cityName":  "Balrampur",
+        "label":  "Balrampur",
+        "value":  "Balrampur"
+    },
+    {
+        "cityName":  "Banda",
+        "label":  "Banda",
+        "value":  "Banda"
+    },
+    {
+        "cityName":  "Barabanki",
+        "label":  "Barabanki",
+        "value":  "Barabanki"
+    },
+    {
+        "cityName":  "Bareilly",
+        "label":  "Bareilly",
+        "value":  "Bareilly"
+    },
+    {
+        "cityName":  "Basti",
+        "label":  "Basti",
+        "value":  "Basti"
+    },
+    {
+        "cityName":  "Sambhal",
+        "label":  "Sambhal",
+        "value":  "Sambhal"
+    },
+    {
+        "cityName":  "Bijnor",
+        "label":  "Bijnor",
+        "value":  "Bijnor"
+    },
+    {
+        "cityName":  "Budaun",
+        "label":  "Budaun",
+        "value":  "Budaun"
+    },
+    {
+        "cityName":  "Bulandshahr",
+        "label":  "Bulandshahr",
+        "value":  "Bulandshahr"
+    },
+    {
+        "cityName":  "Chandauli",
+        "label":  "Chandauli",
+        "value":  "Chandauli"
+    },
+    {
+        "cityName":  "Gauriganj",
+        "label":  "Gauriganj",
+        "value":  "Gauriganj"
+    },
+    {
+        "cityName":  "Chitrakoot",
+        "label":  "Chitrakoot",
+        "value":  "Chitrakoot"
+    },
+    {
+        "cityName":  "Deoria",
+        "label":  "Deoria",
+        "value":  "Deoria"
+    },
+    {
+        "cityName":  "Etah",
+        "label":  "Etah",
+        "value":  "Etah"
+    },
+    {
+        "cityName":  "Etawah",
+        "label":  "Etawah",
+        "value":  "Etawah"
+    },
+    {
+        "cityName":  "Faizabad",
+        "label":  "Faizabad",
+        "value":  "Faizabad"
+    },
+    {
+        "cityName":  "Fatehgarh",
+        "label":  "Fatehgarh",
+        "value":  "Fatehgarh"
+    },
+    {
+        "cityName":  "Fatehpur",
+        "label":  "Fatehpur",
+        "value":  "Fatehpur"
+    },
+    {
+        "cityName":  "Firozabad",
+        "label":  "Firozabad",
+        "value":  "Firozabad"
+    },
+    {
+        "cityName":  "Noida",
+        "label":  "Noida",
+        "value":  "Noida"
+    },
+    {
+        "cityName":  "Ghaziabad",
+        "label":  "Ghaziabad",
+        "value":  "Ghaziabad"
+    },
+    {
+        "cityName":  "Ghazipur",
+        "label":  "Ghazipur",
+        "value":  "Ghazipur"
+    },
+    {
+        "cityName":  "Gonda",
+        "label":  "Gonda",
+        "value":  "Gonda"
+    },
+    {
+        "cityName":  "Gorakhpur",
+        "label":  "Gorakhpur",
+        "value":  "Gorakhpur"
+    },
+    {
+        "cityName":  "Hamirpur",
+        "label":  "Hamirpur",
+        "value":  "Hamirpur"
+    },
+    {
+        "cityName":  "Hardoi",
+        "label":  "Hardoi",
+        "value":  "Hardoi"
+    },
+    {
+        "cityName":  "Hathras",
+        "label":  "Hathras",
+        "value":  "Hathras"
+    },
+    {
+        "cityName":  "Orai",
+        "label":  "Orai",
+        "value":  "Orai"
+    },
+    {
+        "cityName":  "Jaunpur",
+        "label":  "Jaunpur",
+        "value":  "Jaunpur"
+    },
+    {
+        "cityName":  "Jhansi",
+        "label":  "Jhansi",
+        "value":  "Jhansi"
+    },
+    {
+        "cityName":  "Amroha",
+        "label":  "Amroha",
+        "value":  "Amroha"
+    },
+    {
+        "cityName":  "Kannauj",
+        "label":  "Kannauj",
+        "value":  "Kannauj"
+    },
+    {
+        "cityName":  "Akbarpur (Mati)",
+        "label":  "Akbarpur (Mati)",
+        "value":  "Akbarpur (Mati)"
+    },
+    {
+        "cityName":  "Kanpur",
+        "label":  "Kanpur",
+        "value":  "Kanpur"
+    },
+    {
+        "cityName":  "Kasganj",
+        "label":  "Kasganj",
+        "value":  "Kasganj"
+    },
+    {
+        "cityName":  "Manjhanpur",
+        "label":  "Manjhanpur",
+        "value":  "Manjhanpur"
+    },
+    {
+        "cityName":  "Padrauna",
+        "label":  "Padrauna",
+        "value":  "Padrauna"
+    },
+    {
+        "cityName":  "Lakhimpur",
+        "label":  "Lakhimpur",
+        "value":  "Lakhimpur"
+    },
+    {
+        "cityName":  "Lalitpur",
+        "label":  "Lalitpur",
+        "value":  "Lalitpur"
+    },
+    {
+        "cityName":  "Lucknow",
+        "label":  "Lucknow",
+        "value":  "Lucknow"
+    },
+    {
+        "cityName":  "Maharajganj",
+        "label":  "Maharajganj",
+        "value":  "Maharajganj"
+    },
+    {
+        "cityName":  "Mahoba",
+        "label":  "Mahoba",
+        "value":  "Mahoba"
+    },
+    {
+        "cityName":  "Mainpuri",
+        "label":  "Mainpuri",
+        "value":  "Mainpuri"
+    },
+    {
+        "cityName":  "Mathura",
+        "label":  "Mathura",
+        "value":  "Mathura"
+    },
+    {
+        "cityName":  "Mau",
+        "label":  "Mau",
+        "value":  "Mau"
+    },
+    {
+        "cityName":  "Meerut",
+        "label":  "Meerut",
+        "value":  "Meerut"
+    },
+    {
+        "cityName":  "Mirzapur",
+        "label":  "Mirzapur",
+        "value":  "Mirzapur"
+    },
+    {
+        "cityName":  "Moradabad",
+        "label":  "Moradabad",
+        "value":  "Moradabad"
+    },
+    {
+        "cityName":  "Muzaffarnagar",
+        "label":  "Muzaffarnagar",
+        "value":  "Muzaffarnagar"
+    },
+    {
+        "cityName":  "Hapur",
+        "label":  "Hapur",
+        "value":  "Hapur"
+    },
+    {
+        "cityName":  "Pilibhit",
+        "label":  "Pilibhit",
+        "value":  "Pilibhit"
+    },
+    {
+        "cityName":  "Shamli",
+        "label":  "Shamli",
+        "value":  "Shamli"
+    },
+    {
+        "cityName":  "Pratapgarh",
+        "label":  "Pratapgarh",
+        "value":  "Pratapgarh"
+    },
+    {
+        "cityName":  "Raebareli",
+        "label":  "Raebareli",
+        "value":  "Raebareli"
+    },
+    {
+        "cityName":  "Rampur",
+        "label":  "Rampur",
+        "value":  "Rampur"
+    },
+    {
+        "cityName":  "Saharanpur",
+        "label":  "Saharanpur",
+        "value":  "Saharanpur"
+    },
+    {
+        "cityName":  "Khalilabad",
+        "label":  "Khalilabad",
+        "value":  "Khalilabad"
+    },
+    {
+        "cityName":  "Gyanpur",
+        "label":  "Gyanpur",
+        "value":  "Gyanpur"
+    },
+    {
+        "cityName":  "Shahjahanpur",
+        "label":  "Shahjahanpur",
+        "value":  "Shahjahanpur"
+    },
+    {
+        "cityName":  "Shravasti",
+        "label":  "Shravasti",
+        "value":  "Shravasti"
+    },
+    {
+        "cityName":  "Navgarh",
+        "label":  "Navgarh",
+        "value":  "Navgarh"
+    },
+    {
+        "cityName":  "Sitapur",
+        "label":  "Sitapur",
+        "value":  "Sitapur"
+    },
+    {
+        "cityName":  "Robertsganj",
+        "label":  "Robertsganj",
+        "value":  "Robertsganj"
+    },
+    {
+        "cityName":  "Sultanpur",
+        "label":  "Sultanpur",
+        "value":  "Sultanpur"
+    },
+    {
+        "cityName":  "Unnao",
+        "label":  "Unnao",
+        "value":  "Unnao"
+    },
+    {
+        "cityName":  "Varanasi",
+        "label":  "Varanasi",
+        "value":  "Varanasi"
+    },
+    {
+        "cityName":  "Almora",
+        "label":  "Almora",
+        "value":  "Almora"
+    },
+    {
+        "cityName":  "Bageshwar",
+        "label":  "Bageshwar",
+        "value":  "Bageshwar"
+    },
+    {
+        "cityName":  "Gopeshwar",
+        "label":  "Gopeshwar",
+        "value":  "Gopeshwar"
+    },
+    {
+        "cityName":  "Champawat",
+        "label":  "Champawat",
+        "value":  "Champawat"
+    },
+    {
+        "cityName":  "Dehradun",
+        "label":  "Dehradun",
+        "value":  "Dehradun"
+    },
+    {
+        "cityName":  "Haridwar",
+        "label":  "Haridwar",
+        "value":  "Haridwar"
+    },
+    {
+        "cityName":  "Nainital",
+        "label":  "Nainital",
+        "value":  "Nainital"
+    },
+    {
+        "cityName":  "Pauri",
+        "label":  "Pauri",
+        "value":  "Pauri"
+    },
+    {
+        "cityName":  "Pithoragarh",
+        "label":  "Pithoragarh",
+        "value":  "Pithoragarh"
+    },
+    {
+        "cityName":  "Rudraprayag",
+        "label":  "Rudraprayag",
+        "value":  "Rudraprayag"
+    },
+    {
+        "cityName":  "New Tehri",
+        "label":  "New Tehri",
+        "value":  "New Tehri"
+    },
+    {
+        "cityName":  "Rudrapur",
+        "label":  "Rudrapur",
+        "value":  "Rudrapur"
+    },
+    {
+        "cityName":  "Uttarkashi",
+        "label":  "Uttarkashi",
+        "value":  "Uttarkashi"
+    },
+    {
+        "cityName":  "Bankura",
+        "label":  "Bankura",
+        "value":  "Bankura"
+    },
+    {
+        "cityName":  "Suri",
+        "label":  "Suri",
+        "value":  "Suri"
+    },
+    {
+        "cityName":  "Bardhaman",
+        "label":  "Bardhaman",
+        "value":  "Bardhaman"
+    },
+    {
+        "cityName":  "Cooch Behar",
+        "label":  "Cooch Behar",
+        "value":  "Cooch Behar"
+    },
+    {
+        "cityName":  "Balurghat",
+        "label":  "Balurghat",
+        "value":  "Balurghat"
+    },
+    {
+        "cityName":  "Darjeeling",
+        "label":  "Darjeeling",
+        "value":  "Darjeeling"
+    },
+    {
+        "cityName":  "Hugli-Chuchura",
+        "label":  "Hugli-Chuchura",
+        "value":  "Hugli-Chuchura"
+    },
+    {
+        "cityName":  "Howrah",
+        "label":  "Howrah",
+        "value":  "Howrah"
+    },
+    {
+        "cityName":  "Jalpaiguri",
+        "label":  "Jalpaiguri",
+        "value":  "Jalpaiguri"
+    },
+    {
+        "cityName":  "Kolkata",
+        "label":  "Kolkata",
+        "value":  "Kolkata"
+    },
+    {
+        "cityName":  "English Bazar",
+        "label":  "English Bazar",
+        "value":  "English Bazar"
+    },
+    {
+        "cityName":  "Baharampur",
+        "label":  "Baharampur",
+        "value":  "Baharampur"
+    },
+    {
+        "cityName":  "Krishnanagar",
+        "label":  "Krishnanagar",
+        "value":  "Krishnanagar"
+    },
+    {
+        "cityName":  "Barasat",
+        "label":  "Barasat",
+        "value":  "Barasat"
+    },
+    {
+        "cityName":  "Midnapore",
+        "label":  "Midnapore",
+        "value":  "Midnapore"
+    },
+    {
+        "cityName":  "Tamluk",
+        "label":  "Tamluk",
+        "value":  "Tamluk"
+    },
+    {
+        "cityName":  "Purulia",
+        "label":  "Purulia",
+        "value":  "Purulia"
+    },
+    {
+        "cityName":  "Alipore",
+        "label":  "Alipore",
+        "value":  "Alipore"
+    },
+    {
+        "cityName":  "Raiganj",
+        "label":  "Raiganj",
+        "value":  "Raiganj"
+    },
+    {
+        "cityName":  "Alipurduar",
+        "label":  "Alipurduar",
+        "value":  "Alipurduar"
+    },
+    {
+        "cityName":  "Anini",
+        "label":  "Anini",
+        "value":  "Anini"
+    },
+    {
+        "cityName":  "Namsai",
+        "label":  "Namsai",
+        "value":  "Namsai"
+    },
+    {
+        "cityName":  "Jamin",
+        "label":  "Jamin",
+        "value":  "Jamin"
+    },
+    {
+        "cityName":  "Defence Colony",
+        "label":  "Defence Colony",
+        "value":  "Defence Colony"
+    },
+    {
+        "cityName":  "Shahdara",
+        "label":  "Shahdara",
+        "value":  "Shahdara"
+    },
+    {
+        "cityName":  "Agar",
+        "label":  "Agar",
+        "value":  "Agar"
+    },
+    {
+        "cityName":  "Palghar",
+        "label":  "Palghar",
+        "value":  "Palghar"
+    },
+    {
+        "cityName":  "Bishwanath Chariali",
+        "label":  "Bishwanath Chariali",
+        "value":  "Bishwanath Chariali"
+    },
+    {
+        "cityName":  "Charaideo",
+        "label":  "Charaideo",
+        "value":  "Charaideo"
+    },
+    {
+        "cityName":  "Hojai",
+        "label":  "Hojai",
+        "value":  "Hojai"
+    },
+    {
+        "cityName":  "South Salmara-Mankachar",
+        "label":  "South Salmara-Mankachar",
+        "value":  "South Salmara-Mankachar"
+    },
+    {
+        "cityName":  "West Karbi Anglong",
+        "label":  "West Karbi Anglong",
+        "value":  "West Karbi Anglong"
+    },
+    {
+        "cityName":  "East Kamrup",
+        "label":  "East Kamrup",
+        "value":  "East Kamrup"
+    },
+    {
+        "cityName":  "South Kamrup",
+        "label":  "South Kamrup",
+        "value":  "South Kamrup"
+    },
+    {
+        "cityName":  "Nepal",
+        "label":  "Nepal",
+        "value":  "Nepal"
+    },
+    {
+        "cityName":  "Bhutan",
+        "label":  "Bhutan",
+        "value":  "Bhutan"
+    },
+    {
+        "cityName":  "KHALAPUR",
+        "label":  "KHALAPUR",
+        "value":  "KHALAPUR"
+    },
+    {
+        "cityName":  "NAGDA",
+        "label":  "NAGDA",
+        "value":  "NAGDA"
+    },
+    {
+        "cityName":  "HOSUR",
+        "label":  "HOSUR",
+        "value":  "HOSUR"
+    },
+    {
+        "cityName":  "SECUNDERABAD",
+        "label":  "SECUNDERABAD",
+        "value":  "SECUNDERABAD"
+    },
+    {
+        "cityName":  "NEW DELHI",
+        "label":  "NEW DELHI",
+        "value":  "NEW DELHI"
+    },
+    {
+        "cityName":  "KAHALGAON",
+        "label":  "KAHALGAON",
+        "value":  "KAHALGAON"
+    },
+    {
+        "cityName":  "KANCHEEPURAM",
+        "label":  "KANCHEEPURAM",
+        "value":  "KANCHEEPURAM"
+    },
+    {
+        "cityName":  "MODINAGAR",
+        "label":  "MODINAGAR",
+        "value":  "MODINAGAR"
+    },
+    {
+        "cityName":  "KOCHI",
+        "label":  "KOCHI",
+        "value":  "KOCHI"
+    },
+    {
+        "cityName":  "DURGAPUR",
+        "label":  "DURGAPUR",
+        "value":  "DURGAPUR"
+    },
+    {
+        "cityName":  "BARAUNI",
+        "label":  "BARAUNI",
+        "value":  "BARAUNI"
+    },
+    {
+        "cityName":  "TALCHER",
+        "label":  "TALCHER",
+        "value":  "TALCHER"
+    },
+    {
+        "cityName":  "ROORKEE",
+        "label":  "ROORKEE",
+        "value":  "ROORKEE"
+    },
+    {
+        "cityName":  "HALDIA",
+        "label":  "HALDIA",
+        "value":  "HALDIA"
+    },
+    {
+        "cityName":  "KARMALA",
+        "label":  "KARMALA",
+        "value":  "KARMALA"
+    },
+    {
+        "cityName":  "KODAD",
+        "label":  "KODAD",
+        "value":  "KODAD"
+    },
+    {
+        "cityName":  "SANGAMNER",
+        "label":  "SANGAMNER",
+        "value":  "SANGAMNER"
+    },
+    {
+        "cityName":  "PALAYAMKOTTAI",
+        "label":  "PALAYAMKOTTAI",
+        "value":  "PALAYAMKOTTAI"
+    },
+    {
+        "cityName":  "PERINTALMANNA",
+        "label":  "PERINTALMANNA",
+        "value":  "PERINTALMANNA"
+    },
+    {
+        "cityName":  "RAJAHMUNDRY",
+        "label":  "RAJAHMUNDRY",
+        "value":  "RAJAHMUNDRY"
+    },
+    {
+        "cityName":  "SANGOLA",
+        "label":  "SANGOLA",
+        "value":  "SANGOLA"
+    },
+    {
+        "cityName":  "KAMPTEE",
+        "label":  "KAMPTEE",
+        "value":  "KAMPTEE"
+    },
+    {
+        "cityName":  "ROHA",
+        "label":  "ROHA",
+        "value":  "ROHA"
+    },
+    {
+        "cityName":  "TRIVANDRUM",
+        "label":  "TRIVANDRUM",
+        "value":  "TRIVANDRUM"
+    },
+    {
+        "cityName":  "HISAR",
+        "label":  "HISAR",
+        "value":  "HISAR"
+    },
+    {
+        "cityName":  "BARAMATI",
+        "label":  "BARAMATI",
+        "value":  "BARAMATI"
+    },
+    {
+        "cityName":  "BODHAN",
+        "label":  "BODHAN",
+        "value":  "BODHAN"
+    },
+    {
+        "cityName":  "ARANTHANGI",
+        "label":  "ARANTHANGI",
+        "value":  "ARANTHANGI"
+    },
+    {
+        "cityName":  "GOBICHETTIPALAYAM",
+        "label":  "GOBICHETTIPALAYAM",
+        "value":  "GOBICHETTIPALAYAM"
+    },
+    {
+        "cityName":  "TRICHY",
+        "label":  "TRICHY",
+        "value":  "TRICHY"
+    },
+    {
+        "cityName":  "VIJAYAWADA",
+        "label":  "VIJAYAWADA",
+        "value":  "VIJAYAWADA"
+    },
+    {
+        "cityName":  "TARIKERE",
+        "label":  "TARIKERE",
+        "value":  "TARIKERE"
+    },
+    {
+        "cityName":  "HOSAKOTE",
+        "label":  "HOSAKOTE",
+        "value":  "HOSAKOTE"
+    },
+    {
+        "cityName":  "PHALTAN",
+        "label":  "PHALTAN",
+        "value":  "PHALTAN"
+    },
+    {
+        "cityName":  "UDGIR",
+        "label":  "UDGIR",
+        "value":  "UDGIR"
+    },
+    {
+        "cityName":  "ARAMBAGH",
+        "label":  "ARAMBAGH",
+        "value":  "ARAMBAGH"
+    },
+    {
+        "cityName":  "KATTUMANNARKOIL",
+        "label":  "KATTUMANNARKOIL",
+        "value":  "KATTUMANNARKOIL"
+    },
+    {
+        "cityName":  "GADAG",
+        "label":  "GADAG",
+        "value":  "GADAG"
+    },
+    {
+        "cityName":  "PRAKASAM",
+        "label":  "PRAKASAM",
+        "value":  "PRAKASAM"
+    },
+    {
+        "cityName":  "HUBLI",
+        "label":  "HUBLI",
+        "value":  "HUBLI"
+    },
+    {
+        "cityName":  "KOTHAGUDEM",
+        "label":  "KOTHAGUDEM",
+        "value":  "KOTHAGUDEM"
+    },
+    {
+        "cityName":  "BICHOLIM",
+        "label":  "BICHOLIM",
+        "value":  "BICHOLIM"
+    },
+    {
+        "cityName":  "DEVLA",
+        "label":  "DEVLA",
+        "value":  "DEVLA"
+    },
+    {
+        "cityName":  "VADAKARA",
+        "label":  "VADAKARA",
+        "value":  "VADAKARA"
+    },
+    {
+        "cityName":  "SIDDIPET",
+        "label":  "SIDDIPET",
+        "value":  "SIDDIPET"
+    },
+    {
+        "cityName":  "KARAD",
+        "label":  "KARAD",
+        "value":  "KARAD"
+    },
+    {
+        "cityName":  "MANGAON",
+        "label":  "MANGAON",
+        "value":  "MANGAON"
+    },
+    {
+        "cityName":  "CHENGANNUR",
+        "label":  "CHENGANNUR",
+        "value":  "CHENGANNUR"
+    },
+    {
+        "cityName":  "HOSPET",
+        "label":  "HOSPET",
+        "value":  "HOSPET"
+    },
+    {
+        "cityName":  "VANDAVASI",
+        "label":  "VANDAVASI",
+        "value":  "VANDAVASI"
+    },
+    {
+        "cityName":  "UDHNA",
+        "label":  "UDHNA",
+        "value":  "UDHNA"
+    },
+    {
+        "cityName":  "AMBIKAPUR",
+        "label":  "AMBIKAPUR",
+        "value":  "AMBIKAPUR"
+    },
+    {
+        "cityName":  "TIRUPUR",
+        "label":  "TIRUPUR",
+        "value":  "TIRUPUR"
+    },
+    {
+        "cityName":  "SURYAPET",
+        "label":  "SURYAPET",
+        "value":  "SURYAPET"
+    },
+    {
+        "cityName":  "MALEGAON",
+        "label":  "MALEGAON",
+        "value":  "MALEGAON"
+    },
+    {
+        "cityName":  "SIVAKASI",
+        "label":  "SIVAKASI",
+        "value":  "SIVAKASI"
+    },
+    {
+        "cityName":  "RAJAPALAYAM",
+        "label":  "RAJAPALAYAM",
+        "value":  "RAJAPALAYAM"
+    },
+    {
+        "cityName":  "BATALA",
+        "label":  "BATALA",
+        "value":  "BATALA"
+    },
+    {
+        "cityName":  "BARDEZ",
+        "label":  "BARDEZ",
+        "value":  "BARDEZ"
+    },
+    {
+        "cityName":  "DELHI",
+        "label":  "DELHI",
+        "value":  "DELHI"
+    },
+    {
+        "cityName":  "MANDVI",
+        "label":  "MANDVI",
+        "value":  "MANDVI"
+    },
+    {
+        "cityName":  "KAMAREDDY",
+        "label":  "KAMAREDDY",
+        "value":  "KAMAREDDY"
+    },
+    {
+        "cityName":  "GOKAK",
+        "label":  "GOKAK",
+        "value":  "GOKAK"
+    },
+    {
+        "cityName":  "GUDIVADA",
+        "label":  "GUDIVADA",
+        "value":  "GUDIVADA"
+    },
+    {
+        "cityName":  "ALUVA",
+        "label":  "ALUVA",
+        "value":  "ALUVA"
+    },
+    {
+        "cityName":  "POLLACHI",
+        "label":  "POLLACHI",
+        "value":  "POLLACHI"
+    },
+    {
+        "cityName":  "PRODDATUR",
+        "label":  "PRODDATUR",
+        "value":  "PRODDATUR"
+    },
+    {
+        "cityName":  "THIRUVALLA",
+        "label":  "THIRUVALLA",
+        "value":  "THIRUVALLA"
+    },
+    {
+        "cityName":  "INDAPUR",
+        "label":  "INDAPUR",
+        "value":  "INDAPUR"
+    },
+    {
+        "cityName":  "THALASSERY",
+        "label":  "THALASSERY",
+        "value":  "THALASSERY"
+    },
+    {
+        "cityName":  "PEDDAPALLI",
+        "label":  "PEDDAPALLI",
+        "value":  "PEDDAPALLI"
+    },
+    {
+        "cityName":  "DAUND",
+        "label":  "DAUND",
+        "value":  "DAUND"
+    },
+    {
+        "cityName":  "VASHI",
+        "label":  "VASHI",
+        "value":  "VASHI"
+    },
+    {
+        "cityName":  "PANDHARPUR",
+        "label":  "PANDHARPUR",
+        "value":  "PANDHARPUR"
+    },
+    {
+        "cityName":  "NANJANGUD",
+        "label":  "NANJANGUD",
+        "value":  "NANJANGUD"
+    },
+    {
+        "cityName":  "KARAIKUDI",
+        "label":  "KARAIKUDI",
+        "value":  "KARAIKUDI"
+    },
+    {
+        "cityName":  "ADOOR",
+        "label":  "ADOOR",
+        "value":  "ADOOR"
+    },
+    {
+        "cityName":  "SRIVILLIPUTTUR",
+        "label":  "SRIVILLIPUTTUR",
+        "value":  "SRIVILLIPUTTUR"
+    },
+    {
+        "cityName":  "JUNNAR",
+        "label":  "JUNNAR",
+        "value":  "JUNNAR"
+    },
+    {
+        "cityName":  "KODUNGALLUR",
+        "label":  "KODUNGALLUR",
+        "value":  "KODUNGALLUR"
+    },
+    {
+        "cityName":  "BHADRAVATHI",
+        "label":  "BHADRAVATHI",
+        "value":  "BHADRAVATHI"
+    },
+    {
+        "cityName":  "KOREGAON",
+        "label":  "KOREGAON",
+        "value":  "KOREGAON"
+    },
+    {
+        "cityName":  "TASGAON",
+        "label":  "TASGAON",
+        "value":  "TASGAON"
+    },
+    {
+        "cityName":  "RASIPURAM",
+        "label":  "RASIPURAM",
+        "value":  "RASIPURAM"
+    },
+    {
+        "cityName":  "AHMEDPUR",
+        "label":  "AHMEDPUR",
+        "value":  "AHMEDPUR"
+    },
+    {
+        "cityName":  "KUDAL",
+        "label":  "KUDAL",
+        "value":  "KUDAL"
+    },
+    {
+        "cityName":  "NARSAPUR",
+        "label":  "NARSAPUR",
+        "value":  "NARSAPUR"
+    },
+    {
+        "cityName":  "CHIDAMBARAM",
+        "label":  "CHIDAMBARAM",
+        "value":  "CHIDAMBARAM"
+    },
+    {
+        "cityName":  "RAJPURA",
+        "label":  "RAJPURA",
+        "value":  "RAJPURA"
+    },
+    {
+        "cityName":  "NATHAM",
+        "label":  "NATHAM",
+        "value":  "NATHAM"
+    },
+    {
+        "cityName":  "KOTTARAKARA",
+        "label":  "KOTTARAKARA",
+        "value":  "KOTTARAKARA"
+    },
+    {
+        "cityName":  "PALANI",
+        "label":  "PALANI",
+        "value":  "PALANI"
+    },
+    {
+        "cityName":  "PARAMAKUDI",
+        "label":  "PARAMAKUDI",
+        "value":  "PARAMAKUDI"
+    },
+    {
+        "cityName":  "IDAR",
+        "label":  "IDAR",
+        "value":  "IDAR"
+    },
+    {
+        "cityName":  "PERUNDURAI",
+        "label":  "PERUNDURAI",
+        "value":  "PERUNDURAI"
+    },
+    {
+        "cityName":  "KRISHNA",
+        "label":  "KRISHNA",
+        "value":  "KRISHNA"
+    },
+    {
+        "cityName":  "RAVULAPALEM",
+        "label":  "RAVULAPALEM",
+        "value":  "RAVULAPALEM"
+    },
+    {
+        "cityName":  "TENALI",
+        "label":  "TENALI",
+        "value":  "TENALI"
+    },
+    {
+        "cityName":  "LONI",
+        "label":  "LONI",
+        "value":  "LONI"
+    },
+    {
+        "cityName":  "KORATLA",
+        "label":  "KORATLA",
+        "value":  "KORATLA"
+    },
+    {
+        "cityName":  "HUZURABAD",
+        "label":  "HUZURABAD",
+        "value":  "HUZURABAD"
+    },
+    {
+        "cityName":  "KALLAKURICHI",
+        "label":  "KALLAKURICHI",
+        "value":  "KALLAKURICHI"
+    },
+    {
+        "cityName":  "ARUPPUKOTTAI",
+        "label":  "ARUPPUKOTTAI",
+        "value":  "ARUPPUKOTTAI"
+    },
+    {
+        "cityName":  "BERHAMPUR",
+        "label":  "BERHAMPUR",
+        "value":  "BERHAMPUR"
+    },
+    {
+        "cityName":  "NAWANSHAHAR",
+        "label":  "NAWANSHAHAR",
+        "value":  "NAWANSHAHAR"
+    },
+    {
+        "cityName":  "BADAMI",
+        "label":  "BADAMI",
+        "value":  "BADAMI"
+    },
+    {
+        "cityName":  "BHUSAWAL",
+        "label":  "BHUSAWAL",
+        "value":  "BHUSAWAL"
+    },
+    {
+        "cityName":  "BHIMAVARAM",
+        "label":  "BHIMAVARAM",
+        "value":  "BHIMAVARAM"
+    },
+    {
+        "cityName":  "ISLAMPUR",
+        "label":  "ISLAMPUR",
+        "value":  "ISLAMPUR"
+    },
+    {
+        "cityName":  "NABHA",
+        "label":  "NABHA",
+        "value":  "NABHA"
+    },
+    {
+        "cityName":  "EGRA",
+        "label":  "EGRA",
+        "value":  "EGRA"
+    },
+    {
+        "cityName":  "MANVI",
+        "label":  "MANVI",
+        "value":  "MANVI"
+    },
+    {
+        "cityName":  "SIRSI",
+        "label":  "SIRSI",
+        "value":  "SIRSI"
+    },
+    {
+        "cityName":  "SINNAR",
+        "label":  "SINNAR",
+        "value":  "SINNAR"
+    },
+    {
+        "cityName":  "CHERTHALA",
+        "label":  "CHERTHALA",
+        "value":  "CHERTHALA"
+    },
+    {
+        "cityName":  "METPALLI",
+        "label":  "METPALLI",
+        "value":  "METPALLI"
+    },
+    {
+        "cityName":  "PATTUKOTTAI",
+        "label":  "PATTUKOTTAI",
+        "value":  "PATTUKOTTAI"
+    },
+    {
+        "cityName":  "QUILANDY",
+        "label":  "QUILANDY",
+        "value":  "QUILANDY"
+    },
+    {
+        "cityName":  "MELUR",
+        "label":  "MELUR",
+        "value":  "MELUR"
+    },
+    {
+        "cityName":  "MUKERIAN",
+        "label":  "MUKERIAN",
+        "value":  "MUKERIAN"
+    },
+    {
+        "cityName":  "MUDHOL",
+        "label":  "MUDHOL",
+        "value":  "MUDHOL"
+    },
+    {
+        "cityName":  "DORAHA",
+        "label":  "DORAHA",
+        "value":  "DORAHA"
+    },
+    {
+        "cityName":  "AMBATTUR",
+        "label":  "AMBATTUR",
+        "value":  "AMBATTUR"
+    },
+    {
+        "cityName":  "MIRAJ",
+        "label":  "MIRAJ",
+        "value":  "MIRAJ"
+    },
+    {
+        "cityName":  "RANGAREDDY",
+        "label":  "RANGAREDDY",
+        "value":  "RANGAREDDY"
+    },
+    {
+        "cityName":  "THURAIYUR",
+        "label":  "THURAIYUR",
+        "value":  "THURAIYUR"
+    },
+    {
+        "cityName":  "MUVATTUPUZHA",
+        "label":  "MUVATTUPUZHA",
+        "value":  "MUVATTUPUZHA"
+    },
+    {
+        "cityName":  "THODUPUZHA",
+        "label":  "THODUPUZHA",
+        "value":  "THODUPUZHA"
+    },
+    {
+        "cityName":  "TENKASI",
+        "label":  "TENKASI",
+        "value":  "TENKASI"
+    },
+    {
+        "cityName":  "MUSIRI",
+        "label":  "MUSIRI",
+        "value":  "MUSIRI"
+    },
+    {
+        "cityName":  "GANGAVATHI",
+        "label":  "GANGAVATHI",
+        "value":  "GANGAVATHI"
+    },
+    {
+        "cityName":  "TIRUR",
+        "label":  "TIRUR",
+        "value":  "TIRUR"
+    },
+    {
+        "cityName":  "MAVELIKARA",
+        "label":  "MAVELIKARA",
+        "value":  "MAVELIKARA"
+    },
+    {
+        "cityName":  "MAYILADUTHURAI",
+        "label":  "MAYILADUTHURAI",
+        "value":  "MAYILADUTHURAI"
+    },
+    {
+        "cityName":  "WAI",
+        "label":  "WAI",
+        "value":  "WAI"
+    },
+    {
+        "cityName":  "HATKANANGALE",
+        "label":  "HATKANANGALE",
+        "value":  "HATKANANGALE"
+    },
+    {
+        "cityName":  "NAHARLAGUN",
+        "label":  "NAHARLAGUN",
+        "value":  "NAHARLAGUN"
+    },
+    {
+        "cityName":  "CHIRALA",
+        "label":  "CHIRALA",
+        "value":  "CHIRALA"
+    },
+    {
+        "cityName":  "TANUKU",
+        "label":  "TANUKU",
+        "value":  "TANUKU"
+    },
+    {
+        "cityName":  "PALAMPUR",
+        "label":  "PALAMPUR",
+        "value":  "PALAMPUR"
+    },
+    {
+        "cityName":  "FATEHPUR SHEKHAWATI",
+        "label":  "FATEHPUR SHEKHAWATI",
+        "value":  "FATEHPUR SHEKHAWATI"
+    },
+    {
+        "cityName":  "BURLA",
+        "label":  "BURLA",
+        "value":  "BURLA"
+    },
+    {
+        "cityName":  "BILSI",
+        "label":  "BILSI",
+        "value":  "BILSI"
+    },
+    {
+        "cityName":  "KHED",
+        "label":  "KHED",
+        "value":  "KHED"
+    },
+    {
+        "cityName":  "BADLAPUR",
+        "label":  "BADLAPUR",
+        "value":  "BADLAPUR"
+    },
+    {
+        "cityName":  "SILIGURI",
+        "label":  "SILIGURI",
+        "value":  "SILIGURI"
+    },
+    {
+        "cityName":  "PHILLAUR",
+        "label":  "PHILLAUR",
+        "value":  "PHILLAUR"
+    },
+    {
+        "cityName":  "DHANERA",
+        "label":  "DHANERA",
+        "value":  "DHANERA"
+    },
+    {
+        "cityName":  "JAMBUSAR",
+        "label":  "JAMBUSAR",
+        "value":  "JAMBUSAR"
+    },
+    {
+        "cityName":  "DHAMPUR",
+        "label":  "DHAMPUR",
+        "value":  "DHAMPUR"
+    },
+    {
+        "cityName":  "BANGA",
+        "label":  "BANGA",
+        "value":  "BANGA"
+    },
+    {
+        "cityName":  "DEESA",
+        "label":  "DEESA",
+        "value":  "DEESA"
+    },
+    {
+        "cityName":  "PHAGWARA",
+        "label":  "PHAGWARA",
+        "value":  "PHAGWARA"
+    },
+    {
+        "cityName":  "GANDHIDHAM",
+        "label":  "GANDHIDHAM",
+        "value":  "GANDHIDHAM"
+    },
+    {
+        "cityName":  "CHAPRA",
+        "label":  "CHAPRA",
+        "value":  "CHAPRA"
+    },
+    {
+        "cityName":  "BURDWAN",
+        "label":  "BURDWAN",
+        "value":  "BURDWAN"
+    },
+    {
+        "cityName":  "KUNKURI",
+        "label":  "KUNKURI",
+        "value":  "KUNKURI"
+    },
+    {
+        "cityName":  "DULIAJAN",
+        "label":  "DULIAJAN",
+        "value":  "DULIAJAN"
+    },
+    {
+        "cityName":  "NANDGAON",
+        "label":  "NANDGAON",
+        "value":  "NANDGAON"
+    },
+    {
+        "cityName":  "JAGRAON",
+        "label":  "JAGRAON",
+        "value":  "JAGRAON"
+    },
+    {
+        "cityName":  "JAJAPUR",
+        "label":  "JAJAPUR",
+        "value":  "JAJAPUR"
+    },
+    {
+        "cityName":  "ATTUR",
+        "label":  "ATTUR",
+        "value":  "ATTUR"
+    },
+    {
+        "cityName":  "ARMOOR",
+        "label":  "ARMOOR",
+        "value":  "ARMOOR"
+    },
+    {
+        "cityName":  "MANJERI",
+        "label":  "MANJERI",
+        "value":  "MANJERI"
+    },
+    {
+        "cityName":  "NIRMAL",
+        "label":  "NIRMAL",
+        "value":  "NIRMAL"
+    },
+    {
+        "cityName":  "BODINAYAKANUR",
+        "label":  "BODINAYAKANUR",
+        "value":  "BODINAYAKANUR"
+    },
+    {
+        "cityName":  "HUZURNAGAR",
+        "label":  "HUZURNAGAR",
+        "value":  "HUZURNAGAR"
+    },
+    {
+        "cityName":  "SENDHWA",
+        "label":  "SENDHWA",
+        "value":  "SENDHWA"
+    },
+    {
+        "cityName":  "SRINGERI",
+        "label":  "SRINGERI",
+        "value":  "SRINGERI"
+    },
+    {
+        "cityName":  "TARAKESWAR",
+        "label":  "TARAKESWAR",
+        "value":  "TARAKESWAR"
+    },
+    {
+        "cityName":  "RAXAUL",
+        "label":  "RAXAUL",
+        "value":  "RAXAUL"
+    },
+    {
+        "cityName":  "METTUPALAYAM",
+        "label":  "METTUPALAYAM",
+        "value":  "METTUPALAYAM"
+    },
+    {
+        "cityName":  "SAUNDATTI",
+        "label":  "SAUNDATTI",
+        "value":  "SAUNDATTI"
+    },
+    {
+        "cityName":  "CHABUA",
+        "label":  "CHABUA",
+        "value":  "CHABUA"
+    },
+    {
+        "cityName":  "NILAMBUR",
+        "label":  "NILAMBUR",
+        "value":  "NILAMBUR"
+    },
+    {
+        "cityName":  "PANVEL",
+        "label":  "PANVEL",
+        "value":  "PANVEL"
+    },
+    {
+        "cityName":  "JAGGAMPETA",
+        "label":  "JAGGAMPETA",
+        "value":  "JAGGAMPETA"
+    },
+    {
+        "cityName":  "ROURKELA",
+        "label":  "ROURKELA",
+        "value":  "ROURKELA"
+    },
+    {
+        "cityName":  "PURNA",
+        "label":  "PURNA",
+        "value":  "PURNA"
+    },
+    {
+        "cityName":  "MADANAPALLE",
+        "label":  "MADANAPALLE",
+        "value":  "MADANAPALLE"
+    },
+    {
+        "cityName":  "SUJANPUR TIRA",
+        "label":  "SUJANPUR TIRA",
+        "value":  "SUJANPUR TIRA"
+    },
+    {
+        "cityName":  "TANDA",
+        "label":  "TANDA",
+        "value":  "TANDA"
+    },
+    {
+        "cityName":  "KOPARGAON",
+        "label":  "KOPARGAON",
+        "value":  "KOPARGAON"
+    },
+    {
+        "cityName":  "RANAGHAT",
+        "label":  "RANAGHAT",
+        "value":  "RANAGHAT"
+    },
+    {
+        "cityName":  "KHAMBHAT",
+        "label":  "KHAMBHAT",
+        "value":  "KHAMBHAT"
+    },
+    {
+        "cityName":  "DABHOI",
+        "label":  "DABHOI",
+        "value":  "DABHOI"
+    },
+    {
+        "cityName":  "BARUIPUR",
+        "label":  "BARUIPUR",
+        "value":  "BARUIPUR"
+    },
+    {
+        "cityName":  "MAKRANA",
+        "label":  "MAKRANA",
+        "value":  "MAKRANA"
+    },
+    {
+        "cityName":  "MUKHED",
+        "label":  "MUKHED",
+        "value":  "MUKHED"
+    },
+    {
+        "cityName":  "KONDAPALLI",
+        "label":  "KONDAPALLI",
+        "value":  "KONDAPALLI"
+    },
+    {
+        "cityName":  "MAHAD",
+        "label":  "MAHAD",
+        "value":  "MAHAD"
+    },
+    {
+        "cityName":  "VILLUPURAM",
+        "label":  "VILLUPURAM",
+        "value":  "VILLUPURAM"
+    },
+    {
+        "cityName":  "BASNA",
+        "label":  "BASNA",
+        "value":  "BASNA"
+    },
+    {
+        "cityName":  "YEOLA",
+        "label":  "YEOLA",
+        "value":  "YEOLA"
+    },
+    {
+        "cityName":  "CHIPLUN",
+        "label":  "CHIPLUN",
+        "value":  "CHIPLUN"
+    },
+    {
+        "cityName":  "DEVAKOTTAI",
+        "label":  "DEVAKOTTAI",
+        "value":  "DEVAKOTTAI"
+    },
+    {
+        "cityName":  "SAYAN",
+        "label":  "SAYAN",
+        "value":  "SAYAN"
+    },
+    {
+        "cityName":  "BHOR",
+        "label":  "BHOR",
+        "value":  "BHOR"
+    },
+    {
+        "cityName":  "PEN",
+        "label":  "PEN",
+        "value":  "PEN"
+    },
+    {
+        "cityName":  "KAGAL",
+        "label":  "KAGAL",
+        "value":  "KAGAL"
+    },
+    {
+        "cityName":  "NEDUMANGAD",
+        "label":  "NEDUMANGAD",
+        "value":  "NEDUMANGAD"
+    },
+    {
+        "cityName":  "BHAVANI",
+        "label":  "BHAVANI",
+        "value":  "BHAVANI"
+    },
+    {
+        "cityName":  "USILAMPATTI",
+        "label":  "USILAMPATTI",
+        "value":  "USILAMPATTI"
+    },
+    {
+        "cityName":  "BALASINOR",
+        "label":  "BALASINOR",
+        "value":  "BALASINOR"
+    },
+    {
+        "cityName":  "BERHAMPORE",
+        "label":  "BERHAMPORE",
+        "value":  "BERHAMPORE"
+    },
+    {
+        "cityName":  "CHOUDWAR",
+        "label":  "CHOUDWAR",
+        "value":  "CHOUDWAR"
+    },
+    {
+        "cityName":  "BHATPARA",
+        "label":  "BHATPARA",
+        "value":  "BHATPARA"
+    },
+    {
+        "cityName":  "SANKARANKOIL",
+        "label":  "SANKARANKOIL",
+        "value":  "SANKARANKOIL"
+    },
+    {
+        "cityName":  "DEGLOOR",
+        "label":  "DEGLOOR",
+        "value":  "DEGLOOR"
+    },
+    {
+        "cityName":  "MAHABALESHWAR",
+        "label":  "MAHABALESHWAR",
+        "value":  "MAHABALESHWAR"
+    },
+    {
+        "cityName":  "SUMERPUR",
+        "label":  "SUMERPUR",
+        "value":  "SUMERPUR"
+    },
+    {
+        "cityName":  "KOVILPATTI",
+        "label":  "KOVILPATTI",
+        "value":  "KOVILPATTI"
+    },
+    {
+        "cityName":  "HASNABAD",
+        "label":  "HASNABAD",
+        "value":  "HASNABAD"
+    },
+    {
+        "cityName":  "PATTI",
+        "label":  "PATTI",
+        "value":  "PATTI"
+    },
+    {
+        "cityName":  "RAIKOT",
+        "label":  "RAIKOT",
+        "value":  "RAIKOT"
+    },
+    {
+        "cityName":  "SHAHPURA",
+        "label":  "SHAHPURA",
+        "value":  "SHAHPURA"
+    },
+    {
+        "cityName":  "PALITANA",
+        "label":  "PALITANA",
+        "value":  "PALITANA"
+    },
+    {
+        "cityName":  "BASIRHAT",
+        "label":  "BASIRHAT",
+        "value":  "BASIRHAT"
+    },
+    {
+        "cityName":  "BHINMAL",
+        "label":  "BHINMAL",
+        "value":  "BHINMAL"
+    },
+    {
+        "cityName":  "KOZHENCHERRY",
+        "label":  "KOZHENCHERRY",
+        "value":  "KOZHENCHERRY"
+    },
+    {
+        "cityName":  "RADHAKISHOREPUR",
+        "label":  "RADHAKISHOREPUR",
+        "value":  "RADHAKISHOREPUR"
+    },
+    {
+        "cityName":  "DAHANU",
+        "label":  "DAHANU",
+        "value":  "DAHANU"
+    },
+    {
+        "cityName":  "KHANAPUR",
+        "label":  "KHANAPUR",
+        "value":  "KHANAPUR"
+    },
+    {
+        "cityName":  "MANNARGUDI",
+        "label":  "MANNARGUDI",
+        "value":  "MANNARGUDI"
+    },
+    {
+        "cityName":  "LOHA",
+        "label":  "LOHA",
+        "value":  "LOHA"
+    },
+    {
+        "cityName":  "KALYAN",
+        "label":  "KALYAN",
+        "value":  "KALYAN"
+    },
+    {
+        "cityName":  "PONNANI",
+        "label":  "PONNANI",
+        "value":  "PONNANI"
+    },
+    {
+        "cityName":  "JAMMIKUNTA",
+        "label":  "JAMMIKUNTA",
+        "value":  "JAMMIKUNTA"
+    },
+    {
+        "cityName":  "KALOL",
+        "label":  "KALOL",
+        "value":  "KALOL"
+    },
+    {
+        "cityName":  "BHANJANAGAR",
+        "label":  "BHANJANAGAR",
+        "value":  "BHANJANAGAR"
+    },
+    {
+        "cityName":  "OMALUR",
+        "label":  "OMALUR",
+        "value":  "OMALUR"
+    },
+    {
+        "cityName":  "BELPAHAR",
+        "label":  "BELPAHAR",
+        "value":  "BELPAHAR"
+    },
+    {
+        "cityName":  "SULTANPUR LODHI",
+        "label":  "SULTANPUR LODHI",
+        "value":  "SULTANPUR LODHI"
+    },
+    {
+        "cityName":  "JAWHAR",
+        "label":  "JAWHAR",
+        "value":  "JAWHAR"
+    },
+    {
+        "cityName":  "DEOBAND",
+        "label":  "DEOBAND",
+        "value":  "DEOBAND"
+    },
+    {
+        "cityName":  "SAHIBGANJ",
+        "label":  "SAHIBGANJ",
+        "value":  "SAHIBGANJ"
+    },
+    {
+        "cityName":  "ICHAPUR",
+        "label":  "ICHAPUR",
+        "value":  "ICHAPUR"
+    },
+    {
+        "cityName":  "ADONI",
+        "label":  "ADONI",
+        "value":  "ADONI"
+    },
+    {
+        "cityName":  "GONDAL",
+        "label":  "GONDAL",
+        "value":  "GONDAL"
+    },
+    {
+        "cityName":  "ABOHAR",
+        "label":  "ABOHAR",
+        "value":  "ABOHAR"
+    },
+    {
+        "cityName":  "HALDWANI",
+        "label":  "HALDWANI",
+        "value":  "HALDWANI"
+    },
+    {
+        "cityName":  "MALERKOTLA",
+        "label":  "MALERKOTLA",
+        "value":  "MALERKOTLA"
+    },
+    {
+        "cityName":  "SUNAM",
+        "label":  "SUNAM",
+        "value":  "SUNAM"
+    },
+    {
+        "cityName":  "MALWAN",
+        "label":  "MALWAN",
+        "value":  "MALWAN"
+    },
+    {
+        "cityName":  "MANCHERIAL",
+        "label":  "MANCHERIAL",
+        "value":  "MANCHERIAL"
+    },
+    {
+        "cityName":  "NANDIKOTkUR",
+        "label":  "NANDIKOTkUR",
+        "value":  "NANDIKOTkUR"
+    },
+    {
+        "cityName":  "Dharmaram",
+        "label":  "Dharmaram",
+        "value":  "Dharmaram"
+    },
+    {
+        "cityName":  "TIRUMANGALAM",
+        "label":  "TIRUMANGALAM",
+        "value":  "TIRUMANGALAM"
+    },
+    {
+        "cityName":  "KAMUTHI",
+        "label":  "KAMUTHI",
+        "value":  "KAMUTHI"
+    },
+    {
+        "cityName":  "VIJAPUR",
+        "label":  "VIJAPUR",
+        "value":  "VIJAPUR"
+    },
+    {
+        "cityName":  "PHULPUR",
+        "label":  "PHULPUR",
+        "value":  "PHULPUR"
+    },
+    {
+        "cityName":  "BARSHI",
+        "label":  "BARSHI",
+        "value":  "BARSHI"
+    },
+    {
+        "cityName":  "YELANDUR",
+        "label":  "YELANDUR",
+        "value":  "YELANDUR"
+    },
+    {
+        "cityName":  "WANAPARTHY",
+        "label":  "WANAPARTHY",
+        "value":  "WANAPARTHY"
+    },
+    {
+        "cityName":  "KASHIPUR",
+        "label":  "KASHIPUR",
+        "value":  "KASHIPUR"
+    },
+    {
+        "cityName":  "RAYACHOTI",
+        "label":  "RAYACHOTI",
+        "value":  "RAYACHOTI"
+    },
+    {
+        "cityName":  "TALOD",
+        "label":  "TALOD",
+        "value":  "TALOD"
+    },
+    {
+        "cityName":  "KARUNAGAPALLY",
+        "label":  "KARUNAGAPALLY",
+        "value":  "KARUNAGAPALLY"
+    },
+    {
+        "cityName":  "HODAL",
+        "label":  "HODAL",
+        "value":  "HODAL"
+    },
+    {
+        "cityName":  "TIRURANGADI",
+        "label":  "TIRURANGADI",
+        "value":  "TIRURANGADI"
+    },
+    {
+        "cityName":  "OMERGA",
+        "label":  "OMERGA",
+        "value":  "OMERGA"
+    },
+    {
+        "cityName":  "NORTH 24 PARGANAS",
+        "label":  "NORTH 24 PARGANAS",
+        "value":  "NORTH 24 PARGANAS"
+    },
+    {
+        "cityName":  "KEONJHAR",
+        "label":  "KEONJHAR",
+        "value":  "KEONJHAR"
+    },
+    {
+        "cityName":  "BHADOHI",
+        "label":  "BHADOHI",
+        "value":  "BHADOHI"
+    },
+    {
+        "cityName":  "SHIKARIPURA",
+        "label":  "SHIKARIPURA",
+        "value":  "SHIKARIPURA"
+    },
+    {
+        "cityName":  "NARWANA",
+        "label":  "NARWANA",
+        "value":  "NARWANA"
+    },
+    {
+        "cityName":  "YELESWARAM",
+        "label":  "YELESWARAM",
+        "value":  "YELESWARAM"
+    },
+    {
+        "cityName":  "NEWASA",
+        "label":  "NEWASA",
+        "value":  "NEWASA"
+    },
+    {
+        "cityName":  "HALOL",
+        "label":  "HALOL",
+        "value":  "HALOL"
+    },
+    {
+        "cityName":  "KHARAGPUR",
+        "label":  "KHARAGPUR",
+        "value":  "KHARAGPUR"
+    },
+    {
+        "cityName":  "CHALISGAON",
+        "label":  "CHALISGAON",
+        "value":  "CHALISGAON"
+    },
+    {
+        "cityName":  "RAHURI",
+        "label":  "RAHURI",
+        "value":  "RAHURI"
+    },
+    {
+        "cityName":  "CHENGAM",
+        "label":  "CHENGAM",
+        "value":  "CHENGAM"
+    },
+    {
+        "cityName":  "TADIPATRI",
+        "label":  "TADIPATRI",
+        "value":  "TADIPATRI"
+    },
+    {
+        "cityName":  "LALSOT",
+        "label":  "LALSOT",
+        "value":  "LALSOT"
+    },
+    {
+        "cityName":  "MAHESANA",
+        "label":  "MAHESANA",
+        "value":  "MAHESANA"
+    },
+    {
+        "cityName":  "VASAI",
+        "label":  "VASAI",
+        "value":  "VASAI"
+    },
+    {
+        "cityName":  "KALIKIRI",
+        "label":  "KALIKIRI",
+        "value":  "KALIKIRI"
+    },
+    {
+        "cityName":  "KHOPOLI",
+        "label":  "KHOPOLI",
+        "value":  "KHOPOLI"
+    },
+    {
+        "cityName":  "BHATAPARA",
+        "label":  "BHATAPARA",
+        "value":  "BHATAPARA"
+    },
+    {
+        "cityName":  "PONNUR",
+        "label":  "PONNUR",
+        "value":  "PONNUR"
+    },
+    {
+        "cityName":  "VALPARAI",
+        "label":  "VALPARAI",
+        "value":  "VALPARAI"
+    },
+    {
+        "cityName":  "MADHUPUR",
+        "label":  "MADHUPUR",
+        "value":  "MADHUPUR"
+    },
+    {
+        "cityName":  "CHANDWAD",
+        "label":  "CHANDWAD",
+        "value":  "CHANDWAD"
+    },
+    {
+        "cityName":  "KAVALI",
+        "label":  "KAVALI",
+        "value":  "KAVALI"
+    },
+    {
+        "cityName":  "SIVaSAGAR",
+        "label":  "SIVaSAGAR",
+        "value":  "SIVaSAGAR"
+    },
+    {
+        "cityName":  "ITANAGAR",
+        "label":  "ITANAGAR",
+        "value":  "ITANAGAR"
+    },
+    {
+        "cityName":  "AKOT",
+        "label":  "AKOT",
+        "value":  "AKOT"
+    },
+    {
+        "cityName":  "SATTUR",
+        "label":  "SATTUR",
+        "value":  "SATTUR"
+    },
+    {
+        "cityName":  "GARHSHANKAR",
+        "label":  "GARHSHANKAR",
+        "value":  "GARHSHANKAR"
+    },
+    {
+        "cityName":  "SATANA",
+        "label":  "SATANA",
+        "value":  "SATANA"
+    },
+    {
+        "cityName":  "RANIKHET",
+        "label":  "RANIKHET",
+        "value":  "RANIKHET"
+    },
+    {
+        "cityName":  "PUSAD",
+        "label":  "PUSAD",
+        "value":  "PUSAD"
+    },
+    {
+        "cityName":  "KALMESHWAR",
+        "label":  "KALMESHWAR",
+        "value":  "KALMESHWAR"
+    },
+    {
+        "cityName":  "DARYAPUR",
+        "label":  "DARYAPUR",
+        "value":  "DARYAPUR"
+    },
+    {
+        "cityName":  "KATOL",
+        "label":  "KATOL",
+        "value":  "KATOL"
+    },
+    {
+        "cityName":  "SRIRAMPUR",
+        "label":  "SRIRAMPUR",
+        "value":  "SRIRAMPUR"
+    },
+    {
+        "cityName":  "KOTHAPETA",
+        "label":  "KOTHAPETA",
+        "value":  "KOTHAPETA"
+    },
+    {
+        "cityName":  "KAIRANA",
+        "label":  "KAIRANA",
+        "value":  "KAIRANA"
+    },
+    {
+        "cityName":  "RAVER",
+        "label":  "RAVER",
+        "value":  "RAVER"
+    },
+    {
+        "cityName":  "CHIKHLI",
+        "label":  "CHIKHLI",
+        "value":  "CHIKHLI"
+    },
+    {
+        "cityName":  "KUMBAKONAM",
+        "label":  "KUMBAKONAM",
+        "value":  "KUMBAKONAM"
+    },
+    {
+        "cityName":  "SENGOTTAI",
+        "label":  "SENGOTTAI",
+        "value":  "SENGOTTAI"
+    },
+    {
+        "cityName":  "SHRIRAMPUR",
+        "label":  "SHRIRAMPUR",
+        "value":  "SHRIRAMPUR"
+    },
+    {
+        "cityName":  "KOTHAMANGALAM",
+        "label":  "KOTHAMANGALAM",
+        "value":  "KOTHAMANGALAM"
+    },
+    {
+        "cityName":  "CHAVAKKAD",
+        "label":  "CHAVAKKAD",
+        "value":  "CHAVAKKAD"
+    },
+    {
+        "cityName":  "SRIVILLIPUTHUR",
+        "label":  "SRIVILLIPUTHUR",
+        "value":  "SRIVILLIPUTHUR"
+    },
+    {
+        "cityName":  "RADHANPUR",
+        "label":  "RADHANPUR",
+        "value":  "RADHANPUR"
+    },
+    {
+        "cityName":  "NAKODAR",
+        "label":  "NAKODAR",
+        "value":  "NAKODAR"
+    },
+    {
+        "cityName":  "DAPOLI",
+        "label":  "DAPOLI",
+        "value":  "DAPOLI"
+    },
+    {
+        "cityName":  "PACHORA",
+        "label":  "PACHORA",
+        "value":  "PACHORA"
+    },
+    {
+        "cityName":  "SIVAGIRI",
+        "label":  "SIVAGIRI",
+        "value":  "SIVAGIRI"
+    },
+    {
+        "cityName":  "WALVA",
+        "label":  "WALVA",
+        "value":  "WALVA"
+    },
+    {
+        "cityName":  "JUNAGARH",
+        "label":  "JUNAGARH",
+        "value":  "JUNAGARH"
+    },
+    {
+        "cityName":  "RAJGANGPUR",
+        "label":  "RAJGANGPUR",
+        "value":  "RAJGANGPUR"
+    },
+    {
+        "cityName":  "FARRUKHABAD",
+        "label":  "FARRUKHABAD",
+        "value":  "FARRUKHABAD"
+    },
+    {
+        "cityName":  "SAINTHIA",
+        "label":  "SAINTHIA",
+        "value":  "SAINTHIA"
+    },
+    {
+        "cityName":  "VAIKOM",
+        "label":  "VAIKOM",
+        "value":  "VAIKOM"
+    },
+    {
+        "cityName":  "DHARCHULA",
+        "label":  "DHARCHULA",
+        "value":  "DHARCHULA"
+    },
+    {
+        "cityName":  "Rishikesh",
+        "label":  "Rishikesh",
+        "value":  "Rishikesh"
+    },
+    {
+        "cityName":  "YAMUNA NAGAR",
+        "label":  "YAMUNA NAGAR",
+        "value":  "YAMUNA NAGAR"
+    },
+    {
+        "cityName":  "SAIDAPET",
+        "label":  "SAIDAPET",
+        "value":  "SAIDAPET"
+    },
+    {
+        "cityName":  "GANDHI NAGAR",
+        "label":  "GANDHI NAGAR",
+        "value":  "GANDHI NAGAR"
+    },
+    {
+        "cityName":  "Amalapuram",
+        "label":  "Amalapuram",
+        "value":  "Amalapuram"
+    },
+    {
+        "cityName":  "MEDAK",
+        "label":  "MEDAK",
+        "value":  "MEDAK"
+    },
+    {
+        "cityName":  "UDAGAMANDALAM",
+        "label":  "UDAGAMANDALAM",
+        "value":  "UDAGAMANDALAM"
+    },
+    {
+        "cityName":  "ROPAR",
+        "label":  "ROPAR",
+        "value":  "ROPAR"
+    },
+    {
+        "cityName":  "MADHIRA",
+        "label":  "MADHIRA",
+        "value":  "MADHIRA"
+    },
+    {
+        "cityName":  "NIMBAHERA",
+        "label":  "NIMBAHERA",
+        "value":  "NIMBAHERA"
+    },
+    {
+        "cityName":  "KORUKONDA",
+        "label":  "KORUKONDA",
+        "value":  "KORUKONDA"
+    },
+    {
+        "cityName":  "PERIYAKULAM",
+        "label":  "PERIYAKULAM",
+        "value":  "PERIYAKULAM"
+    },
+    {
+        "cityName":  "PUTTUR",
+        "label":  "PUTTUR",
+        "value":  "PUTTUR"
+    },
+    {
+        "cityName":  "UMARKHED",
+        "label":  "UMARKHED",
+        "value":  "UMARKHED"
+    },
+    {
+        "cityName":  "SANDILA",
+        "label":  "SANDILA",
+        "value":  "SANDILA"
+    },
+    {
+        "cityName":  "DHARMAVARAM",
+        "label":  "DHARMAVARAM",
+        "value":  "DHARMAVARAM"
+    },
+    {
+        "cityName":  "BHIWANDI",
+        "label":  "BHIWANDI",
+        "value":  "BHIWANDI"
+    },
+    {
+        "cityName":  "SINDKHED RAJA",
+        "label":  "SINDKHED RAJA",
+        "value":  "SINDKHED RAJA"
+    },
+    {
+        "cityName":  "TIRUPATHUR",
+        "label":  "TIRUPATHUR",
+        "value":  "TIRUPATHUR"
+    },
+    {
+        "cityName":  "CHATRAPUR",
+        "label":  "CHATRAPUR",
+        "value":  "CHATRAPUR"
+    },
+    {
+        "cityName":  "MANTHA",
+        "label":  "MANTHA",
+        "value":  "MANTHA"
+    },
+    {
+        "cityName":  "ANJAR",
+        "label":  "ANJAR",
+        "value":  "ANJAR"
+    },
+    {
+        "cityName":  "THARAD",
+        "label":  "THARAD",
+        "value":  "THARAD"
+    },
+    {
+        "cityName":  "TIRUPATTUR",
+        "label":  "TIRUPATTUR",
+        "value":  "TIRUPATTUR"
+    },
+    {
+        "cityName":  "KANKROLI",
+        "label":  "KANKROLI",
+        "value":  "KANKROLI"
+    },
+    {
+        "cityName":  "CHANCHAL",
+        "label":  "CHANCHAL",
+        "value":  "CHANCHAL"
+    },
+    {
+        "cityName":  "GAJUWAKA",
+        "label":  "GAJUWAKA",
+        "value":  "GAJUWAKA"
+    },
+    {
+        "cityName":  "BHOKARDAN",
+        "label":  "BHOKARDAN",
+        "value":  "BHOKARDAN"
+    },
+    {
+        "cityName":  "Ghatshila",
+        "label":  "Ghatshila",
+        "value":  "Ghatshila"
+    },
+    {
+        "cityName":  "RAJAMPET",
+        "label":  "RAJAMPET",
+        "value":  "RAJAMPET"
+    },
+    {
+        "cityName":  "DIGRAS",
+        "label":  "DIGRAS",
+        "value":  "DIGRAS"
+    },
+    {
+        "cityName":  "CHENGALPATTU",
+        "label":  "CHENGALPATTU",
+        "value":  "CHENGALPATTU"
+    },
+    {
+        "cityName":  "Chakrata",
+        "label":  "Chakrata",
+        "value":  "Chakrata"
+    },
+    {
+        "cityName":  "KOTKAPURA",
+        "label":  "KOTKAPURA",
+        "value":  "KOTKAPURA"
+    },
+    {
+        "cityName":  "BIHAR",
+        "label":  "BIHAR",
+        "value":  "BIHAR"
+    },
+    {
+        "cityName":  "TIRUVALLA",
+        "label":  "TIRUVALLA",
+        "value":  "TIRUVALLA"
+    },
+    {
+        "cityName":  "HINGANGHAT",
+        "label":  "HINGANGHAT",
+        "value":  "HINGANGHAT"
+    },
+    {
+        "cityName":  "SAILU",
+        "label":  "SAILU",
+        "value":  "SAILU"
+    },
+    {
+        "cityName":  "AMBASAMUDRAM",
+        "label":  "AMBASAMUDRAM",
+        "value":  "AMBASAMUDRAM"
+    },
+    {
+        "cityName":  "BIKKAVOLU",
+        "label":  "BIKKAVOLU",
+        "value":  "BIKKAVOLU"
+    },
+    {
+        "cityName":  "MANGALVEDHA",
+        "label":  "MANGALVEDHA",
+        "value":  "MANGALVEDHA"
+    },
+    {
+        "cityName":  "AMBEJOGAI",
+        "label":  "AMBEJOGAI",
+        "value":  "AMBEJOGAI"
+    },
+    {
+        "cityName":  "SALCETE",
+        "label":  "SALCETE",
+        "value":  "SALCETE"
+    },
+    {
+        "cityName":  "SIDDAPUR",
+        "label":  "SIDDAPUR",
+        "value":  "SIDDAPUR"
+    },
+    {
+        "cityName":  "HANGAL",
+        "label":  "HANGAL",
+        "value":  "HANGAL"
+    },
+    {
+        "cityName":  "HOLENARASIPURA",
+        "label":  "HOLENARASIPURA",
+        "value":  "HOLENARASIPURA"
+    },
+    {
+        "cityName":  "KARKALA",
+        "label":  "KARKALA",
+        "value":  "KARKALA"
+    },
+    {
+        "cityName":  "BHUBANESWAR",
+        "label":  "BHUBANESWAR",
+        "value":  "BHUBANESWAR"
+    },
+    {
+        "cityName":  "MOHOL",
+        "label":  "MOHOL",
+        "value":  "MOHOL"
+    },
+    {
+        "cityName":  "BARRACKPORE",
+        "label":  "BARRACKPORE",
+        "value":  "BARRACKPORE"
+    },
+    {
+        "cityName":  "KALITALA",
+        "label":  "KALITALA",
+        "value":  "KALITALA"
+    },
+    {
+        "cityName":  "POLUR",
+        "label":  "POLUR",
+        "value":  "POLUR"
+    },
+    {
+        "cityName":  "POONAMALLEE",
+        "label":  "POONAMALLEE",
+        "value":  "POONAMALLEE"
+    },
+    {
+        "cityName":  "GANGAVALLI",
+        "label":  "GANGAVALLI",
+        "value":  "GANGAVALLI"
+    },
+    {
+        "cityName":  "PANDALUR",
+        "label":  "PANDALUR",
+        "value":  "PANDALUR"
+    },
+    {
+        "cityName":  "ANNAVASAL",
+        "label":  "ANNAVASAL",
+        "value":  "ANNAVASAL"
+    },
+    {
+        "cityName":  "KILVELUR",
+        "label":  "KILVELUR",
+        "value":  "KILVELUR"
+    },
+    {
+        "cityName":  "SANKARAPURAM",
+        "label":  "SANKARAPURAM",
+        "value":  "SANKARAPURAM"
+    },
+    {
+        "cityName":  "VIJAYAPURAM",
+        "label":  "VIJAYAPURAM",
+        "value":  "VIJAYAPURAM"
+    },
+    {
+        "cityName":  "GUDALUR",
+        "label":  "GUDALUR",
+        "value":  "GUDALUR"
+    },
+    {
+        "cityName":  "TADEPALLIGUDEM",
+        "label":  "TADEPALLIGUDEM",
+        "value":  "TADEPALLIGUDEM"
+    },
+    {
+        "cityName":  "MANUGURU",
+        "label":  "MANUGURU",
+        "value":  "MANUGURU"
+    },
+    {
+        "cityName":  "OTTAPALAM",
+        "label":  "OTTAPALAM",
+        "value":  "OTTAPALAM"
+    },
+    {
+        "cityName":  "ANKOLA",
+        "label":  "ANKOLA",
+        "value":  "ANKOLA"
+    },
+    {
+        "cityName":  "Ambajipeta",
+        "label":  "Ambajipeta",
+        "value":  "Ambajipeta"
+    },
+    {
+        "cityName":  "TELHARA",
+        "label":  "TELHARA",
+        "value":  "TELHARA"
+    },
+    {
+        "cityName":  "BEOHARI",
+        "label":  "BEOHARI",
+        "value":  "BEOHARI"
+    },
+    {
+        "cityName":  "THIRTHAHALLI",
+        "label":  "THIRTHAHALLI",
+        "value":  "THIRTHAHALLI"
+    },
+    {
+        "cityName":  "MAJALGAON",
+        "label":  "MAJALGAON",
+        "value":  "MAJALGAON"
+    },
+    {
+        "cityName":  "IBRAHIMPATNAM",
+        "label":  "IBRAHIMPATNAM",
+        "value":  "IBRAHIMPATNAM"
+    },
+    {
+        "cityName":  "MANDAPETA",
+        "label":  "MANDAPETA",
+        "value":  "MANDAPETA"
+    },
+    {
+        "cityName":  "AVADI",
+        "label":  "AVADI",
+        "value":  "AVADI"
+    },
+    {
+        "cityName":  "POCHAMPALLI",
+        "label":  "POCHAMPALLI",
+        "value":  "POCHAMPALLI"
+    },
+    {
+        "cityName":  "MATHUR",
+        "label":  "MATHUR",
+        "value":  "MATHUR"
+    },
+    {
+        "cityName":  "ARAVAKURICHI",
+        "label":  "ARAVAKURICHI",
+        "value":  "ARAVAKURICHI"
+    },
+    {
+        "cityName":  "KRISHNARAYAPURAM",
+        "label":  "KRISHNARAYAPURAM",
+        "value":  "KRISHNARAYAPURAM"
+    },
+    {
+        "cityName":  "MANACHANALLUR",
+        "label":  "MANACHANALLUR",
+        "value":  "MANACHANALLUR"
+    },
+    {
+        "cityName":  "SENDURAI",
+        "label":  "SENDURAI",
+        "value":  "SENDURAI"
+    },
+    {
+        "cityName":  "KARIAPATTI",
+        "label":  "KARIAPATTI",
+        "value":  "KARIAPATTI"
+    },
+    {
+        "cityName":  "KADALADI",
+        "label":  "KADALADI",
+        "value":  "KADALADI"
+    },
+    {
+        "cityName":  "THIRUVALLUR",
+        "label":  "THIRUVALLUR",
+        "value":  "THIRUVALLUR"
+    },
+    {
+        "cityName":  "SRIRANGAM",
+        "label":  "SRIRANGAM",
+        "value":  "SRIRANGAM"
+    },
+    {
+        "cityName":  "METTUR",
+        "label":  "METTUR",
+        "value":  "METTUR"
+    },
+    {
+        "cityName":  "RAHATA",
+        "label":  "RAHATA",
+        "value":  "RAHATA"
+    },
+    {
+        "cityName":  "CHILAKALURIPET",
+        "label":  "CHILAKALURIPET",
+        "value":  "CHILAKALURIPET"
+    },
+    {
+        "cityName":  "RAJIM",
+        "label":  "RAJIM",
+        "value":  "RAJIM"
+    },
+    {
+        "cityName":  "SANWER",
+        "label":  "SANWER",
+        "value":  "SANWER"
+    },
+    {
+        "cityName":  "HIRIYUR",
+        "label":  "HIRIYUR",
+        "value":  "HIRIYUR"
+    },
+    {
+        "cityName":  "BHOLATH",
+        "label":  "BHOLATH",
+        "value":  "BHOLATH"
+    },
+    {
+        "cityName":  "SILLOD",
+        "label":  "SILLOD",
+        "value":  "SILLOD"
+    },
+    {
+        "cityName":  "KALNA",
+        "label":  "KALNA",
+        "value":  "KALNA"
+    },
+    {
+        "cityName":  "DASUYA",
+        "label":  "DASUYA",
+        "value":  "DASUYA"
+    },
+    {
+        "cityName":  "ZIRA",
+        "label":  "ZIRA",
+        "value":  "ZIRA"
+    },
+    {
+        "cityName":  "HONAVAR",
+        "label":  "HONAVAR",
+        "value":  "HONAVAR"
+    },
+    {
+        "cityName":  "LADAKH",
+        "label":  "LADAKH",
+        "value":  "LADAKH"
+    },
+    {
+        "cityName":  "BHANPURA",
+        "label":  "BHANPURA",
+        "value":  "BHANPURA"
+    },
+    {
+        "cityName":  "JAT",
+        "label":  "JAT",
+        "value":  "JAT"
+    },
+    {
+        "cityName":  "MAGRA",
+        "label":  "MAGRA",
+        "value":  "MAGRA"
+    },
+    {
+        "cityName":  "KARJAT",
+        "label":  "KARJAT",
+        "value":  "KARJAT"
+    },
+    {
+        "cityName":  "NOORPUR",
+        "label":  "NOORPUR",
+        "value":  "NOORPUR"
+    },
+    {
+        "cityName":  "BIRBHUM",
+        "label":  "BIRBHUM",
+        "value":  "BIRBHUM"
+    },
+    {
+        "cityName":  "Bongaon",
+        "label":  "Bongaon",
+        "value":  "Bongaon"
+    },
+    {
+        "cityName":  "KOTALPUR",
+        "label":  "KOTALPUR",
+        "value":  "KOTALPUR"
+    },
+    {
+        "cityName":  "SHEVGAON",
+        "label":  "SHEVGAON",
+        "value":  "SHEVGAON"
+    },
+    {
+        "cityName":  "DICHPALLE",
+        "label":  "DICHPALLE",
+        "value":  "DICHPALLE"
+    },
+    {
+        "cityName":  "KANIGIRI",
+        "label":  "KANIGIRI",
+        "value":  "KANIGIRI"
+    },
+    {
+        "cityName":  "KANJIRAPALLY",
+        "label":  "KANJIRAPALLY",
+        "value":  "KANJIRAPALLY"
+    },
+    {
+        "cityName":  "JUGSALAI",
+        "label":  "JUGSALAI",
+        "value":  "JUGSALAI"
+    },
+    {
+        "cityName":  "PARDI",
+        "label":  "PARDI",
+        "value":  "PARDI"
+    },
+    {
+        "cityName":  "PAROLA",
+        "label":  "PAROLA",
+        "value":  "PAROLA"
+    },
+    {
+        "cityName":  "HARUR",
+        "label":  "HARUR",
+        "value":  "HARUR"
+    },
+    {
+        "cityName":  "SHIRPUR",
+        "label":  "SHIRPUR",
+        "value":  "SHIRPUR"
+    },
+    {
+        "cityName":  "SAFIDON",
+        "label":  "SAFIDON",
+        "value":  "SAFIDON"
+    },
+    {
+        "cityName":  "PIDUGURALLA",
+        "label":  "PIDUGURALLA",
+        "value":  "PIDUGURALLA"
+    },
+    {
+        "cityName":  "YELLAREDDY",
+        "label":  "YELLAREDDY",
+        "value":  "YELLAREDDY"
+    },
+    {
+        "cityName":  "PATTUKKOTTAI",
+        "label":  "PATTUKKOTTAI",
+        "value":  "PATTUKKOTTAI"
+    },
+    {
+        "cityName":  "MANAPPARAI",
+        "label":  "MANAPPARAI",
+        "value":  "MANAPPARAI"
+    },
+    {
+        "cityName":  "CUMBUM",
+        "label":  "CUMBUM",
+        "value":  "CUMBUM"
+    },
+    {
+        "cityName":  "BAHADURGARH",
+        "label":  "BAHADURGARH",
+        "value":  "BAHADURGARH"
+    },
+    {
+        "cityName":  "MEHKAR",
+        "label":  "MEHKAR",
+        "value":  "MEHKAR"
+    },
+    {
+        "cityName":  "NANNILAM",
+        "label":  "NANNILAM",
+        "value":  "NANNILAM"
+    },
+    {
+        "cityName":  "GUDIYATHAM",
+        "label":  "GUDIYATHAM",
+        "value":  "GUDIYATHAM"
+    },
+    {
+        "cityName":  "SIRCILLA",
+        "label":  "SIRCILLA",
+        "value":  "SIRCILLA"
+    },
+    {
+        "cityName":  "SAKRI",
+        "label":  "SAKRI",
+        "value":  "SAKRI"
+    },
+    {
+        "cityName":  "WARUD",
+        "label":  "WARUD",
+        "value":  "WARUD"
+    },
+    {
+        "cityName":  "JAMNER",
+        "label":  "JAMNER",
+        "value":  "JAMNER"
+    },
+    {
+        "cityName":  "VANSDA",
+        "label":  "VANSDA",
+        "value":  "VANSDA"
+    },
+    {
+        "cityName":  "THIRUVARUR",
+        "label":  "THIRUVARUR",
+        "value":  "THIRUVARUR"
+    },
+    {
+        "cityName":  "RUDAULI",
+        "label":  "RUDAULI",
+        "value":  "RUDAULI"
+    },
+    {
+        "cityName":  "MUKTAINAGAR",
+        "label":  "MUKTAINAGAR",
+        "value":  "MUKTAINAGAR"
+    },
+    {
+        "cityName":  "RAMACHANDRAPURAM",
+        "label":  "RAMACHANDRAPURAM",
+        "value":  "RAMACHANDRAPURAM"
+    },
+    {
+        "cityName":  "MANWATH",
+        "label":  "MANWATH",
+        "value":  "MANWATH"
+    },
+    {
+        "cityName":  "DEOGARH",
+        "label":  "DEOGARH",
+        "value":  "DEOGARH"
+    },
+    {
+        "cityName":  "SONEPUR",
+        "label":  "SONEPUR",
+        "value":  "SONEPUR"
+    },
+    {
+        "cityName":  "TULJAPUR",
+        "label":  "TULJAPUR",
+        "value":  "TULJAPUR"
+    },
+    {
+        "cityName":  "Adhaura",
+        "label":  "Adhaura",
+        "value":  "Adhaura"
+    },
+    {
+        "cityName":  "HIMAYATNAGAR",
+        "label":  "HIMAYATNAGAR",
+        "value":  "HIMAYATNAGAR"
+    },
+    {
+        "cityName":  "KOLLEGAL",
+        "label":  "KOLLEGAL",
+        "value":  "KOLLEGAL"
+    },
+    {
+        "cityName":  "SRIKALAHASTI",
+        "label":  "SRIKALAHASTI",
+        "value":  "SRIKALAHASTI"
+    },
+    {
+        "cityName":  "RAYYA",
+        "label":  "RAYYA",
+        "value":  "RAYYA"
+    },
+    {
+        "cityName":  "SUNDERNAGAR",
+        "label":  "SUNDERNAGAR",
+        "value":  "SUNDERNAGAR"
+    },
+    {
+        "cityName":  "KANGRA",
+        "label":  "KANGRA",
+        "value":  "KANGRA"
+    },
+    {
+        "cityName":  "KOYILANDI",
+        "label":  "KOYILANDI",
+        "value":  "KOYILANDI"
+    },
+    {
+        "cityName":  "SAVANUR",
+        "label":  "SAVANUR",
+        "value":  "SAVANUR"
+    },
+    {
+        "cityName":  "KHANNA",
+        "label":  "KHANNA",
+        "value":  "KHANNA"
+    },
+    {
+        "cityName":  "MYLAVARAM",
+        "label":  "MYLAVARAM",
+        "value":  "MYLAVARAM"
+    },
+    {
+        "cityName":  "KALIMPONG",
+        "label":  "KALIMPONG",
+        "value":  "KALIMPONG"
+    },
+    {
+        "cityName":  "MOINABAD",
+        "label":  "MOINABAD",
+        "value":  "MOINABAD"
+    },
+    {
+        "cityName":  "BHADRACHALAM",
+        "label":  "BHADRACHALAM",
+        "value":  "BHADRACHALAM"
+    },
+    {
+        "cityName":  "BELTHANGADY",
+        "label":  "BELTHANGADY",
+        "value":  "BELTHANGADY"
+    },
+    {
+        "cityName":  "KARCHANA",
+        "label":  "KARCHANA",
+        "value":  "KARCHANA"
+    },
+    {
+        "cityName":  "ASWARAOPET",
+        "label":  "ASWARAOPET",
+        "value":  "ASWARAOPET"
+    },
+    {
+        "cityName":  "SINDHANUR",
+        "label":  "SINDHANUR",
+        "value":  "SINDHANUR"
+    },
+    {
+        "cityName":  "UMERKHED",
+        "label":  "UMERKHED",
+        "value":  "UMERKHED"
+    },
+    {
+        "cityName":  "KAIJ",
+        "label":  "KAIJ",
+        "value":  "KAIJ"
+    },
+    {
+        "cityName":  "ANDAL",
+        "label":  "ANDAL",
+        "value":  "ANDAL"
+    },
+    {
+        "cityName":  "KHATEGAON",
+        "label":  "KHATEGAON",
+        "value":  "KHATEGAON"
+    },
+    {
+        "cityName":  "ANAPARTHY",
+        "label":  "ANAPARTHY",
+        "value":  "ANAPARTHY"
+    },
+    {
+        "cityName":  "JAGADHRI",
+        "label":  "JAGADHRI",
+        "value":  "JAGADHRI"
+    },
+    {
+        "cityName":  "NANDYAL",
+        "label":  "NANDYAL",
+        "value":  "NANDYAL"
+    },
+    {
+        "cityName":  "DEVARAKONDA",
+        "label":  "DEVARAKONDA",
+        "value":  "DEVARAKONDA"
+    },
+    {
+        "cityName":  "MANENDRAGARH",
+        "label":  "MANENDRAGARH",
+        "value":  "MANENDRAGARH"
+    },
+    {
+        "cityName":  "PARAVUR",
+        "label":  "PARAVUR",
+        "value":  "PARAVUR"
+    },
+    {
+        "cityName":  "DEULGAON RAJA",
+        "label":  "DEULGAON RAJA",
+        "value":  "DEULGAON RAJA"
+    },
+    {
+        "cityName":  "BHONGIR",
+        "label":  "BHONGIR",
+        "value":  "BHONGIR"
+    },
+    {
+        "cityName":  "BEAWAR",
+        "label":  "BEAWAR",
+        "value":  "BEAWAR"
+    },
+    {
+        "cityName":  "NALAGARH",
+        "label":  "NALAGARH",
+        "value":  "NALAGARH"
+    },
+    {
+        "cityName":  "TINDIVANAM",
+        "label":  "TINDIVANAM",
+        "value":  "TINDIVANAM"
+    },
+    {
+        "cityName":  "MAHUVA",
+        "label":  "MAHUVA",
+        "value":  "MAHUVA"
+    },
+    {
+        "cityName":  "KARVEER",
+        "label":  "KARVEER",
+        "value":  "KARVEER"
+    },
+    {
+        "cityName":  "ANANDPUR SAHIB",
+        "label":  "ANANDPUR SAHIB",
+        "value":  "ANANDPUR SAHIB"
+    },
+    {
+        "cityName":  "JADCHERLA",
+        "label":  "JADCHERLA",
+        "value":  "JADCHERLA"
+    },
+    {
+        "cityName":  "DHARUR",
+        "label":  "DHARUR",
+        "value":  "DHARUR"
+    },
+    {
+        "cityName":  "NANGAL",
+        "label":  "NANGAL",
+        "value":  "NANGAL"
+    },
+    {
+        "cityName":  "BALACHAUR",
+        "label":  "BALACHAUR",
+        "value":  "BALACHAUR"
+    },
+    {
+        "cityName":  "UNJHA",
+        "label":  "UNJHA",
+        "value":  "UNJHA"
+    },
+    {
+        "cityName":  "LADWA",
+        "label":  "LADWA",
+        "value":  "LADWA"
+    },
+    {
+        "cityName":  "LABPUR",
+        "label":  "LABPUR",
+        "value":  "LABPUR"
+    },
+    {
+        "cityName":  "KADI",
+        "label":  "KADI",
+        "value":  "KADI"
+    },
+    {
+        "cityName":  "JANGAREDDIGUDEM",
+        "label":  "JANGAREDDIGUDEM",
+        "value":  "JANGAREDDIGUDEM"
+    },
+    {
+        "cityName":  "PAIKMAL",
+        "label":  "PAIKMAL",
+        "value":  "PAIKMAL"
+    },
+    {
+        "cityName":  "GANGAKHED",
+        "label":  "GANGAKHED",
+        "value":  "GANGAKHED"
+    },
+    {
+        "cityName":  "KHANDALA",
+        "label":  "KHANDALA",
+        "value":  "KHANDALA"
+    },
+    {
+        "cityName":  "NILANGA",
+        "label":  "NILANGA",
+        "value":  "NILANGA"
+    },
+    {
+        "cityName":  "NIMAPARA",
+        "label":  "NIMAPARA",
+        "value":  "NIMAPARA"
+    },
+    {
+        "cityName":  "CHINTAMANI",
+        "label":  "CHINTAMANI",
+        "value":  "CHINTAMANI"
+    },
+    {
+        "cityName":  "JEYPUR",
+        "label":  "JEYPUR",
+        "value":  "JEYPUR"
+    },
+    {
+        "cityName":  "GAZIPUR",
+        "label":  "GAZIPUR",
+        "value":  "GAZIPUR"
+    },
+    {
+        "cityName":  "NAGOD",
+        "label":  "NAGOD",
+        "value":  "NAGOD"
+    },
+    {
+        "cityName":  "TRIMBAKESHWAR",
+        "label":  "TRIMBAKESHWAR",
+        "value":  "TRIMBAKESHWAR"
+    },
+    {
+        "cityName":  "KUPPAM",
+        "label":  "KUPPAM",
+        "value":  "KUPPAM"
+    },
+    {
+        "cityName":  "VUYYURU",
+        "label":  "VUYYURU",
+        "value":  "VUYYURU"
+    },
+    {
+        "cityName":  "GANGARAMPUR",
+        "label":  "GANGARAMPUR",
+        "value":  "GANGARAMPUR"
+    },
+    {
+        "cityName":  "NAIDUPETA",
+        "label":  "NAIDUPETA",
+        "value":  "NAIDUPETA"
+    },
+    {
+        "cityName":  "PEDDAPURAM",
+        "label":  "PEDDAPURAM",
+        "value":  "PEDDAPURAM"
+    },
+    {
+        "cityName":  "KANDUKUR",
+        "label":  "KANDUKUR",
+        "value":  "KANDUKUR"
+    },
+    {
+        "cityName":  "GANGAPUR",
+        "label":  "GANGAPUR",
+        "value":  "GANGAPUR"
+    },
+    {
+        "cityName":  "KANCHRAPARA",
+        "label":  "KANCHRAPARA",
+        "value":  "KANCHRAPARA"
+    },
+    {
+        "cityName":  "BIRPUR",
+        "label":  "BIRPUR",
+        "value":  "BIRPUR"
+    },
+    {
+        "cityName":  "RAMAPURAM",
+        "label":  "RAMAPURAM",
+        "value":  "RAMAPURAM"
+    },
+    {
+        "cityName":  "KALWAN",
+        "label":  "KALWAN",
+        "value":  "KALWAN"
+    },
+    {
+        "cityName":  "GARIYADHAR",
+        "label":  "GARIYADHAR",
+        "value":  "GARIYADHAR"
+    },
+    {
+        "cityName":  "HARAPANAHALLI",
+        "label":  "HARAPANAHALLI",
+        "value":  "HARAPANAHALLI"
+    },
+    {
+        "cityName":  "PONDA",
+        "label":  "PONDA",
+        "value":  "PONDA"
+    },
+    {
+        "cityName":  "PERNEM",
+        "label":  "PERNEM",
+        "value":  "PERNEM"
+    },
+    {
+        "cityName":  "RAMDURG",
+        "label":  "RAMDURG",
+        "value":  "RAMDURG"
+    },
+    {
+        "cityName":  "KHAMGAON",
+        "label":  "KHAMGAON",
+        "value":  "KHAMGAON"
+    },
+    {
+        "cityName":  "NAVALGUND",
+        "label":  "NAVALGUND",
+        "value":  "NAVALGUND"
+    },
+    {
+        "cityName":  "VAIJAPUR",
+        "label":  "VAIJAPUR",
+        "value":  "VAIJAPUR"
+    },
+    {
+        "cityName":  "SANGARIA",
+        "label":  "SANGARIA",
+        "value":  "SANGARIA"
+    },
+    {
+        "cityName":  "THIRUTHURAIPOONDI",
+        "label":  "THIRUTHURAIPOONDI",
+        "value":  "THIRUTHURAIPOONDI"
+    },
+    {
+        "cityName":  "TIRUVANNAMALAI",
+        "label":  "TIRUVANNAMALAI",
+        "value":  "TIRUVANNAMALAI"
+    },
+    {
+        "cityName":  "CHANDANAGAR",
+        "label":  "CHANDANAGAR",
+        "value":  "CHANDANAGAR"
+    },
+    {
+        "cityName":  "NAGAMANGALA",
+        "label":  "NAGAMANGALA",
+        "value":  "NAGAMANGALA"
+    },
+    {
+        "cityName":  "PENUKONDA",
+        "label":  "PENUKONDA",
+        "value":  "PENUKONDA"
+    },
+    {
+        "cityName":  "ANEKAL",
+        "label":  "ANEKAL",
+        "value":  "ANEKAL"
+    },
+    {
+        "cityName":  "HADGAON",
+        "label":  "HADGAON",
+        "value":  "HADGAON"
+    },
+    {
+        "cityName":  "MURSHIDABAD",
+        "label":  "MURSHIDABAD",
+        "value":  "MURSHIDABAD"
+    },
+    {
+        "cityName":  "CHANDAMETTA",
+        "label":  "CHANDAMETTA",
+        "value":  "CHANDAMETTA"
+    },
+    {
+        "cityName":  "CHAMORSHI",
+        "label":  "CHAMORSHI",
+        "value":  "CHAMORSHI"
+    },
+    {
+        "cityName":  "CANNING",
+        "label":  "CANNING",
+        "value":  "CANNING"
+    },
+    {
+        "cityName":  "ARCOT",
+        "label":  "ARCOT",
+        "value":  "ARCOT"
+    },
+    {
+        "cityName":  "TARAPUR",
+        "label":  "TARAPUR",
+        "value":  "TARAPUR"
+    },
+    {
+        "cityName":  "PITHAPURAM",
+        "label":  "PITHAPURAM",
+        "value":  "PITHAPURAM"
+    },
+    {
+        "cityName":  "MHOW",
+        "label":  "MHOW",
+        "value":  "MHOW"
+    },
+    {
+        "cityName":  "WARASEONI",
+        "label":  "WARASEONI",
+        "value":  "WARASEONI"
+    },
+    {
+        "cityName":  "WANI",
+        "label":  "WANI",
+        "value":  "WANI"
+    },
+    {
+        "cityName":  "KALAMNURI",
+        "label":  "KALAMNURI",
+        "value":  "KALAMNURI"
+    },
+    {
+        "cityName":  "LALGUDI",
+        "label":  "LALGUDI",
+        "value":  "LALGUDI"
+    },
+    {
+        "cityName":  "JASDAN",
+        "label":  "JASDAN",
+        "value":  "JASDAN"
+    },
+    {
+        "cityName":  "CANACONA",
+        "label":  "CANACONA",
+        "value":  "CANACONA"
+    },
+    {
+        "cityName":  "KODAVASAL",
+        "label":  "KODAVASAL",
+        "value":  "KODAVASAL"
+    },
+    {
+        "cityName":  "SOPORE",
+        "label":  "SOPORE",
+        "value":  "SOPORE"
+    },
+    {
+        "cityName":  "SIRONJ",
+        "label":  "SIRONJ",
+        "value":  "SIRONJ"
+    },
+    {
+        "cityName":  "NORTH 24 PGS",
+        "label":  "NORTH 24 PGS",
+        "value":  "NORTH 24 PGS"
+    },
+    {
+        "cityName":  "KAVATHE MAHANKAL",
+        "label":  "KAVATHE MAHANKAL",
+        "value":  "KAVATHE MAHANKAL"
+    },
+    {
+        "cityName":  "VIRAMGAM",
+        "label":  "VIRAMGAM",
+        "value":  "VIRAMGAM"
+    },
+    {
+        "cityName":  "PALAM",
+        "label":  "PALAM",
+        "value":  "PALAM"
+    },
+    {
+        "cityName":  "DHARMABAD",
+        "label":  "DHARMABAD",
+        "value":  "DHARMABAD"
+    },
+    {
+        "cityName":  "PHULAMBRI",
+        "label":  "PHULAMBRI",
+        "value":  "PHULAMBRI"
+    },
+    {
+        "cityName":  "GHATKESAR",
+        "label":  "GHATKESAR",
+        "value":  "GHATKESAR"
+    },
+    {
+        "cityName":  "AKHNOOR",
+        "label":  "AKHNOOR",
+        "value":  "AKHNOOR"
+    },
+    {
+        "cityName":  "PADRA",
+        "label":  "PADRA",
+        "value":  "PADRA"
+    },
+    {
+        "cityName":  "LAKSHADWEEP",
+        "label":  "LAKSHADWEEP",
+        "value":  "LAKSHADWEEP"
+    },
+    {
+        "cityName":  "KODINAR",
+        "label":  "KODINAR",
+        "value":  "KODINAR"
+    },
+    {
+        "cityName":  "TITILAGARH",
+        "label":  "TITILAGARH",
+        "value":  "TITILAGARH"
+    },
+    {
+        "cityName":  "SIMILIGUDA",
+        "label":  "SIMILIGUDA",
+        "value":  "SIMILIGUDA"
+    },
+    {
+        "cityName":  "KAPADVANJ",
+        "label":  "KAPADVANJ",
+        "value":  "KAPADVANJ"
+    },
+    {
+        "cityName":  "THIRUVAIYARU",
+        "label":  "THIRUVAIYARU",
+        "value":  "THIRUVAIYARU"
+    },
+    {
+        "cityName":  "ZOTLANG",
+        "label":  "ZOTLANG",
+        "value":  "ZOTLANG"
+    },
+    {
+        "cityName":  "SARKAGHAT",
+        "label":  "SARKAGHAT",
+        "value":  "SARKAGHAT"
+    },
+    {
+        "cityName":  "SHAHADA",
+        "label":  "SHAHADA",
+        "value":  "SHAHADA"
+    },
+    {
+        "cityName":  "MALIHABAD",
+        "label":  "MALIHABAD",
+        "value":  "MALIHABAD"
+    },
+    {
+        "cityName":  "KESINGA",
+        "label":  "KESINGA",
+        "value":  "KESINGA"
+    },
+    {
+        "cityName":  "SAIFAI",
+        "label":  "SAIFAI",
+        "value":  "SAIFAI"
+    },
+    {
+        "cityName":  "SONBHADRA",
+        "label":  "SONBHADRA",
+        "value":  "SONBHADRA"
+    },
+    {
+        "cityName":  "ILLUPPUR",
+        "label":  "ILLUPPUR",
+        "value":  "ILLUPPUR"
+    },
+    {
+        "cityName":  "GHUMARWIN",
+        "label":  "GHUMARWIN",
+        "value":  "GHUMARWIN"
+    },
+    {
+        "cityName":  "KARNPRAYAG",
+        "label":  "KARNPRAYAG",
+        "value":  "KARNPRAYAG"
+    },
+    {
+        "cityName":  "BHAINSA",
+        "label":  "BHAINSA",
+        "value":  "BHAINSA"
+    },
+    {
+        "cityName":  "DHARAPURAM",
+        "label":  "DHARAPURAM",
+        "value":  "DHARAPURAM"
+    },
+    {
+        "cityName":  "CHEYYAR",
+        "label":  "CHEYYAR",
+        "value":  "CHEYYAR"
+    },
+    {
+        "cityName":  "MANDI DABWALI",
+        "label":  "MANDI DABWALI",
+        "value":  "MANDI DABWALI"
+    },
+    {
+        "cityName":  "KATWA",
+        "label":  "KATWA",
+        "value":  "KATWA"
+    },
+    {
+        "cityName":  "PANDUA",
+        "label":  "PANDUA",
+        "value":  "PANDUA"
+    },
+    {
+        "cityName":  "MUSTABAD",
+        "label":  "MUSTABAD",
+        "value":  "MUSTABAD"
+    },
+    {
+        "cityName":  "NAVAPUR",
+        "label":  "NAVAPUR",
+        "value":  "NAVAPUR"
+    },
+    {
+        "cityName":  "PATHSALA",
+        "label":  "PATHSALA",
+        "value":  "PATHSALA"
+    },
+    {
+        "cityName":  "JINTUR",
+        "label":  "JINTUR",
+        "value":  "JINTUR"
+    },
+    {
+        "cityName":  "MUMMIDIVARAM",
+        "label":  "MUMMIDIVARAM",
+        "value":  "MUMMIDIVARAM"
+    },
+    {
+        "cityName":  "VALAPADY",
+        "label":  "VALAPADY",
+        "value":  "VALAPADY"
+    },
+    {
+        "cityName":  "NAJIBABAD",
+        "label":  "NAJIBABAD",
+        "value":  "NAJIBABAD"
+    },
+    {
+        "cityName":  "MANAMADURAI",
+        "label":  "MANAMADURAI",
+        "value":  "MANAMADURAI"
+    },
+    {
+        "cityName":  "TIMARNI",
+        "label":  "TIMARNI",
+        "value":  "TIMARNI"
+    },
+    {
+        "cityName":  "RAJULA",
+        "label":  "RAJULA",
+        "value":  "RAJULA"
+    },
+    {
+        "cityName":  "WYRA",
+        "label":  "WYRA",
+        "value":  "WYRA"
+    },
+    {
+        "cityName":  "NAKREKAL",
+        "label":  "NAKREKAL",
+        "value":  "NAKREKAL"
+    },
+    {
+        "cityName":  "YADGIRI",
+        "label":  "YADGIRI",
+        "value":  "YADGIRI"
+    },
+    {
+        "cityName":  "KANDHAR",
+        "label":  "KANDHAR",
+        "value":  "KANDHAR"
+    },
+    {
+        "cityName":  "LOKRA",
+        "label":  "LOKRA",
+        "value":  "LOKRA"
+    },
+    {
+        "cityName":  "SALIPUR",
+        "label":  "SALIPUR",
+        "value":  "SALIPUR"
+    },
+    {
+        "cityName":  "BHADGAON",
+        "label":  "BHADGAON",
+        "value":  "BHADGAON"
+    },
+    {
+        "cityName":  "SURATGARH",
+        "label":  "SURATGARH",
+        "value":  "SURATGARH"
+    },
+    {
+        "cityName":  "DANAPUR",
+        "label":  "DANAPUR",
+        "value":  "DANAPUR"
+    },
+    {
+        "cityName":  "ASHTA",
+        "label":  "ASHTA",
+        "value":  "ASHTA"
+    },
+    {
+        "cityName":  "BHILODA",
+        "label":  "BHILODA",
+        "value":  "BHILODA"
+    },
+    {
+        "cityName":  "GUNTAKAL",
+        "label":  "GUNTAKAL",
+        "value":  "GUNTAKAL"
+    },
+    {
+        "cityName":  "BARUAT",
+        "label":  "BARUAT",
+        "value":  "BARUAT"
+    },
+    {
+        "cityName":  "RANIBENNUR",
+        "label":  "RANIBENNUR",
+        "value":  "RANIBENNUR"
+    },
+    {
+        "cityName":  "MANANTHAVADY",
+        "label":  "MANANTHAVADY",
+        "value":  "MANANTHAVADY"
+    },
+    {
+        "cityName":  "SAVNER",
+        "label":  "SAVNER",
+        "value":  "SAVNER"
+    },
+    {
+        "cityName":  "ATRAMPUR",
+        "label":  "ATRAMPUR",
+        "value":  "ATRAMPUR"
+    },
+    {
+        "cityName":  "DHARANGAON",
+        "label":  "DHARANGAON",
+        "value":  "DHARANGAON"
+    },
+    {
+        "cityName":  "MUZAFARNAGAR",
+        "label":  "MUZAFARNAGAR",
+        "value":  "MUZAFARNAGAR"
+    },
+    {
+        "cityName":  "VANIYAMBADI",
+        "label":  "VANIYAMBADI",
+        "value":  "VANIYAMBADI"
+    },
+    {
+        "cityName":  "BALAGARH",
+        "label":  "BALAGARH",
+        "value":  "BALAGARH"
+    },
+    {
+        "cityName":  "BARBIL",
+        "label":  "BARBIL",
+        "value":  "BARBIL"
+    },
+    {
+        "cityName":  "SIDHPUR",
+        "label":  "SIDHPUR",
+        "value":  "SIDHPUR"
+    },
+    {
+        "cityName":  "SINGUR",
+        "label":  "SINGUR",
+        "value":  "SINGUR"
+    },
+    {
+        "cityName":  "SANGRAH",
+        "label":  "SANGRAH",
+        "value":  "SANGRAH"
+    },
+    {
+        "cityName":  "DINHATA",
+        "label":  "DINHATA",
+        "value":  "DINHATA"
+    },
+    {
+        "cityName":  "BALLARPUR",
+        "label":  "BALLARPUR",
+        "value":  "BALLARPUR"
+    },
+    {
+        "cityName":  "BHATLI",
+        "label":  "BHATLI",
+        "value":  "BHATLI"
+    },
+    {
+        "cityName":  "MOHANIA",
+        "label":  "MOHANIA",
+        "value":  "MOHANIA"
+    },
+    {
+        "cityName":  "IMPHAL WEST",
+        "label":  "IMPHAL WEST",
+        "value":  "IMPHAL WEST"
+    },
+    {
+        "cityName":  "NARKHED",
+        "label":  "NARKHED",
+        "value":  "NARKHED"
+    },
+    {
+        "cityName":  "UTHANGARAI",
+        "label":  "UTHANGARAI",
+        "value":  "UTHANGARAI"
+    },
+    {
+        "cityName":  "KICHHA",
+        "label":  "KICHHA",
+        "value":  "KICHHA"
+    },
+    {
+        "cityName":  "DHONE",
+        "label":  "DHONE",
+        "value":  "DHONE"
+    },
+    {
+        "cityName":  "TIPTUR",
+        "label":  "TIPTUR",
+        "value":  "TIPTUR"
+    },
+    {
+        "cityName":  "DHARMAGARH",
+        "label":  "DHARMAGARH",
+        "value":  "DHARMAGARH"
+    },
+    {
+        "cityName":  "BORSAD",
+        "label":  "BORSAD",
+        "value":  "BORSAD"
+    },
+    {
+        "cityName":  "BARDOLI",
+        "label":  "BARDOLI",
+        "value":  "BARDOLI"
+    },
+    {
+        "cityName":  "BADVEL",
+        "label":  "BADVEL",
+        "value":  "BADVEL"
+    },
+    {
+        "cityName":  "MANGALAGIRI",
+        "label":  "MANGALAGIRI",
+        "value":  "MANGALAGIRI"
+    },
+    {
+        "cityName":  "GADWAL",
+        "label":  "GADWAL",
+        "value":  "GADWAL"
+    },
+    {
+        "cityName":  "CHODAVARAM",
+        "label":  "CHODAVARAM",
+        "value":  "CHODAVARAM"
+    },
+    {
+        "cityName":  "TILHAR",
+        "label":  "TILHAR",
+        "value":  "TILHAR"
+    },
+    {
+        "cityName":  "DEOLA",
+        "label":  "DEOLA",
+        "value":  "DEOLA"
+    },
+    {
+        "cityName":  "DERA BASSI",
+        "label":  "DERA BASSI",
+        "value":  "DERA BASSI"
+    },
+    {
+        "cityName":  "JAORA",
+        "label":  "JAORA",
+        "value":  "JAORA"
+    },
+    {
+        "cityName":  "BRAJARAJNAGAR",
+        "label":  "BRAJARAJNAGAR",
+        "value":  "BRAJARAJNAGAR"
+    },
+    {
+        "cityName":  "UMBERGAON",
+        "label":  "UMBERGAON",
+        "value":  "UMBERGAON"
+    },
+    {
+        "cityName":  "THIRUMAYAM",
+        "label":  "THIRUMAYAM",
+        "value":  "THIRUMAYAM"
+    },
+    {
+        "cityName":  "VEMULAWADA",
+        "label":  "VEMULAWADA",
+        "value":  "VEMULAWADA"
+    },
+    {
+        "cityName":  "DHEKIAJULI",
+        "label":  "DHEKIAJULI",
+        "value":  "DHEKIAJULI"
+    },
+    {
+        "cityName":  "MULSHI",
+        "label":  "MULSHI",
+        "value":  "MULSHI"
+    },
+    {
+        "cityName":  "URAN",
+        "label":  "URAN",
+        "value":  "URAN"
+    },
+    {
+        "cityName":  "ATHANI",
+        "label":  "ATHANI",
+        "value":  "ATHANI"
+    },
+    {
+        "cityName":  "BARAUT",
+        "label":  "BARAUT",
+        "value":  "BARAUT"
+    },
+    {
+        "cityName":  "ITARSI",
+        "label":  "ITARSI",
+        "value":  "ITARSI"
+    },
+    {
+        "cityName":  "SAKCHI",
+        "label":  "SAKCHI",
+        "value":  "SAKCHI"
+    },
+    {
+        "cityName":  "JANJGIR",
+        "label":  "JANJGIR",
+        "value":  "JANJGIR"
+    },
+    {
+        "cityName":  "CHAMOLI",
+        "label":  "CHAMOLI",
+        "value":  "CHAMOLI"
+    },
+    {
+        "cityName":  "SARSIWA",
+        "label":  "SARSIWA",
+        "value":  "SARSIWA"
+    },
+    {
+        "cityName":  "HAZARIBAGH",
+        "label":  "HAZARIBAGH",
+        "value":  "HAZARIBAGH"
+    },
+    {
+        "cityName":  "SARANGARH",
+        "label":  "SARANGARH",
+        "value":  "SARANGARH"
+    },
+    {
+        "cityName":  "HATIA",
+        "label":  "HATIA",
+        "value":  "HATIA"
+    },
+    {
+        "cityName":  "CHANDAUSI",
+        "label":  "CHANDAUSI",
+        "value":  "CHANDAUSI"
+    },
+    {
+        "cityName":  "PUROLA",
+        "label":  "PUROLA",
+        "value":  "PUROLA"
+    },
+    {
+        "cityName":  "KATHALIA",
+        "label":  "KATHALIA",
+        "value":  "KATHALIA"
+    },
+    {
+        "cityName":  "GADARPUR",
+        "label":  "GADARPUR",
+        "value":  "GADARPUR"
+    },
+    {
+        "cityName":  "KATGHORA",
+        "label":  "KATGHORA",
+        "value":  "KATGHORA"
+    },
+    {
+        "cityName":  "PANDARIYA",
+        "label":  "PANDARIYA",
+        "value":  "PANDARIYA"
+    },
+    {
+        "cityName":  "BAZPUR",
+        "label":  "BAZPUR",
+        "value":  "BAZPUR"
+    },
+    {
+        "cityName":  "KUMARGHAT",
+        "label":  "KUMARGHAT",
+        "value":  "KUMARGHAT"
+    },
+    {
+        "cityName":  "KARANPRAYAG",
+        "label":  "KARANPRAYAG",
+        "value":  "KARANPRAYAG"
+    },
+    {
+        "cityName":  "MELAGHAR",
+        "label":  "MELAGHAR",
+        "value":  "MELAGHAR"
+    },
+    {
+        "cityName":  "LORMI",
+        "label":  "LORMI",
+        "value":  "LORMI"
+    },
+    {
+        "cityName":  "SALTLAKE",
+        "label":  "SALTLAKE",
+        "value":  "SALTLAKE"
+    },
+    {
+        "cityName":  "TIRUPPATHUR",
+        "label":  "TIRUPPATHUR",
+        "value":  "TIRUPPATHUR"
+    },
+    {
+        "cityName":  "RAMTEK",
+        "label":  "RAMTEK",
+        "value":  "RAMTEK"
+    },
+    {
+        "cityName":  "BADNAPUR",
+        "label":  "BADNAPUR",
+        "value":  "BADNAPUR"
+    },
+    {
+        "cityName":  "KHARORA",
+        "label":  "KHARORA",
+        "value":  "KHARORA"
+    },
+    {
+        "cityName":  "SAONER",
+        "label":  "SAONER",
+        "value":  "SAONER"
+    },
+    {
+        "cityName":  "GANDEVI",
+        "label":  "GANDEVI",
+        "value":  "GANDEVI"
+    },
+    {
+        "cityName":  "KISHANGARH",
+        "label":  "KISHANGARH",
+        "value":  "KISHANGARH"
+    },
+    {
+        "cityName":  "TANAKPUR",
+        "label":  "TANAKPUR",
+        "value":  "TANAKPUR"
+    },
+    {
+        "cityName":  "SIRKALI",
+        "label":  "SIRKALI",
+        "value":  "SIRKALI"
+    },
+    {
+        "cityName":  "TIRUPORUR",
+        "label":  "TIRUPORUR",
+        "value":  "TIRUPORUR"
+    },
+    {
+        "cityName":  "DIDWANA",
+        "label":  "DIDWANA",
+        "value":  "DIDWANA"
+    },
+    {
+        "cityName":  "PURNEA",
+        "label":  "PURNEA",
+        "value":  "PURNEA"
+    },
+    {
+        "cityName":  "GUMMIDIPOONDI",
+        "label":  "GUMMIDIPOONDI",
+        "value":  "GUMMIDIPOONDI"
+    },
+    {
+        "cityName":  "KHANPUR",
+        "label":  "KHANPUR",
+        "value":  "KHANPUR"
+    },
+    {
+        "cityName":  "AMARPUR",
+        "label":  "AMARPUR",
+        "value":  "AMARPUR"
+    },
+    {
+        "cityName":  "VIRAJPET",
+        "label":  "VIRAJPET",
+        "value":  "VIRAJPET"
+    },
+    {
+        "cityName":  "KASIA",
+        "label":  "KASIA",
+        "value":  "KASIA"
+    },
+    {
+        "cityName":  "SINGRAULI",
+        "label":  "SINGRAULI",
+        "value":  "SINGRAULI"
+    },
+    {
+        "cityName":  "NOKHA",
+        "label":  "NOKHA",
+        "value":  "NOKHA"
+    },
+    {
+        "cityName":  "KAMALPUR",
+        "label":  "KAMALPUR",
+        "value":  "KAMALPUR"
+    },
+    {
+        "cityName":  "DUNGRI",
+        "label":  "DUNGRI",
+        "value":  "DUNGRI"
+    },
+    {
+        "cityName":  "MALKAPUR",
+        "label":  "MALKAPUR",
+        "value":  "MALKAPUR"
+    },
+    {
+        "cityName":  "ARAKKONAM",
+        "label":  "ARAKKONAM",
+        "value":  "ARAKKONAM"
+    },
+    {
+        "cityName":  "PALLADAM",
+        "label":  "PALLADAM",
+        "value":  "PALLADAM"
+    },
+    {
+        "cityName":  "SATHYAMANGALAM",
+        "label":  "SATHYAMANGALAM",
+        "value":  "SATHYAMANGALAM"
+    },
+    {
+        "cityName":  "TAMBARAM",
+        "label":  "TAMBARAM",
+        "value":  "TAMBARAM"
+    },
+    {
+        "cityName":  "NILAKOTTAI",
+        "label":  "NILAKOTTAI",
+        "value":  "NILAKOTTAI"
+    },
+    {
+        "cityName":  "KODAIKANAL",
+        "label":  "KODAIKANAL",
+        "value":  "KODAIKANAL"
+    },
+    {
+        "cityName":  "ULUNDURPET",
+        "label":  "ULUNDURPET",
+        "value":  "ULUNDURPET"
+    },
+    {
+        "cityName":  "VEDASANDUR",
+        "label":  "VEDASANDUR",
+        "value":  "VEDASANDUR"
+    },
+    {
+        "cityName":  "LUNAWADA",
+        "label":  "LUNAWADA",
+        "value":  "LUNAWADA"
+    },
+    {
+        "cityName":  "UTHIRAMERUR",
+        "label":  "UTHIRAMERUR",
+        "value":  "UTHIRAMERUR"
+    },
+    {
+        "cityName":  "UDHAGAMANDALAM",
+        "label":  "UDHAGAMANDALAM",
+        "value":  "UDHAGAMANDALAM"
+    },
+    {
+        "cityName":  "AVUDAYARKOIL",
+        "label":  "AVUDAYARKOIL",
+        "value":  "AVUDAYARKOIL"
+    },
+    {
+        "cityName":  "MUDUKULATHUR",
+        "label":  "MUDUKULATHUR",
+        "value":  "MUDUKULATHUR"
+    },
+    {
+        "cityName":  "RAMESWARAM",
+        "label":  "RAMESWARAM",
+        "value":  "RAMESWARAM"
+    },
+    {
+        "cityName":  "SATHANKULAM",
+        "label":  "SATHANKULAM",
+        "value":  "SATHANKULAM"
+    },
+    {
+        "cityName":  "UTHAMAPALAYAM",
+        "label":  "UTHAMAPALAYAM",
+        "value":  "UTHAMAPALAYAM"
+    },
+    {
+        "cityName":  "PONNERI",
+        "label":  "PONNERI",
+        "value":  "PONNERI"
+    },
+    {
+        "cityName":  "DENKANIKOTTAI",
+        "label":  "DENKANIKOTTAI",
+        "value":  "DENKANIKOTTAI"
+    },
+    {
+        "cityName":  "TILOI",
+        "label":  "TILOI",
+        "value":  "TILOI"
+    },
+    {
+        "cityName":  "LALGANJ",
+        "label":  "LALGANJ",
+        "value":  "LALGANJ"
+    },
+    {
+        "cityName":  "UDAYARPALAYAM",
+        "label":  "UDAYARPALAYAM",
+        "value":  "UDAYARPALAYAM"
+    },
+    {
+        "cityName":  "ALANGUDI",
+        "label":  "ALANGUDI",
+        "value":  "ALANGUDI"
+    },
+    {
+        "cityName":  "THIRUMANGALAM",
+        "label":  "THIRUMANGALAM",
+        "value":  "THIRUMANGALAM"
+    },
+    {
+        "cityName":  "VEDARANYAM",
+        "label":  "VEDARANYAM",
+        "value":  "VEDARANYAM"
+    },
+    {
+        "cityName":  "ARANI",
+        "label":  "ARANI",
+        "value":  "ARANI"
+    },
+    {
+        "cityName":  "TIRUTTANI",
+        "label":  "TIRUTTANI",
+        "value":  "TIRUTTANI"
+    },
+    {
+        "cityName":  "KANDI",
+        "label":  "KANDI",
+        "value":  "KANDI"
+    },
+    {
+        "cityName":  "PARATWADA",
+        "label":  "PARATWADA",
+        "value":  "PARATWADA"
+    },
+    {
+        "cityName":  "BEAS",
+        "label":  "BEAS",
+        "value":  "BEAS"
+    },
+    {
+        "cityName":  "THOTTIAM",
+        "label":  "THOTTIAM",
+        "value":  "THOTTIAM"
+    },
+    {
+        "cityName":  "BARH",
+        "label":  "BARH",
+        "value":  "BARH"
+    },
+    {
+        "cityName":  "BALAPUR",
+        "label":  "BALAPUR",
+        "value":  "BALAPUR"
+    },
+    {
+        "cityName":  "AUNDHA NAGNATH",
+        "label":  "AUNDHA NAGNATH",
+        "value":  "AUNDHA NAGNATH"
+    },
+    {
+        "cityName":  "HANDWARA",
+        "label":  "HANDWARA",
+        "value":  "HANDWARA"
+    },
+    {
+        "cityName":  "KALLUR",
+        "label":  "KALLUR",
+        "value":  "KALLUR"
+    },
+    {
+        "cityName":  "RAGHUNATHPUR",
+        "label":  "RAGHUNATHPUR",
+        "value":  "RAGHUNATHPUR"
+    },
+    {
+        "cityName":  "ALATHUR",
+        "label":  "ALATHUR",
+        "value":  "ALATHUR"
+    },
+    {
+        "cityName":  "CHIRAWA",
+        "label":  "CHIRAWA",
+        "value":  "CHIRAWA"
+    },
+    {
+        "cityName":  "MARGHERITA",
+        "label":  "MARGHERITA",
+        "value":  "MARGHERITA"
+    },
+    {
+        "cityName":  "MARWAHI",
+        "label":  "MARWAHI",
+        "value":  "MARWAHI"
+    },
+    {
+        "cityName":  "WALAJAPET",
+        "label":  "WALAJAPET",
+        "value":  "WALAJAPET"
+    },
+    {
+        "cityName":  "BILARA",
+        "label":  "BILARA",
+        "value":  "BILARA"
+    },
+    {
+        "cityName":  "RAMANAGARAM",
+        "label":  "RAMANAGARAM",
+        "value":  "RAMANAGARAM"
+    },
+    {
+        "cityName":  "JAYNAGAR",
+        "label":  "JAYNAGAR",
+        "value":  "JAYNAGAR"
+    },
+    {
+        "cityName":  "BALIA",
+        "label":  "BALIA",
+        "value":  "BALIA"
+    },
+    {
+        "cityName":  "PAPANASAM",
+        "label":  "PAPANASAM",
+        "value":  "PAPANASAM"
+    },
+    {
+        "cityName":  "BISHALGARH",
+        "label":  "BISHALGARH",
+        "value":  "BISHALGARH"
+    },
+    {
+        "cityName":  "JANGAON",
+        "label":  "JANGAON",
+        "value":  "JANGAON"
+    },
+    {
+        "cityName":  "AUNDIPATTI",
+        "label":  "AUNDIPATTI",
+        "value":  "AUNDIPATTI"
+    },
+    {
+        "cityName":  "HINDAUN",
+        "label":  "HINDAUN",
+        "value":  "HINDAUN"
+    },
+    {
+        "cityName":  "VIRUDHACHALAM",
+        "label":  "VIRUDHACHALAM",
+        "value":  "VIRUDHACHALAM"
+    },
+    {
+        "cityName":  "SERAMPORE",
+        "label":  "SERAMPORE",
+        "value":  "SERAMPORE"
+    },
+    {
+        "cityName":  "PALASA",
+        "label":  "PALASA",
+        "value":  "PALASA"
+    },
+    {
+        "cityName":  "BELUR",
+        "label":  "BELUR",
+        "value":  "BELUR"
+    },
+    {
+        "cityName":  "ADRA",
+        "label":  "ADRA",
+        "value":  "ADRA"
+    },
+    {
+        "cityName":  "YERRAGONDAPALEM",
+        "label":  "YERRAGONDAPALEM",
+        "value":  "YERRAGONDAPALEM"
+    },
+    {
+        "cityName":  "MOHANPUR",
+        "label":  "MOHANPUR",
+        "value":  "MOHANPUR"
+    },
+    {
+        "cityName":  "MANUBAZAR",
+        "label":  "MANUBAZAR",
+        "value":  "MANUBAZAR"
+    },
+    {
+        "cityName":  "TELIAMURA",
+        "label":  "TELIAMURA",
+        "value":  "TELIAMURA"
+    },
+    {
+        "cityName":  "KULAI",
+        "label":  "KULAI",
+        "value":  "KULAI"
+    },
+    {
+        "cityName":  "SANQUELIM",
+        "label":  "SANQUELIM",
+        "value":  "SANQUELIM"
+    },
+    {
+        "cityName":  "ALUR",
+        "label":  "ALUR",
+        "value":  "ALUR"
+    },
+    {
+        "cityName":  "TANGDHAR",
+        "label":  "TANGDHAR",
+        "value":  "TANGDHAR"
+    },
+    {
+        "cityName":  "GOLCONDA",
+        "label":  "GOLCONDA",
+        "value":  "GOLCONDA"
+    },
+    {
+        "cityName":  "KHATIMA",
+        "label":  "KHATIMA",
+        "value":  "KHATIMA"
+    },
+    {
+        "cityName":  "ANKLESHWAR",
+        "label":  "ANKLESHWAR",
+        "value":  "ANKLESHWAR"
+    },
+    {
+        "cityName":  "WANKANER",
+        "label":  "WANKANER",
+        "value":  "WANKANER"
+    },
+    {
+        "cityName":  "KUNNATHUR",
+        "label":  "KUNNATHUR",
+        "value":  "KUNNATHUR"
+    },
+    {
+        "cityName":  "AMARAVATI",
+        "label":  "AMARAVATI",
+        "value":  "AMARAVATI"
+    },
+    {
+        "cityName":  "MALUR",
+        "label":  "MALUR",
+        "value":  "MALUR"
+    },
+    {
+        "cityName":  "Bandel",
+        "label":  "Bandel",
+        "value":  "Bandel"
+    },
+    {
+        "cityName":  "PILER",
+        "label":  "PILER",
+        "value":  "PILER"
+    },
+    {
+        "cityName":  "HUNSUR",
+        "label":  "HUNSUR",
+        "value":  "HUNSUR"
+    },
+    {
+        "cityName":  "TUNI",
+        "label":  "TUNI",
+        "value":  "TUNI"
+    },
+    {
+        "cityName":  "PERAVURANI",
+        "label":  "PERAVURANI",
+        "value":  "PERAVURANI"
+    },
+    {
+        "cityName":  "ZAHIRABAD",
+        "label":  "ZAHIRABAD",
+        "value":  "ZAHIRABAD"
+    },
+    {
+        "cityName":  "BARNAGAR",
+        "label":  "BARNAGAR",
+        "value":  "BARNAGAR"
+    },
+    {
+        "cityName":  "CHANDIPUR",
+        "label":  "CHANDIPUR",
+        "value":  "CHANDIPUR"
+    },
+    {
+        "cityName":  "ALANGULAM",
+        "label":  "ALANGULAM",
+        "value":  "ALANGULAM"
+    },
+    {
+        "cityName":  "ALLAGADDA",
+        "label":  "ALLAGADDA",
+        "value":  "ALLAGADDA"
+    },
+    {
+        "cityName":  "DHOLKA",
+        "label":  "DHOLKA",
+        "value":  "DHOLKA"
+    },
+    {
+        "cityName":  "SANCHORE",
+        "label":  "SANCHORE",
+        "value":  "SANCHORE"
+    },
+    {
+        "cityName":  "GANNAVARAM",
+        "label":  "GANNAVARAM",
+        "value":  "GANNAVARAM"
+    },
+    {
+        "cityName":  "DUBBAK",
+        "label":  "DUBBAK",
+        "value":  "DUBBAK"
+    },
+    {
+        "cityName":  "Meghnagar",
+        "label":  "Meghnagar",
+        "value":  "Meghnagar"
+    },
+    {
+        "cityName":  "Mahrajganj",
+        "label":  "Mahrajganj",
+        "value":  "Mahrajganj"
+    },
+    {
+        "cityName":  "Jirania",
+        "label":  "Jirania",
+        "value":  "Jirania"
+    },
+    {
+        "cityName":  "MUNDRA",
+        "label":  "MUNDRA",
+        "value":  "MUNDRA"
+    },
+    {
+        "cityName":  "PONDICHERY",
+        "label":  "PONDICHERY",
+        "value":  "PONDICHERY"
+    },
+    {
+        "cityName":  "MIRYALGUDA",
+        "label":  "MIRYALGUDA",
+        "value":  "MIRYALGUDA"
+    },
+    {
+        "cityName":  "BALOTRA",
+        "label":  "BALOTRA",
+        "value":  "BALOTRA"
+    },
+    {
+        "cityName":  "Fateh Pur",
+        "label":  "Fateh Pur",
+        "value":  "Fateh Pur"
+    },
+    {
+        "cityName":  "LIMKHEDA",
+        "label":  "LIMKHEDA",
+        "value":  "LIMKHEDA"
+    },
+    {
+        "cityName":  "SHERGHATI",
+        "label":  "SHERGHATI",
+        "value":  "SHERGHATI"
+    },
+    {
+        "cityName":  "VAISHALI",
+        "label":  "VAISHALI",
+        "value":  "VAISHALI"
+    },
+    {
+        "cityName":  "TALASARI",
+        "label":  "TALASARI",
+        "value":  "TALASARI"
+    },
+    {
+        "cityName":  "BAGHAPURANA",
+        "label":  "BAGHAPURANA",
+        "value":  "BAGHAPURANA"
+    },
+    {
+        "cityName":  "ROHRU",
+        "label":  "ROHRU",
+        "value":  "ROHRU"
+    },
+    {
+        "cityName":  "JASHPUR",
+        "label":  "JASHPUR",
+        "value":  "JASHPUR"
+    },
+    {
+        "cityName":  "NASIRABAD",
+        "label":  "NASIRABAD",
+        "value":  "NASIRABAD"
+    },
+    {
+        "cityName":  "MURBAD",
+        "label":  "MURBAD",
+        "value":  "MURBAD"
+    },
+    {
+        "cityName":  "PANRUTI",
+        "label":  "PANRUTI",
+        "value":  "PANRUTI"
+    },
+    {
+        "cityName":  "PATHRI",
+        "label":  "PATHRI",
+        "value":  "PATHRI"
+    },
+    {
+        "cityName":  "WADWANI",
+        "label":  "WADWANI",
+        "value":  "WADWANI"
+    },
+    {
+        "cityName":  "SOHNA",
+        "label":  "SOHNA",
+        "value":  "SOHNA"
+    },
+    {
+        "cityName":  "SUPA",
+        "label":  "SUPA",
+        "value":  "SUPA"
+    },
+    {
+        "cityName":  "SANGANER",
+        "label":  "SANGANER",
+        "value":  "SANGANER"
+    },
+    {
+        "cityName":  "JAKHANIA",
+        "label":  "JAKHANIA",
+        "value":  "JAKHANIA"
+    },
+    {
+        "cityName":  "Nepanagar",
+        "label":  "Nepanagar",
+        "value":  "Nepanagar"
+    },
+    {
+        "cityName":  "RAJAM",
+        "label":  "RAJAM",
+        "value":  "RAJAM"
+    },
+    {
+        "cityName":  "GOHANA",
+        "label":  "GOHANA",
+        "value":  "GOHANA"
+    },
+    {
+        "cityName":  "AMBAD",
+        "label":  "AMBAD",
+        "value":  "AMBAD"
+    },
+    {
+        "cityName":  "SUJANGARH",
+        "label":  "SUJANGARH",
+        "value":  "SUJANGARH"
+    },
+    {
+        "cityName":  "QAZIGUND",
+        "label":  "QAZIGUND",
+        "value":  "QAZIGUND"
+    },
+    {
+        "cityName":  "CHINSURAH",
+        "label":  "CHINSURAH",
+        "value":  "CHINSURAH"
+    },
+    {
+        "cityName":  "BAHROR",
+        "label":  "BAHROR",
+        "value":  "BAHROR"
+    },
+    {
+        "cityName":  "SALUMBER",
+        "label":  "SALUMBER",
+        "value":  "SALUMBER"
+    },
+    {
+        "cityName":  "DEOLI",
+        "label":  "DEOLI",
+        "value":  "DEOLI"
+    },
+    {
+        "cityName":  "SAIDABAD",
+        "label":  "SAIDABAD",
+        "value":  "SAIDABAD"
+    },
+    {
+        "cityName":  "LALGOLA",
+        "label":  "LALGOLA",
+        "value":  "LALGOLA"
+    },
+    {
+        "cityName":  "PATNAGARH",
+        "label":  "PATNAGARH",
+        "value":  "PATNAGARH"
+    },
+    {
+        "cityName":  "GEVRAI",
+        "label":  "GEVRAI",
+        "value":  "GEVRAI"
+    },
+    {
+        "cityName":  "BALI",
+        "label":  "BALI",
+        "value":  "BALI"
+    },
+    {
+        "cityName":  "BHOGPUR",
+        "label":  "BHOGPUR",
+        "value":  "BHOGPUR"
+    },
+    {
+        "cityName":  "AMGAON",
+        "label":  "AMGAON",
+        "value":  "AMGAON"
+    },
+    {
+        "cityName":  "RASHMI",
+        "label":  "RASHMI",
+        "value":  "RASHMI"
+    },
+    {
+        "cityName":  "BARI",
+        "label":  "BARI",
+        "value":  "BARI"
+    },
+    {
+        "cityName":  "ZANSKAR",
+        "label":  "ZANSKAR",
+        "value":  "ZANSKAR"
+    },
+    {
+        "cityName":  "Petlawad",
+        "label":  "Petlawad",
+        "value":  "Petlawad"
+    },
+    {
+        "cityName":  "HANSI",
+        "label":  "HANSI",
+        "value":  "HANSI"
+    },
+    {
+        "cityName":  "UNCHAHAR",
+        "label":  "UNCHAHAR",
+        "value":  "UNCHAHAR"
+    },
+    {
+        "cityName":  "HANSOT",
+        "label":  "HANSOT",
+        "value":  "HANSOT"
+    },
+    {
+        "cityName":  "GOSSAIGAON",
+        "label":  "GOSSAIGAON",
+        "value":  "GOSSAIGAON"
+    },
+    {
+        "cityName":  "KHEDA",
+        "label":  "KHEDA",
+        "value":  "KHEDA"
+    },
+    {
+        "cityName":  "GOVINDPUR",
+        "label":  "GOVINDPUR",
+        "value":  "GOVINDPUR"
+    },
+    {
+        "cityName":  "KRISHNAGAR",
+        "label":  "KRISHNAGAR",
+        "value":  "KRISHNAGAR"
+    },
+    {
+        "cityName":  "AKKALKUWA",
+        "label":  "AKKALKUWA",
+        "value":  "AKKALKUWA"
+    },
+    {
+        "cityName":  "BHIMADOLE",
+        "label":  "BHIMADOLE",
+        "value":  "BHIMADOLE"
+    },
+    {
+        "cityName":  "CHIKHALI",
+        "label":  "CHIKHALI",
+        "value":  "CHIKHALI"
+    },
+    {
+        "cityName":  "DERABASSI",
+        "label":  "DERABASSI",
+        "value":  "DERABASSI"
+    },
+    {
+        "cityName":  "JHAJHA",
+        "label":  "JHAJHA",
+        "value":  "JHAJHA"
+    },
+    {
+        "cityName":  "TALA",
+        "label":  "TALA",
+        "value":  "TALA"
+    },
+    {
+        "cityName":  "NANDIGRAM",
+        "label":  "NANDIGRAM",
+        "value":  "NANDIGRAM"
+    },
+    {
+        "cityName":  "HAROA",
+        "label":  "HAROA",
+        "value":  "HAROA"
+    },
+    {
+        "cityName":  "WARORA",
+        "label":  "WARORA",
+        "value":  "WARORA"
+    },
+    {
+        "cityName":  "MARKAPUR",
+        "label":  "MARKAPUR",
+        "value":  "MARKAPUR"
+    },
+    {
+        "cityName":  "AURAD",
+        "label":  "AURAD",
+        "value":  "AURAD"
+    },
+    {
+        "cityName":  "PALAMANER",
+        "label":  "PALAMANER",
+        "value":  "PALAMANER"
+    },
+    {
+        "cityName":  "MORIGAON",
+        "label":  "MORIGAON",
+        "value":  "MORIGAON"
+    },
+    {
+        "cityName":  "KUMTA",
+        "label":  "KUMTA",
+        "value":  "KUMTA"
+    },
+    {
+        "cityName":  "KHARSIA",
+        "label":  "KHARSIA",
+        "value":  "KHARSIA"
+    },
+    {
+        "cityName":  "ANAKAPALLE",
+        "label":  "ANAKAPALLE",
+        "value":  "ANAKAPALLE"
+    },
+    {
+        "cityName":  "ABU ROAD",
+        "label":  "ABU ROAD",
+        "value":  "ABU ROAD"
+    },
+    {
+        "cityName":  "JEYPORE",
+        "label":  "JEYPORE",
+        "value":  "JEYPORE"
+    },
+    {
+        "cityName":  "BANTWAL",
+        "label":  "BANTWAL",
+        "value":  "BANTWAL"
+    },
+    {
+        "cityName":  "NAWABGANJ",
+        "label":  "NAWABGANJ",
+        "value":  "NAWABGANJ"
+    },
+    {
+        "cityName":  "MADHAPUR",
+        "label":  "MADHAPUR",
+        "value":  "MADHAPUR"
+    },
+    {
+        "cityName":  "MADAKASIRA",
+        "label":  "MADAKASIRA",
+        "value":  "MADAKASIRA"
+    },
+    {
+        "cityName":  "BELDA",
+        "label":  "BELDA",
+        "value":  "BELDA"
+    },
+    {
+        "cityName":  "KHAIRATABAD",
+        "label":  "KHAIRATABAD",
+        "value":  "KHAIRATABAD"
+    },
+    {
+        "cityName":  "BARWALA",
+        "label":  "BARWALA",
+        "value":  "BARWALA"
+    },
+    {
+        "cityName":  "KANKIPADU",
+        "label":  "KANKIPADU",
+        "value":  "KANKIPADU"
+    },
+    {
+        "cityName":  "PERAIYUR",
+        "label":  "PERAIYUR",
+        "value":  "PERAIYUR"
+    },
+    {
+        "cityName":  "BHADRAWATI",
+        "label":  "BHADRAWATI",
+        "value":  "BHADRAWATI"
+    },
+    {
+        "cityName":  "KORIA",
+        "label":  "KORIA",
+        "value":  "KORIA"
+    },
+    {
+        "cityName":  "BHATGAON",
+        "label":  "BHATGAON",
+        "value":  "BHATGAON"
+    },
+    {
+        "cityName":  "GEORAI",
+        "label":  "GEORAI",
+        "value":  "GEORAI"
+    },
+    {
+        "cityName":  "JOGIPET",
+        "label":  "JOGIPET",
+        "value":  "JOGIPET"
+    },
+    {
+        "cityName":  "MURI",
+        "label":  "MURI",
+        "value":  "MURI"
+    },
+    {
+        "cityName":  "ARNI",
+        "label":  "ARNI",
+        "value":  "ARNI"
+    },
+    {
+        "cityName":  "KEKRI",
+        "label":  "KEKRI",
+        "value":  "KEKRI"
+    },
+    {
+        "cityName":  "SANGAREDDY",
+        "label":  "SANGAREDDY",
+        "value":  "SANGAREDDY"
+    },
+    {
+        "cityName":  "CHOUTUPPAL",
+        "label":  "CHOUTUPPAL",
+        "value":  "CHOUTUPPAL"
+    },
+    {
+        "cityName":  "DHORAJI",
+        "label":  "DHORAJI",
+        "value":  "DHORAJI"
+    },
+    {
+        "cityName":  "BIKRAMGANJ",
+        "label":  "BIKRAMGANJ",
+        "value":  "BIKRAMGANJ"
+    },
+    {
+        "cityName":  "VRIDDHACHALAM",
+        "label":  "VRIDDHACHALAM",
+        "value":  "VRIDDHACHALAM"
+    },
+    {
+        "cityName":  "DHANIAKHALI",
+        "label":  "DHANIAKHALI",
+        "value":  "DHANIAKHALI"
+    },
+    {
+        "cityName":  "PEDAKAKANI",
+        "label":  "PEDAKAKANI",
+        "value":  "PEDAKAKANI"
+    },
+    {
+        "cityName":  "HOSADURGA",
+        "label":  "HOSADURGA",
+        "value":  "HOSADURGA"
+    },
+    {
+        "cityName":  "MAHAGAMA",
+        "label":  "MAHAGAMA",
+        "value":  "MAHAGAMA"
+    },
+    {
+        "cityName":  "KANNAD",
+        "label":  "KANNAD",
+        "value":  "KANNAD"
+    },
+    {
+        "cityName":  "MOGULLAPALLI",
+        "label":  "MOGULLAPALLI",
+        "value":  "MOGULLAPALLI"
+    },
+    {
+        "cityName":  "JAJPUR",
+        "label":  "JAJPUR",
+        "value":  "JAJPUR"
+    },
+    {
+        "cityName":  "BALLABGARH",
+        "label":  "BALLABGARH",
+        "value":  "BALLABGARH"
+    },
+    {
+        "cityName":  "NIPHAD",
+        "label":  "NIPHAD",
+        "value":  "NIPHAD"
+    },
+    {
+        "cityName":  "MANASA",
+        "label":  "MANASA",
+        "value":  "MANASA"
+    },
+    {
+        "cityName":  "KALKA",
+        "label":  "KALKA",
+        "value":  "KALKA"
+    },
+    {
+        "cityName":  "AHMEDBAD",
+        "label":  "AHMEDBAD",
+        "value":  "AHMEDBAD"
+    },
+    {
+        "cityName":  "DOMKAL",
+        "label":  "DOMKAL",
+        "value":  "DOMKAL"
+    },
+    {
+        "cityName":  "JETPUR",
+        "label":  "JETPUR",
+        "value":  "JETPUR"
+    },
+    {
+        "cityName":  "BHACHAU",
+        "label":  "BHACHAU",
+        "value":  "BHACHAU"
+    },
+    {
+        "cityName":  "VIKASNAGAR",
+        "label":  "VIKASNAGAR",
+        "value":  "VIKASNAGAR"
+    },
+    {
+        "cityName":  "PARIGI",
+        "label":  "PARIGI",
+        "value":  "PARIGI"
+    },
+    {
+        "cityName":  "VIKARABAD",
+        "label":  "VIKARABAD",
+        "value":  "VIKARABAD"
+    },
+    {
+        "cityName":  "BHALKI",
+        "label":  "BHALKI",
+        "value":  "BHALKI"
+    },
+    {
+        "cityName":  "MEDCHAL",
+        "label":  "MEDCHAL",
+        "value":  "MEDCHAL"
+    },
+    {
+        "cityName":  "MULBAGAL",
+        "label":  "MULBAGAL",
+        "value":  "MULBAGAL"
+    },
+    {
+        "cityName":  "UDAYAGIRI",
+        "label":  "UDAYAGIRI",
+        "value":  "UDAYAGIRI"
+    },
+    {
+        "cityName":  "CHUNAR",
+        "label":  "CHUNAR",
+        "value":  "CHUNAR"
+    },
+    {
+        "cityName":  "MAHESHWAR",
+        "label":  "MAHESHWAR",
+        "value":  "MAHESHWAR"
+    },
+    {
+        "cityName":  "SRISAILAM",
+        "label":  "SRISAILAM",
+        "value":  "SRISAILAM"
+    },
+    {
+        "cityName":  "GADARWARA",
+        "label":  "GADARWARA",
+        "value":  "GADARWARA"
+    },
+    {
+        "cityName":  "KARELI",
+        "label":  "KARELI",
+        "value":  "KARELI"
+    },
+    {
+        "cityName":  "SULLIA",
+        "label":  "SULLIA",
+        "value":  "SULLIA"
+    },
+    {
+        "cityName":  "MANDAVI",
+        "label":  "MANDAVI",
+        "value":  "MANDAVI"
+    },
+    {
+        "cityName":  "BISHUNPUR",
+        "label":  "BISHUNPUR",
+        "value":  "BISHUNPUR"
+    },
+    {
+        "cityName":  "GUBBI",
+        "label":  "GUBBI",
+        "value":  "GUBBI"
+    },
+    {
+        "cityName":  "DHARUHERA",
+        "label":  "DHARUHERA",
+        "value":  "DHARUHERA"
+    },
+    {
+        "cityName":  "Rohtas",
+        "label":  "Rohtas",
+        "value":  "Rohtas"
+    },
+    {
+        "cityName":  "YAWAL",
+        "label":  "YAWAL",
+        "value":  "YAWAL"
+    },
+    {
+        "cityName":  "PARTUR",
+        "label":  "PARTUR",
+        "value":  "PARTUR"
+    },
+    {
+        "cityName":  "BHANUPRATAPPUR",
+        "label":  "BHANUPRATAPPUR",
+        "value":  "BHANUPRATAPPUR"
+    },
+    {
+        "cityName":  "BADNAGAR",
+        "label":  "BADNAGAR",
+        "value":  "BADNAGAR"
+    },
+    {
+        "cityName":  "KHARAR",
+        "label":  "KHARAR",
+        "value":  "KHARAR"
+    },
+    {
+        "cityName":  "RAZOLE",
+        "label":  "RAZOLE",
+        "value":  "RAZOLE"
+    },
+    {
+        "cityName":  "GAUTAM BUDH NAGAR",
+        "label":  "GAUTAM BUDH NAGAR",
+        "value":  "GAUTAM BUDH NAGAR"
+    },
+    {
+        "cityName":  "TRAL",
+        "label":  "TRAL",
+        "value":  "TRAL"
+    },
+    {
+        "cityName":  "SHOPIAN",
+        "label":  "SHOPIAN",
+        "value":  "SHOPIAN"
+    },
+    {
+        "cityName":  "BIHARSHARIF",
+        "label":  "BIHARSHARIF",
+        "value":  "BIHARSHARIF"
+    },
+    {
+        "cityName":  "ANAND NAGAR",
+        "label":  "ANAND NAGAR",
+        "value":  "ANAND NAGAR"
+    },
+    {
+        "cityName":  "DHRANGADHRA",
+        "label":  "DHRANGADHRA",
+        "value":  "DHRANGADHRA"
+    },
+    {
+        "cityName":  "VADNAGAR",
+        "label":  "VADNAGAR",
+        "value":  "VADNAGAR"
+    },
+    {
+        "cityName":  "DHARAMPUR",
+        "label":  "DHARAMPUR",
+        "value":  "DHARAMPUR"
+    },
+    {
+        "cityName":  "BIJBEHARA",
+        "label":  "BIJBEHARA",
+        "value":  "BIJBEHARA"
+    },
+    {
+        "cityName":  "MAGAM",
+        "label":  "MAGAM",
+        "value":  "MAGAM"
+    },
+    {
+        "cityName":  "SOGAM",
+        "label":  "SOGAM",
+        "value":  "SOGAM"
+    },
+    {
+        "cityName":  "LAJPORE",
+        "label":  "LAJPORE",
+        "value":  "LAJPORE"
+    },
+    {
+        "cityName":  "ATMAKUR",
+        "label":  "ATMAKUR",
+        "value":  "ATMAKUR"
+    },
+    {
+        "cityName":  "BUDGAM",
+        "label":  "BUDGAM",
+        "value":  "BUDGAM"
+    },
+    {
+        "cityName":  "AJNALA",
+        "label":  "AJNALA",
+        "value":  "AJNALA"
+    },
+    {
+        "cityName":  "KOVVUR",
+        "label":  "KOVVUR",
+        "value":  "KOVVUR"
+    },
+    {
+        "cityName":  "ERANDOL",
+        "label":  "ERANDOL",
+        "value":  "ERANDOL"
+    },
+    {
+        "cityName":  "BISHRAMPUR",
+        "label":  "BISHRAMPUR",
+        "value":  "BISHRAMPUR"
+    },
+    {
+        "cityName":  "NARSIPATNAM",
+        "label":  "NARSIPATNAM",
+        "value":  "NARSIPATNAM"
+    },
+    {
+        "cityName":  "BHOJPUR",
+        "label":  "BHOJPUR",
+        "value":  "BHOJPUR"
+    },
+    {
+        "cityName":  "HALVAD",
+        "label":  "HALVAD",
+        "value":  "HALVAD"
+    },
+    {
+        "cityName":  "BARHI",
+        "label":  "BARHI",
+        "value":  "BARHI"
+    },
+    {
+        "cityName":  "KINWAT",
+        "label":  "KINWAT",
+        "value":  "KINWAT"
+    },
+    {
+        "cityName":  "TIHIDI",
+        "label":  "TIHIDI",
+        "value":  "TIHIDI"
+    },
+    {
+        "cityName":  "KUCHINDA",
+        "label":  "KUCHINDA",
+        "value":  "KUCHINDA"
+    },
+    {
+        "cityName":  "HIRAKUD",
+        "label":  "HIRAKUD",
+        "value":  "HIRAKUD"
+    },
+    {
+        "cityName":  "KANPUR NAGAR",
+        "label":  "KANPUR NAGAR",
+        "value":  "KANPUR NAGAR"
+    },
+    {
+        "cityName":  "KASRAWAD",
+        "label":  "KASRAWAD",
+        "value":  "KASRAWAD"
+    },
+    {
+        "cityName":  "MEJHIA",
+        "label":  "MEJHIA",
+        "value":  "MEJHIA"
+    },
+    {
+        "cityName":  "PEHOWA",
+        "label":  "PEHOWA",
+        "value":  "PEHOWA"
+    },
+    {
+        "cityName":  "JAGDISHPUR",
+        "label":  "JAGDISHPUR",
+        "value":  "JAGDISHPUR"
+    },
+    {
+        "cityName":  "Shirdi",
+        "label":  "Shirdi",
+        "value":  "Shirdi"
+    },
+    {
+        "cityName":  "Inderpuri",
+        "label":  "Inderpuri",
+        "value":  "Inderpuri"
+    },
+    {
+        "cityName":  "New Ashok Nagar",
+        "label":  "New Ashok Nagar",
+        "value":  "New Ashok Nagar"
+    },
+    {
+        "cityName":  "Verna",
+        "label":  "Verna",
+        "value":  "Verna"
+    },
+    {
+        "cityName":  "Kadapa",
+        "label":  "Kadapa",
+        "value":  "Kadapa"
+    },
+    {
+        "cityName":  "Nagina",
+        "label":  "Nagina",
+        "value":  "Nagina"
+    },
+    {
+        "cityName":  "Tirupati",
+        "label":  "Tirupati",
+        "value":  "Tirupati"
+    },
+    {
+        "cityName":  "Achanta",
+        "label":  "Achanta",
+        "value":  "Achanta"
+    },
+    {
+        "cityName":  "Ambernath",
+        "label":  "Ambernath",
+        "value":  "Ambernath"
+    },
+    {
+        "cityName":  "Dombivili",
+        "label":  "Dombivili",
+        "value":  "Dombivili"
+    },
+    {
+        "cityName":  "Shahapur",
+        "label":  "Shahapur",
+        "value":  "Shahapur"
+    },
+    {
+        "cityName":  "Ulhasnagar",
+        "label":  "Ulhasnagar",
+        "value":  "Ulhasnagar"
+    },
+    {
+        "cityName":  "Palghar",
+        "label":  "Palghar",
+        "value":  "Palghar"
+    },
+    {
+        "cityName":  "Mokhada",
+        "label":  "Mokhada",
+        "value":  "Mokhada"
+    },
+    {
+        "cityName":  "Vada",
+        "label":  "Vada",
+        "value":  "Vada"
+    },
+    {
+        "cityName":  "Vikramgad",
+        "label":  "Vikramgad",
+        "value":  "Vikramgad"
+    },
+    {
+        "cityName":  "Airoli",
+        "label":  "Airoli",
+        "value":  "Airoli"
+    },
+    {
+        "cityName":  "Apta",
+        "label":  "Apta",
+        "value":  "Apta"
+    },
+    {
+        "cityName":  "Bonkode",
+        "label":  "Bonkode",
+        "value":  "Bonkode"
+    },
+    {
+        "cityName":  "CBD Belapur",
+        "label":  "CBD Belapur",
+        "value":  "CBD Belapur"
+    },
+    {
+        "cityName":  "Dighe",
+        "label":  "Dighe",
+        "value":  "Dighe"
+    },
+    {
+        "cityName":  "Dronagiri",
+        "label":  "Dronagiri",
+        "value":  "Dronagiri"
+    },
+    {
+        "cityName":  "Ghansoli",
+        "label":  "Ghansoli",
+        "value":  "Ghansoli"
+    },
+    {
+        "cityName":  "Juinagar",
+        "label":  "Juinagar",
+        "value":  "Juinagar"
+    },
+    {
+        "cityName":  "Kalamboli",
+        "label":  "Kalamboli",
+        "value":  "Kalamboli"
+    },
+    {
+        "cityName":  "Kamothe",
+        "label":  "Kamothe",
+        "value":  "Kamothe"
+    },
+    {
+        "cityName":  "Karanjade",
+        "label":  "Karanjade",
+        "value":  "Karanjade"
+    },
+    {
+        "cityName":  "Khalapur",
+        "label":  "Khalapur",
+        "value":  "Khalapur"
+    },
+    {
+        "cityName":  "Khanda Colony",
+        "label":  "Khanda Colony",
+        "value":  "Khanda Colony"
+    },
+    {
+        "cityName":  "Khandeshwar",
+        "label":  "Khandeshwar",
+        "value":  "Khandeshwar"
+    },
+    {
+        "cityName":  "Kharghar",
+        "label":  "Kharghar",
+        "value":  "Kharghar"
+    },
+    {
+        "cityName":  "Kopar Khairane",
+        "label":  "Kopar Khairane",
+        "value":  "Kopar Khairane"
+    },
+    {
+        "cityName":  "Koproli",
+        "label":  "Koproli",
+        "value":  "Koproli"
+    },
+    {
+        "cityName":  "Mahape",
+        "label":  "Mahape",
+        "value":  "Mahape"
+    },
+    {
+        "cityName":  "Mumbai Pune Express Highway",
+        "label":  "Mumbai Pune Express Highway",
+        "value":  "Mumbai Pune Express Highway"
+    },
+    {
+        "cityName":  "Navade",
+        "label":  "Navade",
+        "value":  "Navade"
+    },
+    {
+        "cityName":  "Nerul",
+        "label":  "Nerul",
+        "value":  "Nerul"
+    },
+    {
+        "cityName":  "Mankhurd (West)",
+        "label":  "Mankhurd (West)",
+        "value":  "Mankhurd (West)"
+    },
+    {
+        "cityName":  "Vapi",
+        "label":  "Vapi",
+        "value":  "Vapi"
+    },
+    {
+        "cityName":  "Balapur",
+        "label":  "Balapur",
+        "value":  "Balapur"
+    },
+    {
+        "cityName":  "Paithan",
+        "label":  "Paithan",
+        "value":  "Paithan"
+    },
+    {
+        "cityName":  "Kashipur",
+        "label":  "Kashipur",
+        "value":  "Kashipur"
+    },
+    {
+        "cityName":  "BADLAPUR",
+        "label":  "BADLAPUR",
+        "value":  "BADLAPUR"
+    },
+    {
+        "cityName":  "Kottiyam",
+        "label":  "Kottiyam",
+        "value":  "Kottiyam"
+    },
+    {
+        "cityName":  "Taleigao",
+        "label":  "Taleigao",
+        "value":  "Taleigao"
+    },
+    {
+        "cityName":  "Nenmara",
+        "label":  "Nenmara",
+        "value":  "Nenmara"
+    },
+    {
+        "cityName":  "Kunnamkulam",
+        "label":  "Kunnamkulam",
+        "value":  "Kunnamkulam"
+    },
+    {
+        "cityName":  "Sri Ganganagar",
+        "label":  "Sri Ganganagar",
+        "value":  "Sri Ganganagar"
+    },
+    {
+        "cityName":  "PUTTUR",
+        "label":  "PUTTUR",
+        "value":  "PUTTUR"
+    }
+]

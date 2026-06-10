@@ -1,0 +1,200 @@
+/* ======================== INSTALLED BASE BUTTON ======================== */
+.installed-base-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px;
+}
+
+.btn-installed-base {
+  background: #2196F3;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+  margin-right: 265px;
+}
+
+.btn-installed-base:hover {
+  background: #1976D2;
+}
+
+/* ======================== MODAL OVERLAY ======================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-box {
+  background: white;
+  width: 90%;
+  max-width: 1200px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ======================== MODAL HEADER ======================== */
+.modal-header {
+  background: #2196F3;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.modal-close-btn:hover {
+  opacity: 0.8;
+}
+
+/* ======================== MODAL BODY ======================== */
+.modal-body {
+  padding: 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* ======================== INSTALLED BASE TABLE ======================== */
+.ib-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ib-table th {
+  padding: 10px;
+  border: 1px solid #ddd;
+  background: #6ca0d4;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.ib-table th.col-qty {
+  width: 100px;
+}
+
+.ib-table th.col-actions {
+  width: 90px;
+  text-align: center;
+}
+
+.ib-table td {
+  padding: 5px;
+  border: 1px solid #ddd;
+}
+
+.ib-table td.td-actions {
+  text-align: center;
+}
+
+.ib-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 13px;
+}
+
+.ib-input:focus {
+  outline: none;
+  border-color: #2196F3;
+}
+
+/* ======================== ACTION BUTTONS (+ / -) ======================== */
+.ib-actions {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+.btn-add-row {
+  background: #4285F4;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+
+.btn-add-row:hover {
+  background: #1a73e8;
+}
+
+.btn-remove-row {
+  background: #EA4335;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+
+.btn-remove-row:hover {
+  background: #c62828;
+}
+
+/* ======================== MODAL FOOTER ======================== */
+.modal-footer {
+  padding: 15px 20px;
+  text-align: right;
+  border-top: 1px solid #eee;
+}
+
+.btn-ok {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.btn-ok:hover {
+  background: #f5f5f5;
+}

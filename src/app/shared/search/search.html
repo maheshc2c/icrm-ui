@@ -1,9 +1,9 @@
 <div class="search-group mb-3" (click)="hostClick()">
 
-  <div class="search-field"
-       *ngFor="let field of fields">
+  <ng-container *ngFor="let field of fields">
+    <div class="search-field" *ngIf="!field.dependsOn || values[field.dependsOn]">
 
-    <label class="search-label">{{ field.label }}</label>
+      <label class="search-label">{{ field.label }}</label>
 
     <!-- 🔹 INPUT FIELD -->
     <input
@@ -20,7 +20,7 @@
            [class.active]="openDropdown === field.key"
            (click)="toggleDropdown(field.key, $event)">
         <span class="trigger-text">
-          {{ values[field.key] || (field.placeholder || 'Select')}}
+          {{ getSelectedLabel(field) || (field.placeholder || 'Select')}}
         </span>
         <i class="fas fa-chevron-down arrow-icon"></i>
       </div>
@@ -40,35 +40,20 @@
         </div>
 
         <ul class="options-list">
+          <li class="option-item" (click)="selectOption(field, {label: field.placeholder || 'Select', value: null})">
+            -- {{ field.placeholder || 'Select' }} --
+          </li>
           <li class="option-item" 
-              *ngFor="let opt of field.options" 
+              *ngFor="let opt of (field._filtered || field.options)" 
               (click)="selectOption(field, opt)">
             {{ opt.label }}
           </li>
-          <li class="no-results" *ngIf="field.options && field.options.length === 0">No results found</li>
+          <li class="no-results" *ngIf="(field._filtered || field.options)?.length === 0">No results found</li>
         </ul>
       </div>
     </div>
-    <!-- 🔹 DROPDOWN FIELD -->
-    <select
-      *ngIf="field.type === 'select'"
-      class="form-select"
-      [(ngModel)]="values[field.key]"
-      (change)="onInput(field.key)">
 
-      <!-- <option value="">Select</option> -->
-        <!-- ✅ REAL PLACEHOLDER -->
-  <option [ngValue]="null">
-  {{ field.placeholder }}
-</option>
-
-      <option *ngFor="let opt of field.options"
-              [value]="opt.value">
-        {{ opt.label }}
-      </option>
-
-    </select>
-
-  </div>
+    </div>
+  </ng-container>
 
 </div>

@@ -8,6 +8,7 @@ import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Categoryservice } from '../../../service/categoryservice';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-category',
@@ -49,7 +50,8 @@ export class CategoryComponent implements OnInit {
 
   constructor(
     private categoryService: Categoryservice,
-    private router: Router
+    private router: Router,
+    private confirmService: ConfirmDialogService
   ) { }
 
   ngOnInit(): void {

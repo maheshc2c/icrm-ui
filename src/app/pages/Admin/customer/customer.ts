@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../../service/toast.service';
 import { Component } from '@angular/core';
 import { Header } from '../../../layout/header/header';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
@@ -9,6 +10,7 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { Search, SearchFieldConfig } from "../../../shared/search/search";
 import { Adminservice } from '../../../service/adminservice';
 import { CustomerModel } from '../../../models/customer-model';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-customer',
@@ -24,8 +26,9 @@ export class Customer {
 
   constructor(
     private router: Router,
-    private adminservice: Adminservice
-
+    private adminservice: Adminservice,
+    private confirmService: ConfirmDialogService,
+    private toastService: ToastService
   ) {}
    headerTitle = 'Customer List';
 
@@ -37,10 +40,11 @@ export class Customer {
    // 🔹 Table Columns
   columns = [
     { header: 'Customer Name', field: 'customerName' },
+    { header: 'Category', field: 'customerCategory' },
+    { header: 'Sub Category', field: 'subCategory' },
     { header: 'Telephone', field: 'customerTelephone' },
     { header: 'Mobile', field: 'customerMobile' },
     { header: 'Location', field: 'locationName' },
-  
   ];
 
 
@@ -89,15 +93,20 @@ export class Customer {
 
         this.fullRows = customerList;
 
-        this.rows = customerList.map((c: any, index: number) => ({
-          sno: (this.currentPage - 1) * this.pageSize + index + 1,
-          customerId: c.customerId,
-          customerName: c.customerName,
-          customerTelephone: c.customerTelephone,
-          customerMobile: c.customerMobile,
-          customerStatus: c.customerStatus,
-          locationName: c.locations?.map((l: any) => l.locationName).join(', ') ?? ''
-        }));
+        this.rows = customerList.map((c: any, index: number) => {
+          const cust = c.customer ? c.customer : c;
+          return {
+            sno: (this.currentPage - 1) * this.pageSize + index + 1,
+            customerId: cust.customerId,
+            customerName: cust.customerName,
+            customerCategory: cust.customerCategory?.customerCategoryName || cust.customerCategoryName || cust.category || '',
+            subCategory: cust.subCategory?.subcategoryName || cust.subcategoryName || cust.subCategory || '',
+            customerTelephone: cust.customerTelephone,
+            customerMobile: cust.customerMobile,
+            customerStatus: cust.customerStatus,
+            locationName: cust.locations?.map((l: any) => l.locationName).join(', ') || ''
+          };
+        });
       },
       error: (err: any) => {
         this.loading = false;
@@ -113,8 +122,9 @@ export class Customer {
         const categories = Array.isArray(res) ? res : [];
         this.categoryMap.clear();
         const options = categories.map((c: any) => {
-          this.categoryMap.set(c.customerCategoryId, c.customerCategoryName);
-          return { label: c.customerCategoryName, value: c.customerCategoryId };
+          const catId = Number(c.customerCategoryId);
+          this.categoryMap.set(catId, c.customerCategoryName);
+          return { label: c.customerCategoryName, value: catId };
         });
         const field = this.searchFields.find(f => f.key === 'customerCategoryName');
         if (field) { field.options = options; }
@@ -159,45 +169,58 @@ export class Customer {
   }
 
   onEdit(row: any) {
-    this.router.navigate(['customer/edit', row.customerId]);
+    const fullCustomer = this.fullRows.find((c: any) => 
+      (c.customer?.customerId === row.customerId) || (c.customerId === row.customerId)
+    );
+    
+    // Merge the wrapper object back into a flat object for addcustomer.ts to consume easily
+    let mergedCustomer = fullCustomer;
+    if (fullCustomer && fullCustomer.customer) {
+      mergedCustomer = {
+        ...fullCustomer.customer,
+        customerInstalledBaseDTO: fullCustomer.installedBases // map it back to DTO name expected by frontend
+      };
+    }
+
+    this.router.navigate(['customer/edit', row.customerId], { state: { customerData: mergedCustomer } });
   }
 
   isEditMode = false;
   customerId!: number;
 
-  //actiavte and deactivate
-onDelete(row: any) {
- 
-  const Id = row?.customerId;
- 
-  if (!Id) {
-    return;
-  }
- 
-  const status = Number(row?.customerStatus);
- 
-  const isActive = status === 1;
- 
-  const apiCall = isActive
-    ? this.adminservice.deactivateCustomer(Id)
-    : this.adminservice.activateCustomer(Id);
- 
-  apiCall.subscribe({
-    next: () => {
- 
-      row.customerStatus = isActive ? 2 : 1;
- 
-      this.rows = [...this.rows];
-      this.fullRows = [...this.fullRows];
- 
-    },
- 
-    error: (err) => {
-      console.error('Status update failed', err);
-      alert('Failed to update status');
+  //activate and deactivate
+  onDelete(row: any) {
+    const Id = row?.customerId;
+    if (!Id) {
+      return;
     }
-  });
-}
+    const status = Number(row?.customerStatus);
+    const isActive = status === 1;
+
+    this.confirmService.confirm({
+      title: 'Confirm',
+      message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this customer?`
+    }).then((confirmed) => {
+      if (!confirmed) return;
+
+      const apiCall = isActive
+        ? this.adminservice.deactivateCustomer(Id)
+        : this.adminservice.activateCustomer(Id);
+
+      apiCall.subscribe({
+        next: () => {
+          row.customerStatus = isActive ? 2 : 1;
+          this.rows = [...this.rows];
+          this.fullRows = [...this.fullRows];
+          this.toastService.success(`Customer ${isActive ? 'deactivated' : 'activated'} successfully`);
+        },
+        error: (err) => {
+          console.error('Status update failed', err);
+          this.toastService.error('Failed to update status');
+        }
+      });
+    });
+  }
 
   searchFields: SearchFieldConfig[] = [
     {
@@ -216,6 +239,7 @@ onDelete(row: any) {
     {
       key: 'subCategoryName',
       label: 'Sub Category',
+      dependsOn: 'customerCategoryName',
       placeholder: 'Select Sub Category',
       type: 'select',
       options: []
@@ -241,7 +265,9 @@ onDelete(row: any) {
     const searchFilters = { ...filters };
     if (searchFilters.customerCategoryName) {
       const catId = Number(searchFilters.customerCategoryName);
-      searchFilters.customerCategoryName = this.categoryMap.get(catId) || null;
+      if (!isNaN(catId)) {
+        searchFilters.customerCategoryName = this.categoryMap.get(catId) || searchFilters.customerCategoryName;
+      }
     }
     this.searchFilters = searchFilters;
     this.currentPage = 1;

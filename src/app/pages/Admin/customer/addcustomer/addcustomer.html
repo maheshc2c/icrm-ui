@@ -1,27 +1,91 @@
-<!-- <app-header></app-header>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<app-header></app-header>
 <app-sidebar></app-sidebar>
 <app-pageheader
   [title]="headerTitle"
   [breadcrumbs]="headerBreadcrumbs">
 </app-pageheader>
 
-<app-form
-  [title]="isEditMode ? 'Edit Customer' : 'Add New Customer'"
-  [fields]="customerFields"
-  [model]="formInitialData"
-  (formSubmit)="saveCompany($event)"
-  (cancelForm)="onCancel()"></app-form> -->
+<!-- Installed Base Button -->
+<div class="installed-base-bar">
+  <button type="button" class="btn-installed-base" (click)="openInstalledBaseModal()">
+    <i class="fas fa-cubes"></i> Installed Base
+  </button>
+</div>
 
-  <app-header></app-header>
-<app-sidebar></app-sidebar>
-<app-pageheader
-  [title]="headerTitle"
-  [breadcrumbs]="headerBreadcrumbs">
-</app-pageheader>
- 
 <app-form
   [title]="isEditMode ? 'Edit Customer' : 'Add New Customer'"
   [fields]="customerFields"
   [model]="formInitialData"
+  (fieldChange)="onFieldChange($event)"
   (formSubmit)="saveCompany($event)"
-  (cancelForm)="onCancel()"></app-form>
+  (cancelForm)="onCancel()">
+</app-form>
+
+<!-- Installed Base Modal -->
+<div class="modal-overlay" *ngIf="showInstalledBaseModal">
+  <div class="modal-box">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <h3>Customer Installation Base</h3>
+      <button type="button" class="modal-close-btn" (click)="closeInstalledBaseModal()">&times;</button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <table class="ib-table">
+        <thead>
+          <tr>
+            <th>Competitors</th>
+            <th>Product Model</th>
+            <th class="col-qty">Quantity</th>
+            <th>Make</th>
+            <th>Year Of Purchase</th>
+            <th>Replacement Year</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of installedBases; let i = index">
+            <td>
+              <input type="text" class="ib-input" [(ngModel)]="row.competitors" placeholder="Competitors" />
+            </td>
+            <td>
+              <input type="text" class="ib-input" [(ngModel)]="row.productModel" placeholder="Product Model" />
+            </td>
+            <td>
+              <input type="number" class="ib-input" [(ngModel)]="row.quantity" placeholder="Quantity" />
+            </td>
+            <td>
+              <input type="text" class="ib-input" [(ngModel)]="row.make" placeholder="Make" />
+            </td>
+            <td>
+              <input type="text" class="ib-input" [(ngModel)]="row.yearOfPurchase" placeholder="Year Of Purchase" />
+            </td>
+            <td>
+              <input type="text" class="ib-input" [(ngModel)]="row.replacementYear" placeholder="Replacement Year" />
+            </td>
+            <td class="td-actions">
+              <div class="ib-actions">
+                <button type="button" class="btn-add-row" (click)="addInstalledBaseRow()">
+                  <i class="fas fa-plus"></i>
+                </button>
+                <button type="button" class="btn-remove-row" *ngIf="installedBases.length > 1" (click)="removeInstalledBaseRow(i)">
+                  <i class="fas fa-minus"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-ok" (click)="closeInstalledBaseModal()">Ok</button>
+    </div>
+
+  </div>
+</div>

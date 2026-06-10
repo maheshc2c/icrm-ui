@@ -8,10 +8,12 @@ export interface SearchFieldConfig {
   label: string;               // Label text
   placeholder?: string;        // Optional
   type?: 'text' | 'email' | 'number' | 'date' | 'select'| 'datetime-local';
+  dependsOn?: string;          // ✅ Add dependsOn property for conditional display
 
   /* 🔽 DROPDOWN OPTIONS (only for type = select) */
   options?: { label: string; value: any }[];
   searchable?: boolean;        // ✅ Added searchable property
+  _filtered?: any[];           // For searchable dropdown state
 }
 
 @Component({
@@ -26,7 +28,6 @@ export class Search implements OnInit, OnChanges {
   @Input() fields: SearchFieldConfig[] = [];
 
   values: { [key: string]: any } = {};
-  originalOptions: { [key: string]: any[] } = {};
   openDropdown: string | null = null;
 
   @Output() searchChange = new EventEmitter<any>();
@@ -36,20 +37,11 @@ export class Search implements OnInit, OnChanges {
   ngOnInit() {
     this.fields.forEach(f => {
       this.values[f.key] = null;   // ✅ force placeholder
-      if (f.type === 'select' && f.options) {
-        this.originalOptions[f.key] = [...f.options];
-      }
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['fields']) {
-      this.fields.forEach(f => {
-        if (f.type === 'select' && f.options) {
-          this.originalOptions[f.key] = [...f.options];
-        }
-      });
-    }
+    // No longer caching options since they can be mutated dynamically by the parent!
   }
   
   onInput(changedKey?: string) {
@@ -66,26 +58,26 @@ export class Search implements OnInit, OnChanges {
 
   selectOption(field: SearchFieldConfig, option: any) {
     this.values[field.key] = option.value;
-    this.onInput();
+    this.onInput(field.key); // Ensure fieldChange is emitted!
     this.openDropdown = null;
-    
-    // Reset filtered options when selection is made
-    if (this.originalOptions[field.key]) {
-      field.options = [...this.originalOptions[field.key]];
-    }
+    field._filtered = undefined;
+  }
+
+  getSelectedLabel(field: SearchFieldConfig): string {
+    const val = this.values[field.key];
+    if (val === null || val === undefined || val === '') return '';
+    const opt = (field.options || []).find((o: any) => o.value === val);
+    return opt ? opt.label : val;
   }
 
   filterDropdownOptions(field: SearchFieldConfig, event: any) {
     const searchText = event.target.value.toLowerCase();
-    
-    if (!this.originalOptions[field.key]) {
-      this.originalOptions[field.key] = [...(field.options || [])];
-    }
+    const baseOptions = field.options || [];
 
     if (!searchText) {
-      field.options = [...this.originalOptions[field.key]];
+      field._filtered = baseOptions;
     } else {
-      field.options = this.originalOptions[field.key].filter(opt => 
+      field._filtered = baseOptions.filter(opt => 
         opt.label.toLowerCase().includes(searchText)
       );
     }

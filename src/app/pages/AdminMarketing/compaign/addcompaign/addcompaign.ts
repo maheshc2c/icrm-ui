@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { ToastService } from '../../../../service/toast.service';
+import { ConfirmDialogService } from '../../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-add-compaign',
@@ -87,7 +88,8 @@ export class AddCompaign implements OnInit {
     private adminMarketingservice: adminMarketingservice,
     private route: ActivatedRoute,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private confirmService: ConfirmDialogService
   ) { }
 
   ngOnInit(): void {
@@ -209,9 +211,14 @@ export class AddCompaign implements OnInit {
   }
 
   onCancel(): void {
-    if (confirm('Are you sure you want to cancel?')) {
-      this.router.navigate(['/adminmarketing/compaign']);
-    }
+    this.confirmService.confirm({
+      title: 'Confirm',
+      message: 'Are you sure you want to cancel?'
+    }).then((confirmed) => {
+      if (confirmed) {
+        this.router.navigate(['/adminmarketing/compaign']);
+      }
+    });
   }
 
   /* ================= DROPDOWN HANDLERS ================= */

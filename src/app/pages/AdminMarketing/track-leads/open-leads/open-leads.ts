@@ -32,7 +32,7 @@ interface OpenLeadRow {
 
 @Component({
   selector: 'app-open-leads',
-  imports: [CommonModule, HttpClientModule, Header, Sidebar, Pageheader, Form, Search, FormsModule],
+  imports: [CommonModule, HttpClientModule, Header, Sidebar, Pageheader, FormsModule],
   templateUrl: './open-leads.html',
   styleUrl: './open-leads.css',
 })

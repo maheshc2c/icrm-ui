@@ -12,6 +12,7 @@ import { Regionservice } from '../../../service/regionservice';
 import { Stateservice } from '../../../service/stateservice';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-city',
@@ -60,7 +61,8 @@ export class CityComponent implements OnInit {
     private countryService: Countryservice,
     private regionService: Regionservice,
     private stateService: Stateservice,
-    private router: Router
+    private router: Router,
+    private confirmService: ConfirmDialogService
   ) { }
 
   ngOnInit(): void {
@@ -207,8 +209,14 @@ export class CityComponent implements OnInit {
     console.log('========================================');
   }
 
-  onDelete(city: any): void {
-    if (confirm(`Are you sure you want to delete ${city.cityName}?`)) {
+  async onDelete(city: any): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Confirm Delete',
+      message: `Are you sure you want to delete ${city.cityName}?`,
+      confirmText: 'Delete'
+    });
+    
+    if (confirmed) {
       console.log('Delete city:', city);
       // TODO: Implement delete functionality
       alert('Delete functionality not implemented yet');

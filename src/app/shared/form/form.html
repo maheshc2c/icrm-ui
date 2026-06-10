@@ -1,23 +1,21 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-<app-header></app-header>
-<app-sidebar></app-sidebar>
-
 <div class="form-wrapper" (click)="hostClick()">
   <div class="company-form-container">
 
-    <!-- <div class="form-header-block">
-      <h4 class="form-title-heading">{{ title }}</h4>
-    </div> -->
+    <!-- Form title removed per user request -->
 
     <div class="form-body-section">
       <form #form="ngForm" (ngSubmit)="submit(form)">
 
         <div class="form-grid-container">
           <!-- LOOP ALL FIELDS -->
-          <div class="company-field-row" *ngFor="let field of fields" [class.full-width]="field.type === 'textarea'">
+          <ng-container *ngFor="let field of fields">
+            <div class="company-field-row" 
+                 *ngIf="!field.dependsOn || formData[field.dependsOn]"
+                 [class.full-width]="field.type === 'textarea'">
 
-            <!-- LABEL -->
+              <!-- LABEL -->
             <label class="field-label-text">
               {{ field.label }}
               <span *ngIf="field.required" class="mandatory-star">*</span>
@@ -47,44 +45,51 @@
                 [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required">
               </textarea>
 
-              <!-- CUSTOM SEARCHABLE DROPDOWN -->
+
               <div *ngIf="field.type === 'select'" class="custom-dropdown-container">
                 <div class="dropdown-trigger" 
-                     [class.active]="openDropdown === field.name"
-                     (click)="toggleDropdown(field.name, $event)">
+                     [class.active]="field._open"
+                     (click)="field._open = !field._open; $event.stopPropagation()">
                   <span class="trigger-text">
-                    {{ formData[field.name] || (field.placeholder || 'Select') }}
+                    {{ getSelectedLabel(field) || field.placeholder || 'Select' }}
                   </span>
                   <i class="fas fa-chevron-down arrow-icon"></i>
                 </div>
 
-                <!-- DROPDOWN PANEL (Visible only when open) -->
-                <div class="dropdown-panel" *ngIf="openDropdown === field.name" (click)="$event.stopPropagation()">
+                <!-- DROPDOWN PANEL -->
+                <div class="dropdown-panel" *ngIf="field._open" (click)="$event.stopPropagation()">
                   <div class="search-box-wrapper" *ngIf="field.searchable">
                     <div class="search-panel">
                       <div class="search-input-wrapper">
                         <input type="text" 
                                class="dropdown-search-input" 
-                               [placeholder]="'Search...'"
-                               (input)="filterDropdownOptions(field, $event)">
+                               placeholder="Search..."
+                               (input)="onSearchInput(field, $any($event.target).value)">
                       </div>
                       <div class="search-helper-text">Please enter 1 or more characters</div>
                     </div>
                   </div>
 
                   <ul class="options-list">
+                    <li class="option-item" (click)="selectSearchableOption(field, {label: field.placeholder || 'Select', value: null})">
+                      -- {{ field.placeholder || 'Select' }} --
+                    </li>
                     <li class="option-item" 
-                        *ngFor="let opt of field.options" 
-                        (click)="selectOption(field, opt)">
+                        *ngFor="let opt of (field._filtered || field.options)" 
+                        (click)="selectSearchableOption(field, opt)">
                       {{ opt.label }}
                     </li>
-                    <li class="no-results" *ngIf="field.options.length === 0">No results found</li>
+                    <li class="no-results" *ngIf="(field._filtered || field.options)?.length === 0">No results found</li>
                   </ul>
                 </div>
+              </div>
+              <div *ngIf="errors[field.name]" class="validation-error">
+                {{ errors[field.name] }}
               </div>
 
               <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
               <select *ngIf="field.type === 'select-dynamic'" 
+                class="company-text-input"
                 [(ngModel)]="formData[field.name]"
                 (ngModelChange)="
                   formData[field.name] = $event;
@@ -104,19 +109,26 @@
                 </ng-container>
 
               </select>
+              <div *ngIf="errors[field.name]" class="validation-error">
+                {{ errors[field.name] }}
+              </div>
 
-              <!-- CHECKBOX GROUP -->
+              <!-- CHECKBOX GROUP (🔥 NEW) -->
               <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container">
                 <div *ngFor="let opt of field.options" class="checkbox-item">
                   <input type="checkbox" [id]="field.name + '_' + opt.value" 
-                    [ngModel]="formData[field.name][opt.value]"
-                    (ngModelChange)="
-                      formData[field.name][opt.value] = $event;
-                      fieldChange.emit({ name: field.name, value: formData[field.name] })
-                    " [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
+                    [ngModel]="getCheckboxValue(field.name, opt.value)"
+                    (ngModelChange)="onCheckboxChange(field.name, opt.value, $event)"
+                    [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
                   <label [for]="field.name + '_' + opt.value" class="checkbox-label">
                     {{ opt.label }}
                   </label>
+                </div>
+
+                <!-- ERROR MESSAGE -->
+                <div *ngIf="form.controls[field.name] && form.controls[field.name].invalid && (form.controls[field.name].touched || form.submitted)" class="error-message">
+                  <span *ngIf="form.controls[field.name].errors?.['required']">{{ field.label }} is required.</span>
+                  <span *ngIf="form.controls[field.name].errors?.['pattern']">Invalid {{ field.label }} format.</span>
                 </div>
               </div>
 
@@ -131,82 +143,11 @@
                     {{ opt.label }}
                   </label>
                 </div>
-              <!-- TIME -->
-<input *ngIf="field.type === 'time'"
-  type="time"
-  class="company-text-input"
-  [(ngModel)]="formData[field.name]"
-  [name]="field.name" />
-
-            <!-- TEXTAREA -->
-            <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder"
-              [(ngModel)]="formData[field.name]" [name]="field.name">
-            </textarea>
-
-            <!-- STATIC DROPDOWN (🔥 FIXED) -->
-            <select *ngIf="field.type === 'select'"
-  class="company-text-input"
-  [(ngModel)]="formData[field.name]"
-  (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
-  [name]="field.name">
-
-  <option [ngValue]="null">
-  {{ field.placeholder }}
-</option>
-
-  <option *ngFor="let opt of field.options" [value]="opt.value">
-    {{ opt.label }}
-  </option>
-
-</select>
-<div
-  *ngIf="errors[field.name]"
-  class="validation-error"
->
-  {{ errors[field.name] }}
-</div>
-
-            <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
-            <select *ngIf="field.type === 'select-dynamic'" 
-  [(ngModel)]="formData[field.name]"
-              (ngModelChange)="
-                formData[field.name] = $event;
-                fieldChange.emit({ name: field.name, value: $event });
-                field.onChange?.($event)
-              " [name]="field.name">
-
-              <option value="">-- Select --</option>
-
-              <ng-container *ngIf="
-                formData[field.dependsOn] &&
-                field.optionsMap[formData[field.dependsOn]]
-              ">
-                <option *ngFor="let opt of field.optionsMap[formData[field.dependsOn]]" [value]="opt.value">
-                  {{ opt.label }}
-                </option>
-              </ng-container>
-
-            </select>
-
-            <!-- CHECKBOX GROUP (🔥 NEW) -->
-            <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container">
-              <div *ngFor="let opt of field.options" class="checkbox-item">
-                <input type="checkbox" [id]="field.name + '_' + opt.value" 
-                  [ngModel]="getCheckboxValue(field.name, opt.value)"
-                  (ngModelChange)="onCheckboxChange(field.name, opt.value, $event)"
-                  [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
-                <label [for]="field.name + '_' + opt.value" class="checkbox-label">
-                  {{ opt.label }}
-                </label>
               </div>
 
-              <!-- ERROR MESSAGE -->
-              <div *ngIf="form.controls[field.name] && form.controls[field.name].invalid && (form.controls[field.name].touched || form.submitted)" class="error-message">
-                <span *ngIf="form.controls[field.name].errors?.['required']">{{ field.label }} is required.</span>
-                <span *ngIf="form.controls[field.name].errors?.['pattern']">Invalid {{ field.label }} format.</span>
-              </div>
             </div>
-          </div>
+            </div>
+          </ng-container>
         </div>
 
         <!-- BUTTONS -->
