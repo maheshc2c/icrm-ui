@@ -129,21 +129,21 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/Admin/competitor/add-competitor/add-competitor').then(m => m.AddCompetitor)
 },
-{
-  path: 'customer',
-  loadComponent: () =>
-    import('./pages/Admin/customer/customer').then(m => m.Customer)
-},
-{
-  path: 'customer/add',
-  loadComponent: () =>
-    import('./pages/Admin/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
-},
-{
-  path: 'customer/edit/:id',
-  loadComponent: () =>
-    import('./pages/Admin/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
-},
+  {
+    path: 'customer',
+    loadComponent: () =>
+      import('./pages/common-modules/customer/customer').then(m => m.Customer)
+  },
+  {
+    path: 'customer/add',
+    loadComponent: () =>
+      import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
+  },
+  {
+    path: 'customer/edit/:id',
+    loadComponent: () =>
+      import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
+  },
 
 //SubSystem
 {
@@ -566,17 +566,17 @@ export const routes: Routes = [
 {
   path: 'salesdirector/customer',
   loadComponent: () =>
-    import('./pages/SalesDirector/customer/customer').then(m => m.Customer)
+    import('./pages/common-modules/customer/customer').then(m => m.Customer)
 },
 {
   path: 'salesdirector/customer/add',
   loadComponent: () =>
-    import('./pages/SalesDirector/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
+    import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
 },
 {
   path: 'salesdirector/customer/edit/:id',
   loadComponent: () =>
-    import('./pages/SalesDirector/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
+    import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
 },
 
 
@@ -624,19 +624,19 @@ export const routes: Routes = [
       },
       {
         path: 'salesmanager/customer',
-        loadComponent: () => import('./pages/SalesManager/customer/customer').then(m => m.CustomerComponent),
+        loadComponent: () => import('./pages/common-modules/customer/customer').then(m => m.Customer),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'salesmanager/customer/add',
-        loadComponent: () => import('./pages/SalesManager/customer/addcustomer/addcustomer').then(m => m.AddcustomerComponent),
+        loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'salesmanager/customer/edit/:id',
-        loadComponent: () => import('./pages/SalesManager/customer/addcustomer/addcustomer').then(m => m.AddcustomerComponent),
+        loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
@@ -856,19 +856,19 @@ export const routes: Routes = [
   
         {
           path: 'adminmarketing/customer',
-          loadComponent: () => import('./pages/AdminMarketing/customer/customer').then(m => m.Customer),
+          loadComponent: () => import('./pages/common-modules/customer/customer').then(m => m.Customer),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING'] }
         },
         {
           path: 'adminmarketing/customer/add',
-          loadComponent: () => import('./pages/AdminMarketing/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
+          loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING'] }
         },
         {
           path: 'adminmarketing/customer/edit/:id',
-          loadComponent: () => import('./pages/AdminMarketing/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
+          loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING'] }
         },
@@ -920,3 +920,4 @@ export const routes: Routes = [
 
 
 ];
+
