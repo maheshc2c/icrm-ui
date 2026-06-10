@@ -270,6 +270,8 @@
   isEditMode = false;
   companyId!: number
 
+
+  //hii
     //actiavte and deactivate
   onDelete(row: any) {
   
