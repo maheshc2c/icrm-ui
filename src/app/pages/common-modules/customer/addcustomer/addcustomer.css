@@ -40,47 +40,49 @@
 }
 
 .modal-box {
-  background: white;
+  background: #fff;
   width: 90%;
-  max-width: 1200px;
-  border-radius: 8px;
+  max-width: 1050px;
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* ======================== MODAL HEADER ======================== */
 .modal-header {
-  background: #2196F3;
-  color: white;
-  padding: 15px 20px;
+  background: #fff;
+  padding: 16px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 16px;
   font-weight: 600;
+  color: #333;
 }
 
 .modal-close-btn {
   background: none;
   border: none;
-  color: white;
+  color: #888;
   font-size: 1.5rem;
   cursor: pointer;
   line-height: 1;
   padding: 0;
+  transition: color 0.2s;
 }
 
 .modal-close-btn:hover {
-  opacity: 0.8;
+  color: #333;
 }
 
 /* ======================== MODAL BODY ======================== */
 .modal-body {
-  padding: 20px;
+  padding: 20px 30px;
   max-height: 60vh;
   overflow-y: auto;
 }
@@ -93,10 +95,10 @@
 }
 
 .ib-table th {
-  padding: 10px;
-  border: 1px solid #ddd;
-  background: #6ca0d4;
-  color: white;
+  padding: 12px 10px;
+  border-bottom: 2px solid #e5e5e5;
+  background: #fff;
+  color: #444;
   font-weight: 600;
   font-size: 13px;
 }
@@ -111,8 +113,8 @@
 }
 
 .ib-table td {
-  padding: 5px;
-  border: 1px solid #ddd;
+  padding: 10px 5px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .ib-table td.td-actions {
@@ -121,16 +123,18 @@
 
 .ib-input {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border: 1px solid #e5e5e5;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 13px;
+  color: #333;
+  transition: border-color 0.2s;
 }
 
 .ib-input:focus {
   outline: none;
-  border-color: #2196F3;
+  border-color: #3498db;
 }
 
 /* ======================== ACTION BUTTONS (+ / -) ======================== */
@@ -140,11 +144,9 @@
   justify-content: center;
 }
 
-.btn-add-row {
-  background: #4285F4;
-  color: white;
+.btn-add-row, .btn-remove-row {
   border: none;
-  border-radius: 50%;
+  border-radius: 4px;
   width: 28px;
   height: 28px;
   cursor: pointer;
@@ -152,49 +154,56 @@
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  transition: background 0.2s;
+  transition: all 0.2s;
+}
+
+.btn-add-row {
+  background: #f0f8ff;
+  color: #2196F3;
+  border: 1px solid #bbdefb;
 }
 
 .btn-add-row:hover {
-  background: #1a73e8;
+  background: #2196F3;
+  color: white;
 }
 
 .btn-remove-row {
-  background: #EA4335;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  transition: background 0.2s;
+  background: #ffebee;
+  color: #EA4335;
+  border: 1px solid #ffcdd2;
 }
 
 .btn-remove-row:hover {
-  background: #c62828;
+  background: #EA4335;
+  color: white;
 }
 
 /* ======================== MODAL FOOTER ======================== */
 .modal-footer {
-  padding: 15px 20px;
-  text-align: right;
-  border-top: 1px solid #eee;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  border-top: 1px solid #e5e5e5;
+  background: #fff;
 }
 
 .btn-ok {
-  background: white;
-  border: 1px solid #ccc;
-  padding: 8px 20px;
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 24px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   transition: background 0.2s;
 }
 
 .btn-ok:hover {
-  background: #f5f5f5;
+  background: #2980b9;
 }

@@ -1,16 +1,16 @@
-<div class="modal-overlay" [ngStyle]="{'display': isVisible ? 'flex' : 'none'}">
+<div class="modal-overlay" [ngStyle]="{'display': (isVisible || isGlobalVisible) ? 'flex' : 'none'}">
   <div class="modal-box">
     <div class="modal-header-content">
-      <div class="icon-container" [ngClass]="type">
-        <i class="fas" [ngClass]="{'fa-check': type === 'approve', 'fa-times': type === 'reject', 'fa-info': type === 'info'}"></i>
+      <div class="icon-container" [ngClass]="currentType">
+        <i class="fas" [ngClass]="{'fa-check': currentType === 'approve', 'fa-times': currentType === 'reject', 'fa-info': currentType === 'info'}"></i>
       </div>
-      <h3 class="modal-title">{{ title }}</h3>
-      <p class="modal-message">{{ message }}</p>
+      <h3 class="modal-title">{{ displayTitle }}</h3>
+      <p class="modal-message">{{ displayMessage }}</p>
     </div>
 
     <div class="modal-footer">
-      <button class="btn-cancel" (click)="onCancel()">{{ cancelButtonText }}</button>
-      <button class="btn-confirm" [ngClass]="type" (click)="onConfirm()">{{ confirmButtonText }}</button>
+      <button class="btn-cancel" (click)="handleCancel()">{{ displayCancelText }}</button>
+      <button class="btn-confirm" [ngClass]="currentType" (click)="handleConfirm()">{{ displayConfirmText }}</button>
     </div>
   </div>
 </div>

@@ -8,7 +8,6 @@
   justify-content: center;
   backdrop-filter: blur(2px);
 }
-
 .modal-box {
   background: #fff;
   border-radius: 14px;
@@ -20,99 +19,27 @@
   overflow-y: auto;
   text-align: center;
 }
-
-.modal-header-content {
-  margin-bottom: 24px;
-}
-
+.modal-header-content { margin-bottom: 24px; }
 .icon-container {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-  font-size: 24px;
+  width: 60px; height: 60px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px; font-size: 24px;
 }
-
-.icon-container.approve {
-  background-color: #e6f4ea;
-  color: #34a853;
-}
-
-.icon-container.reject {
-  background-color: #fce8e6;
-  color: #ea4335;
-}
-
-.icon-container.info {
-  background-color: #e8f0fe;
-  color: #4285f4;
-}
-
-.modal-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 8px;
-}
-
-.modal-message {
-  font-size: 14px;
-  color: #5f6368;
-  line-height: 1.5;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 24px;
-}
-
+.icon-container.approve { background-color: #e6f4ea; color: #34a853; }
+.icon-container.reject { background-color: #fce8e6; color: #ea4335; }
+.icon-container.info { background-color: #e8f0fe; color: #4285f4; }
+.modal-title { font-size: 1.25rem; font-weight: 600; color: #2c3e50; margin-bottom: 8px; }
+.modal-message { font-size: 14px; color: #5f6368; line-height: 1.5; }
+.modal-footer { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
 .modal-footer button {
-  padding: 10px 24px;
-  border-radius: 8px;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s;
+  padding: 10px 24px; border-radius: 8px; border: none; font-size: 14px;
+  cursor: pointer; font-weight: 600; transition: all 0.2s;
 }
-
-.btn-cancel {
-  background: #f1f3f4;
-  color: #3c4043;
-}
-
-.btn-cancel:hover {
-  background: #e8eaed;
-}
-
-.btn-confirm.approve {
-  background: #34a853;
-  color: #fff;
-}
-
-.btn-confirm.approve:hover {
-  background: #2d8e47;
-}
-
-.btn-confirm.reject {
-  background: #ea4335;
-  color: #fff;
-}
-
-.btn-confirm.reject:hover {
-  background: #d33828;
-}
-
-.btn-confirm.info {
-  background: #4285f4;
-  color: #fff;
-}
-
-.btn-confirm.info:hover {
-  background: #3367d6;
-}
+.btn-cancel { background: #f1f3f4; color: #3c4043; }
+.btn-cancel:hover { background: #e8eaed; }
+.btn-confirm.approve { background: #34a853; color: #fff; }
+.btn-confirm.approve:hover { background: #2d8e47; }
+.btn-confirm.reject { background: #ea4335; color: #fff; }
+.btn-confirm.reject:hover { background: #d33828; }
+.btn-confirm.info { background: #4285f4; color: #fff; }
+.btn-confirm.info:hover { background: #3367d6; }

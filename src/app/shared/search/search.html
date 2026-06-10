@@ -1,7 +1,7 @@
 <div class="search-group mb-3" (click)="hostClick()">
 
   <ng-container *ngFor="let field of fields">
-    <div class="search-field" *ngIf="!field.dependsOn || values[field.dependsOn]">
+    <div class="search-field">
 
       <label class="search-label">{{ field.label }}</label>
 
