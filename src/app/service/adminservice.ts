@@ -736,152 +736,141 @@ activateProduct(id: number) {
   }
 
   // ================= GET ALL Contact =================
-  // getContact(): Observable<Contactmodel[]> {
-  //   return this.http.get<Contactmodel[]>(
-  //     `${this.baseUrl}/admin/view-contact`, // ✅ FIXED
-  //     { headers: this.getAuthHeaders() }
-  //   );
-  // }
-  getContact(): Observable<Contactmodel | Contactmodel[]> {
-    return this.http.get<Contactmodel | Contactmodel[]>(
-      `${this.baseUrl}/admin/view-contact`,
-      { headers: this.getAuthHeaders() }
-    );
-  }
+  getContacts(
+  page: number = 0,
+  size: number = 10,
+  fetchAll: boolean = false
+): Observable<any> {
 
-  deactivateContact(id: number) {
-  const token = localStorage.getItem('token'); // or your existing token key
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  return this.http.put<Contactmodel>(
-    `${this.baseUrl}/admin/deactivate-contact/${id}`,
-    {},
-    { headers }
-  );
-}
-
-activateContact(id: number) {
-  const token = localStorage.getItem('token'); // or your existing token key
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  return this.http.put<Contactmodel>(
-    `${this.baseUrl}/admin/activate-contact/${id}`,
-    {},
-    { headers }
-  );
-}
-
-
-
-
-
-  searchContact(name: string) {
-    return this.http.get<Contactmodel>(
-      `${this.baseUrl}/admin/search-contact`,
-      {
-        headers: this.getAuthHeaders(),   // ✅ must include token
-        params: { name }
-      }
-    );
-  }
-
-  private specialityDropdownCache$: Observable<SpecialityModel[]> | null = null;
-
-  getSpecialityDropDown(): Observable<SpecialityModel[]> {
-    if (!this.specialityDropdownCache$) {
-      this.specialityDropdownCache$ = this.http.get<SpecialityModel[]>(
-        `${this.baseUrl}/admin/dropdown-speciality`,
-        { headers: this.getAuthHeaders() }
-      ).pipe(
-        shareReplay(1)
-      );
+  const payload = {
+    customerName: null,
+    specialityName: null,
+    contactFirstName: null,
+    pagination: {
+      pageNumber: page,
+      pageSize: fetchAll ? 1000000 : size,
+      sortBy: 'contactId',
+      // sortOrder: 'desc'
     }
-    return this.specialityDropdownCache$;
-  }
+  };
 
-  // Clear cache if needed (e.g., after creating/deleting a speciality)
-  clearSpecialityDropdownCache() {
-    this.specialityDropdownCache$ = null;
-  }
+  const obs = this.http.post<any>(
+    `${this.baseUrl}/contact/search`,
+    payload,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
 
-  // getCustomerDropdown() {
-  //   return this.http.get<CustomerModel[]>(
-  //     `${this.baseUrl}/admin/dropdown-customer`,
-  //     { headers: this.getAuthHeaders() }
-  //   );
-  // }
-  getCustomerDropdown() {
-    return this.http.get<CustomerModel | CustomerModel[]>(
-      `${this.baseUrl}/admin/dropdown-customer`,
-      { headers: this.getAuthHeaders() }
-    );
-  }                                           
-
-  searchContactByNumber(number: string) {
-    return this.http.get<Contactmodel[]>(
-      `${this.baseUrl}/admin/search-contact-by-number`,
-      {
-        headers: this.getAuthHeaders(),
-        params: { number }
-      }
+  if (fetchAll) {
+    return obs.pipe(
+      map(res => Array.isArray(res) ? res : (res?.content || []))
     );
   }
 
+  return obs;
+}
+getContactsPaged(
+  customerName: string | null,
+  specialityName: string | null,
+  contactFirstName: string | null,
+  pageNumber: number = 0,
+  pageSize: number = 10,
+  sortBy: string = 'contactFirstName',
+  sortOrder: string = 'asc'
+) {
 
-  createContact(data: any) {
-    return this.http.post(
-      `${this.baseUrl}/admin/create-contact`,
-      data,
-      {
-        headers: this.getAuthHeaders(),
-        responseType: 'text'
-      }
-    );
-  }
+  const payload = {
+    customerName,
+    specialityName,
+    contactFirstName,
+    pagination: {
+      pageNumber,
+      pageSize,
+      sortBy,
+      sortOrder
+    }
+  };
 
-updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
-  return this.http.put(
-    `${this.baseUrl}/admin/update-contact/${id}`,
-    data,
+  return this.http.post(
+    `${this.baseUrl}/contact/search`,
+    payload,
+    { headers: this.getAuthHeaders() }
+  );
+}
+  
+  searchContacts(payload: any): Observable<any> {
+  return this.http.post<any>(
+    `${this.baseUrl}/contact/search`,
+    payload,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
+
+toggleContactStatus(id: number) {
+  return this.http.delete(
+    `${this.baseUrl}/contact/${id}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
+
+
+  getCustomerDropdown(search: string = '') {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/contact/customer`,
     {
       headers: this.getAuthHeaders(),
-      responseType: 'text'
+      params: { name: search }
     }
   );
 }
-  // updateContact(id: number, data: Contactmodel): Observable<any> {
-  //   return this.http.put(
-  //     `${this.baseUrl}/admin/update-contact/${id}`, // ⚠ backend spelling preserved
-  //     data,
-  //     {
-  //       headers: this.getAuthHeaders(),
-  //       responseType: 'text'
-  //     }
-  //   );
-  // }
+getSpecialityDropDown(search: string = '') {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/contact/speciality`,
+    {
+      headers: this.getAuthHeaders(),
+      params: { name: search }
+    }
+  );
+}                                  
 
-  getContactById(id: number): Observable<Contactmodel> {
-    return this.http.get<Contactmodel>(
-      `${this.baseUrl}/admin/contact/${id}`,
-      { headers: this.getAuthHeaders() }
-    );
-  }
+  createContact(payload: any) {
+  return this.http.post(
+    `${this.baseUrl}/contact`,
+    payload,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
-  downloadContact(data: Contactmodel[]): Observable<Blob> {
-      return this.http.post(
-        `${this.baseUrl}/customer/download`,
-        data,
-        {
-          headers: this.getAuthHeaders(),
-          responseType: 'blob'
-        }
-      );
-  }
+updateContact(id: number, payload: any) {
+  return this.http.put(
+    `${this.baseUrl}/contact/${id}`,
+    payload,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
+
+
+
+  downloadContact(payload: any): Observable<Blob> {
+  return this.http.post(
+    `${this.baseUrl}/contact/download`,
+    payload,
+    {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    }
+  );
+}
 
   private cityCache$: Observable<Citymodel[]> | null = null;
   getCity(): Observable<Citymodel[]> {

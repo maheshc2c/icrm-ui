@@ -169,29 +169,31 @@ onSearchFromChild(values: any) {
 //automates the search method 
 detectKey(row: any, index: number) {
   return (
-    row?.id ||
-    row?.customerId ||
-    row?.startDate ||
-    row?.endDate ||
-    row?.subcategoryName ||
-    row?.businessCategory ||
-    row?.segmentName ||
-    row?.locationName ||
-    row?.product ||
-    row?.status ||
-    row?.distributor ||
-    row?.poId ||
-    row?.customer ||
-    row?.opportunity ||
-    row?.qouteId ||
-    row?.customerName ||
-    row?.contactFirstName ||
-    row?.productName ||
-    row?.fyId ||
-    row?.demoId ||
-    row?.specialityId ||
-    row?.competitorId ||
-    row?.companyId ||
+    row?.startDate??
+    row?.endDate??
+    row?.subcategoryName??
+    row?.businessCategory??
+    row?.segmentName??
+    row?.locationName??
+    row?.product??
+    row?.status??
+    row?.distributor??
+    row?.poId??
+    row?.customer??
+    row?.opportunity??
+    row?.subcategoryName??
+    row?.qouteId??
+    row?.customerName??
+    row?.contactFirstName ??
+    row?.productName ??
+    row?.fyId ??
+    row?.demoId ??
+    row?.specialityId ??
+    row?.specialityName ??
+    row?.competitorId ??
+    row?.customerId ??
+    row?.companyId ??
+    row?.id ??
     index
   );
 }
