@@ -274,7 +274,6 @@ onEdit(row: any) {
   companyId!: number
 
 
-  //hii
     //actiavte and deactivate
   onDelete(row: any) {
 
@@ -309,8 +308,8 @@ console.log('TOTAL ELEMENTS =>', this.totalElements);
   pagination: {
     pageNumber: this.currentPage - 1,
     pageSize: this.pageSize,
-    sortBy: 'contactId',
-    sortOrder: 'DESC'
+    sortBy: 'contactFirstName',
+    sortOrder: 'ASC'
   }
 };
 
