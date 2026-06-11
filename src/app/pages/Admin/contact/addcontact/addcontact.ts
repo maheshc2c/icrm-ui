@@ -175,7 +175,7 @@ export class Addcontact implements OnInit {
   //   });
   // }
   private loadSpecialities(): void {
-    this.adminService.getSpecialities().subscribe(res => {
+    this.adminService.getSpecialityDropDown().subscribe((res: any) => {
  
       const list = Array.isArray(res) ? res : [res];
  

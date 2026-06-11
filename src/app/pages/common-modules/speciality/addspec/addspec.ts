@@ -61,7 +61,7 @@ export class Addspec {
     this.headerTitle = 'Edit Speciality';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
-      { label: 'Speciality', route: '/admin/speciality' },
+      { label: 'Speciality', route: '/speciality' },
       { label: 'Edit Speciality' }
     ];
 
@@ -75,14 +75,14 @@ export class Addspec {
 
   /* ================= LOAD ================= */
   private loadSpecialityById(id: number): void {
-  this.adminService.getSpecialities().subscribe({
+  this.adminService.getSpecialityDropDown().subscribe({
     next: (res: any) => {
       const specialitys = Array.isArray(res) ? res : (res?.content || []);
-      const speciality = specialitys.find((c: any) => c.specialityId === id);
+      const speciality = specialitys.find((c: any) => c.id === id || c.specialityId === id);
 
       if (!speciality) {
         alert('Speciality not found');
-        this.router.navigate(['/admin/speciality']);
+        this.router.navigate(['/speciality']);
         return;
       }
 
@@ -93,7 +93,7 @@ export class Addspec {
     },
     error: () => {
       alert('Failed to load speciality');
-      this.router.navigate(['/admin/speciality']);
+      this.router.navigate(['/speciality']);
     }
   });
 }
@@ -101,25 +101,32 @@ export class Addspec {
   /* ================= SAVE ================= */
   saveSpeciality(data: Partial<SpecialityModel>): void {
 
-  const payload: SpecialityModel = {
-    specialityName: data.specialityName!.trim(),
-    specialityStatus: 1
+  const payload: any = {
+    name: data.specialityName!.trim(),
+    status: 1
   };
 
   if (this.isEditMode) {
-    this.adminService.updateSpeciality(this.specialityId, payload).subscribe({
-      next: () => this.router.navigate(['/admin/speciality']),
+    payload.id = this.specialityId;
+    this.adminService.updateSpeciality(payload).subscribe({
+      next: () => {
+        this.adminService.clearSpecialityDropdownCache();
+        this.router.navigate(['/speciality']);
+      },
       error: err => {
         console.error('Update failed:', err);
-        alert('Failed to update speciality');
+        alert('Update failed');
       }
     });
   } else {
     this.adminService.createSpeciality(payload).subscribe({
-      next: () => this.router.navigate(['/admin/speciality']),
+      next: () => {
+        this.adminService.clearSpecialityDropdownCache();
+        this.router.navigate(['/speciality']);
+      },
       error: err => {
-        console.error('Create failed:', err);
-        alert('Failed to create speciality');
+        console.error('Save failed:', err);
+        alert('Save failed');
       }
     });
   }
@@ -127,7 +134,6 @@ export class Addspec {
 
 
   onCancel(): void {
-    this.router.navigate(['/admin/speciality']);
+    this.router.navigate(['/speciality']);
   }
 }
-

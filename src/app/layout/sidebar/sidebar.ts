@@ -101,7 +101,7 @@ constructor() {
         children: [
           { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
           { label: 'Contact', icon: 'fas fa-address-book', route: '/admin/contact' },
-          { label: 'Speciality', icon: 'fas fa-star', route: '/admin/speciality' }
+          { label: 'Speciality', icon: 'fas fa-star', route: '/speciality' }
         ]
       },
             {
@@ -191,7 +191,7 @@ constructor() {
           children: [
             { label: 'Customer', icon: 'fas fa-user-friends', route: '/customer' },
             { label: 'Contact', icon: 'fas fa-address-book', route: '/adminmarketing/contact' },
-            { label: 'Speciality', icon: 'fas fa-star', route: '/adminmarketing/speciality' }
+            { label: 'Speciality', icon: 'fas fa-star', route: '/speciality' }
           ]
         }
       );
