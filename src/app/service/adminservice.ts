@@ -753,7 +753,7 @@ activateProduct(id: number) {
       pageNumber: page,
       pageSize: fetchAll ? 1000000 : size,
       sortBy: 'contactId',
-      sortOrder: 'desc'
+      // sortOrder: 'desc'
     }
   };
 
