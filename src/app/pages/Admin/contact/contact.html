@@ -3,16 +3,26 @@
 
 <app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs"></app-pageheader>
 
-<app-data-table [columns]="columns" 
-[rows]="rows" [searchFields]="searchFields" 
-(add)="onAdd()" 
-(editRow)="onEdit($event)"
+<app-data-table
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+
+  [currentPage]="currentPage"
+  [pageSize]="pageSize"
+  [totalPages]="totalPages"
+  [totalElements]="totalElements"
+
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
+  [showStatusToggle]="true"
+
+  (add)="onAdd()"
+  (editRow)="onEdit($event)"
   (deleteRow)="onDelete($event)"
-(download)="onImport()"
-    (search)="onSearch($event)"
-    [showStatusToggle]="true"
-  [statusField]="'contactStatus'"
-  [trackByField]="'contactId'">
+  (download)="onImport()"
+  (searchChange)="onSearch($event)">
+
 </app-data-table>
 
 <!-- (search)="onSearch($event)" -->

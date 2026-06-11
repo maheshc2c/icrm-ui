@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Adminservice } from '../../../../service/adminservice';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Header } from '../../../../layout/header/header';
@@ -8,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Contactmodel } from '../../../../models/contactmodel';
 import { Form } from '../../../../shared/form/form';
+import { Adminservice } from '../../../../service/adminservice';
  
 @Component({
   selector: 'app-addcontact',
@@ -39,15 +39,17 @@ export class Addcontact implements OnInit {
     { name: 'contactLastName', label: 'Last Name', placeholder: 'Enter last name', type: 'text', required: true },
  
     {
-      name: 'specialityName',
+      name: 'specialityId',
       label: 'Speciality',
       type: 'select',
+      placeholder: 'Select Speciality',
       required: true,
       options: []
     },
     {
-      name: 'customerName',
+      name: 'customerId',
       label: 'Customer',
+      placeholder: 'Select Customer',
       type: 'select',
       required: true,
       options: []
@@ -55,62 +57,56 @@ export class Addcontact implements OnInit {
  
     { name: 'contactMobileNo', label: 'Mobile', placeholder: 'Enter mobile number', type: 'text', required: true },
     { name: 'contactTelephone', label: 'Telephone', placeholder: 'Enter telephone number (optional)', type: 'text' },
-    { name: 'contactEmail', label: 'Email', placeholder: 'Enter email address', type: 'email' },
+    { name: 'contactEmail', label: 'Email', placeholder: 'Enter email address', type: 'email', required: true },
     { name: 'contactFax', label: 'Fax', placeholder: 'Enter fax number (if any)', type: 'text' },
-    { name: 'contactAddress1', label: 'Address 1', placeholder: 'Street / Building / Area', type: 'text' },
-    { name: 'contactAddress2', label: 'Address 2', placeholder: 'City / State / Landmark', type: 'text' },
-    { name: 'contactPincode', label: 'Pincode', placeholder: 'Enter pin code', type: 'number' }
+    { name: 'contactAddress1', label: 'Address 1', placeholder: 'Street / Building / Area', type: 'text', required: true },
+    { name: 'contactAddress2', label: 'Address 2', placeholder: 'City / State / Landmark', type: 'text', required: true },
+    // { name: 'contactPincode', label: 'Pincode', placeholder: 'Enter pin code', type: 'number' }
   ];
  
   /* ================= INIT ================= */
-  ngOnInit(): void {
-    this.loadSpecialities();
+  ngOnInit() {
+
+     this.loadSpecialities();
     this.loadCustomers();
- 
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEditMode = true;
-      this.contactId = +id;
-      this.headerTitle = 'Edit Contact';
-      this.loadContactById(this.contactId);
-    }
- 
-    this.headerBreadcrumbs = [
+
+  const contact = history.state.contact;
+
+  if (contact) {
+    this.isEditMode = true;
+    this.contactId = contact.contactId;
+
+    this.formInitialData = {
+      contactSalutation: contact.contactSalutation,
+      contactFirstName: contact.contactFirstName,
+      contactLastName: contact.contactLastName,
+      contactMobileNo: contact.contactMobileNo,
+      contactTelephone: contact.contactTelephone,
+      contactEmail: contact.contactEmail,
+      contactFax: contact.contactFax,
+      contactAddress1: contact.contactAddress1,
+      contactAddress2: contact.contactAddress2,
+      specialityId: contact.specialityId,
+      customerId: contact.customerId
+    };
+  }
+
+  setTimeout(() => {
+  this.formInitialData = {
+    ...this.formInitialData
+  };
+});
+
+  this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
-      { label: 'Contact', route: '/admin/contact' },
+      { label: 'Contact', route: '/contact' },
       { label: this.isEditMode ? 'Edit Contact' : 'Add Contact' }
     ];
-  }
- 
-  /* ================= LOAD CONTACT ================= */
-  private loadContactById(id: number): void {
-    this.adminService.getContactById(id).subscribe({
-      next: contact => {
-        this.formInitialData = {
-          contactSalutation: contact.contactSalutation,
-          contactFirstName: contact.contactFirstName,
-          contactLastName: contact.contactLastName,
-          contactMobileNo: contact.contactMobileNo,
-          contactTelephone: contact.contactTelephone,
-          contactEmail: contact.contactEmail,
-          contactFax: contact.contactFax,
-          contactAddress1: contact.contactAddress1,
-          contactAddress2: contact.contactAddress2,
-          contactPincode: contact.contactPincode,
- 
-          specialityName: contact.speciality?.specialityName,
-          customerName: contact.customer?.customerName
-        };
-      },
-      error: () => {
-        alert('Contact not found');
-        this.router.navigate(['/admin/contact']);
-      }
-    });
-  }
- 
+}
+
   /* ================= SAVE ================= */
   saveContact(data: any): void {
+    console.log('SAVE DATA =>', data);
  
     const payload: any = {
       contactId: this.isEditMode ? this.contactId : 0,
@@ -123,11 +119,13 @@ export class Addcontact implements OnInit {
       contactEmail: data.contactEmail ?? '',
       contactAddress1: data.contactAddress1 ?? '',
       contactAddress2: data.contactAddress2 ?? '',
-      contactPincode: data.contactPincode ?? null,
-      specialityName: data.specialityName ?? '',
-      customerName: data.customerName ?? '',
+      // contactPincode: data.contactPincode ?? null,
+      specialityId: data.specialityId,
+customerId: data.customerId,
       contactStatus: 1
     };
+
+    console.log('SAVE PAYLOAD =>', payload);
  
     const apiCall = this.isEditMode
       ? this.adminService.updateContact(this.contactId, payload)
@@ -136,55 +134,38 @@ export class Addcontact implements OnInit {
     apiCall.subscribe({
       next: () => {
         alert(`Contact ${this.isEditMode ? 'updated' : 'created'} successfully`);
-        this.router.navigate(['admin/contact']);
+        this.router.navigate(['contact']);
       },
       error: err => {
-        console.error(err);
-        alert('Save failed');
-      }
+  console.error('FULL ERROR =>', err);
+  console.error('STATUS =>', err.status);
+  console.error('ERROR BODY =>', err.error);
+
+  alert(
+    'Status: ' + err.status +
+    '\nMessage: ' + JSON.stringify(err.error)
+  );
+}
     });
   }
  
-  // onCancel(): void {
-  //   this.router.navigate(['/admin/contact']);
-  // }
- 
   onCancel(): void {
- 
-    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
- 
-    if (returnUrl) {
-      this.router.navigateByUrl(returnUrl);
-    } else {
-      this.router.navigate(['/admin/contact']);
-    }
- 
+    this.router.navigate(['/contact']);
   }
  
-  /* ================= DROPDOWNS ================= */
-  // private loadSpecialities(): void {
-  //   this.adminService.getSpecialityDropDown().subscribe(res => {
-  //     const options = (Array.isArray(res) ? res : [res]).map(s => ({
-  //       label: s.specialityName,
-  //       value: s.specialityId
-  //     }));
- 
-  //     const idx = this.contactFields.findIndex(f => f.name === 'specialityId');
-  //     this.contactFields[idx] = { ...this.contactFields[idx], options };
-  //     this.contactFields = [...this.contactFields];
-  //   });
-  // }
   private loadSpecialities(): void {
-    this.adminService.getSpecialities().subscribe(res => {
+    this.adminService.getSpecialityDropDown().subscribe(res => {
+      console.log('SPECIALITIES =>', res);
  
       const list = Array.isArray(res) ? res : [res];
  
       const options = list.map((s: any) => ({
         label: s.specialityName,
-        value: s.specialityName
+        value: s.specialityId
       }));
+      console.log('OPTIONS =>', options);
  
-      const idx = this.contactFields.findIndex(f => f.name === 'specialityName');
+      const idx = this.contactFields.findIndex(f => f.name === 'specialityId');
  
       this.contactFields[idx] = {
         ...this.contactFields[idx],
@@ -200,10 +181,10 @@ export class Addcontact implements OnInit {
  
       const options = (Array.isArray(res) ? res : [res]).map(c => ({
         label: c.customerName,
-        value: c.customerName
+        value: c.customerId
       }));
  
-      const idx = this.contactFields.findIndex(f => f.name === 'customerName');
+      const idx = this.contactFields.findIndex(f => f.name === 'customerId');
       this.contactFields[idx] = { ...this.contactFields[idx], options };
       this.contactFields = [...this.contactFields];
     });

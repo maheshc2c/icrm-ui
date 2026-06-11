@@ -26,13 +26,13 @@
           
             headerBreadcrumbs: Breadcrumb[] = [
               { label: 'Home', route: '/admindashboard' },
-              { label: 'Contact', route: '/admin/contact' }
+              { label: 'Contact', route: '/contact' }
             ];
 
             // 🔹 Table Columns
       columns = [
     { header: 'Name', field: 'contactFirstName' },
-    { header: 'Customer', field: 'contactLastName' },
+    { header: 'Customer', field: 'customerName' },
     { header: 'Speciality', field: 'specialityName' },   // ✅ fixed
     { header: 'Email', field: 'contactEmail' },
     { header: 'Mobile', field: 'contactMobileNo' },
@@ -50,26 +50,6 @@
       this.loadSpecialities();
     }
 
-  //   private loadLocations(): void {
-  //   this.adminservice.getLocationCities().subscribe({
-  //     next: (locations: any[]) => {
-  //       console.log('📍 Locations loaded:', locations.length);
-
-  //       const options = locations.map(l => ({
-  //         label: l.locationName,
-  //         value: l.locationName
-  //       }));
-
-  //       const locationField = this.searchFields.find(f => f.key === 'locationName');
-  //       if (locationField) {
-  //         locationField.options = options;
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.error('Failed to load locations', err);
-  //     }
-  //   });
-  // }
 
   private loadSpecialities(): void {
     // this.adminservice.getSpecialities().subscribe({
@@ -95,36 +75,74 @@
   }
 
 
-    // ✅ LIST API ONLY
-  private loadContact(): void {
-    this.adminservice.getContact().subscribe({
+currentPage = 1;
+pageSize = 10;
+totalElements = 0;
+totalPages = 1;
+
+private loadContact(): void {
+
+  
+
+  this.adminservice
+    .getContactsPaged(
+      null,
+      null,
+      null,
+      this.currentPage - 1,
+      this.pageSize
+    )
+    .subscribe({
+
       next: (response: any) => {
 
-        console.log('RAW API RESPONSE =>', response);
+        this.totalPages = response.totalPages;
+        this.totalElements = response.totalElements;
+        this.fullRows = response.content;
+    
 
-        // ✅ Force convert to array
-        const contactlist = Array.isArray(response) ? response : [response];
+        this.rows = response.content.map((c: any, index: number) => ({
 
-        this.fullRows = contactlist;
+  sno: ((this.currentPage - 1) * this.pageSize) + index + 1,
 
-        this.rows = contactlist.map((c, index) => ({
-          sno: index + 1,
-          contactId: c.contactId,
-          contactFirstName: c.contactFirstName,
-          contactLastName: c.contactLastName,
-          specialityName: c.speciality?.specialityName ?? '',
-          contactEmail: c.contactEmail,
-          contactMobileNo: c.contactMobileNo,
-          contactStatus: c.contactStatus
-        }));
+  contactId: c.contactId,
 
-        console.log('TABLE ROWS =>', this.rows);
+  // displayed
+  contactFirstName: c.contactFirstName,
+  customerName: c.customer?.customerName ?? '',
+  specialityName: c.speciality?.specialityName ?? '',
+  contactEmail: c.contactEmail,
+  contactMobileNo: c.contactMobileNo,
+
+  // hidden for edit
+  contactSalutation: c.contactSalutation,
+  contactLastName: c.contactLastName,
+  contactTelephone: c.contactTelephone,
+  contactFax: c.contactFax,
+  contactAddress1: c.contactAddress1,
+  contactAddress2: c.contactAddress2,
+  contactStatus: c.contactStatus,
+
+  customerId: c.customer?.customerId,
+  specialityId: c.speciality?.specialityId
+}));
       },
-      error: (err) => {
-        console.error('Contact API failed', err);
-      }
+
+      error: err => console.error(err)
     });
-  }
+}
+onPageChange(page: number): void {
+  this.currentPage = page;
+  this.loadContact();
+}
+
+onPageSizeChange(size: number): void {
+  this.pageSize = size;
+  this.currentPage = 1;
+  this.loadContact();
+}
+
+
 
   onAdd() {
       this.router.navigate(['/contact/add']);
@@ -135,9 +153,9 @@
           searchFields: SearchFieldConfig[] = [
             {
               key: 'contactFirstName',
-              label: 'First Name',
+              label: 'Contact',
               placeholder: 'Name',
-              type: 'text'   // ✅ now TypeScript knows this is literal
+              type: 'text'   
             },
             {
       key: 'customerName',
@@ -152,20 +170,7 @@
       placeholder: 'Select Speciality',
       type: 'select',
       options: []    // ✅ will be filled dynamically
-    },
-    {
-              key: 'contactMobileNo',
-              label: 'Mobile',
-              placeholder: 'Enter Mobile Number',
-              type: 'text'   // ✅ now TypeScript knows this is literal
-            },
-    //          {
-    //   key: 'locationName',
-    //   label: 'Location',
-    //   placeholder: 'Select Location',
-    //   type: 'select',
-    //   options: []   // 👈 dynamically filled
-    // }
+    }
           ];
 
         private loadCustomerDropdown(): void {
@@ -197,141 +202,134 @@
   }
 
 
-    onSearch(keyword: string) {
+onSearch(filters: any) {
+  this.currentFilters = filters;
+  console.log('TYPE =>', typeof filters);
+  console.log('VALUE =>', filters);
 
-    if (!keyword || keyword.trim() === '') {
-      this.loadContact();
-      return;
-    }
+  console.log('SEARCH FILTERS =>', filters);
 
-    const lower = keyword.toLowerCase();
+  const payload = {
+    customerName: filters?.customerName || null,
+    specialityName: filters?.specialityName || null,
+    contactFirstName: filters?.contactFirstName || null,
+    pagination: {
+  pageNumber: this.currentPage - 1,
+  pageSize: this.pageSize,
+  sortBy: 'contactId',
+  sortOrder: 'ASC'
+}
+  };
 
-    // ✅ Existing local filter (unchanged)
-    const filtered = this.fullRows.filter(c =>
-      c.contactFirstName?.toLowerCase().includes(lower) ||
-      c.contactLastName?.toLowerCase().includes(lower) ||
-      c.speciality?.specialityName?.toLowerCase().includes(lower) ||
+  this.adminservice.searchContacts(payload).subscribe({
 
-      // ✅ ADD: mobile number search
-      c.contactMobileNo?.toLowerCase().includes(lower)
-    );
+    next: (response: any) => {
+      this.totalElements = response.totalElements;
+      this.totalPages = response.totalPages;
 
-    // ✅ If local results found → keep same behavior
-    if (filtered.length > 0) {
-      this.rows = filtered.map((c, index) => ({
+      const contacts = response.content || [];
+
+      this.rows = contacts.map((c: any, index: number) => ({
         sno: index + 1,
+
         contactId: c.contactId,
         contactFirstName: c.contactFirstName,
-        contactLastName: c.contactLastName,
+        customerName: c.customer?.customerName ?? '',
         specialityName: c.speciality?.specialityName ?? '',
         contactEmail: c.contactEmail,
         contactMobileNo: c.contactMobileNo,
-        contactStatus: c.contactStatus
+
+        contactSalutation: c.contactSalutation,
+        contactLastName: c.contactLastName,
+        contactTelephone: c.contactTelephone,
+        contactFax: c.contactFax,
+        contactAddress1: c.contactAddress1,
+        contactAddress2: c.contactAddress2,
+        contactStatus: c.contactStatus,
+
+        customerId: c.customer?.customerId,
+        specialityId: c.speciality?.specialityId
       }));
-      return;
+    },
+
+    error: err => {
+      console.error('Search API failed', err);
+      this.rows = [];
     }
-
-    // ✅ ADD: fallback to backend search if no local match
-    this.adminservice.searchContactByNumber(keyword.trim()).subscribe({
-      next: (results: any[]) => {
-
-        const list = Array.isArray(results) ? results : [];
-
-        this.rows = list.map((c, index) => ({
-          sno: index + 1,
-          contactId: c.contactId,
-          contactFirstName: c.contactFirstName,
-          contactLastName: c.contactLastName,
-          specialityName: c.speciality?.specialityName ?? '',
-          contactEmail: c.contactEmail,
-          contactMobileNo: c.contactMobileNo,
-          contactStatus: c.contactStatus
-        }));
-      },
-      error: err => {
-        console.error('Search API failed', err);
-        this.rows = [];   // ✅ show "No records found"
-      }
-    });
-  }
+  });
+}
 
 
-  onEdit(row: any) {
-    const id = row?.contactId;
-    console.log('EDIT CLICKED ID =>', id);   // 👈 ADD THIS
-
-    if (!id) {
-      alert('Contact ID missing');
-      return;
+onEdit(row: any) {
+  this.router.navigate(
+    ['/contact/edit', row.contactId],
+    {
+      state: { contact: row }
     }
+  );
+}
 
-    this.router.navigate(['/contact/edit', id]);
-  }
+ 
   isEditMode = false;
   companyId!: number
 
+
+  //hii
     //actiavte and deactivate
   onDelete(row: any) {
-  
-    const Id = row?.contactId;
-  
-    if (!Id) {
-      return;
-    }
-  
-    const status = Number(row?.contactStatus);
-  
-    const isActive = status === 1;
-  
-    const apiCall = isActive
-      ? this.adminservice.deactivateContact(Id)
-      : this.adminservice.activateContact(Id);
-  
-    apiCall.subscribe({
-      next: () => {
-  
-        row.contactStatus = isActive ? 2 : 1;
-  
-        this.rows = [...this.rows];
-        this.fullRows = [...this.fullRows];
-  
-      },
-  
-      error: (err) => {
-        console.error('Status update failed', err);
-        alert('Failed to update status');
-      }
-    });
+
+  const isActive = row.contactStatus === 1;
+
+  const apiCall = this.adminservice.toggleContactStatus(
+  row.contactId
+);
+
+  apiCall.subscribe({
+  next: (updated: any) => {
+    row.contactStatus = updated.contactStatus;
+    this.rows = [...this.rows];
   }
+});
+}
 
 
 
-    //Download
+searchFilters: any = {};
+currentFilters: any = {};
 
-  onImport() {
+onImport() {
 
-    if (!this.fullRows || this.fullRows.length === 0) {
-      alert('No data available to download');
-      return;
-    }
+  console.log('CURRENT PAGE SIZE =>', this.pageSize);
+console.log('TOTAL ELEMENTS =>', this.totalElements);
 
-    this.adminservice.downloadContact(this.fullRows).subscribe({
-      next: (blob: Blob) => {
-
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Contact.xlsx';
-        a.click();
-
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        console.error('Download failed:', err);
-        alert(`Download failed: ${err.status}`);
-      }
-    });
+  const payload = {
+  customerName: this.currentFilters?.customerName || '',
+  specialityName: this.currentFilters?.specialityName || '',
+  contactFirstName: this.currentFilters?.contactFirstName || '',
+  pagination: {
+    pageNumber: this.currentPage - 1,
+    pageSize: this.pageSize,
+    sortBy: 'contactId',
+    sortOrder: 'DESC'
   }
+};
+
+  console.log('DOWNLOAD PAYLOAD =>', payload);
+
+  this.adminservice.downloadContact(payload).subscribe({
+    next: (blob: Blob) => {
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Contacts.xlsx';
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    }
+  });
+}
 
 
 

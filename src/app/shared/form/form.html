@@ -33,58 +33,36 @@
                 [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required" />
 
               <!-- TIME -->
-              <input *ngIf="field.type === 'time'"
-                type="time"
-                class="company-text-input"
-                [(ngModel)]="formData[field.name]"
-                [name]="field.name" [required]="field.required" />
+<input *ngIf="field.type === 'time'"
+  type="time"
+  class="company-text-input"
+  [(ngModel)]="formData[field.name]"
+  [name]="field.name" />
 
-              <!-- TEXTAREA -->
-              <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder || ''"
-                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required">
-              </textarea>
+            <!-- TEXTAREA -->
+            <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder"
+              [(ngModel)]="formData[field.name]" [name]="field.name">
+            </textarea>
 
+            <!-- STATIC DROPDOWN (🔥 FIXED) -->
+            <select *ngIf="field.type === 'select'"
+  class="company-text-input"
+  [(ngModel)]="formData[field.name]"
+  (ngModelChange)="fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
+  [name]="field.name">
 
-              <div *ngIf="field.type === 'select'" class="custom-dropdown-container">
-                <div class="dropdown-trigger" 
-                     [class.active]="field._open"
-                     (click)="field._open = !field._open; $event.stopPropagation()">
-                  <span class="trigger-text">
-                    {{ getSelectedLabel(field) || field.placeholder || 'Select' }}
-                  </span>
-                  <i class="fas fa-chevron-down arrow-icon"></i>
-                </div>
+  <option [ngValue]="null">
+  {{ field.placeholder }}
+</option>
 
-                <!-- DROPDOWN PANEL -->
-                <div class="dropdown-panel" *ngIf="field._open" (click)="$event.stopPropagation()">
-                  <div class="search-box-wrapper" *ngIf="field.searchable">
-                    <div class="search-panel">
-                      <div class="search-input-wrapper">
-                        <input type="text" 
-                               class="dropdown-search-input" 
-                               placeholder="Search..."
-                               (input)="onSearchInput(field, $any($event.target).value)">
-                      </div>
-                      <div class="search-helper-text">Please enter 1 or more characters</div>
-                    </div>
-                  </div>
+  <option *ngFor="let opt of field.options" [value]="opt.value">
+    {{ opt.label }}
+  </option>
 
-                  <ul class="options-list">
-                    <li class="option-item" (click)="selectSearchableOption(field, {label: field.placeholder || 'Select', value: null})">
-                      -- {{ field.placeholder || 'Select' }} --
-                    </li>
-                    <li class="option-item" 
-                        *ngFor="let opt of (field._filtered || field.options)" 
-                        (click)="selectSearchableOption(field, opt)">
-                      {{ opt.label }}
-                    </li>
-                    <li class="no-results" *ngIf="(field._filtered || field.options)?.length === 0">No results found</li>
-                  </ul>
-                </div>
-              </div>
-              <div *ngIf="errors[field.name]" class="validation-error">
-                {{ errors[field.name] }}
-              </div>
+</select>
+<div *ngIf="errors[field.name]" class="validation-error">
+      {{ errors[field.name] }}
+   </div>
 
               <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
               <select *ngIf="field.type === 'select-dynamic'" 
