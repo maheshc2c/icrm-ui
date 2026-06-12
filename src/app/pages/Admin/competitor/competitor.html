@@ -20,6 +20,8 @@
   [showImport]="true"
   [showAdd]="true"
   [showStatusToggle]="true"
+  [showReset]="true"
+  (reset)="onReset()"
 
   (search)="onSearch($event)"
   (download)="onImport()"

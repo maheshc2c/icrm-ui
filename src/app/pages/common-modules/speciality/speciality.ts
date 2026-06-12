@@ -207,4 +207,12 @@ onImport() {
     this.currentPage = 1;
     this.loadSpeciality();
   }
+
+  
+onReset(): void {
+  this.searchFilters = {};
+  this.currentPage = 1;
+  this.loadSpeciality();
+}
+ 
 }

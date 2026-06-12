@@ -22,7 +22,9 @@
   [totalElements]="totalElements"
   [currentPage]="currentPage"
   (pageChange)="onPageChange($event)"
-  (pageSizeChange)="onPageSizeChange($event)">
+  (pageSizeChange)="onPageSizeChange($event)"
+   [showReset]="true"
+  (reset)="onReset()">
 </app-data-table>
 
 <!-- (search)="onSearch($event)" 

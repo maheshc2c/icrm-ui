@@ -150,6 +150,15 @@ onDelete(row: any) {
   });
 }
 
+searchFilters: any = {};
+
+onReset(): void {
+  this.searchFilters = {};
+  this.currentPage = 1;
+  this.loadCompetitors();
+}
+ 
+
 //Download
 
  onImport() {
