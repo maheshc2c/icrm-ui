@@ -245,20 +245,21 @@ export const routes: Routes = [
 
 
 //Contact
+
 {
   path: 'contact',
   loadComponent: () =>
-    import('./pages/Admin/contact/contact').then(m => m.Contact)
+    import('./pages/common-modules/contact/contact').then(m => m.Contact)
 },
 {
   path: 'contact/add',
   loadComponent: () =>
-    import('./pages/Admin/contact/addcontact/addcontact').then(m => m.Addcontact)
+    import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact)
 },
 {
   path: 'contact/edit/:id',
    loadComponent: () =>
-    import('./pages/Admin/contact/addcontact/addcontact').then(m => m.Addcontact)
+    import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact)
 },
 
 //teritory 

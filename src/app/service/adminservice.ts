@@ -112,12 +112,7 @@ activateCompetitor(id: number) {
   }
 
   // ================= GET ALL COMPETITORS =================
-  // getCompetitors(): Observable<CompetitorModel[]> {
-  //   return this.http.get<CompetitorModel[]>(
-  //     `${this.baseUrl}/admin/get-competitors`, // ✅ FIXED
-  //     { headers: this.getAuthHeaders() }
-  //   );
-  // }
+
   getCompetitors(page = 0, size = 10): Observable<any> {
   return this.http.get<any>(
     `${this.baseUrl}/admin/get-competitors?page=${page}&size=${size}`,
@@ -528,6 +523,7 @@ activateCustomer(id: number) {
     );
   }
 
+
   downloadSpecialityExcel(
     name: string | null,
     pageNumber: number = 0,
@@ -535,30 +531,59 @@ activateCustomer(id: number) {
     sortBy: string = 'specialityName',
     sortOrder: string = 'ASC'
   ): Observable<Blob> {
-    const payload = {
-      pageNumber,
-      pageSize,
-      sortBy,
-      sortOrder
-    };
-    
-    let params = new HttpParams();
-    if (name) {
-      params = params.set('name', name);
-    } else {
-      params = params.set('name', '');
+
+  const payload = {
+    pageNumber,
+    pageSize,
+    sortBy,
+    sortOrder
+  };
+
+  let params = new HttpParams();
+
+  params = params.set('name', name || '');
+
+  return this.http.post(
+    `${this.baseUrl}/customer/speciality-download`,
+    payload,
+    {
+      headers: this.getAuthHeaders(),
+      params,
+      responseType: 'blob'
     }
+  );
+}
+  // downloadSpecialityExcel(
+  //   name: string | null,
+  //   pageNumber: number = 0,
+  //   pageSize: number = 10,
+  //   sortBy: string = 'specialityName',
+  //   sortOrder: string = 'ASC'
+  // ): Observable<Blob> {
+  //   const payload = {
+  //     pageNumber,
+  //     pageSize,
+  //     sortBy,
+  //     sortOrder
+  //   };
     
-    return this.http.post(
-      `${this.baseUrl}/customer/speciality-download`,
-      payload,
-      {
-        headers: this.getAuthHeaders(),
-        params,
-        responseType: 'blob'
-      }
-    );
-  }
+  //   let params = new HttpParams();
+  //   if (name) {
+  //     params = params.set('name', name);
+  //   } else {
+  //     params = params.set('name', '');
+  //   }
+    
+  //   return this.http.post(
+  //     `${this.baseUrl}/customer/speciality-download`,
+  //     payload,
+  //     {
+  //       headers: this.getAuthHeaders(),
+  //       params,
+  //       responseType: 'blob'
+  //     }
+  //   );
+  // }
 
   // ================= View Demo =================
   getDemo(): Observable<DemoProductModel[]> {
@@ -749,8 +774,8 @@ activateProduct(id: number) {
     pagination: {
       pageNumber: page,
       pageSize: fetchAll ? 1000000 : size,
-      sortBy: 'contactId',
-      // sortOrder: 'desc'
+      sortBy: 'contactFirstName',
+      sortOrder: 'asc'
     }
   };
 
@@ -828,15 +853,46 @@ toggleContactStatus(id: number) {
     }
   );
 }
-getSpecialityDropDown(search: string = '') {
-  return this.http.get<any[]>(
-    `${this.baseUrl}/contact/speciality`,
-    {
-      headers: this.getAuthHeaders(),
-      params: { name: search }
+// getSpecialityDropDown(search: string = '') {
+//   return this.http.get<any[]>(
+//     `${this.baseUrl}/contact/speciality`,
+//     {
+//       headers: this.getAuthHeaders(),
+//       params: { name: search }
+//     }
+//   );
+// }   
+
+private specialityDropdownCache$: Observable<any[]> | null = null;
+
+getSpecialityDropDown(search: string = ''): Observable<any[]> {
+
+  if (!this.specialityDropdownCache$ || search !== '') {
+
+    const request$ = this.http.get<any[]>(
+      `${this.baseUrl}/contact/speciality`,
+      {
+        headers: this.getAuthHeaders(),
+        params: { name: search }
+      }
+    );
+
+    if (search === '') {
+      this.specialityDropdownCache$ = request$.pipe(
+        shareReplay(1)
+      );
+      return this.specialityDropdownCache$;
     }
-  );
-}                                  
+
+    return request$;
+  }
+
+  return this.specialityDropdownCache$;
+}
+
+clearSpecialityDropdownCache(): void {
+  this.specialityDropdownCache$ = null;
+}
 
   createContact(payload: any) {
   return this.http.post(

@@ -125,10 +125,13 @@ export class Speciality implements OnInit {
         next: () => {
           this.adminservice.clearSpecialityDropdownCache();
           row.specialityStatus = isActive ? 2 : 1;
-          this.rows = [...this.rows];
-          this.fullRows = [...this.fullRows];
-          this.toastService.success(`Speciality ${isActive ? 'deactivated' : 'activated'} successfully`);
-          this.loadSpeciality();
+          this.rows = this.rows.map(r =>
+            r.specialityId === row.specialityId
+            ? { ...r, specialityStatus: row.specialityStatus }
+            : r);
+            this.toastService.success(
+          `Contact ${isActive ? 'deactivated' : 'activated'} successfully`
+        );
         },
         error: (err) => {
           console.error('Status update failed', err);
@@ -167,30 +170,32 @@ export class Speciality implements OnInit {
     this.loadSpeciality();
   }
 
-  onImport() {
-    const keyword = this.searchFilters.specialityName || null;
-    
-    this.adminservice.downloadSpecialityExcel(
-      keyword,
-      0,
-      100000,
-      'specialityId',
-      'desc'
-    ).subscribe({
-      next: (blob: Blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Specialities.xlsx';
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        console.error('Download failed:', err);
-        alert('Download failed');
-      }
-    });
-  }
+  currentFilters: any = {};
+  
+onImport() {
+
+  const keyword = this.searchFilters.specialityName || '';
+
+  this.adminservice.downloadSpecialityExcel(
+    keyword,
+    this.currentPage - 1,
+    this.pageSize,
+    'specialityName',
+    'ASC'
+  ).subscribe({
+    next: (blob: Blob) => {
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Specialities.xlsx';
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    }
+  });
+}
 
   onPageChange(page: number) {
     this.currentPage = page;

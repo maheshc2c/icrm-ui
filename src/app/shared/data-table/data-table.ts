@@ -177,6 +177,7 @@ detectKey(row: any, index: number) {
     row?.locationName??
     row?.product??
     row?.status??
+    row?.specialityStatus ??
     row?.distributor??
     row?.poId??
     row?.customer??

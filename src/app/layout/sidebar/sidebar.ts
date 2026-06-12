@@ -100,7 +100,7 @@ constructor() {
         route: '/openleads',
         children: [
           { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
-          { label: 'Contact', icon: 'fas fa-address-book', route: '/admin/contact' },
+          { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' },
           { label: 'Speciality', icon: 'fas fa-star', route: '/speciality' }
         ]
       },
@@ -190,7 +190,7 @@ constructor() {
           route: '/adminmarketingdashboard',
           children: [
             { label: 'Customer', icon: 'fas fa-user-friends', route: '/customer' },
-            { label: 'Contact', icon: 'fas fa-address-book', route: '/adminmarketing/contact' },
+            { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' },
             { label: 'Speciality', icon: 'fas fa-star', route: '/speciality' }
           ]
         }
@@ -290,8 +290,8 @@ constructor() {
           icon: 'fas fa-user-cog',
           route: '/country-head/manage-customer',
           children: [
-            { label: 'Customer', icon: 'fas fa-user', route: '/country-head/manage-customer/customer' },
-            { label: 'Contact', icon: 'fas fa-address-book', route: '/country-head/manage-customer/contact' },
+            { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
+            { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' },
           ]
         },
         {
@@ -390,8 +390,8 @@ constructor() {
           icon: 'fas fa-user-cog',
           route: '/regional-sales-manager-dashboard/manage-customer',
           children: [
-            { label: 'Customer', icon: 'fas fa-user', route: '/regional-sales-manager-dashboard/manage-customer/customer' },
-            { label: 'Contact', icon: 'fas fa-address-book', route: '/regional-sales-manager-dashboard/manage-customer/contact' },
+            { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
+            { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' },
           ]
         },
         {
@@ -498,8 +498,8 @@ constructor() {
           icon: 'fas fa-user-cog',
           route: '/country-head/dashboard/manage-customer',
           children: [
-            { label: 'Customer', icon: 'fas fa-user', route: '/country-head/dashboard/manage-customer/customer' },
-            { label: 'Contact', icon: 'fas fa-address-book', route: '/country-head/dashboard/manage-customer/contact' },
+            { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
+            { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' },
           ]
         },
         {
@@ -575,8 +575,8 @@ constructor() {
           icon: 'fas fa-user-cog',
           route: '/globalhead-dashboard/manage-customer',
           children: [
-            { label: 'Customer', icon: 'fas fa-user', route: '/globalhead-dashboard/manage-customer/customer' },
-            { label: 'Contact', icon: 'fas fa-address-book', route: '/globalhead-dashboard/manage-customer/contact' },
+            { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
+            { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' },
           ]
         },
         {
@@ -685,8 +685,8 @@ constructor() {
           icon: 'fas fa-user-cog',
           route: `/manage-customer`,
           children: [
-            { label: 'Customer', icon: 'fas fa-user', route: `/manage-customer/customer` },
-            { label: 'Contact', icon: 'fas fa-address-book', route: `/manage-customer/contact` },
+            { label: 'Customer', icon: 'fas fa-user', route: `/customer` },
+            { label: 'Contact', icon: 'fas fa-address-book', route: `/contact` },
           ]
         },
         {
@@ -796,8 +796,8 @@ constructor() {
         icon: 'fas fa-users',
         route: '/manage-customer',
         children: [
-          { label: 'Customer', icon: 'fas fa-user', route: '/salesmanager/customer' },
-          { label: 'Contact', icon: 'fas fa-address-book', route: '/salesmanager/contact' }
+          { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
+          { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' }
         ]
       },
       {
@@ -890,8 +890,8 @@ constructor() {
       icon: 'fas fa-users',
       route: '/salesdirector/report',
         children: [
-          { label: 'Customer', icon: 'fas fa-user', route: '/salesdirector/customer' },
-          { label: 'Contact', icon: 'fas fa-address-book', route: '/salesdirector/contact' },
+          { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
+          { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' },
         ]
     },{
       label: 'Marketing Documents',
