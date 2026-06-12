@@ -44,7 +44,6 @@
                 [(ngModel)]="formData[field.name]" [name]="field.name" [required]="!!field.required">
               </textarea>
 
-
               <div *ngIf="field.type === 'select'" class="custom-dropdown-container">
                 <div class="dropdown-trigger" 
                      [class.active]="field._open"
@@ -83,9 +82,9 @@
                   </ul>
                 </div>
               </div>
-              <div *ngIf="errors[field.name]" class="validation-error">
-                {{ errors[field.name] }}
-              </div>
+<div *ngIf="errors[field.name]" class="validation-error">
+      {{ errors[field.name] }}
+   </div>
 
               <select *ngIf="field.type === 'select-dynamic'" 
                 class="company-text-input"

@@ -71,7 +71,7 @@ export class Addcustomer implements OnInit {
       name: 'locations',
       label: 'City',
       type: 'select',
-      required: false,
+      required: true,
       options: [],
       searchable: true
     },

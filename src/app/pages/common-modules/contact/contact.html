@@ -12,6 +12,8 @@
   [pageSize]="pageSize"
   [totalPages]="totalPages"
   [totalElements]="totalElements"
+  [showReset]="true"
+  (reset)="onReset()"
 
   (pageChange)="onPageChange($event)"
   (pageSizeChange)="onPageSizeChange($event)"

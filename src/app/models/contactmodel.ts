@@ -23,8 +23,8 @@ export interface Contactmodel {
   speciality?: SpecialityModel;
   customer?: CustomerModel;
 
-  specialityId?: number;   // ✅ ADD THIS
-  customerId?: number;     // ✅ ADD THIS
+  specialityId?: number;   
+  customerId?: number;     
 
 
   // backend flattened fields
