@@ -25,23 +25,23 @@
               <!-- TEXT / NUMBER / EMAIL -->
               <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
                 [type]="field.type" class="company-text-input" [placeholder]="field.placeholder || ''"
-                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required" 
-                [pattern]="field.pattern || '.*'"/>
+                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="!!field.required" 
+                [pattern]="field.pattern || ''"/>
 
               <!-- DATE -->
               <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
-                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required" />
+                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="!!field.required" />
 
               <!-- TIME -->
               <input *ngIf="field.type === 'time'"
                 type="time"
                 class="company-text-input"
                 [(ngModel)]="formData[field.name]"
-                [name]="field.name" [required]="field.required" />
+                [name]="field.name" [required]="!!field.required" />
 
               <!-- TEXTAREA -->
               <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder || ''"
-                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required">
+                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="!!field.required">
               </textarea>
 
 
@@ -63,6 +63,7 @@
                         <input type="text" 
                                class="dropdown-search-input" 
                                placeholder="Search..."
+                               (keydown.enter)="$event.preventDefault()"
                                (input)="onSearchInput(field, $any($event.target).value)">
                       </div>
                       <div class="search-helper-text">Please enter 1 or more characters</div>
@@ -86,7 +87,6 @@
                 {{ errors[field.name] }}
               </div>
 
-              <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
               <select *ngIf="field.type === 'select-dynamic'" 
                 class="company-text-input"
                 [(ngModel)]="formData[field.name]"
@@ -94,7 +94,7 @@
                   formData[field.name] = $event;
                   fieldChange.emit({ name: field.name, value: $event });
                   field.onChange?.($event)
-                " [name]="field.name" [required]="field.required">
+                " [name]="field.name" [required]="!!field.required">
 
                 <option value="">-- Select --</option>
 
@@ -132,6 +132,7 @@
                 <div *ngFor="let opt of field.options" class="checkbox-item">
                   <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
                     [(ngModel)]="formData[field.name]" [name]="field.name"
+                    (click)="onRadioClick(field.name, opt.value, $event)"
                     (ngModelChange)="fieldChange.emit({ name: field.name, value: $event })"
                     class="company-checkbox-input" />
                   <label [for]="field.name + '_' + opt.value" class="checkbox-label">

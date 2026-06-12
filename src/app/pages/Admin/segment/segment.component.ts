@@ -10,6 +10,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { SegmentService } from '../../../service/segmentservice';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import { Adminservice } from '../../../service/adminservice';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
+import { ToastService } from '../../../service/toast.service';
  
 @Component({
   standalone: true,
@@ -33,6 +35,8 @@ export class SegmentComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private segmentService: SegmentService,
+    private confirmService: ConfirmDialogService,
+    private toastService: ToastService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
  
@@ -52,8 +56,8 @@ export class SegmentComponent implements OnInit {
   rows: any[] = [];
  
   searchFields: SearchFieldConfig[] = [
-    { key: 'businessCategory', label: 'Business Category', type: 'text' },
-    { key: 'segmentName', label: 'Segment Name', type: 'text' }
+    { key: 'businessCategory', label: 'Business Category', type: 'text', placeholder: 'Search by Category' },
+    { key: 'segmentName', label: 'Segment Name', type: 'text', placeholder: 'Search by Segment' }
   ];
  
   ngOnInit(): void {
@@ -66,12 +70,16 @@ export class SegmentComponent implements OnInit {
   loadSegments(): void {
     this.segmentService.getSegments().subscribe({
       next: (segments) => {
+        // Sort descending by groupId to show newest first
+        segments.sort((a: any, b: any) => (b.groupId || 0) - (a.groupId || 0));
+        
          this.fullRows = segments;
         this.rows = segments.map((segment) => ({
           groupId: segment.groupId,
           businessCategory: segment.category?.categoryName ?? '',
           segmentName: segment.groupName ?? '',
-          segmentDescription: segment.category?.categoryDescription ?? ''
+          segmentDescription: segment.category?.categoryDescription ?? '',
+          groupStatus: segment.groupStatus
         }));
       },
       error: (err: any) => {
@@ -103,7 +111,8 @@ export class SegmentComponent implements OnInit {
         groupId: segment.groupId,
         businessCategory: segment.category?.categoryName ?? '',
         segmentName: segment.groupName ?? '',
-        segmentDescription: segment.category?.categoryDescription ?? ''
+        segmentDescription: segment.category?.categoryDescription ?? '',
+        groupStatus: segment.groupStatus
       }));
       return;
     }
@@ -124,7 +133,8 @@ export class SegmentComponent implements OnInit {
       groupId: segment.groupId,
       businessCategory: segment.category?.categoryName ?? '',
       segmentName: segment.groupName ?? '',
-      segmentDescription: segment.category?.categoryDescription ?? ''
+      segmentDescription: segment.category?.categoryDescription ?? '',
+      groupStatus: segment.groupStatus
     }));
   }
  
@@ -170,7 +180,35 @@ onImport() {
     this.router.navigate(['/admin/segment/edit', row.groupId]);
   }
  
-  onDelete(row: any): void {
-    console.log('Delete', row);
+  onDelete(row: any) {
+    const id = row.groupId;
+    if (!id) return;
+
+    const isActive = Number(row.groupStatus) === 1;
+
+    this.confirmService.confirm({
+      title: 'Confirm',
+      message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this segment?`,
+      confirmText: isActive ? 'Deactivate' : 'Activate'
+    }).then((confirmed) => {
+      if (!confirmed) return;
+
+      const apiCall = isActive
+        ? this.segmentService.deactivateSegment(id)
+        : this.segmentService.activateSegment(id);
+
+      apiCall.subscribe({
+        next: () => {
+          row.groupStatus = isActive ? 2 : 1;
+          this.rows = [...this.rows];
+          this.fullRows = [...this.fullRows];
+          this.toastService.success(`Segment ${isActive ? 'deactivated' : 'activated'} successfully`);
+        },
+        error: err => {
+          console.error('Status update failed', err);
+          this.toastService.error('Failed to update status');
+        }
+      });
+    });
   }
 }

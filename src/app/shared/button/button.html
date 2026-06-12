@@ -28,6 +28,14 @@
   </button>
 
 
+  <!-- REFRESH -->
+  <button *ngIf="showRefresh"
+          class="icon-btn"
+          (click)="refresh.emit()"
+          title="Refresh">
+    <i class="fas fa-sync" aria-hidden="true"></i>
+  </button>
+
   <!-- RESET -->
   <button *ngIf="showReset"
           class="icon-btn"

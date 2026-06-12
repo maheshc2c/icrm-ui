@@ -18,5 +18,10 @@
 
   (add)="onAdd()"
   (editRow)="onEdit($event)"
-  (deleteRow)="onDelete($event)">
+  (deleteRow)="onDelete($event)"
+  [showRefresh]="true"
+  (refresh)="loadSegments()"
+  [showStatusToggle]="true"
+  [statusField]="'groupStatus'"
+  [trackByField]="'groupId'">
 </app-data-table>
