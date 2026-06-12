@@ -300,6 +300,12 @@ onEdit(row: any) {
 });
 }
 
+onReset(): void {
+  this.searchFilters = {};
+  this.currentPage = 1;
+  this.loadContact();
+}
+
 
 
 searchFilters: any = {};

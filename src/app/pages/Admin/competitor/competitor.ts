@@ -10,6 +10,7 @@ import { Adminservice } from '../../../service/adminservice';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { CompetitorModel } from '../../../models/competitor-model';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { ToastService } from '../../../service/toast.service';
 // import * as XLSX from 'xlsx';
 // import { saveAs } from 'file-saver';
 
@@ -32,7 +33,8 @@ export class Competitor implements OnInit {
   constructor(
     private adminservice: Adminservice,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService
   ) {}
 
   headerTitle = 'Manage Competitor';
@@ -113,22 +115,49 @@ onPageSizeChange(size: number) {
 //actiavte and deactivate
 
 onDelete(row: any) {
-  if (!row?.competitorId) return;
 
-  const apiCall =
-    row.competitorStatus === 1
-      ? this.adminservice.deactivateCompetitor(row.competitorId)
-      : this.adminservice.activateCompetitor(row.competitorId);
+  if (!row?.competitorId) {
+    return;
+  }
+
+  const isActive = row.competitorStatus === 1;
+
+  const apiCall = isActive
+    ? this.adminservice.deactivateCompetitor(row.competitorId)
+    : this.adminservice.activateCompetitor(row.competitorId);
 
   apiCall.subscribe({
     next: () => {
-      row.competitorStatus = row.competitorStatus === 1 ? 2 : 1;
+
+      row.competitorStatus = isActive ? 2 : 1;
+
       this.rows = [...this.rows];
+
       this.loadCompetitors();
+
+      this.toastService.success(
+        `Competitor ${isActive ? 'deactivated' : 'activated'} successfully`
+      );
     },
-    error: (err) => console.error('Status update failed', err)
+
+    error: (err) => {
+      console.error('Status update failed', err);
+
+      this.toastService.error(
+        'Failed to update competitor status'
+      );
+    }
   });
 }
+
+searchFilters: any = {};
+
+onReset(): void {
+  this.searchFilters = {};
+  this.currentPage = 1;
+  this.loadCompetitors();
+}
+ 
 
 //Download
 

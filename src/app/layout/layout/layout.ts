@@ -10,7 +10,7 @@ import { Button } from "../../shared/button/button";
 @Component({
   standalone: true,
   selector: 'app-layout',
-  imports: [CommonModule, RouterOutlet, Sidebar, Header, ToastComponent],
+  imports: [CommonModule, RouterOutlet, Sidebar, Header],
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })

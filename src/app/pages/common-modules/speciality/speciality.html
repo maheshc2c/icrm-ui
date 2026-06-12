@@ -11,13 +11,21 @@
   [columns]="columns"
   [rows]="rows"
   [searchFields]="searchFields"
-  [showImport]="false"
+  [showImport]="true"
   [showAdd]="true"
-  [showStatusToggle]="true"
   (search)="onSearch($event)"
   (add)="onAdd()"
   (editRow)="onEdit($event)"
+  (download)="onImport()"
+  [showStatusToggle]="true"
   (deleteRow)="onDelete($event)"
-  (statusToggle)="onStatusToggle($event)"
-  (download)="onDownload()">
+  [totalElements]="totalElements"
+  [currentPage]="currentPage"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
+   [showReset]="true"
+  (reset)="onReset()">
 </app-data-table>
+
+<!-- (search)="onSearch($event)" 
+  (download)="onImport()" -->

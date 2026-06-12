@@ -208,19 +208,19 @@ export const routes: Routes = [
 //Speciality
 
 {
-  path: 'admin/speciality',
+  path: 'speciality',
   loadComponent: () =>
-    import('./pages/Admin/speciality/speciality').then(m => m.Speciality)
+    import('./pages/common-modules/speciality/speciality').then(m => m.Speciality)
 },
 {
   path: 'speciality/add',
   loadComponent: () =>
-    import('./pages/Admin/speciality/addspec/addspec').then(m => m.Addspec)
+    import('./pages/common-modules/speciality/addspec/addspec').then(m => m.Addspec)
 },
 {
   path: 'speciality/edit/:id',
   loadComponent: () =>
-    import('./pages/Admin/speciality/addspec/addspec').then(m => m.Addspec)
+    import('./pages/common-modules/speciality/addspec/addspec').then(m => m.Addspec)
 },
 
 
@@ -245,20 +245,21 @@ export const routes: Routes = [
 
 
 //Contact
+
 {
   path: 'contact',
   loadComponent: () =>
-    import('./pages/Admin/contact/contact').then(m => m.Contact)
+    import('./pages/common-modules/contact/contact').then(m => m.Contact)
 },
 {
   path: 'contact/add',
   loadComponent: () =>
-    import('./pages/Admin/contact/addcontact/addcontact').then(m => m.Addcontact)
+    import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact)
 },
 {
   path: 'contact/edit/:id',
    loadComponent: () =>
-    import('./pages/Admin/contact/addcontact/addcontact').then(m => m.Addcontact)
+    import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact)
 },
 
 //teritory 
@@ -892,24 +893,7 @@ export const routes: Routes = [
           data: { roles: ['ADMINMARKETING'] }
         },
   
-        {
-          path: 'adminmarketing/speciality',
-          loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/speciality').then(m => m.Speciality),
-          canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
-        },
-        {
-          path: 'adminmarketing/speciality/add',
-          loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec),
-          canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
-        },
-        {
-          path: 'adminmarketing/speciality/edit/:id',
-          loadComponent: () => import('./pages/AdminMarketing/adminmarketing-dashboard/speciality/addspec/addspec').then(m => m.Addspec),
-          canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
-        },
+
 
       { path: '**', redirectTo: 'login' },
 

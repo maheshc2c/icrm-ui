@@ -112,12 +112,7 @@ activateCompetitor(id: number) {
   }
 
   // ================= GET ALL COMPETITORS =================
-  // getCompetitors(): Observable<CompetitorModel[]> {
-  //   return this.http.get<CompetitorModel[]>(
-  //     `${this.baseUrl}/admin/get-competitors`, // ✅ FIXED
-  //     { headers: this.getAuthHeaders() }
-  //   );
-  // }
+
   getCompetitors(page = 0, size = 10): Observable<any> {
   return this.http.get<any>(
     `${this.baseUrl}/admin/get-competitors?page=${page}&size=${size}`,
@@ -476,99 +471,119 @@ activateCustomer(id: number) {
   //     `${this.baseUrl}/admin/edite-Fy/${id}`, // ⚠ backend spelling preserved
   //     data,
   //     { headers: this.getAuthHeaders() }
-  //   );
-  // }
-
 
   // ================= SPECIALTIY =================
 
-  // ================= GET ALL Speciality =================
-  getSpecialities(pageNumber: number = 0, pageSize: number = 10): Observable<any> {
-    return this.http.request<any>('GET', `${this.baseUrl}/admin/view-Speciality`, {
-      headers: this.getAuthHeaders(),
-      params: {
-        pageNumber: String(pageNumber),
-        pageSize: String(pageSize)
-      },
-      body: {
-        pageNumber: pageNumber,
-        pageSize: pageSize
-      }
-    });
+  searchSpeciality(
+    name: string | null,
+    pageNumber: number = 0,
+    pageSize: number = 10,
+    sortBy: string = 'specialityName',
+    sortOrder: string = 'ASC'
+  ): Observable<any> {
+    const payload = {
+      pageNumber,
+      pageSize,
+      sortBy,
+      sortOrder
+    };
+    
+    let params = new HttpParams();
+    if (name) {
+      params = params.set('name', name);
+    }
+    
+    return this.http.post<any>(
+      `${this.baseUrl}/customer/speciality-search`,
+      payload,
+      { headers: this.getAuthHeaders(), params }
+    );
   }
 
-  deactivateSpeciality(id: number) {
-  const token = localStorage.getItem('token'); // or your existing token key
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
+  toggleSpeciality(id: number) {
+    return this.http.delete<any>(
+      `${this.baseUrl}/customer/speciality/${id}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
 
-  return this.http.put<SpecialityModel>(
-    `${this.baseUrl}/admin/deactivate-Speciality/${id}`,
-    {},
-    { headers }
-  );
-}
-
-activateSpeciality(id: number) {
-  const token = localStorage.getItem('token'); // or your existing token key
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  return this.http.put<SpecialityModel>(
-    `${this.baseUrl}/admin/activate-Speciality/${id}`,
-    {},
-    { headers }
-  );
-}
-
-
-
-  // ================= CREATE Speciality =================
   createSpeciality(data: SpecialityModel): Observable<SpecialityModel> {
     return this.http.post<SpecialityModel>(
-      `${this.baseUrl}/admin/create-Speciality`,
+      `${this.baseUrl}/customer/speciality`,
       data,
       { headers: this.getAuthHeaders() }
     );
   }
 
-  // ================= Donwload Speciality =================
-
-  downloadSpecialityExcel(data: SpecialityModel[]): Observable<Blob> {
-    return this.http.post(
-      `${this.baseUrl}/admin/speciality-excel`,
-      data,    // ✅ send actual table data
-      {
-        headers: this.getAuthHeaders(),
-        responseType: 'blob'
-      }
-    );
-  }
-
-
-  // ================= UPDATE Speciality =================
-
-  updateSpeciality(id: number, data: SpecialityModel): Observable<SpecialityModel> {
+  updateSpeciality(data: SpecialityModel): Observable<SpecialityModel> {
     return this.http.put<SpecialityModel>(
-      `${this.baseUrl}/admin/update-Speciality/${id}`, // ⚠ backend spelling preserved
+      `${this.baseUrl}/customer/speciality`,
       data,
       { headers: this.getAuthHeaders() }
     );
   }
 
 
-  // ================= Search Speciality =================
-  searchSpeciality(name: string) {
-    return this.http.get<SpecialityModel[]>(
-      `${this.baseUrl}/admin/search-Speciality`,
-      {
-        headers: this.getAuthHeaders(),
-        params: { name }
-      }
-    );
-  }
+  downloadSpecialityExcel(
+    name: string | null,
+    pageNumber: number = 0,
+    pageSize: number = 10,
+    sortBy: string = 'specialityName',
+    sortOrder: string = 'ASC'
+  ): Observable<Blob> {
+
+  const payload = {
+    pageNumber,
+    pageSize,
+    sortBy,
+    sortOrder
+  };
+
+  let params = new HttpParams();
+
+  params = params.set('name', name || '');
+
+  return this.http.post(
+    `${this.baseUrl}/customer/speciality-download`,
+    payload,
+    {
+      headers: this.getAuthHeaders(),
+      params,
+      responseType: 'blob'
+    }
+  );
+}
+  // downloadSpecialityExcel(
+  //   name: string | null,
+  //   pageNumber: number = 0,
+  //   pageSize: number = 10,
+  //   sortBy: string = 'specialityName',
+  //   sortOrder: string = 'ASC'
+  // ): Observable<Blob> {
+  //   const payload = {
+  //     pageNumber,
+  //     pageSize,
+  //     sortBy,
+  //     sortOrder
+  //   };
+    
+  //   let params = new HttpParams();
+  //   if (name) {
+  //     params = params.set('name', name);
+  //   } else {
+  //     params = params.set('name', '');
+  //   }
+    
+  //   return this.http.post(
+  //     `${this.baseUrl}/customer/speciality-download`,
+  //     payload,
+  //     {
+  //       headers: this.getAuthHeaders(),
+  //       params,
+  //       responseType: 'blob'
+  //     }
+  //   );
+  // }
 
   // ================= View Demo =================
   getDemo(): Observable<DemoProductModel[]> {
@@ -759,8 +774,8 @@ activateProduct(id: number) {
     pagination: {
       pageNumber: page,
       pageSize: fetchAll ? 1000000 : size,
-      sortBy: 'contactId',
-      // sortOrder: 'desc'
+      sortBy: 'contactFirstName',
+      sortOrder: 'asc'
     }
   };
 
@@ -838,15 +853,46 @@ toggleContactStatus(id: number) {
     }
   );
 }
-getSpecialityDropDown(search: string = '') {
-  return this.http.get<any[]>(
-    `${this.baseUrl}/contact/speciality`,
-    {
-      headers: this.getAuthHeaders(),
-      params: { name: search }
+// getSpecialityDropDown(search: string = '') {
+//   return this.http.get<any[]>(
+//     `${this.baseUrl}/contact/speciality`,
+//     {
+//       headers: this.getAuthHeaders(),
+//       params: { name: search }
+//     }
+//   );
+// }   
+
+private specialityDropdownCache$: Observable<any[]> | null = null;
+
+getSpecialityDropDown(search: string = ''): Observable<any[]> {
+
+  if (!this.specialityDropdownCache$ || search !== '') {
+
+    const request$ = this.http.get<any[]>(
+      `${this.baseUrl}/contact/speciality`,
+      {
+        headers: this.getAuthHeaders(),
+        params: { name: search }
+      }
+    );
+
+    if (search === '') {
+      this.specialityDropdownCache$ = request$.pipe(
+        shareReplay(1)
+      );
+      return this.specialityDropdownCache$;
     }
-  );
-}                                  
+
+    return request$;
+  }
+
+  return this.specialityDropdownCache$;
+}
+
+clearSpecialityDropdownCache(): void {
+  this.specialityDropdownCache$ = null;
+}
 
   createContact(payload: any) {
   return this.http.post(

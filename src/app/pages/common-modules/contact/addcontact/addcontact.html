@@ -7,9 +7,9 @@
 </app-pageheader>
 
 <app-form
-[title]="isEditMode ? 'Edit Speciality' : 'Add New Speciality'"
-  [fields]="specialityFields"
+  [title]="isEditMode ? 'Edit Contact' : 'Add Contact'"
+  [fields]="contactFields"
   [model]="formInitialData"
-  (formSubmit)="saveSpeciality($event)"
+  (formSubmit)="saveContact($event)"
   (cancelForm)="onCancel()">
 </app-form>
