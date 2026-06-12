@@ -81,6 +81,7 @@ export class DataTable
   /* ===== TOOLBAR EVENTS ===== */
 
   @Output() import = new EventEmitter<void>();
+  @Output() refresh = new EventEmitter<void>();
   @Output() add = new EventEmitter<void>();
   @Output() editRow = new EventEmitter<any>();
   @Output() viewRow = new EventEmitter<any>();
@@ -169,32 +170,20 @@ onSearchFromChild(values: any) {
 //automates the search method 
 detectKey(row: any, index: number) {
   return (
-    row?.startDate??
-    row?.endDate??
-    row?.subcategoryName??
-    row?.businessCategory??
-    row?.segmentName??
-    row?.locationName??
-    row?.product??
-    row?.status??
-    row?.specialityStatus ??
-    row?.distributor??
-    row?.poId??
-    row?.customer??
-    row?.opportunity??
-    row?.subcategoryName??
-    row?.qouteId??
-    row?.customerName??
-    row?.contactFirstName ??
-    row?.productName ??
-    row?.fyId ??
-    row?.demoId ??
-    row?.specialityId ??
-    row?.specialityName ??
-    row?.competitorId ??
-    row?.customerId ??
-    row?.companyId ??
-    row?.id ??
+    row?.id ||
+    row?.groupId ||
+    row?.categoryId ||
+    row?.subcategoryId ||
+    row?.productId ||
+    row?.customerId ||
+    row?.contactId ||
+    row?.companyId ||
+    row?.demoId ||
+    row?.fyId ||
+    row?.specialityId ||
+    row?.competitorId ||
+    row?.poId ||
+    row?.qouteId ||
     index
   );
 }
@@ -339,6 +328,19 @@ onResetClick() {
 
 }
 
+onRefreshClick() {
+  this.searchText = '';
+  this.pendingSearchValues = {};
+  this.currentPage = 1;
+  if (this.searchComponent) {
+    this.searchComponent.clear();
+  }
+  // We emit searchChange with empty so parent knows to clear filters
+  this.searchChange.emit({});
+  // Then emit refresh so parent reloads data
+  this.refresh.emit();
+}
+
 //delete 
 @Input() trackByField: string = '';
 @Input() showStatusToggle = false;
@@ -374,7 +376,8 @@ delete(row: any) {
       ?? row?.demoProductDetailStatus
       ?? row?.productStatus
       ?? row?.categoryStatus
-      ?? row?.leadStatus;
+      ?? row?.leadStatus
+      ?? row?.groupStatus;
   }
 
 

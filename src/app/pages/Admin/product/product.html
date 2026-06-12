@@ -20,6 +20,8 @@
   (searchChange)="onSearch($event)"
   (download)="onImport()"
   (add)="onAdd()"
+  [showRefresh]="true"
+  (refresh)="loadProducts()"
  
    (editRow)="onEdit($event)"
   (deleteRow)="onDelete($event)"

@@ -14,8 +14,10 @@
     [showImport]="showImport"
     [showAdd]="showAdd"
     [showReset]="showReset"
+    [showRefresh]="showRefresh"
     [showDownload]="showDownload"
     (reset)="onResetClick()"
+    (refresh)="onRefreshClick()"
     (search)="onSearchClick()"
     (add)="add.emit()"
     (download)="download.emit()">

@@ -134,6 +134,15 @@ export class Form implements OnChanges {
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
   }
 
+  /* ================= RADIO GROUP ================= */
+  onRadioClick(fieldName: string, optionValue: any, event: Event) {
+    if (this.formData[fieldName] === optionValue) {
+      event.preventDefault();
+      this.formData[fieldName] = null;
+      this.fieldChange.emit({ name: fieldName, value: null });
+    }
+  }
+
   /* ================= VALIDATION ================= */
   validateField(field: any): string | null {
     const value = this.formData[field.name];
