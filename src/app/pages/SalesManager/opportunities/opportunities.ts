@@ -32,6 +32,8 @@ export class OpportunitiesComponent implements OnInit {
 
   /* ================= MODAL STATE ================= */
   showAddModal = false;
+  isEditMode = false;
+  editOppId: number | null = null;
 
   /* ================= SEARCH FIELDS ================= */
   searchFields: SearchFieldConfig[] = [
@@ -95,6 +97,15 @@ export class OpportunitiesComponent implements OnInit {
     expectedInvoicingDate: '',
     competitors: ''
   };
+
+  resetOppModel(): void {
+    this.oppModel = {
+      leadId: '', decisionMaker1: '', productCategoryId: '', decisionMaker2: '',
+      productGroupId: '', decisionMaker3: '', productId: '', decisionMaker4: '',
+      quantity: null, decisionMaker5: '', fundSourceId: '', relationshipId: '',
+      expectedOrderConclusion: '', status: '', expectedInvoicingDate: '', competitors: ''
+    };
+  }
 
   /* ================= DATA ================= */
   opportunities: OpportunityTableModel[] = [];
@@ -317,11 +328,17 @@ export class OpportunitiesComponent implements OnInit {
 
   /* ================= MODAL ACTIONS ================= */
   onAdd(): void {
+    this.isEditMode = false;
+    this.editOppId = null;
+    this.resetOppModel();
     this.showAddModal = true;
   }
 
   closeModal(): void {
     this.showAddModal = false;
+    this.isEditMode = false;
+    this.editOppId = null;
+    this.resetOppModel();
   }
 
   onSubmitOpp(formData: any): void {
@@ -386,23 +403,95 @@ export class OpportunitiesComponent implements OnInit {
       oppRemarks1: this.oppModel.competitors || null
     };
 
-    this.leadService.createOpportunity(this.oppModel.leadId, payload).subscribe({
-      next: (res) => {
-        alert('Opportunity successfully saved to the database!');
-        this.closeModal();
-        // Refresh the table
-        this.loadOpportunities();
-      },
-      error: (err) => {
-        console.error('Error saving opportunity:', err);
-        const errorMessage = err.error ? (typeof err.error === 'string' ? err.error : err.error.message || JSON.stringify(err.error)) : 'Unknown error';
-        alert(`Failed to save Opportunity:\n\n${errorMessage}`);
-      }
-    });
+    if (this.isEditMode && this.editOppId) {
+      this.leadService.updateOpportunity(this.editOppId, payload).subscribe({
+        next: (res) => {
+          alert('Opportunity successfully updated!');
+          this.closeModal();
+          this.loadOpportunities();
+        },
+        error: (err) => {
+          console.error('Error updating opportunity:', err);
+          const errorMessage = err.error ? (typeof err.error === 'string' ? err.error : err.error.message || JSON.stringify(err.error)) : 'Unknown error';
+          alert(`Failed to update Opportunity:\n\n${errorMessage}`);
+        }
+      });
+    } else {
+      this.leadService.createOpportunity(this.oppModel.leadId, payload).subscribe({
+        next: (res) => {
+          alert('Opportunity successfully saved to the database!');
+          this.closeModal();
+          // Refresh the table
+          this.loadOpportunities();
+        },
+        error: (err) => {
+          console.error('Error saving opportunity:', err);
+          const errorMessage = err.error ? (typeof err.error === 'string' ? err.error : err.error.message || JSON.stringify(err.error)) : 'Unknown error';
+          alert(`Failed to save Opportunity:\n\n${errorMessage}`);
+        }
+      });
+    }
   }
 
   onEdit(row: any): void {
     console.log('Edit opportunity:', row);
+    this.isEditMode = true;
+    this.editOppId = row.id;
+
+    // Fetch opportunity details
+    this.leadService.getOpportunityById(row.id).subscribe({
+      next: (data) => {
+        // Pre-fill model
+        this.oppModel.leadId = data.oppLeadId;
+        this.oppModel.productCategoryId = data.productCategoryId;
+        this.oppModel.productGroupId = data.productGroupId;
+        this.oppModel.productId = data.productId;
+        this.oppModel.quantity = data.oppRequiredQuantity;
+        this.oppModel.fundSourceId = data.oppFundSourceId;
+        
+        // Dates format
+        const formatDate = (dateArr: number[]) => {
+           if (!dateArr || dateArr.length < 3) return '';
+           const pad = (n: number) => n < 10 ? '0'+n : n;
+           return `${dateArr[0]}-${pad(dateArr[1])}-${pad(dateArr[2])}`;
+        };
+        this.oppModel.expectedOrderConclusion = typeof data.oppExpectedOrderConclusion === 'string' ? data.oppExpectedOrderConclusion : (Array.isArray(data.oppExpectedOrderConclusion) ? formatDate(data.oppExpectedOrderConclusion) : '');
+        this.oppModel.expectedInvoicingDate = typeof data.oppExpectedInvoicingDate === 'string' ? data.oppExpectedInvoicingDate : (Array.isArray(data.oppExpectedInvoicingDate) ? formatDate(data.oppExpectedInvoicingDate) : '');
+        
+        this.oppModel.decisionMaker1 = data.oppDecisionMaker1;
+        this.oppModel.decisionMaker2 = data.oppDecisionMaker2;
+        this.oppModel.decisionMaker3 = data.oppDecisionMaker3;
+        this.oppModel.decisionMaker4 = data.oppDecisionMaker4;
+        this.oppModel.decisionMaker5 = data.oppDecisionMaker5;
+        this.oppModel.relationshipId = data.oppRelationshipId;
+        this.oppModel.status = data.oppStatus;
+        this.oppModel.competitors = data.oppRemarks1;
+
+        // Load segments and products for the selected category/group
+        if (data.productCategoryId) {
+          this.leadService.getSegmentsByCategory(data.productCategoryId).subscribe(segData => {
+            const field = this.oppFields.find(f => f.name === 'productGroupId');
+            if (field && segData) {
+              field.options = segData.map((s:any) => ({ label: s.groupName || s.GroupName, value: s.groupId || s.GroupId }));
+            }
+          });
+        }
+        if (data.productGroupId) {
+          this.leadService.getProductsBySegment(data.productGroupId).subscribe(prodData => {
+            const field = this.oppFields.find(f => f.name === 'productId');
+            if (field && prodData) {
+              field.options = prodData.map((p:any) => ({ label: p.productName || p.ProductName || 'Unnamed Product', value: p.productId || p.ProductId }));
+            }
+          });
+        }
+
+        this.showAddModal = true;
+      },
+      error: (err) => {
+        console.error('Error fetching opportunity:', err);
+        alert('Failed to fetch Opportunity details.');
+      }
+    });
   }
 
   downloadExcel(): void {

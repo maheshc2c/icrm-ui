@@ -173,6 +173,20 @@ export class Leadservice {
     });
   }
 
+  /* ================= GET OPPORTUNITY BY ID ================= */
+  getOpportunityById(oppId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/SalesEngineer/opportunity/${oppId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= UPDATE OPPORTUNITY ================= */
+  updateOpportunity(oppId: number, opportunityDto: any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/SalesEngineer/update-opportunity/${oppId}`, opportunityDto, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   /* ================= GET ALL OPPORTUNITIES (TABLE) ================= */
   getOpportunityTable(): Observable<OpportunityTableModel[]> {
     return this.http.get<OpportunityTableModel[]>(`${this.baseUrl}/SalesEngineer/opportunity/table`, {

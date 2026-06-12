@@ -19,8 +19,8 @@
   (editRow)="onEdit($event)">
 </app-data-table>
 
-<!-- ADD OPPORTUNITY MODAL -->
-<app-modal [show]="showAddModal" [title]="'Add New Opportunity'" (closeDialog)="closeModal()">
+<!-- ADD/EDIT OPPORTUNITY MODAL -->
+<app-modal [show]="showAddModal" [title]="isEditMode ? 'Edit Opportunity' : 'Add New Opportunity'" (closeDialog)="closeModal()">
   <div class="opportunity-form-grid">
     <div class="form-field-group" *ngFor="let field of oppFields">
       <label [for]="field.name">{{ field.label }} <span *ngIf="field.required" class="required">*</span></label>
