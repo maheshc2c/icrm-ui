@@ -7,6 +7,7 @@ import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { SegmentService } from '../../../../service/segmentservice';
 import { SegmentDto } from '../../../../models/segment';
+import { ToastService } from '../../../../service/toast.service';
  
 @Component({
   selector: 'app-add-segment',
@@ -20,7 +21,8 @@ export class AddSegment implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private segmentService: SegmentService
+    private segmentService: SegmentService,
+    private toastService: ToastService
   ) { }
  
   /* ================= HEADER ================= */
@@ -121,10 +123,12 @@ export class AddSegment implements OnInit {
     this.segmentService.createSegment(payload).subscribe({
       next: () => {
         console.log('Segment created successfully');
+        this.toastService.success('Segment created successfully');
         this.router.navigate(['/admin/segment']);
       },
       error: (err) => {
         console.error('Failed to create segment:', err);
+        this.toastService.error('Failed to create segment');
         if (err.status === 401 || err.status === 403) {
           console.error('Authentication failed. Please login again.');
           this.router.navigate(['/admin/segment']);

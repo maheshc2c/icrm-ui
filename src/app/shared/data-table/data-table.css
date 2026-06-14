@@ -88,21 +88,17 @@
 
 /* ================= TABLE HEADER ================= */
 .soft-header thead th {
-  background: rgba(40, 129, 219, 0.7) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  color: #1e293b !important;
-  font-weight: 700;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.75rem 1rem;
-  border-bottom: 2px solid #cbd5e1;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+     background: #ffd0ca !important;
+    backdrop-filter: blur(8px) !important;
+    text-transform: uppercase;
+    color: #495057 !important;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #ffd0ca;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
-
 /* ================= ACTION BUTTONS ================= */
 .action-cell {
   text-align: center;

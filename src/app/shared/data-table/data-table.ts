@@ -111,7 +111,8 @@ export class DataTable
   openPageSizeDropdown = false;
   pageSizeOptions = [
     { label: '10', value: 10 },
-    { label: '25', value: 25 },
+    { label: '20', value: 20 },
+    { label: '30', value: 30 },
     { label: '50', value: 50 }
   ];
 
@@ -187,7 +188,6 @@ detectKey(row: any, index: number) {
     index
   );
 }
-
 
 //[pagination]
 @Input() totalElements: number | null = null;

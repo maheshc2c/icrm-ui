@@ -305,17 +305,16 @@ export class Customer {
   )
   .subscribe({
     next: (blob: Blob) => {
-
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'Customers.xlsx';
-      a.click();
-
-      
-
-      window.URL.revokeObjectURL(url);
+        const url = window.URL.createObjectURL(blob);
+  
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Customers.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+  
+        window.URL.revokeObjectURL(url);
     },
     error: (err) => {
       console.error('Download failed', err);

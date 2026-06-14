@@ -9,6 +9,7 @@ import { ProductService } from '../../../service/productservice';
 import { Router, ActivatedRoute } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { ToastService } from '../../../service/toast.service';
  
 @Component({
   standalone: true,
@@ -31,6 +32,7 @@ export class Product implements OnInit {
     private productService: ProductService,
     private router: Router,
     private route: ActivatedRoute,
+    private toastService: ToastService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
  
@@ -97,7 +99,7 @@ export class Product implements OnInit {
         console.error("Failed to load product list:", err);
  
         if (err.status === 401) {
-          alert("Session expired, please login again.");
+          this.toastService.error("Session expired, please login again.");
           this.router.navigate(['/login']);
         }
       }

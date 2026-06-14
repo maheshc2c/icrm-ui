@@ -78,7 +78,7 @@ export class SegmentComponent implements OnInit {
           groupId: segment.groupId,
           businessCategory: segment.category?.categoryName ?? '',
           segmentName: segment.groupName ?? '',
-          segmentDescription: segment.category?.categoryDescription ?? '',
+          segmentDescription: segment.groupDescription ?? '',
           groupStatus: segment.groupStatus
         }));
       },
@@ -111,7 +111,7 @@ export class SegmentComponent implements OnInit {
         groupId: segment.groupId,
         businessCategory: segment.category?.categoryName ?? '',
         segmentName: segment.groupName ?? '',
-        segmentDescription: segment.category?.categoryDescription ?? '',
+        segmentDescription: segment.groupDescription ?? '',
         groupStatus: segment.groupStatus
       }));
       return;
@@ -133,7 +133,7 @@ export class SegmentComponent implements OnInit {
       groupId: segment.groupId,
       businessCategory: segment.category?.categoryName ?? '',
       segmentName: segment.groupName ?? '',
-      segmentDescription: segment.category?.categoryDescription ?? '',
+      segmentDescription: segment.groupDescription ?? '',
       groupStatus: segment.groupStatus
     }));
   }

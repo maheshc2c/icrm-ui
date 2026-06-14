@@ -7,6 +7,7 @@ import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { UserTargetService } from '../../../service/user-target.service';
+import { ToastService } from '../../../service/toast.service';
 
 @Component({
     standalone: true,
@@ -49,11 +50,13 @@ export class TargetRoleComponent implements OnInit {
     availableRoles: any[] = [];
 
     rows: any[] = [];
+    currentSearchValues: any = null;
 
     constructor(
         private userTargetService: UserTargetService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private toastService: ToastService
     ) { }
 
     ngOnInit(): void {
@@ -93,28 +96,40 @@ export class TargetRoleComponent implements OnInit {
 
     onSearch(searchTerm?: string) {
         console.log("Search target for:", searchTerm);
-        this.userTargetService.searchTarget(searchTerm, undefined, undefined, undefined, searchTerm).subscribe({
-            next: (users: any[]) => {
-                this.rows = users.map((c: any, index: number) => ({
-                    serialNumber: c.serialNumber ?? (index + 1),
-                    userId: c.userId ?? c.id ?? c.serialNumber ?? null,
-                    name: c.firstName && c.lastName
-                        ? `${c.firstName} ${c.lastName}`
-                        : (c.firstName ?? c.username ?? ''),
-                    role: c.roleName ?? '',
-                    employeeId: c.username ?? '',
-                    email: c.email ?? '',
-                    mobile: c.phoneNumber ?? ''
-                }));
-            },
-            error: (err: any) => {
-                console.error("Search failed:", err);
-            }
-        });
+        if (searchTerm) {
+            this.userTargetService.searchTarget(undefined, undefined, undefined, undefined, searchTerm).subscribe({
+                next: (users: any[]) => {
+                    this.rows = users.map((c: any, index: number) => ({
+                        serialNumber: c.serialNumber ?? (index + 1),
+                        userId: c.userId ?? c.id ?? c.serialNumber ?? null,
+                        name: c.firstName && c.lastName
+                            ? `${c.firstName} ${c.lastName}`
+                            : (c.firstName ?? c.username ?? ''),
+                        role: c.roleName ?? '',
+                        employeeId: c.username ?? '',
+                        email: c.email ?? '',
+                        mobile: c.phoneNumber ?? ''
+                    }));
+                },
+                error: (err: any) => {
+                    console.error("Search failed:", err);
+                    if (err.status === 400 && err.error === 'No matching records found') {
+                        this.rows = [];
+                    } else {
+                        this.toastService.error('Search failed');
+                    }
+                }
+            });
+        } else if (this.currentSearchValues) {
+            this.onSearchFromChild(this.currentSearchValues);
+        } else {
+            this.loadUsers();
+        }
     }
 
     onSearchFromChild(searchValues: any) {
         console.log("Search values from child:", searchValues);
+        this.currentSearchValues = searchValues;
         
         // Extract values from search object
         const role = searchValues.role || undefined;
@@ -140,6 +155,11 @@ export class TargetRoleComponent implements OnInit {
             },
             error: (err: any) => {
                 console.error("Search failed:", err);
+                if (err.status === 400 && err.error === 'No matching records found') {
+                    this.rows = [];
+                } else {
+                    this.toastService.error('Search failed');
+                }
             }
         });
     }
@@ -164,6 +184,11 @@ export class TargetRoleComponent implements OnInit {
                 options: this.availableRoles
             };
         }
+    }
+
+    onRefresh() {
+        this.currentSearchValues = null;
+        this.loadUsers();
     }
 
     onAdd() {

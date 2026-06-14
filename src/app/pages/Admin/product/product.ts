@@ -102,7 +102,7 @@ export class Product implements OnInit {
         console.error("Failed to load product list:", err);
  
         if (err.status === 401) {
-          alert("Session expired, please login again.");
+          this.toastService.error("Session expired, please login again.");
           this.router.navigate(['/login']);
         }
       }
@@ -176,7 +176,7 @@ export class Product implements OnInit {
 
   onImport(): void {
     if (!this.rows || this.rows.length === 0) {
-      alert('No data available to download');
+      this.toastService.warning('No data available to download');
       return;
     }
 

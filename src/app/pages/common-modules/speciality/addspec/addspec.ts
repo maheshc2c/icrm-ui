@@ -9,6 +9,7 @@ import { DataTable } from '../../../../shared/data-table/data-table';
 import { Form } from '../../../../shared/form/form';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
   selector: 'app-addspec',
@@ -23,7 +24,8 @@ export class Addspec {
   constructor(
     private adminService: Adminservice,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
 
@@ -81,7 +83,7 @@ export class Addspec {
       const speciality = specialitys.find((c: any) => c.id === id || c.specialityId === id);
 
       if (!speciality) {
-        alert('Speciality not found');
+        this.toastService.error('Speciality not found');
         this.router.navigate(['/speciality']);
         return;
       }
@@ -92,7 +94,7 @@ export class Addspec {
       };
     },
     error: () => {
-      alert('Failed to load speciality');
+      this.toastService.error('Failed to load speciality');
       this.router.navigate(['/speciality']);
     }
   });
@@ -110,23 +112,25 @@ export class Addspec {
     payload.id = this.specialityId;
     this.adminService.updateSpeciality(payload).subscribe({
       next: () => {
+        this.toastService.success('Speciality updated successfully');
         this.adminService.clearSpecialityDropdownCache();
         this.router.navigate(['/speciality']);
       },
       error: err => {
         console.error('Update failed:', err);
-        alert('Update failed');
+        this.toastService.error('Update failed');
       }
     });
   } else {
     this.adminService.createSpeciality(payload).subscribe({
       next: () => {
+        this.toastService.success('Speciality created successfully');
         this.adminService.clearSpecialityDropdownCache();
         this.router.navigate(['/speciality']);
       },
       error: err => {
         console.error('Save failed:', err);
-        alert('Save failed');
+        this.toastService.error('Save failed');
       }
     });
   }

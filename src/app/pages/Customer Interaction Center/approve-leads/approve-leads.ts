@@ -54,27 +54,15 @@ export class ApproveLeads implements OnInit {
   ];
 
   /* SEARCH FIELDS */
-  searchFields: SearchFieldConfig[] = [
-    { key: 'leadId', label: 'Lead ID', placeholder: 'Lead ID', type: 'text' },
-    {
-      key: 'customer',
-      label: 'Customer',
-      type: 'select',
-      options: [
-        { label: 'Select Customer', value: '' },
-        { label: 'Miot Hospitals', value: 'Miot Hospitals' }
-      ]
-    },
-    {
-      key: 'createdBy',
-      label: 'Owner',
-      type: 'select',
-      options: [
-        { label: 'Select Owner', value: '' },
-        { label: 'Chetan Kumar', value: 'Chetan Kumar' }
-      ]
-    }
-  ];
+  searchFields: SearchFieldConfig[] = [];
+
+  loadDropdownCustomers(search: string) {
+    return this.cicService.getDropdownCustomers(search);
+  }
+
+  loadDropdownOwners(search: string) {
+    return this.cicService.getDropdownOwners(search);
+  }
 
   /* TABLE DATA */
   rows: any[] = [];
@@ -87,7 +75,61 @@ export class ApproveLeads implements OnInit {
   searchValues: any = {};
 
   ngOnInit(): void {
+    this.searchFields = [
+      { key: 'leadId', label: 'Lead ID', placeholder: 'Lead ID', type: 'text' },
+      {
+        key: 'customer',
+        label: 'Customer',
+        type: 'select',
+        options: [
+          { label: 'Select Customer', value: '' }
+        ],
+        dynamicLoad: this.loadDropdownCustomers.bind(this)
+      },
+      {
+        key: 'createdBy',
+        label: 'Owner',
+        type: 'select',
+        options: [
+          { label: 'Select Owner', value: '' }
+        ],
+        dynamicLoad: this.loadDropdownOwners.bind(this)
+      }
+    ];
     this.loadTrackLeads();
+    this.loadDropdownOptions();
+  }
+
+  private loadDropdownOptions(): void {
+    this.cicService.getDropdownOwners().subscribe({
+      next: (owners) => {
+        const ownerField = this.searchFields.find(f => f.key === 'createdBy');
+        if (ownerField && ownerField.options) {
+          ownerField.options = [
+            { label: 'Select Owner', value: '' },
+            ...owners
+          ];
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load owners:', err);
+      }
+    });
+
+    this.cicService.getDropdownCustomers().subscribe({
+      next: (customers) => {
+        const customerField = this.searchFields.find(f => f.key === 'customer');
+        if (customerField && customerField.options) {
+          customerField.options = [
+            { label: 'Select Customer', value: '' },
+            ...customers
+          ];
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load customers:', err);
+      }
+    });
   }
 
   private loadTrackLeads(): void {
