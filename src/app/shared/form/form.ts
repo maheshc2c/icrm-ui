@@ -30,6 +30,7 @@ export class Form implements OnChanges {
   formData: any = {};
   originalOptions: { [key: string]: any[] } = {};
   errors: any = {};
+  touched: any = {};
 
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
@@ -132,6 +133,7 @@ export class Form implements OnChanges {
     }
     this.formData[fieldName][optionValue] = isChecked;
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
+    this.onFieldInput(fieldName);
   }
 
   /* ================= VALIDATION ================= */
@@ -139,8 +141,15 @@ export class Form implements OnChanges {
     const value = this.formData[field.name];
 
     // Required
-    if (field.required && (value === null || value === undefined || value === '')) {
-      return `${field.label} is required`;
+    if (field.required) {
+      if (field.type === 'checkbox') {
+        // Check if at least one checkbox is selected
+        if (!value || Object.values(value).every(v => !v)) {
+          return `${field.label} is required`;
+        }
+      } else if (value === null || value === undefined || value === '') {
+        return `${field.label} is required`;
+      }
     }
 
     // Pattern (only validate when something is provided)
@@ -162,26 +171,6 @@ export class Form implements OnChanges {
     if (field.max !== undefined && value !== null && value !== '' && Number(value) > field.max) {
       return `${field.label} must be less than ${field.max}`;
     }
-
-    // Min
-  if (
-    field.min !== undefined &&
-    value !== null &&
-    value !== '' &&
-    Number(value) < field.min
-  ) {
-    return `${field.label} must be at least ${field.min}`;
-  }
-
-  // Max
-  if (
-    field.max !== undefined &&
-    value !== null &&
-    value !== '' &&
-    Number(value) > field.max
-  ) {
-    return `${field.label} must be less than ${field.max}`;
-  }
 
    // Email Validation
   if (
@@ -223,6 +212,24 @@ export class Form implements OnChanges {
     }
 
     this.formSubmit.emit(this.formData);
+  }
+
+  onFieldInput(fieldName: string) {
+    this.touched[fieldName] = true;
+    // Find the field object by name
+    const field = this.fields.find(f => f.name === fieldName);
+    if (field) {
+      const err = this.validateField(field);
+      if (err) {
+        this.errors[fieldName] = err;
+      } else {
+        delete this.errors[fieldName];
+      }
+    }
+  }
+
+  clearError(fieldName: string) {
+    delete this.errors[fieldName];
   }
 
   cancel() {
