@@ -8,12 +8,14 @@
 .content {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 70px); /* Allow it to grow */
+  min-height: calc(100vh - 70px);
+  /* Allow it to grow */
   margin-left: 287px;
   width: calc(100% - 287px);
   padding: 20px;
   box-sizing: border-box;
-  overflow-y: auto; /* Enable scrolling if constrained by parent */
+  overflow-y: auto;
+  /* Enable scrolling if constrained by parent */
 }
 
 /* ================= SHARED WIDTH COLUMN ================= */
@@ -28,12 +30,14 @@
 /* ================= TOOLBAR ================= */
 .datatable-toolbar {
   display: flex;
-  flex-wrap: wrap;              /* ✅ auto wrap */
+  flex-wrap: wrap;
+  /* ✅ auto wrap */
   align-items: flex-end;
   gap: 16px;
 
   /* 🔒 LOCK TOOLBAR WIDTH TO TABLE WIDTH */
-  overflow: hidden;             /* prevent crossing table edge */
+  overflow: hidden;
+  /* prevent crossing table edge */
   margin-bottom: 16px;
 }
 
@@ -59,20 +63,22 @@
 
 /* ================= CARD (TABLE WIDTH SOURCE) ================= */
 .card {
-  width: 100%;                  /* 🔥 THIS DEFINES THE EDGE */
+  width: 100%;
+  /* 🔥 THIS DEFINES THE EDGE */
   max-width: 100%;
   box-sizing: border-box;
 
   background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: none;
 }
 
 /* ================= TABLE BODY ================= */
 .table-responsive {
   width: 100%;
-  overflow-x: auto; /* keep horizontal scroll for small screens */
+  overflow-x: auto;
+  /* keep horizontal scroll for small screens */
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-sizing: border-box;
@@ -88,19 +94,16 @@
 
 /* ================= TABLE HEADER ================= */
 .soft-header thead th {
-  background: rgba(40, 129, 219, 0.7) !important;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
-  color: #1e293b !important;
-  font-weight: 700;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.75rem 1rem;
-  border-bottom: 2px solid #cbd5e1;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+     background: #ffd0ca !important;
+    backdrop-filter: blur(8px) !important;
+    text-transform: uppercase;
+    color: #495057 !important;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #ffd0ca;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 /* ================= ACTION BUTTONS ================= */
@@ -133,6 +136,7 @@
   background: #ffebee;
   color: #d32f2f;
 }
+
 .action-buttons .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -167,8 +171,10 @@
 /* ================= NO RECORDS FOUND (MATCHES TABLE DESIGN) ================= */
 
 .table tbody tr.no-records-row td {
-  background: #ffffff;               /* same as card */
-  color: #101010;                    /* subtle muted text */
+  background: #ffffff;
+  /* same as card */
+  color: #101010;
+  /* subtle muted text */
   font-size: 18px;
   font-weight: 500;
   padding: 10px 10px;
@@ -178,7 +184,8 @@
 /* ================= TABLE CELL BORDERS ================= */
 .table th,
 .table td {
-  border-bottom: 1px solid #e5e7eb;   /* row separator */
+  border-bottom: 1px solid #e5e7eb;
+  /* row separator */
   padding: 6px 16px;
   vertical-align: middle;
 }
@@ -188,6 +195,7 @@
 .table td:not(:last-child) {
   border-right: 1px solid #f0f0f0;
 }
+
 /* ================= ROW HOVER ================= */
 /* .table tbody tr:hover {
   background-color: #fafafa;
@@ -202,7 +210,8 @@
   min-width: 220px;
   padding: 6px 12px;
   font-size: 14px;
-  border-radius: 6px;               /* match button radius */
+  border-radius: 6px;
+  /* match button radius */
   border: 1px solid #eadcff;
   background: #ffffff;
   color: #333;
@@ -252,7 +261,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .pagination-info {
@@ -386,14 +395,15 @@
 
 .dropdown-panel {
   position: absolute;
-  bottom: 100%; /* Open upwards in pagination */
+  bottom: 100%;
+  /* Open upwards in pagination */
   left: 0;
   right: 0;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 6px 6px 0 0;
   z-index: 1000;
-  box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1);
   margin-bottom: 2px;
 }
 
@@ -413,7 +423,8 @@
 
 .option-item:hover {
   background: #f5f8fa;
-  color: #e74c3c; /* Match table red theme */
+  color: #e74c3c;
+  /* Match table red theme */
 }
 
 

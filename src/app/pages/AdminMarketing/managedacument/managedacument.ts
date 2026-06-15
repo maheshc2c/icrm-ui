@@ -102,50 +102,39 @@ export class UploadDocument {
     console.log('Info/Edit document:', row);
     this.router.navigate(['/adminmarketing/managedacument/edit', row.id]);
   }
-  onDelete(row: DocumentRow) { 
-    console.log('Delete document:', row);
-    this.confirmService.confirm({
-      title: 'Confirm Deletion',
-      message: `Are you sure you want to delete ${row.name}?`
-    }).then((confirmed) => {
-      if (confirmed) {
-        // Implement delete logic here if needed
-      }
-    });
-  }
-
-  onStatusToggle(row: any) {
+  // Activate/Deactivate Document
+  onDelete(row: any) {
     const id = row.id;
-    const currentStatus = Number(row.specialityStatus);
-
     if (!id && id !== 0) {
-      this.toastService.error('Cannot toggle status: ID is missing.');
       return;
     }
+    const status = Number(row.specialityStatus);
+    const isActive = status === 1;
 
-    if (currentStatus === 1) {
-      this.adminMarketingservice.deactivateCampdoc(id).subscribe({
+    this.confirmService.confirm({
+      title: 'Confirm',
+      message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this document?`,
+      confirmText: isActive ? 'Deactivate' : 'Activate'
+    }).then((confirmed) => {
+      if (!confirmed) return;
+
+      const apiCall = isActive
+        ? this.adminMarketingservice.deactivateCampdoc(id)
+        : this.adminMarketingservice.activateCampdoc(id);
+
+      apiCall.subscribe({
         next: () => {
-          this.toastService.success('Document deactivated successfully');
-          this.loadDocuments();
+          row.specialityStatus = isActive ? 2 : 1;
+          this.rows = [...this.rows];
+          this.allRows = [...this.allRows];
+          this.toastService.success(`Document ${isActive ? 'deactivated' : 'activated'} successfully`);
         },
         error: (err) => {
-          console.error('Deactivate failed', err);
-          this.toastService.error('Failed to deactivate document.');
+          console.error('Status update failed', err);
+          this.toastService.error('Failed to update status');
         }
       });
-    } else {
-      this.adminMarketingservice.activateCampdoc(id).subscribe({
-        next: () => {
-          this.toastService.success('Document activated successfully');
-          this.loadDocuments();
-        },
-        error: (err) => {
-          console.error('Activate failed', err);
-          this.toastService.error('Failed to activate document.');
-        }
-      });
-    }
+    });
   }
 
   ngOnInit(): void {

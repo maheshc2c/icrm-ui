@@ -54,4 +54,54 @@ export class CustomerInteractionCenterService {
       }
     );
   }
+
+  getLeadById(leadId: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/SalesEngineer/salesmanager/lead/${leadId}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  editLead(dto: any): Observable<any> {
+    return this.http.put<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/editLeads`,
+      dto,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getInstalledBase(customerId: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/installed-base/${customerId}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getDistributors(): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/distributor`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getSiteReadiness(): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/site-readiness`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getDropdownCustomers(query: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/CustomerInteractionCenter/dropdown-customers?customer=${encodeURIComponent(query)}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getDropdownOwners(query: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/CustomerInteractionCenter/dropdown-owners?owner=${encodeURIComponent(query)}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
 }

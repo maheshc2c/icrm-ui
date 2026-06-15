@@ -61,8 +61,7 @@ export class ApproveLeads implements OnInit {
       label: 'Customer',
       type: 'select',
       options: [
-        { label: 'Select Customer', value: '' },
-        { label: 'Miot Hospitals', value: 'Miot Hospitals' }
+        { label: 'Select Customer', value: '' }
       ]
     },
     {
@@ -70,8 +69,7 @@ export class ApproveLeads implements OnInit {
       label: 'Owner',
       type: 'select',
       options: [
-        { label: 'Select Owner', value: '' },
-        { label: 'Chetan Kumar', value: 'Chetan Kumar' }
+        { label: 'Select Owner', value: '' }
       ]
     }
   ];
@@ -88,6 +86,48 @@ export class ApproveLeads implements OnInit {
 
   ngOnInit(): void {
     this.loadTrackLeads();
+    this.onDropdownSearch({ key: 'customer', query: '' });
+    this.onDropdownSearch({ key: 'createdBy', query: '' });
+  }
+
+  onDropdownSearch(event: { key: string; query: string }): void {
+    const key = event.key;
+    const query = event.query || '';
+    
+    if (key === 'customer') {
+      this.cicService.getDropdownCustomers(query).subscribe({
+        next: (customers) => {
+          const customerField = this.searchFields.find(f => f.key === 'customer');
+          if (customerField) {
+            customerField.options = [
+              { label: 'Select Customer', value: '' },
+              ...customers.map(c => ({ label: c.customerName, value: c.customerName }))
+            ];
+          }
+        },
+        error: (err) => {
+          console.error('Error loading customers dropdown:', err);
+        }
+      });
+    } else if (key === 'createdBy') {
+      this.cicService.getDropdownOwners(query).subscribe({
+        next: (owners) => {
+          const ownerField = this.searchFields.find(f => f.key === 'createdBy');
+          if (ownerField) {
+            ownerField.options = [
+              { label: 'Select Owner', value: '' },
+              ...owners.map(u => {
+                const fullName = (u.firstName + ' ' + (u.lastName || '')).trim();
+                return { label: fullName, value: fullName };
+              })
+            ];
+          }
+        },
+        error: (err) => {
+          console.error('Error loading owners dropdown:', err);
+        }
+      });
+    }
   }
 
   private loadTrackLeads(): void {
@@ -143,7 +183,7 @@ export class ApproveLeads implements OnInit {
   }
 
   onEdit(row: any): void {
-    console.log('Edit:', row);
+    this.router.navigate(['/Approve-Leads/edit', row.leadId]);
   }
 
   onApprove(row: any): void {
