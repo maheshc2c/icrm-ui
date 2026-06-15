@@ -348,7 +348,7 @@ textarea.is-invalid {
 }
 
 .cic-modal-body {
-    overflow-y: auto;
+    overflow-y: hidden;
     padding: 18px 22px;
     flex: 1;
 }
@@ -507,7 +507,7 @@ textarea.is-invalid {
     padding: 20px;
     background: #fdfdfd;
     max-height: 70vh;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 

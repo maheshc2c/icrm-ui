@@ -1,24 +1,11 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  border: 1px solid #e0e0e0;
-  background-color: aliceblue;
-}
-
-/* FIXED: use .page-header (class), not page-header (tag) */
+/* ================= PAGE HEADER ================= */
 .page-header {
   background: #fff;
   padding: 1.25rem 2rem;
   margin: 0 0 20px 0;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   width: calc(100% - 280px);
-  /* Match sidebar width */
   margin-left: 280px;
-  /* Match sidebar width */
   border-bottom: 1px solid #edf2f7;
   display: flex;
   align-items: center;
@@ -26,51 +13,41 @@ body {
   margin-top: -17px;
 }
 
-.page-title {
-  margin-top: 35px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 2px;
-}
-
 .page-title h1 {
   font-size: 1.5rem;
-  font-weight: 700;
-  color: #1a202c;
+  font-weight: 600;
+  color: #2d3748;
   margin: 0;
-  letter-spacing: -0.02em;
 }
 
 .breadcrumb {
-  font-size: 0.85rem;
-  color: #718096;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
 }
 
 .breadcrumb a {
-  color: #4a5568;
+  color: #718096;
   text-decoration: none;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 500;
+  transition: color 0.2s;
 }
 
 .breadcrumb a:hover {
-  color: #4f46e5;
-}
-
-.breadcrumb i {
-  font-size: 0.9rem;
-  color: #4f46e5;
+  color: #4299e1;
 }
 
 .breadcrumb span {
   color: #a0aec0;
   font-weight: 400;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .page-header {
+    width: 100%;
+    margin-left: 0;
+    padding: 1rem;
+  }
 }

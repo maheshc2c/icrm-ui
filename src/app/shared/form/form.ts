@@ -8,7 +8,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+ 
 @Component({
   selector: 'app-form',
   standalone: true,
@@ -17,16 +17,16 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './form.css'
 })
 export class Form implements OnChanges {
-
+ 
   @Input() title: string = '';
   @Input() fields: any[] = [];
   @Input() model: any;
-  
-
+ 
+ 
   @Output() formSubmit = new EventEmitter<any>();
   @Output() cancelForm  = new EventEmitter<void>();
   @Output() fieldChange = new EventEmitter<{ name: string, value: any }>();
-
+ 
   formData: any = {};
   originalOptions: { [key: string]: any[] } = {};
   errors: any = {};
@@ -36,7 +36,7 @@ export class Form implements OnChanges {
   //   if (changes['model'] && changes['model'].currentValue) {
   //      this.formData = { ...this.model };
   //   }
-    
+   
  
   //   // ✅ Initialize nested objects for checkboxes if not present
   //   this.fields.forEach(field => {
@@ -45,19 +45,19 @@ export class Form implements OnChanges {
   //     }
   //   });
   // }
-
+ 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['model'] && changes['model'].currentValue) {
       this.formData = { ...this.model };
     }
-
+ 
     if (changes['fields']) {
       this.fields.forEach(field => {
         // Set defaults so template bindings don't explode
         if (this.formData[field.name] === undefined) {
           this.formData[field.name] = field.type === 'checkbox' ? {} : null;
         }
-
+ 
         // Cache options for searchable dropdown filtering
         if (field.type === 'select' && Array.isArray(field.options)) {
           this.originalOptions[field.name] = [...field.options];
@@ -65,7 +65,7 @@ export class Form implements OnChanges {
           field._filtered = null;
           field._open = false;
         }
-
+ 
         // Ensure nested objects for checkboxes
         if (field.type === 'checkbox' && !this.formData[field.name]) {
           this.formData[field.name] = {};
@@ -73,7 +73,7 @@ export class Form implements OnChanges {
       });
     }
   }
-
+ 
   // Close any open searchable dropdown(s)
   hostClick() {
     this.fields.forEach(field => {
@@ -82,12 +82,12 @@ export class Form implements OnChanges {
       }
     });
   }
-
+ 
   /* ================= SEARCHABLE DROPDOWN ================= */
   onSearchInput(field: any, keyword: string): void {
     const term = (keyword || '').toLowerCase();
     const baseOptions = this.originalOptions[field.name] || field.options || [];
-
+ 
     if (term.length >= 1) {
       field._filtered = baseOptions.filter((opt: any) =>
         (opt?.label || '').toLowerCase().includes(term)
@@ -97,28 +97,38 @@ export class Form implements OnChanges {
     }
     field._open = true;
   }
-
+ 
   selectSearchableOption(field: any, opt: any): void {
     this.formData[field.name] = opt.value;
     field._open = false;
     field._filtered = null;
+    // Clear error when user selects an option
+    delete this.errors[field.name];
     this.fieldChange.emit({ name: field.name, value: opt.value });
     field.onChange?.(opt.value);
   }
 
+  onInputChange(field: any, value: any): void {
+    this.formData[field.name] = value;
+    // Clear error when user types or modifies the field
+    delete this.errors[field.name];
+    this.fieldChange.emit({ name: field.name, value });
+    field.onChange?.(value);
+  }
+ 
   closeDropdownDelayed(field: any): void {
     setTimeout(() => {
       field._open = false;
     }, 200);
   }
-
+ 
   getSelectedLabel(field: any): string {
     const value = this.formData[field.name];
     if (value === null || value === undefined || value === '') return '';
     const opt = field.options?.find((o: any) => o.value === value);
     return opt ? opt.label : value;
   }
-
+ 
   /* ================= CHECKBOX GROUP ================= */
   getCheckboxValue(fieldName: string, optionValue: string): boolean {
     if (!this.formData[fieldName]) {
@@ -126,20 +136,38 @@ export class Form implements OnChanges {
     }
     return !!this.formData[fieldName][optionValue];
   }
-
+ 
   onCheckboxChange(fieldName: string, optionValue: string, isChecked: boolean) {
     if (!this.formData[fieldName]) {
       this.formData[fieldName] = {};
     }
     this.formData[fieldName][optionValue] = isChecked;
+    // Clear error when user interacts with checkbox
+    delete this.errors[fieldName];
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
     this.onFieldInput(fieldName);
   }
 
+  /* ================= RADIO GROUP ================= */
+  onRadioClick(fieldName: string, optionValue: any, event: Event) {
+    if (this.formData[fieldName] === optionValue) {
+      event.preventDefault();
+      this.formData[fieldName] = null;
+      // Clear error when user interacts with radio
+      delete this.errors[fieldName];
+      this.fieldChange.emit({ name: fieldName, value: null });
+    } else {
+      this.formData[fieldName] = optionValue;
+      // Clear error when user selects a radio option
+      delete this.errors[fieldName];
+      this.fieldChange.emit({ name: fieldName, value: optionValue });
+    }
+  }
+ 
   /* ================= VALIDATION ================= */
   validateField(field: any): string | null {
     const value = this.formData[field.name];
-
+ 
     // Required
     if (field.required) {
       if (field.type === 'checkbox') {
@@ -151,7 +179,7 @@ export class Form implements OnChanges {
         return `${field.label} is required`;
       }
     }
-
+ 
     // Pattern (only validate when something is provided)
     if (field.pattern && value !== null && value !== undefined && value !== '') {
       try {
@@ -163,7 +191,7 @@ export class Form implements OnChanges {
         // ignore invalid regex patterns
       }
     }
-
+ 
     // Min / Max (numeric)
     if (field.min !== undefined && value !== null && value !== '' && Number(value) < field.min) {
       return `${field.label} must be at least ${field.min}`;
@@ -192,7 +220,7 @@ export class Form implements OnChanges {
 
     return null;
   }
-
+ 
   submit(form: any) {
     this.errors = {};
     let firstInvalidFieldName: string | null = null;
@@ -207,7 +235,7 @@ export class Form implements OnChanges {
         }
       }
     });
-
+ 
     if (Object.keys(this.errors).length > 0) {
       // Mark controls touched so template-driven validation UI can show
       if (form?.controls) {
@@ -233,7 +261,7 @@ export class Form implements OnChanges {
       }
       return;
     }
-
+ 
     this.formSubmit.emit(this.formData);
   }
 
@@ -258,5 +286,4 @@ export class Form implements OnChanges {
   cancel() {
     this.cancelForm.emit();
   }
-
 }

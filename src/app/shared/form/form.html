@@ -1,27 +1,27 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
+ 
 <div class="form-wrapper" (click)="hostClick()">
   <div class="company-form-container">
-
+ 
     <!-- Form title removed per user request -->
-
+ 
     <div class="form-body-section">
       <form #form="ngForm" (ngSubmit)="submit(form)">
-
+ 
         <div class="form-grid-container">
           <!-- LOOP ALL FIELDS -->
           <ng-container *ngFor="let field of fields">
-            <div class="company-field-row" 
+            <div class="company-field-row"
                  [class.full-width]="field.type === 'textarea'">
-
+ 
               <!-- LABEL -->
             <label class="field-label-text">
               {{ field.label }}
               <span *ngIf="field.required" class="mandatory-star">*</span>
             </label>
-
+ 
             <div class="field-input-area">
-
+ 
               <!-- TEXT / NUMBER / EMAIL -->
               <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
                 [type]="field.type" class="company-text-input" [placeholder]="field.placeholder || ''"
@@ -83,7 +83,7 @@
                 [id]="'form-field-' + field.name">
 
                 <option value="">-- Select --</option>
-
+ 
                 <ng-container *ngIf="
                   formData[field.dependsOn] &&
                   field.optionsMap[formData[field.dependsOn]]
@@ -92,12 +92,12 @@
                     {{ opt.label }}
                   </option>
                 </ng-container>
-
+ 
               </select>
               <!-- CHECKBOX GROUP (🔥 NEW) -->
               <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container" [id]="'form-field-' + field.name">
                 <div *ngFor="let opt of field.options" class="checkbox-item">
-                  <input type="checkbox" [id]="field.name + '_' + opt.value" 
+                  <input type="checkbox" [id]="field.name + '_' + opt.value"
                     [ngModel]="getCheckboxValue(field.name, opt.value)"
                     (ngModelChange)="onCheckboxChange(field.name, opt.value, $event); onFieldInput(field.name)"
                     [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
@@ -106,7 +106,7 @@
                   </label>
                 </div>
               </div>
-
+ 
               <!-- RADIO GROUP -->
               <div *ngIf="field.type === 'radio'" class="checkbox-group-container" [id]="'form-field-' + field.name">
                 <div *ngFor="let opt of field.options" class="checkbox-item">
@@ -129,7 +129,7 @@
             </div>
           </ng-container>
         </div>
-
+ 
         <!-- BUTTONS -->
         <div class="form-action-buttons">
           <button type="button" class="btn-cancel-form" (click)="cancel()">
@@ -139,9 +139,9 @@
             <i class="fas fa-check"></i> Save
           </button>
         </div>
-
+ 
       </form>
     </div>
-
+ 
   </div>
 </div>
