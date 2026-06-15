@@ -218,8 +218,8 @@ onSearch(filters: any) {
     pagination: {
   pageNumber: this.currentPage - 1,
   pageSize: this.pageSize,
-  sortBy: 'contactFirstName',
-  sortOrder: 'ASC'
+  sortBy: 'contactId',
+    sortOrder: 'DESC'
 }
   };
 

@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { Adminservice } from '../../../service/adminservice';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { ToastService } from '../../../service/toast.service';
 
 @Component({
   standalone: true,
@@ -20,7 +21,8 @@ export class SubSystem implements OnInit {
   constructor(
     private adminservice: Adminservice,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService
   ) {}
 
   headerTitle = 'Manage Sub System';
@@ -50,8 +52,8 @@ export class SubSystem implements OnInit {
 
       console.log('API Response:', res);
 
-      // Convert object → array safely
-      const subsystems = Array.isArray(res) ? res : [res];
+      const subsystems = (Array.isArray(res) ? res : [res])
+        .sort((a: any, b: any) => b.subCategoryId - a.subCategoryId);
 
       this.fullRows = subsystems;
 
@@ -59,7 +61,7 @@ export class SubSystem implements OnInit {
         sno: index + 1,
         subCategoryId: c.subCategoryId,
         subcategoryName: c.subcategoryName || c.name,
-        subcategoryStatus: c.subcategoryStatus || c.status
+        status: c.subcategoryStatus || c.status
       }));
     },
     error: err => {
@@ -78,10 +80,27 @@ export class SubSystem implements OnInit {
     this.router.navigate(['sub-system/edit', row.subCategoryId]);
   }
 
-  // Delete placeholder
+    //actiavte and deactivate
   onDelete(row: any) {
-    console.log('Delete clicked:', row);
-  }
+
+  this.adminservice.toggleSubSystem(row.subCategoryId)
+    .subscribe({
+      next: () => {
+
+        row.subcategoryStatus =
+  row.subcategoryStatus === 1 ? 2 : 1;
+
+row.status = row.subcategoryStatus;
+
+        this.rows = [...this.rows];
+
+        this.loadSubSystems();
+      },
+      error: err => {
+        console.error(err);
+      }
+    });
+}
 
   onSearch(keyword: string) {
 
@@ -102,7 +121,7 @@ export class SubSystem implements OnInit {
         sno: index + 1,
         subCategoryId: s.subCategoryId,
         subcategoryName: s.subcategoryName || s.name,
-        subcategoryStatus: s.subcategoryStatus || s.status
+        status: s.subcategoryStatus || s.status
       }));
     },
     error: err => {
@@ -111,17 +130,23 @@ export class SubSystem implements OnInit {
     }
   });
 }
+onImport() {
 
- onImport() {
-
-  if (!this.fullRows?.length) {
+  if (!this.rows?.length) {
     alert('No data available to download');
     return;
   }
+  
 
-  const payload = Array.isArray(this.fullRows)
-    ? this.fullRows
-    : [this.fullRows];
+  console.log('ROWS =>', this.rows);
+
+const payload = this.rows.map(row => ({
+  subCategoryId: row.subCategoryId,
+  subcategoryName: row.subcategoryName,
+  subcategoryStatus: row.subcategoryStatus
+}));
+
+console.log('DOWNLOAD PAYLOAD =>', payload);
 
   this.adminservice.downloadSubSystemExcel(payload).subscribe({
     next: (blob: Blob) => {

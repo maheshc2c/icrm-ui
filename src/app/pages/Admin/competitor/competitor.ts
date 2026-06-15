@@ -64,35 +64,35 @@ columns = [
     this.loadCompetitors();
   }
 
-  // ✅ LIST API ONLY
-private loadCompetitors(): void {
+ private loadCompetitors(): void {
 
-  this.adminservice
-    .getCompetitors(this.currentPage - 1, this.pageSize)
-    .subscribe({
+  this.adminservice.getCompetitors().subscribe({
+    next: (response: any) => {
 
-      next: (response: any) => {
+      const allCompetitors = [...response.content].sort(
+        (a: any, b: any) => b.competitorId - a.competitorId
+      );
 
-        const competitors = response.content;
+      this.totalElements = allCompetitors.length;
+      this.totalPages = Math.ceil(this.totalElements / this.pageSize);
 
-        this.totalElements = response.totalElements;
-        this.totalPages = response.totalPages;
+      const start = (this.currentPage - 1) * this.pageSize;
+      const end = start + this.pageSize;
 
-        this.fullRows = competitors;
+      const pageData = allCompetitors.slice(start, end);
+      this.displayedRows = pageData; // only current page
 
-        this.rows = competitors.map((c: any, index: number) => ({
-          sno: (this.currentPage - 1) * this.pageSize + index + 1,
-          competitorId: c.competitorId,
-          competitorName: c.competitorName,
-          competitorRating: c.competitorRating,
-          competitorStatus: c.competitorStatus
-        }));
-      },
+      this.fullRows = allCompetitors;
 
-      error: (err) => {
-        console.error(err);
-      }
-    });
+      this.rows = pageData.map((c: any, index: number) => ({
+        sno: start + index + 1,
+        competitorId: c.competitorId,
+        competitorName: c.competitorName,
+        competitorRating: c.competitorRating,
+        competitorStatus: c.competitorStatus
+      }));
+    }
+  });
 }
 
 //pagination
@@ -161,14 +161,15 @@ onReset(): void {
 
 //Download
 
- onImport() {
+displayedRows: any[] = [];
+onImport() {
 
-  if (!this.fullRows || this.fullRows.length === 0) {
+  if (!this.rows || this.rows.length === 0) {
     alert('No data available to download');
     return;
   }
 
-  this.adminservice.downloadCompetitorExcel(this.fullRows).subscribe({
+  this.adminservice.downloadCompetitorExcel(this.rows).subscribe({
     next: (blob: Blob) => {
 
       const url = window.URL.createObjectURL(blob);
@@ -181,11 +182,9 @@ onReset(): void {
     },
     error: (err) => {
       console.error('Download failed:', err);
-      alert(`Download failed: ${err.status}`);
     }
   });
 }
-
   onAdd() {
     this.router.navigate(['competitor/add']);
   }
@@ -223,6 +222,7 @@ onSearch(keyword: string) {
     next: (results: any[]) => {
 
       this.fullRows = results;
+  
 
       this.rows = results.map((c, index) => ({
         sno: index + 1,
