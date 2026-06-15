@@ -507,7 +507,7 @@ textarea.is-invalid {
     padding: 20px;
     background: #fdfdfd;
     max-height: 70vh;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 

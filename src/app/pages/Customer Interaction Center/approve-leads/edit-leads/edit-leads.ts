@@ -26,7 +26,7 @@ export class EditLeads implements OnInit {
     leadCmdLine1: '',
     leadCmdLine2: '',
     siteReadinessName: '',
-    distributorId: null
+    distributorId: ''
   };
   distributors: any[] = [];
   siteReadinessOptions: any[] = [];
@@ -102,26 +102,29 @@ export class EditLeads implements OnInit {
       next: (res) => {
         this.lead = res;
         
-        // Ensure values are numbers/strings
+        // Ensure values are numbers/strings - only set defaults if not present
         if (this.lead.leadVisitRequirement === undefined || this.lead.leadVisitRequirement === null) {
           this.lead.leadVisitRequirement = 0;
         }
         if (this.lead.leadResourceRequirement === undefined || this.lead.leadResourceRequirement === null) {
           this.lead.leadResourceRequirement = 0;
         }
-        if (!this.lead.relationshipName) {
+        if (this.lead.relationshipName === undefined || this.lead.relationshipName === null) {
           this.lead.relationshipName = '';
         }
-        if (!this.lead.siteReadinessName) {
+        if (this.lead.siteReadinessName === undefined || this.lead.siteReadinessName === null) {
           this.lead.siteReadinessName = '';
         }
 
-        // Map distributor ID
+        // Map distributor ID only if we have a matching distributor name
         const matchedDist = this.distributors.find(d => d.distributorName === this.lead.distributorName);
         if (matchedDist) {
           this.lead.distributorId = matchedDist.userId;
-        } else if (this.distributors.length > 0) {
-          this.lead.distributorId = this.distributors[0].userId; // default selection fallback
+        } else {
+          // Don't auto-select first distributor - leave empty for validation!
+          if (this.lead.distributorId === undefined || this.lead.distributorId === null) {
+            this.lead.distributorId = '';
+          }
         }
         
         // Fetch customer details & installation base details
