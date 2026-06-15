@@ -63,7 +63,7 @@
         <div class="field-label">Rapport with Customer<span class="req">*</span></div>
         <div class="field-wrap">
           <div style="width: 100%;">
-            <select name="relationship" [(ngModel)]="lead.relationshipName" class="form-select"
+            <select id="edit-leads-relationship" name="relationship" [(ngModel)]="lead.relationshipName" class="form-select"
               [class.is-invalid]="errors['relationshipName']" (ngModelChange)="clearError('relationshipName')">
               <option value="" disabled>Select an Option from Below</option>
               <option value="Strongly Positive">Strongly Positive</option>
@@ -92,7 +92,7 @@
         <div class="field-label">Purchase Potential (Rs)</div>
         <div class="field-wrap">
           <div style="width: 100%;">
-            <input type="number" name="purchasePotential" [(ngModel)]="lead.leadPurchasePotential"
+            <input id="edit-leads-purchase-potential" type="number" name="purchasePotential" [(ngModel)]="lead.leadPurchasePotential"
               placeholder="Purchase Potential" class="form-control" [class.is-invalid]="errors['leadPurchasePotential']"
               (ngModelChange)="clearError('leadPurchasePotential')">
             <div *ngIf="errors['leadPurchasePotential']" class="validation-error">
@@ -107,7 +107,7 @@
         <div class="field-label">Site Readiness<span class="req">*</span></div>
         <div class="field-wrap">
           <div style="width: 100%;">
-            <select name="siteReadinessName" [(ngModel)]="lead.siteReadinessName" required class="form-select"
+            <select id="edit-leads-site-readiness" name="siteReadinessName" [(ngModel)]="lead.siteReadinessName" required class="form-select"
               [class.is-invalid]="errors['siteReadinessName']" (ngModelChange)="clearError('siteReadinessName')">
               <option value="" disabled>Select Site Readiness Status</option>
               <option *ngFor="let site of siteReadinessOptions" [value]="site.siteReadinessName">
@@ -125,7 +125,7 @@
       <div class="form-row">
         <div class="field-label">Visit Requirement</div>
         <div class="field-wrap">
-          <div class="radio-group">
+          <div id="edit-leads-visit-requirement" class="radio-group">
             <label class="radio-label">
               <input type="radio" name="visitRequirement" [value]="1" [(ngModel)]="lead.leadVisitRequirement">
               <span class="radio-circle"></span> Yes
@@ -142,7 +142,7 @@
       <div class="form-row">
         <div class="field-label">Resource Requirement</div>
         <div class="field-wrap">
-          <div class="radio-group">
+          <div id="edit-leads-resource-requirement" class="radio-group">
             <label class="radio-label">
               <input type="radio" name="resourceRequirement" [value]="1" [(ngModel)]="lead.leadResourceRequirement">
               <span class="radio-circle"></span> Yes
@@ -160,7 +160,7 @@
         <div class="field-label">Resource Required Information<span class="req">*</span></div>
         <div class="field-wrap">
           <div style="width: 100%;">
-            <textarea name="resourceDetails" [(ngModel)]="lead.resourceRequiredDetails"
+            <textarea id="edit-leads-resource-details" name="resourceDetails" [(ngModel)]="lead.resourceRequiredDetails"
               placeholder="Describe resource requirement..." class="form-control"
               [class.is-invalid]="errors['resourceRequiredDetails']"
               (ngModelChange)="clearError('resourceRequiredDetails')"></textarea>
@@ -176,7 +176,7 @@
         <div class="field-label">Distributor<span class="req">*</span></div>
         <div class="field-wrap">
           <div style="width: 100%;">
-            <select name="distributorId" [(ngModel)]="lead.distributorId" required class="form-select"
+            <select id="edit-leads-distributor" name="distributorId" [(ngModel)]="lead.distributorId" required class="form-select"
               [class.is-invalid]="errors['distributorId']" (ngModelChange)="clearError('distributorId')">
               <option [value]="null" disabled>Select Distributor</option>
               <option *ngFor="let dist of distributors" [value]="dist.userId">
