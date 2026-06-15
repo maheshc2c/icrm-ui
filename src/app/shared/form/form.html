@@ -27,11 +27,13 @@
                 [type]="field.type" class="company-text-input" [placeholder]="field.placeholder || ''"
                 [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required" 
                 [pattern]="field.pattern || '.*'"
+                [id]="'form-field-' + field.name"
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
 
               <!-- DATE -->
               <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
                 [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required"
+                [id]="'form-field-' + field.name"
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
 
               <!-- TIME -->
@@ -40,11 +42,13 @@
   class="company-text-input"
   [(ngModel)]="formData[field.name]"
   [name]="field.name"
+  [id]="'form-field-' + field.name"
   (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
 
             <!-- TEXTAREA -->
             <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder"
               [(ngModel)]="formData[field.name]" [name]="field.name"
+              [id]="'form-field-' + field.name"
               (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)">
             </textarea>
 
@@ -53,7 +57,8 @@
   class="company-text-input"
   [(ngModel)]="formData[field.name]"
   (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
-  [name]="field.name">
+  [name]="field.name"
+  [id]="'form-field-' + field.name">
 
   <option [ngValue]="null">
   {{ field.placeholder }}
@@ -74,7 +79,8 @@
                   formData[field.name] = $event;
                   fieldChange.emit({ name: field.name, value: $event });
                   field.onChange?.($event)
-                " [name]="field.name" [required]="field.required">
+                " [name]="field.name" [required]="field.required"
+                [id]="'form-field-' + field.name">
 
                 <option value="">-- Select --</option>
 
@@ -89,7 +95,7 @@
 
               </select>
               <!-- CHECKBOX GROUP (🔥 NEW) -->
-              <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container">
+              <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container" [id]="'form-field-' + field.name">
                 <div *ngFor="let opt of field.options" class="checkbox-item">
                   <input type="checkbox" [id]="field.name + '_' + opt.value" 
                     [ngModel]="getCheckboxValue(field.name, opt.value)"
@@ -102,7 +108,7 @@
               </div>
 
               <!-- RADIO GROUP -->
-              <div *ngIf="field.type === 'radio'" class="checkbox-group-container">
+              <div *ngIf="field.type === 'radio'" class="checkbox-group-container" [id]="'form-field-' + field.name">
                 <div *ngFor="let opt of field.options" class="checkbox-item">
                   <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
                     [(ngModel)]="formData[field.name]" [name]="field.name"
