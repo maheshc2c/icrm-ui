@@ -93,8 +93,7 @@ export class ApproveLeads implements OnInit {
         type: 'select',
         options: [
           { label: 'Select Customer', value: '' }
-        ],
-        dynamicLoad: this.loadDropdownCustomers.bind(this)
+        ]
       },
       {
         key: 'createdBy',
@@ -102,8 +101,7 @@ export class ApproveLeads implements OnInit {
         type: 'select',
         options: [
           { label: 'Select Owner', value: '' }
-        ],
-        dynamicLoad: this.loadDropdownOwners.bind(this)
+        ]
       }
     ];
     this.loadTrackLeads();
