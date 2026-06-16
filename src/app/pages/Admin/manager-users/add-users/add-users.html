@@ -128,22 +128,11 @@
                 <!-- === WORLD-LEVEL ROLES: Admin Marketing / Global Head / Stockist / CIC === -->
                 <ng-container *ngIf="locationMode === 'world'">
                     <div class="form-row">
-                        <label class="form-label inline-label text-right">Assign World <span
-                                class="text-danger">*</span></label>
-                        <div class="input-container">
-                            <select class="form-select" [(ngModel)]="selWorld" name="selWorld"
-                                (ngModelChange)="onWorldChange($event)">
-                                <option value="">-- Select World --</option>
-                                <option *ngFor="let w of worldOptions" [value]="w">{{w}}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
                         <label class="form-label inline-label text-right"></label>
                         <div class="input-container">
                             <p class="text-muted" style="font-size:13px; margin:0;">
                                 <i class="fas fa-info-circle"></i>
-                                This role has access to all locations under the selected World.
+                                This role has access to all locations.
                             </p>
                         </div>
                     </div>

@@ -70,7 +70,6 @@
                                (keydown.enter)="$event.preventDefault()"
                                (input)="onSearchInput(field, $any($event.target).value)">
                       </div>
-                      <div class="search-helper-text">Please enter 1 or more characters</div>
                     </div>
                   </div>
 
@@ -101,6 +100,7 @@
                   fieldChange.emit({ name: field.name, value: $event });
                   field.onChange?.($event)
                 " [name]="field.name" [required]="!!field.required">
+                   [id]="'form-field-' + field.name">
 
  
                 <option value="">-- Select --</option>
@@ -128,10 +128,11 @@
                 </div>
  
                 <!-- ERROR MESSAGE -->
-                <div *ngIf="form.controls[field.name] && form.controls[field.name].invalid && (form.controls[field.name].touched || form.submitted)" class="error-message">
-                  <span *ngIf="form.controls[field.name].errors?.['required']">{{ field.label }} is required.</span>
-                  <span *ngIf="form.controls[field.name].errors?.['pattern']">Invalid {{ field.label }} format.</span>
-                </div>
+                  <div *ngIf="form.controls[field.name] && form.controls[field.name].invalid && 
+(form.controls[field.name].touched || form.controls[field.name].dirty || form.submitted)" class="error-message">
+                    <span *ngIf="form.controls[field.name].errors?.['required']">{{ field.label }} is required.</span>
+                    <span *ngIf="form.controls[field.name].errors?.['pattern']">Invalid {{ field.label }} format.</span>
+                  </div>
               </div>
  
               <!-- RADIO GROUP -->
@@ -148,6 +149,12 @@
                 </div>
               </div>
  
+
+              <!-- VALIDATION ERROR FOR ALL FIELDS -->
+              <div *ngIf="errors[field.name]" class="validation-error">
+                {{ errors[field.name] }}
+              </div>
+
             </div>
             </div>
           </ng-container>

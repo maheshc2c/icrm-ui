@@ -81,7 +81,7 @@ export class EditUsersComponent implements OnInit {
 
   /* ─── Role rules (same as add-users) ─────────────────── */
   private readonly WORLD_LEVEL_ROLES = [
-    'adminmarketing', 'globalhead', 'stockist', 'customerinteractioncenter'
+    'admin', 'adminmarketing', 'globalhead', 'stockist', 'customerinteractioncenter'
   ];
   private readonly GEO_LEVEL_ROLES = ['salesdirector'];
 
@@ -119,7 +119,7 @@ export class EditUsersComponent implements OnInit {
       geos: this.userService.getLocationsByLevel(2)
     }).subscribe({
       next: ({ roles, branches, categories, worlds, allGroups, geos }) => {
-        this.roles = roles;
+        this.roles = roles.filter((r: string) => r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
         this.branches = branches;
         this.categories = categories;
         this.worldOptions = worlds;

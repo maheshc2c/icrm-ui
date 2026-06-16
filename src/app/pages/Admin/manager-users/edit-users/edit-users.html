@@ -234,19 +234,11 @@
           <!-- ── WORLD MODE ── -->
           <ng-container *ngIf="locationMode === 'world'">
             <div class="form-row">
-              <div class="form-group">
-                <label for="selWorld">Assign World <span class="req">*</span></label>
-                <select id="selWorld" name="selWorld" class="form-control"
-                  [(ngModel)]="selWorld" (ngModelChange)="onWorldChange($event)">
-                  <option value="">-- Select World --</option>
-                  <option *ngFor="let w of worldOptions" [value]="w">{{ w }}</option>
-                </select>
-              </div>
+              <p class="hint-text text-muted" style="font-size:13px; margin:0;">
+                <i class="fas fa-info-circle"></i>
+                This role has access to all locations.
+              </p>
             </div>
-            <p class="hint-text">
-              <i class="fas fa-info-circle"></i>
-              This role has access to all locations under the selected World.
-            </p>
           </ng-container>
 
           <!-- ── GEO MODE ── -->

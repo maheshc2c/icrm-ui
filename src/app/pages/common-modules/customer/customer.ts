@@ -314,7 +314,9 @@ export class Customer {
         a.click();
         document.body.removeChild(a);
   
-        window.URL.revokeObjectURL(url);
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 1000);
     },
     error: (err) => {
       console.error('Download failed', err);
