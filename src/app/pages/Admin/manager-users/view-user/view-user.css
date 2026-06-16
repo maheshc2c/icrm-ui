@@ -1,6 +1,7 @@
 /* ══ WRAPPER & LAYOUT ═════════════════════════════════════ */
 .view-user-wrapper {
   margin: 24px auto;
+  margin-left: 520px;
   max-width: 980px;
   padding: 0 16px;
   animation: fadeIn 0.3s ease-out;

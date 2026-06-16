@@ -147,7 +147,9 @@
 }
 
 .company-text-input.ng-invalid.ng-touched,
-.company-textarea-input.ng-invalid.ng-touched {
+.company-textarea-input.ng-invalid.ng-touched,
+.company-text-input.ng-invalid.ng-dirty,
+.company-textarea-input.ng-invalid.ng-dirty {
   border-color: #e74c3c;
 }
 
