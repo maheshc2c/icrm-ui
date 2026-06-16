@@ -77,8 +77,8 @@
                   formData[field.name] = $event;
                   fieldChange.emit({ name: field.name, value: $event });
                   field.onChange?.($event)
-                " [name]="field.name" [required]="!!field.required"
-                [id]="'form-field-' + field.name">
+                " [name]="field.name" [required]="!!field.required">
+                   [id]="'form-field-' + field.name">
 
                 <option value="">-- Select --</option>
 
@@ -92,8 +92,7 @@
                 </ng-container>
 
               </select>
-
-              <!-- CHECKBOX GROUP -->
+              <!-- CHECKBOX GROUP (🔥 NEW) -->
               <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container" [id]="'form-field-' + field.name">
                 <div *ngFor="let opt of field.options" class="checkbox-item">
                   <input type="checkbox" [id]="field.name + '_' + opt.value"
@@ -119,6 +118,7 @@
                   </label>
                 </div>
               </div>
+ 
 
               <!-- VALIDATION ERROR FOR ALL FIELDS -->
               <div *ngIf="errors[field.name]" class="validation-error">

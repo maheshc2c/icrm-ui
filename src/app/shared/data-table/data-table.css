@@ -524,8 +524,7 @@
    RESPONSIVE MEDIA QUERIES
    ========================================= */
 
-/* Large Laptops & Small Desktops */
-   /* Tablets Landscape */
+/* Tablets Landscape */
 @media (max-width: 1200px) {
  
   .content {
@@ -611,4 +610,5 @@
   .table-responsive {
     overflow-x: auto;
   }
+  
 }

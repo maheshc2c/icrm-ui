@@ -115,7 +115,7 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
-  path: 'admin/competitor',
+  path: 'competitor',
   loadComponent: () =>
     import('./pages/Admin/competitor/competitor').then(m => m.Competitor)
 },
@@ -147,7 +147,7 @@ export const routes: Routes = [
 
 //SubSystem
 {
-  path: 'admin/sub-system',
+  path: 'sub-system',
   loadComponent: () =>
     import('./pages/Admin/sub-system/sub-system').then(m => m.SubSystem)
 },

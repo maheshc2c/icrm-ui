@@ -10,6 +10,7 @@
   margin-left: 287px; /* sidebar */
   padding: 24px 30px;
   display: flex;
+  background-color: #F6F6F6;
   justify-content: center;   /* ✅ FIX */
 }
  
@@ -35,7 +36,7 @@
   justify-content: space-between;
   align-items: center;
 }
-
+ 
 /* ================= ACTION HEADER BUTTONS ================= */
 .action-header-btn {
   background: #428bca; /* primary blue color from the old UI */
@@ -52,12 +53,12 @@
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
 }
-
+ 
 .action-header-btn:hover {
   background: #3071a9;
   border-color: #285e8e;
 }
-
+ 
 .action-header-btn:active {
   transform: scale(0.98);
 }
@@ -72,14 +73,14 @@
 .form-body-section {
   padding: 30px 40px;
 }
-
+ 
 .form-grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 40px;
   row-gap: 15px;
 }
-
+ 
 /* ================= FIELD ROW ================= */
 .company-field-row {
   display: flex;
@@ -87,11 +88,11 @@
   align-items: flex-start;
   margin-bottom: 15px;
 }
-
+ 
 .company-field-row.full-width {
   grid-column: span 2;
 }
-
+ 
 /* ================= LABEL ================= */
 .field-label-text {
   text-align: left;
@@ -126,7 +127,7 @@
   color: #333;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-
+ 
 .company-text-input:focus,
 .company-textarea-input:focus {
   border-color: #3498db;
@@ -134,31 +135,31 @@
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
   outline: none;
 }
-
+ 
 .company-textarea-input {
   height: auto;
   min-height: 90px;
   resize: vertical;
 }
-
+ 
 .company-text-input::placeholder,
 .company-textarea-input::placeholder {
   color: #bbb;
 }
-
+ 
 .company-text-input.ng-invalid.ng-touched,
 .company-textarea-input.ng-invalid.ng-touched,
 .company-text-input.ng-invalid.ng-dirty,
 .company-textarea-input.ng-invalid.ng-dirty {
   border-color: #e74c3c;
 }
-
+ 
 .error-message {
   color: #e74c3c;
   font-size: 12px;
   margin-top: 4px;
 }
-
+ 
 /* ================= BUTTONS ================= */
 .form-action-buttons {
   display: flex;
@@ -168,7 +169,7 @@
   padding-top: 20px;
   border-top: 1px solid #eee;
 }
-
+ 
 .btn-submit-form {
   padding: 8px 24px;
   font-size: 14px;
@@ -180,11 +181,11 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-
+ 
 .btn-submit-form:hover {
   background: #2980b9;
 }
-
+ 
 .btn-cancel-form {
   padding: 8px 24px;
   font-size: 14px;
@@ -196,7 +197,7 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-
+ 
 .btn-cancel-form:hover {
   background: #e5e5e5;
 }
@@ -216,12 +217,12 @@
     row-gap: 6px;
     align-items: flex-start;
   }
-
+ 
   .form-grid-container {
     grid-template-columns: 1fr;
     row-gap: 15px;
   }
-
+ 
   .company-field-row.full-width {
     grid-column: span 1;
   }
@@ -240,8 +241,8 @@
   .cancel-button {
     width: 100%;
   }
-
-
+ 
+ 
 }
  
  
@@ -252,11 +253,11 @@
   flex-wrap: wrap;   /* allows next line if needed */
   gap: 12px;
 }
-
+ 
 .field-input-area {
   width: 100%;
 }
-
+ 
  
 .checkbox-group-container {
   display: flex;
@@ -293,7 +294,7 @@
   position: relative;
   width: 100%;
 }
-
+ 
 .dropdown-trigger {
   width: 100%;
   height: 40px;
@@ -307,13 +308,13 @@
   cursor: pointer;
   transition: all 0.2s;
 }
-
+ 
 .dropdown-trigger.active {
   border-color: #3498db;
   background: #fff;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
 }
-
+ 
 .trigger-text {
   font-size: 14px;
   color: #333;
@@ -321,17 +322,17 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+ 
 .arrow-icon {
   font-size: 12px;
   color: #999;
   transition: transform 0.2s;
 }
-
+ 
 .dropdown-trigger.active .arrow-icon {
   transform: rotate(180deg);
 }
-
+ 
 .dropdown-panel {
   position: absolute;
   top: 100%;
@@ -344,12 +345,12 @@
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   margin-top: -1px;
 }
-
+ 
 .search-box-wrapper {
   padding: 10px;
   border-bottom: 1px solid #f0f0f0;
 }
-
+ 
 .options-list {
   list-style: none;
   padding: 0;
@@ -357,7 +358,7 @@
   max-height: 250px;
   overflow-y: auto;
 }
-
+ 
 .option-item {
   padding: 10px 15px;
   font-size: 14px;
@@ -365,26 +366,26 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-
+ 
 .option-item:hover {
   background: #f5f8fa;
   color: #3498db;
 }
-
+ 
 .no-results {
   padding: 15px;
   text-align: center;
   color: #999;
   font-size: 13px;
 }
-
+ 
 /* ================= DROPDOWN SEARCH ================= */
 .search-panel {
   padding: 0;
   border: none;
   box-shadow: none;
 }
-
+ 
 .dropdown-search-input {
   width: 100%;
   height: 36px;
@@ -394,25 +395,25 @@
   border-radius: 4px;
   outline: none;
 }
-
+ 
 .search-helper-text {
   font-size: 12px;
   color: #888;
   margin-top: 8px;
 }
-
+ 
 .validation-error {
   color: #dc3545;
   font-size: 13px;
   margin-top: 4px;
 }
-
+ 
 /* ================= SEARCHABLE DROPDOWN ================= */
 .searchable-dropdown-wrapper {
   position: relative;
   width: 100%;
 }
-
+ 
 .searchable-dropdown-list {
   position: absolute;
   top: 100%;
@@ -426,7 +427,7 @@
   overflow-y: auto;
   box-shadow: 0 4px 8px rgba(0,0,0,0.12);
 }
-
+ 
 .searchable-dropdown-hint {
   padding: 6px 12px;
   font-size: 12px;
@@ -435,7 +436,7 @@
   border-bottom: 1px solid #eee;
   font-style: italic;
 }
-
+ 
 .searchable-dropdown-item {
   padding: 8px 12px;
   font-size: 13px;
@@ -443,12 +444,12 @@
   cursor: pointer;
   border-bottom: 1px solid #f0f0f0;
 }
-
+ 
 .searchable-dropdown-item:hover {
   background: #e8f0fe;
   color: #1a73e8;
 }
-
+ 
 .searchable-dropdown-item:last-child {
   border-bottom: none;
 }

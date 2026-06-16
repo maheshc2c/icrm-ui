@@ -30,6 +30,8 @@ export class Form implements OnChanges {
   formData: any = {};
   errors: any = {};
   touched: any = {};
+ 
+  touched: any = {};
 
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
@@ -104,7 +106,7 @@ export class Form implements OnChanges {
     this.fieldChange.emit({ name: field.name, value: opt.value });
     field.onChange?.(opt.value);
   }
-
+ 
   onInputChange(field: any, value: any): void {
     this.formData[field.name] = value;
     this.revalidateField(field.name);
@@ -142,7 +144,7 @@ export class Form implements OnChanges {
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
     this.onFieldInput(fieldName);
   }
-
+ 
   /* ================= RADIO GROUP ================= */
   onRadioClick(fieldName: string, optionValue: any, event: Event) {
     if (this.formData[fieldName] === optionValue) {
@@ -202,7 +204,7 @@ export class Form implements OnChanges {
     if (field.max !== undefined && value !== null && value !== '' && Number(value) > field.max) {
       return `${field.label} must be less than ${field.max}`;
     }
-
+ 
    // Email Validation
   if (
     field.type === 'email' &&
@@ -211,7 +213,7 @@ export class Form implements OnChanges {
   ) {
     return 'Please enter a valid email address';
   }
-
+ 
   //mobile validation
   if (
   field.name === 'contactMobileNo' &&
@@ -220,14 +222,14 @@ export class Form implements OnChanges {
 ) {
   return 'Mobile number must be 10 digits';
 }
-
+ 
     return null;
   }
  
   submit(form: any) {
     this.errors = {};
     let firstInvalidFieldName: string | null = null;
-
+ 
     this.fields.forEach(field => {
       const err = this.validateField(field);
       if (err) {
@@ -267,7 +269,7 @@ export class Form implements OnChanges {
  
     this.formSubmit.emit(this.formData);
   }
-
+ 
   onFieldInput(fieldName: string) {
     this.touched[fieldName] = true;
     // Find the field object by name
@@ -281,11 +283,11 @@ export class Form implements OnChanges {
       }
     }
   }
-
+ 
   clearError(fieldName: string) {
     delete this.errors[fieldName];
   }
-
+ 
   cancel() {
     this.cancelForm.emit();
   }
