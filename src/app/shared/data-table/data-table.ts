@@ -151,6 +151,7 @@ onSearchClick() {
 @Input() searchFields: SearchFieldConfig[] = [];
 @Output() searchChange = new EventEmitter<any>();
 @Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
+@Output() dropdownSearch = new EventEmitter<{ key: string; query: string }>();
 
 
 onSearchFromChild(values: any) {

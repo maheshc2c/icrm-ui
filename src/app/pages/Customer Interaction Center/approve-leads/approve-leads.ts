@@ -54,15 +54,25 @@ export class ApproveLeads implements OnInit {
   ];
 
   /* SEARCH FIELDS */
-  searchFields: SearchFieldConfig[] = [];
-
-  loadDropdownCustomers(search: string) {
-    return this.cicService.getDropdownCustomers(search);
-  }
-
-  loadDropdownOwners(search: string) {
-    return this.cicService.getDropdownOwners(search);
-  }
+  searchFields: SearchFieldConfig[] = [
+    { key: 'leadId', label: 'Lead ID', placeholder: 'Lead ID', type: 'text' },
+    {
+      key: 'customer',
+      label: 'Customer',
+      type: 'select',
+      options: [
+        { label: 'Select Customer', value: '' }
+      ]
+    },
+    {
+      key: 'createdBy',
+      label: 'Owner',
+      type: 'select',
+      options: [
+        { label: 'Select Owner', value: '' }
+      ]
+    }
+  ];
 
   /* TABLE DATA */
   rows: any[] = [];
@@ -97,39 +107,48 @@ export class ApproveLeads implements OnInit {
       }
     ];
     this.loadTrackLeads();
-    this.loadDropdownOptions();
+    this.onDropdownSearch({ key: 'customer', query: '' });
+    this.onDropdownSearch({ key: 'createdBy', query: '' });
   }
 
-  private loadDropdownOptions(): void {
-    this.cicService.getDropdownOwners().subscribe({
-      next: (owners) => {
-        const ownerField = this.searchFields.find(f => f.key === 'createdBy');
-        if (ownerField && ownerField.options) {
-          ownerField.options = [
-            { label: 'Select Owner', value: '' },
-            ...owners
-          ];
+  onDropdownSearch(event: { key: string; query: string }): void {
+    const key = event.key;
+    const query = event.query || '';
+    
+    if (key === 'customer') {
+      this.cicService.getDropdownCustomers(query).subscribe({
+        next: (customers) => {
+          const customerField = this.searchFields.find(f => f.key === 'customer');
+          if (customerField) {
+            customerField.options = [
+              { label: 'Select Customer', value: '' },
+              ...customers.map(c => ({ label: c.customerName, value: c.customerName }))
+            ];
+          }
+        },
+        error: (err) => {
+          console.error('Error loading customers dropdown:', err);
         }
-      },
-      error: (err) => {
-        console.error('Failed to load owners:', err);
-      }
-    });
-
-    this.cicService.getDropdownCustomers().subscribe({
-      next: (customers) => {
-        const customerField = this.searchFields.find(f => f.key === 'customer');
-        if (customerField && customerField.options) {
-          customerField.options = [
-            { label: 'Select Customer', value: '' },
-            ...customers
-          ];
+      });
+    } else if (key === 'createdBy') {
+      this.cicService.getDropdownOwners(query).subscribe({
+        next: (owners) => {
+          const ownerField = this.searchFields.find(f => f.key === 'createdBy');
+          if (ownerField) {
+            ownerField.options = [
+              { label: 'Select Owner', value: '' },
+              ...owners.map(u => {
+                const fullName = (u.firstName + ' ' + (u.lastName || '')).trim();
+                return { label: fullName, value: fullName };
+              })
+            ];
+          }
+        },
+        error: (err) => {
+          console.error('Error loading owners dropdown:', err);
         }
-      },
-      error: (err) => {
-        console.error('Failed to load customers:', err);
-      }
-    });
+      });
+    }
   }
 
   private loadTrackLeads(): void {
@@ -185,7 +204,7 @@ export class ApproveLeads implements OnInit {
   }
 
   onEdit(row: any): void {
-    console.log('Edit:', row);
+    this.router.navigate(['/Approve-Leads/edit', row.leadId]);
   }
 
   onApprove(row: any): void {

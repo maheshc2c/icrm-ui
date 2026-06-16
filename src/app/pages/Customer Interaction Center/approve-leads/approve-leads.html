@@ -18,9 +18,11 @@
   [showDelete]="false"
   [showApprove]="true"
   [showReject]="true"
+  [showReset]="true"
   confirmItemType="Lead"
   (search)="onSearch()"
   (searchChange)="onSearchChange($event)"
+  (dropdownSearch)="onDropdownSearch($event)"
   (editRow)="onEdit($event)"
   (approveRow)="onApprove($event)"
   (rejectRow)="onReject($event)">
