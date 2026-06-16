@@ -25,7 +25,6 @@
               <!-- TEXT / NUMBER / EMAIL -->
               <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
                 [type]="field.type" class="company-text-input" [placeholder]="field.placeholder || ''"
-<<<<<<< Updated upstream
                 [ngModel]="formData[field.name]" (ngModelChange)="onInputChange(field, $event)"
                 [name]="field.name" [required]="!!field.required"
                 [pattern]="field.pattern || ''"/>
@@ -35,24 +34,10 @@
                 [ngModel]="formData[field.name]" (ngModelChange)="onInputChange(field, $event)"
                 [name]="field.name" [required]="!!field.required" />
 
-=======
-                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required"
-                [pattern]="field.pattern || '.*'"
-                [id]="'form-field-' + field.name"
-                (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
- 
-              <!-- DATE -->
-              <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
-                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required"
-                [id]="'form-field-' + field.name"
-                (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
- 
->>>>>>> Stashed changes
               <!-- TIME -->
               <input *ngIf="field.type === 'time'"
                 type="time"
                 class="company-text-input"
-<<<<<<< Updated upstream
                 [ngModel]="formData[field.name]" (ngModelChange)="onInputChange(field, $event)"
                 [name]="field.name" [required]="!!field.required" />
 
@@ -107,37 +92,6 @@
                 {{ errors[field.name] }}
               </div>
  
-=======
-                [(ngModel)]="formData[field.name]"
-                [name]="field.name"
-                [id]="'form-field-' + field.name"
-                (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
- 
-              <!-- TEXTAREA -->
-              <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder || ''"
-                [(ngModel)]="formData[field.name]" [name]="field.name"
-                [id]="'form-field-' + field.name"
-                (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)">
-              </textarea>
- 
-              <!-- STATIC DROPDOWN -->
-              <select *ngIf="field.type === 'select'"
-                class="company-text-input"
-                [(ngModel)]="formData[field.name]"
-                (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
-                [name]="field.name"
-                [id]="'form-field-' + field.name">
- 
-                <option [ngValue]="null">{{ field.placeholder }}</option>
- 
-                <option *ngFor="let opt of field.options" [value]="opt.value">
-                  {{ opt.label }}
-                </option>
- 
-              </select>
- 
-              <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
->>>>>>> Stashed changes
               <select *ngIf="field.type === 'select-dynamic'"
                 class="company-text-input"
                 [(ngModel)]="formData[field.name]"
@@ -146,13 +100,8 @@
                   formData[field.name] = $event;
                   fieldChange.emit({ name: field.name, value: $event });
                   field.onChange?.($event)
-<<<<<<< Updated upstream
                 " [name]="field.name" [required]="!!field.required">
 
-=======
-                " [name]="field.name" [required]="!!field.required"
-                [id]="'form-field-' + field.name">
->>>>>>> Stashed changes
  
                 <option value="">-- Select --</option>
  
@@ -178,15 +127,12 @@
                     {{ opt.label }}
                   </label>
                 </div>
-<<<<<<< Updated upstream
  
                 <!-- ERROR MESSAGE -->
                 <div *ngIf="form.controls[field.name] && form.controls[field.name].invalid && (form.controls[field.name].touched || form.submitted)" class="error-message">
                   <span *ngIf="form.controls[field.name].errors?.['required']">{{ field.label }} is required.</span>
                   <span *ngIf="form.controls[field.name].errors?.['pattern']">Invalid {{ field.label }} format.</span>
                 </div>
-=======
->>>>>>> Stashed changes
               </div>
  
               <!-- RADIO GROUP -->
@@ -203,14 +149,6 @@
                 </div>
               </div>
  
-<<<<<<< Updated upstream
-=======
-              <!-- VALIDATION ERROR FOR ALL FIELDS -->
-              <div *ngIf="errors[field.name]" class="validation-error">
-                {{ errors[field.name] }}
-              </div>
- 
->>>>>>> Stashed changes
             </div>
             </div>
           </ng-container>
@@ -230,9 +168,4 @@
     </div>
  
   </div>
-<<<<<<< Updated upstream
 </div>
-=======
-</div>
- 
->>>>>>> Stashed changes

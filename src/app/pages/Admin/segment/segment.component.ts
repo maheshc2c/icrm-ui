@@ -78,11 +78,7 @@ export class SegmentComponent implements OnInit {
           groupId: segment.groupId,
           businessCategory: segment.category?.categoryName ?? '',
           segmentName: segment.groupName ?? '',
-<<<<<<< Updated upstream
           segmentDescription: segment.groupDescription ?? '',
-=======
-          segmentDescription: segment.category?.categoryDescription ?? '',
->>>>>>> Stashed changes
           groupStatus: segment.groupStatus
         }));
       },
@@ -115,11 +111,7 @@ export class SegmentComponent implements OnInit {
         groupId: segment.groupId,
         businessCategory: segment.category?.categoryName ?? '',
         segmentName: segment.groupName ?? '',
-<<<<<<< Updated upstream
         segmentDescription: segment.groupDescription ?? '',
-=======
-        segmentDescription: segment.category?.categoryDescription ?? '',
->>>>>>> Stashed changes
         groupStatus: segment.groupStatus
       }));
       return;
@@ -141,11 +133,7 @@ export class SegmentComponent implements OnInit {
       groupId: segment.groupId,
       businessCategory: segment.category?.categoryName ?? '',
       segmentName: segment.groupName ?? '',
-<<<<<<< Updated upstream
       segmentDescription: segment.groupDescription ?? '',
-=======
-      segmentDescription: segment.category?.categoryDescription ?? '',
->>>>>>> Stashed changes
       groupStatus: segment.groupStatus
     }));
   }

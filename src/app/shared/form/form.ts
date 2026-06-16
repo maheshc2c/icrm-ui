@@ -29,10 +29,7 @@ export class Form implements OnChanges {
  
   formData: any = {};
   errors: any = {};
-<<<<<<< Updated upstream
-=======
   touched: any = {};
->>>>>>> Stashed changes
  
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
@@ -87,11 +84,7 @@ export class Form implements OnChanges {
   /* ================= SEARCHABLE DROPDOWN ================= */
   onSearchInput(field: any, keyword: string): void {
     const term = (keyword || '').toLowerCase();
-<<<<<<< Updated upstream
-    const baseOptions = this.originalOptions[field.name] || field.options || [];
-=======
     const baseOptions = field.options || [];
->>>>>>> Stashed changes
  
     if (term.length >= 1) {
       field._filtered = baseOptions.filter((opt: any) =>
@@ -107,18 +100,6 @@ export class Form implements OnChanges {
     this.formData[field.name] = opt.value;
     field._open = false;
     field._filtered = null;
-<<<<<<< Updated upstream
-    // Clear error when user selects an option
-    delete this.errors[field.name];
-    this.fieldChange.emit({ name: field.name, value: opt.value });
-    field.onChange?.(opt.value);
-  }
-
-  onInputChange(field: any, value: any): void {
-    this.formData[field.name] = value;
-    // Clear error when user types or modifies the field
-    delete this.errors[field.name];
-=======
     this.revalidateField(field.name);
     this.fieldChange.emit({ name: field.name, value: opt.value });
     field.onChange?.(opt.value);
@@ -127,7 +108,6 @@ export class Form implements OnChanges {
   onInputChange(field: any, value: any): void {
     this.formData[field.name] = value;
     this.revalidateField(field.name);
->>>>>>> Stashed changes
     this.fieldChange.emit({ name: field.name, value });
     field.onChange?.(value);
   }
@@ -158,51 +138,26 @@ export class Form implements OnChanges {
       this.formData[fieldName] = {};
     }
     this.formData[fieldName][optionValue] = isChecked;
-<<<<<<< Updated upstream
-    // Clear error when user interacts with checkbox
-    delete this.errors[fieldName];
-=======
     this.revalidateField(fieldName);
->>>>>>> Stashed changes
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
     this.onFieldInput(fieldName);
   }
-<<<<<<< Updated upstream
-
-=======
  
->>>>>>> Stashed changes
   /* ================= RADIO GROUP ================= */
   onRadioClick(fieldName: string, optionValue: any, event: Event) {
     if (this.formData[fieldName] === optionValue) {
       event.preventDefault();
       this.formData[fieldName] = null;
-<<<<<<< Updated upstream
-      // Clear error when user interacts with radio
-      delete this.errors[fieldName];
-      this.fieldChange.emit({ name: fieldName, value: null });
-    } else {
-      this.formData[fieldName] = optionValue;
-      // Clear error when user selects a radio option
-      delete this.errors[fieldName];
-=======
       this.revalidateField(fieldName);
       this.fieldChange.emit({ name: fieldName, value: null });
     } else {
       this.formData[fieldName] = optionValue;
       this.revalidateField(fieldName);
->>>>>>> Stashed changes
       this.fieldChange.emit({ name: fieldName, value: optionValue });
     }
   }
  
   /* ================= VALIDATION ================= */
-<<<<<<< Updated upstream
-
-  
-
-
-=======
   revalidateField(fieldName: string): void {
     delete this.errors[fieldName];
     const field = this.fields.find(f => f.name === fieldName);
@@ -213,7 +168,6 @@ export class Form implements OnChanges {
       }
     }
   }
->>>>>>> Stashed changes
   validateField(field: any): string | null {
     const value = this.formData[field.name];
  
@@ -248,13 +202,8 @@ export class Form implements OnChanges {
     if (field.max !== undefined && value !== null && value !== '' && Number(value) > field.max) {
       return `${field.label} must be less than ${field.max}`;
     }
-<<<<<<< Updated upstream
-
-       // Email Validation
-=======
  
    // Email Validation
->>>>>>> Stashed changes
   if (
     field.type === 'email' &&
     value &&
@@ -277,10 +226,7 @@ export class Form implements OnChanges {
  
   submit(form: any) {
     this.errors = {};
-<<<<<<< Updated upstream
-=======
     let firstInvalidFieldName: string | null = null;
->>>>>>> Stashed changes
  
     this.fields.forEach(field => {
       const err = this.validateField(field);
@@ -322,8 +268,6 @@ export class Form implements OnChanges {
     this.formSubmit.emit(this.formData);
   }
  
-<<<<<<< Updated upstream
-=======
   onFieldInput(fieldName: string) {
     this.touched[fieldName] = true;
     // Find the field object by name
@@ -342,7 +286,6 @@ export class Form implements OnChanges {
     delete this.errors[fieldName];
   }
  
->>>>>>> Stashed changes
   cancel() {
     this.cancelForm.emit();
   }
