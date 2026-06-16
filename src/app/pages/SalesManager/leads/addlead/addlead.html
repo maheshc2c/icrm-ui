@@ -617,7 +617,7 @@
 </app-modal>
 
 <!-- Add Opportunity Modal -->
-<app-modal [show]="showOppModal" [title]="isEditOppMode ? 'Edit Opportunity' : 'Add New Opportunity'" (closeDialog)="closeOppModal()">
+<app-modal [show]="showOppModal" [title]="isEditOppMode ? 'Edit Opportunity' : 'Add New Opportunity'" size="xl" (closeDialog)="closeOppModal()">
   <div class="opportunity-form-grid" style="padding: 15px;">
     
     <form #oppForm="ngForm" (ngSubmit)="onSubmitOpp(oppForm.value)">

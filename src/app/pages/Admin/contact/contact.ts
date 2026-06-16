@@ -98,12 +98,16 @@ private loadContact(): void {
 
       next: (response: any) => {
 
+        console.log('API RESPONSE FOR CONTACTS:', response.content);
+        
         this.totalPages = response.totalPages;
         this.totalElements = response.totalElements;
         this.fullRows = response.content;
     
 
-        this.rows = response.content.map((c: any, index: number) => ({
+        this.rows = response.content.map((c: any, index: number) => {
+          console.log('Contact row:', c);
+          return {
 
   sno: ((this.currentPage - 1) * this.pageSize) + index + 1,
 
@@ -127,7 +131,8 @@ private loadContact(): void {
 
   customerId: c.customer?.customerId,
   specialityId: c.speciality?.specialityId
-}));
+};
+        });
       },
 
       error: err => console.error(err)

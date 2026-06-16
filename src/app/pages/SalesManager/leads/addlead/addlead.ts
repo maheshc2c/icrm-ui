@@ -73,20 +73,28 @@ export class AddleadComponent implements OnInit {
   oppSearchQueries: any = {};
 
   oppFields: any[] = [
+    // Row 1
     { name: 'productCategoryId', label: 'Product Category', type: 'select', options: [], required: true },
     { name: 'decisionMaker1', label: 'Decision Maker1', type: 'select', options: [], required: true },
+    // Row 2
     { name: 'productGroupId', label: 'Product Segment', type: 'select', options: [], required: true },
     { name: 'decisionMaker2', label: 'Decision Maker2', type: 'select', options: [], isSearchable: true },
+    // Row 3
     { name: 'productId', label: 'Product Name', type: 'select', options: [], required: true },
     { name: 'decisionMaker3', label: 'Decision Maker3', type: 'select', options: [], isSearchable: true },
-    { name: 'quantity', label: 'Quantity', type: 'number', required: true },
-    { name: 'decisionMaker4', label: 'Decision Maker4', type: 'select', options: [], isSearchable: true },
-    { name: 'fundSourceId', label: 'Source of Funding', type: 'select', options: [], required: true },
-    { name: 'decisionMaker5', label: 'Decision Maker5', type: 'select', options: [], isSearchable: true },
-    { name: 'relationshipId', label: 'Relationship with Decision Maker', type: 'select', options: [], required: true },
-    { name: 'status', label: 'Status', type: 'select', options: [], required: true },
+    // Row 4
     { name: 'expectedOrderConclusion', label: 'Expected Order Conclusion Date', type: 'date', required: true },
+    { name: 'decisionMaker4', label: 'Decision Maker4', type: 'select', options: [], isSearchable: true },
+    // Row 5
+    { name: 'quantity', label: 'Quantity', type: 'number', required: true },
+    { name: 'decisionMaker5', label: 'Decision Maker5', type: 'select', options: [], isSearchable: true },
+    // Row 6
+    { name: 'fundSourceId', label: 'Source of Funding', type: 'select', options: [], required: true },
+    { name: 'relationshipId', label: 'Relationship with Decision Maker', type: 'select', options: [], required: true },
+    // Row 7
     { name: 'expectedInvoicingDate', label: 'Expected Invoice Date', type: 'date' },
+    { name: 'status', label: 'Opportunity stages', type: 'select', options: [], required: true },
+    // Row 8
     { name: 'competitors', label: 'Competitors', type: 'text' }
   ];
 
