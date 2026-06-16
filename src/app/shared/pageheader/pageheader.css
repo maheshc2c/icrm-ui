@@ -29,13 +29,13 @@
 }
 
 .breadcrumb a {
-  color: #718096;
+  color: #2d3748;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .breadcrumb a:hover {
-  color: #4299e1;
+  color: #6d28d9;
 }
 
 .breadcrumb span {
