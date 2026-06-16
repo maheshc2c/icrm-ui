@@ -69,7 +69,7 @@ export class Addsubsystem implements OnInit{
 
       this.headerBreadcrumbs = [
         { label: 'Home', route: '/admindashboard' },
-        { label: 'Sub System', route: '/admin/sub-system' },
+        { label: 'Sub System', route: '/sub-system' },
         { label: 'Edit Sub System' }
       ];
 
@@ -88,7 +88,11 @@ export class Addsubsystem implements OnInit{
 
         if (!item) {
           this.toastService.error('Sub System not found');
+<<<<<<< Updated upstream
           this.router.navigate(['/admin/sub-system']);
+=======
+          this.router.navigate(['/sub-system']);
+>>>>>>> Stashed changes
           return;
         }
 
@@ -99,7 +103,11 @@ export class Addsubsystem implements OnInit{
       },
       error: () => {
         this.toastService.error('Failed to load Sub System');
+<<<<<<< Updated upstream
         this.router.navigate(['/admin/sub-system']);
+=======
+        this.router.navigate(['/sub-system']);
+>>>>>>> Stashed changes
       }
     });
   }
@@ -128,7 +136,11 @@ export class Addsubsystem implements OnInit{
             this.toastService.success(
         'Sub System updated successfully'
       );
+<<<<<<< Updated upstream
             this.router.navigate(['/admin/sub-system'])},
+=======
+            this.router.navigate(['/sub-system'])},
+>>>>>>> Stashed changes
           error: err => {
             console.error(err);
             this.toastService.error(
@@ -145,7 +157,11 @@ export class Addsubsystem implements OnInit{
              this.toastService.success(
         'Sub System created successfully'
       );
+<<<<<<< Updated upstream
              this.router.navigate(['/admin/sub-system'])},
+=======
+             this.router.navigate(['/sub-system'])},
+>>>>>>> Stashed changes
           error: err => {
             console.error(err);
             this.toastService.error(
@@ -157,7 +173,7 @@ export class Addsubsystem implements OnInit{
   }
 
   onCancel(): void {
-    this.router.navigate(['/admin/sub-system']);
+    this.router.navigate(['/sub-system']);
   }
 }
 

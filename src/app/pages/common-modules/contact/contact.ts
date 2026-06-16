@@ -338,7 +338,11 @@ onImport() {
     contactFirstName: this.currentFilters?.contactFirstName || '',
     pagination: {
       pageNumber: 0,
+<<<<<<< Updated upstream
       pageSize: this.totalElements, 
+=======
+      pageSize: this.totalElements, // download all matching records
+>>>>>>> Stashed changes
       sortBy: 'contactFirstName',
       sortOrder: 'ASC'
     }

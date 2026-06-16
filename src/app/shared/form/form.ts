@@ -28,8 +28,11 @@ export class Form implements OnChanges {
   @Output() fieldChange = new EventEmitter<{ name: string, value: any }>();
  
   formData: any = {};
-  originalOptions: { [key: string]: any[] } = {};
   errors: any = {};
+<<<<<<< Updated upstream
+=======
+  touched: any = {};
+>>>>>>> Stashed changes
  
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
@@ -59,7 +62,6 @@ export class Form implements OnChanges {
  
         // Cache options for searchable dropdown filtering
         if (field.type === 'select' && Array.isArray(field.options)) {
-          this.originalOptions[field.name] = [...field.options];
           // For searchable dropdowns
           field._filtered = null;
           field._open = false;
@@ -85,7 +87,11 @@ export class Form implements OnChanges {
   /* ================= SEARCHABLE DROPDOWN ================= */
   onSearchInput(field: any, keyword: string): void {
     const term = (keyword || '').toLowerCase();
+<<<<<<< Updated upstream
     const baseOptions = this.originalOptions[field.name] || field.options || [];
+=======
+    const baseOptions = field.options || [];
+>>>>>>> Stashed changes
  
     if (term.length >= 1) {
       field._filtered = baseOptions.filter((opt: any) =>
@@ -101,6 +107,7 @@ export class Form implements OnChanges {
     this.formData[field.name] = opt.value;
     field._open = false;
     field._filtered = null;
+<<<<<<< Updated upstream
     // Clear error when user selects an option
     delete this.errors[field.name];
     this.fieldChange.emit({ name: field.name, value: opt.value });
@@ -111,6 +118,16 @@ export class Form implements OnChanges {
     this.formData[field.name] = value;
     // Clear error when user types or modifies the field
     delete this.errors[field.name];
+=======
+    this.revalidateField(field.name);
+    this.fieldChange.emit({ name: field.name, value: opt.value });
+    field.onChange?.(opt.value);
+  }
+ 
+  onInputChange(field: any, value: any): void {
+    this.formData[field.name] = value;
+    this.revalidateField(field.name);
+>>>>>>> Stashed changes
     this.fieldChange.emit({ name: field.name, value });
     field.onChange?.(value);
   }
@@ -141,16 +158,26 @@ export class Form implements OnChanges {
       this.formData[fieldName] = {};
     }
     this.formData[fieldName][optionValue] = isChecked;
+<<<<<<< Updated upstream
     // Clear error when user interacts with checkbox
     delete this.errors[fieldName];
+=======
+    this.revalidateField(fieldName);
+>>>>>>> Stashed changes
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
+    this.onFieldInput(fieldName);
   }
+<<<<<<< Updated upstream
 
+=======
+ 
+>>>>>>> Stashed changes
   /* ================= RADIO GROUP ================= */
   onRadioClick(fieldName: string, optionValue: any, event: Event) {
     if (this.formData[fieldName] === optionValue) {
       event.preventDefault();
       this.formData[fieldName] = null;
+<<<<<<< Updated upstream
       // Clear error when user interacts with radio
       delete this.errors[fieldName];
       this.fieldChange.emit({ name: fieldName, value: null });
@@ -158,21 +185,48 @@ export class Form implements OnChanges {
       this.formData[fieldName] = optionValue;
       // Clear error when user selects a radio option
       delete this.errors[fieldName];
+=======
+      this.revalidateField(fieldName);
+      this.fieldChange.emit({ name: fieldName, value: null });
+    } else {
+      this.formData[fieldName] = optionValue;
+      this.revalidateField(fieldName);
+>>>>>>> Stashed changes
       this.fieldChange.emit({ name: fieldName, value: optionValue });
     }
   }
  
   /* ================= VALIDATION ================= */
+<<<<<<< Updated upstream
 
   
 
 
+=======
+  revalidateField(fieldName: string): void {
+    delete this.errors[fieldName];
+    const field = this.fields.find(f => f.name === fieldName);
+    if (field) {
+      const err = this.validateField(field);
+      if (err) {
+        this.errors[fieldName] = err;
+      }
+    }
+  }
+>>>>>>> Stashed changes
   validateField(field: any): string | null {
     const value = this.formData[field.name];
  
     // Required
-    if (field.required && (value === null || value === undefined || value === '')) {
-      return `${field.label} is required`;
+    if (field.required) {
+      if (field.type === 'checkbox') {
+        // Check if at least one checkbox is selected
+        if (!value || Object.values(value).every(v => !v)) {
+          return `${field.label} is required`;
+        }
+      } else if (value === null || value === undefined || value === '') {
+        return `${field.label} is required`;
+      }
     }
  
     // Pattern (only validate when something is provided)
@@ -194,8 +248,13 @@ export class Form implements OnChanges {
     if (field.max !== undefined && value !== null && value !== '' && Number(value) > field.max) {
       return `${field.label} must be less than ${field.max}`;
     }
+<<<<<<< Updated upstream
 
        // Email Validation
+=======
+ 
+   // Email Validation
+>>>>>>> Stashed changes
   if (
     field.type === 'email' &&
     value &&
@@ -203,7 +262,7 @@ export class Form implements OnChanges {
   ) {
     return 'Please enter a valid email address';
   }
-
+ 
   //mobile validation
   if (
   field.name === 'contactMobileNo' &&
@@ -218,11 +277,19 @@ export class Form implements OnChanges {
  
   submit(form: any) {
     this.errors = {};
+<<<<<<< Updated upstream
+=======
+    let firstInvalidFieldName: string | null = null;
+>>>>>>> Stashed changes
  
     this.fields.forEach(field => {
       const err = this.validateField(field);
       if (err) {
         this.errors[field.name] = err;
+        this.touched[field.name] = true;
+        if (!firstInvalidFieldName) {
+          firstInvalidFieldName = field.name;
+        }
       }
     });
  
@@ -231,12 +298,51 @@ export class Form implements OnChanges {
       if (form?.controls) {
         Object.values(form.controls).forEach((control: any) => control?.markAsTouched?.());
       }
+      // Focus first invalid field
+      if (firstInvalidFieldName) {
+        setTimeout(() => {
+          const element = document.getElementById('form-field-' + firstInvalidFieldName);
+          if (element) {
+            // If it's a form element (input, select, textarea) - focus it directly
+            if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+              element.focus();
+            } else if (element.tagName === 'DIV') {
+              // For checkbox or radio groups (div containers) - focus first input
+              const firstInput = element.querySelector('input') as HTMLElement;
+              if (firstInput) {
+                firstInput.focus();
+              }
+            }
+          }
+        }, 0);
+      }
       return;
     }
  
     this.formSubmit.emit(this.formData);
   }
  
+<<<<<<< Updated upstream
+=======
+  onFieldInput(fieldName: string) {
+    this.touched[fieldName] = true;
+    // Find the field object by name
+    const field = this.fields.find(f => f.name === fieldName);
+    if (field) {
+      const err = this.validateField(field);
+      if (err) {
+        this.errors[fieldName] = err;
+      } else {
+        delete this.errors[fieldName];
+      }
+    }
+  }
+ 
+  clearError(fieldName: string) {
+    delete this.errors[fieldName];
+  }
+ 
+>>>>>>> Stashed changes
   cancel() {
     this.cancelForm.emit();
   }
