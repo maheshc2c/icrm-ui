@@ -8,6 +8,7 @@ import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { ProductService } from '../../../../service/productservice';
 import { Breadcrumb } from '../../../../models/breadcrumb';
+import { ToastService } from '../../../../service/toast.service';
  
 @Component({
   selector: 'app-edit-product',
@@ -31,7 +32,8 @@ export class EditProduct implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private productService: ProductService
+    private productService: ProductService,
+    private toastService: ToastService
   ) { }
  
   headerTitle = 'Edit Product';
@@ -146,7 +148,7 @@ export class EditProduct implements OnInit {
           }
         }
       },
-      error: () => alert('Failed to load product')
+      error: () => this.toastService.error('Failed to load product')
     });
   }
  
@@ -209,12 +211,12 @@ export class EditProduct implements OnInit {
  
     this.productService.updateProduct(this.productId, payload).subscribe({
       next: (res) => {
-        alert('Product updated successfully');
+        this.toastService.success('Product updated successfully');
         this.router.navigate(['/admin/product']);
       },
       error: (err) => {
         console.error('Update failed:', err);
-        alert('Update failed');
+        this.toastService.error('Update failed');
       }
     });
   }

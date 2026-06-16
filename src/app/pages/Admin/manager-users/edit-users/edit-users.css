@@ -77,22 +77,19 @@
   justify-content: center;
   gap: 10px;
   padding: 22px 16px;
-  border: none;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  cursor: pointer;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  text-transform: none; /* Disable uppercase to match image */
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   transition: all 0.2s ease-in-out;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .action-card:hover {
   transform: translateY(-2px);
-  filter: brightness(1.08);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.06);
 }
 
 .action-card:active {
@@ -101,9 +98,8 @@
 
 /* Active Card Indicator */
 .action-card.card-active {
-  filter: brightness(0.95);
-  transform: translateY(0);
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+  background-color: #f8f9fa;
+  box-shadow: inset 0 0 0 1px #ddd, 0 4px 8px rgba(0,0,0,0.05);
 }
 
 .action-card.card-active::after {
@@ -113,20 +109,29 @@
   left: 15%;
   right: 15%;
   height: 4px;
-  background: #fff;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
 
-/* Exact solid background colors matching user's image */
-.card-user-details  { background-color: #df9e15; }
-.card-change-role   { background-color: #2b5797; }
-.card-locations     { background-color: #db5656; }
-.card-products      { background-color: #1e6b41; }
+/* Colored top borders and icons */
+.card-user-details  { border-top: 4px solid #df9e15; }
+.card-user-details .card-icon { color: #df9e15; }
+.card-user-details.card-active::after { background: #df9e15; }
+
+.card-change-role   { border-top: 4px solid #2b5797; }
+.card-change-role .card-icon { color: #2b5797; }
+.card-change-role.card-active::after { background: #2b5797; }
+
+.card-locations     { border-top: 4px solid #db5656; }
+.card-locations .card-icon { color: #db5656; }
+.card-locations.card-active::after { background: #db5656; }
+
+.card-products      { border-top: 4px solid #1e6b41; }
+.card-products .card-icon { color: #1e6b41; }
+.card-products.card-active::after { background: #1e6b41; }
 
 .card-icon {
   font-size: 32px;
-  color: #ffffff;
   transition: transform 0.2s ease;
 }
 
@@ -135,10 +140,10 @@
 }
 
 .card-label {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
 }
-
 /* ==========================================================================
    PANEL - Perfectly Centered Forms
    ========================================================================= */
@@ -247,29 +252,47 @@
 .form-row {
   display: flex;
   flex-direction: column;
-  gap: 0px;
-  margin-bottom: 0px;
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
-/* Inline label grid */
-.form-group {
-  display: grid;
-  grid-template-columns: 200px 700px; /* Increased input width to 700px! */
-  gap: 32px;
+.panel-actions {
+  grid-column: 1 / -1 !important;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
-  margin-bottom: 28px; /* Added constant vertical spacing below every single field! */
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* 2-Column Grid on the Form Container */
+.wizard-form-container form, .panel-body form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+    row-gap: 15px;
+    width: 100%;
+}
+
+/* Inline label flex column */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0px; 
 }
 
 .form-group.full-width {
-  grid-column: unset;
+  grid-column: span 2;
 }
 
 .form-group label {
   font-size: 14px;
   font-weight: 600;
   color: #333;
-  text-align: right;
-  margin-bottom: 0;
+  text-align: left;
+  margin-bottom: 8px;
+  display: block;
 }
 
 .form-group label small {
@@ -281,15 +304,20 @@
 .req { color: #dc3545; margin-left: 2px; }
 
 /* Inputs matching screenshot style */
-.form-control {
+.input-container {
+  width: 100%;
+}
+
+.form-control,
+.form-select {
+  width: 100%;
   padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 2px;
+  height: 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
   font-size: 14px;
   color: #333;
-  background: #fff;
-  width: 100%;
-  max-width: 700px; /* Increased to 700px! */
+  background: #fdfdfd;
   box-sizing: border-box;
   transition: border-color 0.2s;
 }
@@ -308,7 +336,7 @@ textarea.form-control { resize: vertical; min-height: 52px; }
 .hint-text {
   font-size: 13px;
   color: #777;
-  margin: 4px 0 16px 232px; /* Indent to align with inputs */
+  margin: 4px 0 16px 0;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -326,7 +354,6 @@ textarea.form-control { resize: vertical; min-height: 52px; }
   border-radius: 4px;
   background: #fff;
   width: 100%;
-  max-width: 700px; /* Increased to 700px! */
   box-sizing: border-box;
 }
 
@@ -353,14 +380,13 @@ textarea.form-control { resize: vertical; min-height: 52px; }
 }
 
 /* Panel Actions aligned at bottom-left */
-.panel-actions {
+.form-actions {
+  grid-column: span 2;
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 12px;
-  padding-top: 24px;
-  border-top: none;
-  margin-top: 24px;
-  margin-left: 232px; /* Align with inputs */
+  margin-top: 20px;
+  padding-top: 10px;
 }
 
 /* Buttons matching screenshot */

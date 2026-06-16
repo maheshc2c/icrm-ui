@@ -3,10 +3,12 @@
 <app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
 </app-pageheader>
 
-<app-data-table title="👔 Manager Users List" [columns]="columns" [rows]="rows" [showSearch]="true" [showImport]="false"
+<app-data-table title="Manager Users List" [columns]="columns" [rows]="rows" [showSearch]="true" [showImport]="false"
   [showAdd]="true" [showEdit]="true" [showDelete]="true" [showAssign]="false" [showUpload]="false" [showView]="true"
-  [searchFields]="searchFields" (search)="onSearch()" (searchChange)="onSearchFromChild($event)" (add)="onAdd()"
+  [showReset]="true" [showStatusToggle]="true"
+  [searchFields]="searchFields" (searchChange)="onSearchFromChild($event)" (add)="onAdd()"
   (editRow)="onEdit($event)" (deleteRow)="onDelete($event)" (viewRow)="onView($event)" (download)="onDownload()"
+  (reset)="onReset()"
   [showPagination]="true" [currentPage]="currentPage" [totalPages]="totalPages" [totalItems]="totalItems" [pageSize]="pageSize"
   (pageChange)="onPageChange($event)">
 </app-data-table>

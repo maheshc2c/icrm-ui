@@ -164,7 +164,10 @@
 
 .wizard-form-container form {
     width: 100%;
-    max-width: 700px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+    row-gap: 15px;
 }
 
 .section-title {
@@ -173,34 +176,28 @@
     margin-bottom: 32px;
     font-weight: 400;
     align-self: flex-start;
-    /* Optional: Keep title left aligned or let text center */
     width: 100%;
-}
-
-.section-title {
-    font-size: 20px;
-    color: #555;
-    margin-bottom: 32px;
-    font-weight: 400;
+    grid-column: span 2;
 }
 
 .form-row {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 32px;
-    margin-bottom: 20px;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0px;
 }
 
 .inline-label {
-    margin: 0;
+    margin: 0 0 8px 0;
     font-weight: 600;
     font-size: 14px;
     color: #444;
+    text-align: left;
+    display: block;
 }
 
 .text-right {
-    text-align: right;
+    text-align: left;
 }
 
 .text-danger {
@@ -209,9 +206,8 @@
 }
 
 .input-container {
-    max-width: 400px;
-    /* Force the inputs to stay small like the original */
     width: 100%;
+    max-width: none;
 }
 
 .form-control,
@@ -247,8 +243,10 @@ textarea.form-control {
 
 /* Buttons inside form */
 .form-actions {
-    margin-left: 232px;
-    /* Align with inputs */
+    grid-column: span 2;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
 }
 
 .btn-rounded {

@@ -8,6 +8,7 @@ import { Sidebar } from "../../../../layout/sidebar/sidebar";
 import { Pageheader } from "../../../../shared/pageheader/pageheader";
 import { Breadcrumb } from "../../../../models/breadcrumb";
 import { UserTargetService } from "../../../../service/user-target.service";
+import { ToastService } from "../../../../service/toast.service";
 
 // Indian financial year months in order
 const FY_MONTHS = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
@@ -54,7 +55,8 @@ export class AssignTargetComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private userTargetService: UserTargetService
+        private userTargetService: UserTargetService,
+        private toastService: ToastService
     ) { }
 
     ngOnInit(): void {
@@ -146,7 +148,7 @@ export class AssignTargetComponent implements OnInit {
 
     onSubmit(): void {
         if (!this.employeeId || !this.selectedYear) {
-            alert('Missing user or financial year.');
+            this.toastService.error('Missing user or financial year.');
             return;
         }
 
@@ -172,7 +174,7 @@ export class AssignTargetComponent implements OnInit {
         });
 
         if (hasErrors) {
-            alert('Please fix validation errors before submitting.');
+            this.toastService.error('Please fix validation errors before submitting.');
             return;
         }
 
@@ -223,7 +225,7 @@ export class AssignTargetComponent implements OnInit {
         });
 
         if (payloads.length === 0) {
-            alert('Please enter at least one target quantity.');
+            this.toastService.error('Please enter at least one target quantity.');
             return;
         }
 
@@ -235,13 +237,13 @@ export class AssignTargetComponent implements OnInit {
 
         forkJoin(requests).subscribe({
             next: () => {
-                alert('Targets assigned successfully!');
+                this.toastService.success('Targets assigned successfully!');
                 this.router.navigate(['/admin/user-target']);
             },
             error: (err: any) => {
                 console.error('Failed to assign targets', err);
                 const errMsg = err.error || 'An unexpected error occurred.';
-                alert('Failed to assign targets: ' + errMsg);
+                this.toastService.error('Failed to assign targets: ' + errMsg);
                 this.isSubmitting = false;
             }
         });

@@ -22,6 +22,7 @@ export class Button {
   @Output() search = new EventEmitter<void>();
   @Output() reset = new EventEmitter<void>();
   @Output() download = new EventEmitter<void>();
+  @Output() refresh = new EventEmitter<void>();
   @Output() import = new EventEmitter<void>(); // (can remove later)
   @Output() add = new EventEmitter<void>();
   @Output() view = new EventEmitter<void>();

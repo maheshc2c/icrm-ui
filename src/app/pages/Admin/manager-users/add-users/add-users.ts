@@ -45,7 +45,7 @@ export class AddUsersComponent implements OnInit {
 
   /* ===== ROLE-BASED LOCATION RULES (matched to backend createUser logic) ===== */
   private readonly WORLD_LEVEL_ROLES = [
-    'adminmarketing', 'globalhead', 'stockist',
+    'admin', 'adminmarketing', 'globalhead', 'stockist',
     'customerinteractioncenter'
   ];
   private readonly GEO_LEVEL_ROLES = ['salesdirector'];
@@ -113,7 +113,7 @@ export class AddUsersComponent implements OnInit {
       allGroups: this.userService.getAllGroups()
     }).subscribe({
       next: ({ roles, branches, categories, worlds, allGroups }) => {
-        this.roles = roles;
+        this.roles = roles.filter((r: string) => r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
         this.categories = categories;
         
         let groupsArray: any[] = [];

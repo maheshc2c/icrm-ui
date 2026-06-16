@@ -6,6 +6,7 @@ import { forkJoin } from 'rxjs';
 import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
+import { ToastService } from '../../../../service/toast.service';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Userservice } from '../../../../service/userservice';
 import { UserTargetService } from '../../../../service/user-target.service';
@@ -27,7 +28,8 @@ export class EditUsersComponent implements OnInit {
     private userService: Userservice,
     private userTargetService: UserTargetService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+      private toastService: ToastService
   ) { }
 
   /* ─── Header ─────────────────────────────────────────── */
@@ -79,7 +81,7 @@ export class EditUsersComponent implements OnInit {
 
   /* ─── Role rules (same as add-users) ─────────────────── */
   private readonly WORLD_LEVEL_ROLES = [
-    'adminmarketing', 'globalhead', 'stockist', 'customerinteractioncenter'
+    'admin', 'adminmarketing', 'globalhead', 'stockist', 'customerinteractioncenter'
   ];
   private readonly GEO_LEVEL_ROLES = ['salesdirector'];
 
@@ -96,7 +98,7 @@ export class EditUsersComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      alert('User ID not provided');
+      this.toastService.error('User ID not provided');
       this.router.navigate(['/admin/manage-users']);
       return;
     }
@@ -117,7 +119,7 @@ export class EditUsersComponent implements OnInit {
       geos: this.userService.getLocationsByLevel(2)
     }).subscribe({
       next: ({ roles, branches, categories, worlds, allGroups, geos }) => {
-        this.roles = roles;
+        this.roles = roles.filter((r: string) => r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
         this.branches = branches;
         this.categories = categories;
         this.worldOptions = worlds;
@@ -158,7 +160,7 @@ export class EditUsersComponent implements OnInit {
           : result;
 
         if (!user) {
-          alert('User not found');
+          this.toastService.error('User not found');
           this.router.navigate(['/admin/manage-users']);
           return;
         }
@@ -176,7 +178,7 @@ export class EditUsersComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Failed to load user', err);
-        alert('Failed to load user data. Please try again.');
+        this.toastService.error('Failed to load user data. Please try again.');
         this.isUserLoading = false;
         this.isLoading = false;
       }
@@ -304,20 +306,20 @@ export class EditUsersComponent implements OnInit {
   ══════════════════════════════════════════════════════ */
   saveUserDetails(): void {
     if (!this.userData.firstName || !this.userData.email || !this.userData.username) {
-      alert('Please fill in all required fields (First Name, Email, Employee ID).');
+      this.toastService.error('Please fill in all required fields (First Name, Email, Employee ID).');
       return;
     }
     this.isSubmitting = true;
 
     this.userService.updateUser(this.userId, this.userData).subscribe({
       next: () => {
-        alert('User details updated successfully!');
+        this.toastService.success('User details updated successfully!');
         this.isSubmitting = false;
         this.closePanel();
       },
       error: (err: any) => {
         console.error('Error updating user details:', err);
-        alert('Failed to update user details. Please try again.');
+        this.toastService.error('Failed to update user details. Please try again.');
         this.isSubmitting = false;
       }
     });
@@ -328,20 +330,20 @@ export class EditUsersComponent implements OnInit {
   ══════════════════════════════════════════════════════ */
   saveRole(): void {
     if (!this.userData.roleName) {
-      alert('Please select a role.');
+      this.toastService.error('Please select a role.');
       return;
     }
     this.isSubmitting = true;
 
     this.userService.updateUser(this.userId, this.userData).subscribe({
       next: () => {
-        alert('Role updated successfully!');
+        this.toastService.success('Role updated successfully!');
         this.isSubmitting = false;
         this.closePanel();
       },
       error: (err: any) => {
         console.error('Error updating role:', err);
-        alert('Failed to update role. Please try again.');
+        this.toastService.error('Failed to update role. Please try again.');
         this.isSubmitting = false;
       }
     });
@@ -363,13 +365,13 @@ export class EditUsersComponent implements OnInit {
 
     this.userService.updateUser(this.userId, this.userData).subscribe({
       next: () => {
-        alert('Location details updated successfully!');
+        this.toastService.success('Location details updated successfully!');
         this.isSubmitting = false;
         this.closePanel();
       },
       error: (err: any) => {
         console.error('Error updating locations:', err);
-        alert('Failed to update location details. Please try again.');
+        this.toastService.error('Failed to update location details. Please try again.');
         this.isSubmitting = false;
       }
     });
@@ -387,13 +389,13 @@ export class EditUsersComponent implements OnInit {
 
     this.userService.updateUser(this.userId, this.userData).subscribe({
       next: () => {
-        alert('Product details updated successfully!');
+        this.toastService.success('Product details updated successfully!');
         this.isSubmitting = false;
         this.closePanel();
       },
       error: (err: any) => {
         console.error('Error updating products:', err);
-        alert('Failed to update product details. Please try again.');
+        this.toastService.error('Failed to update product details. Please try again.');
         this.isSubmitting = false;
       }
     });

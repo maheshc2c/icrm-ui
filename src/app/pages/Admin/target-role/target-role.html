@@ -5,8 +5,9 @@
 
 <app-data-table title="👥 Target Role List" [columns]="columns" [rows]="rows" [showSearch]="true" [showImport]="false"
     [showAdd]="false" [showEdit]="false" [showDelete]="false" [showAssign]="true" [showUpload]="true"
-    [showDownload]="false"
-    [searchFields]="searchFields" (search)="onSearch()" (searchChange)="onSearchFromChild($event)" 
+    [showDownload]="false" [showRefresh]="true"
+    [searchFields]="searchFields" (search)="onSearch($event)" (searchChange)="onSearchFromChild($event)" 
+    (refresh)="onRefresh()"
     (add)="onAdd()" (assignRow)="onAssign($event)"
     (uploadRow)="onUpload($event)">
 </app-data-table>

@@ -65,8 +65,8 @@ export class Speciality implements OnInit {
       keyword,
       this.currentPage - 1, 
       this.pageSize,
-      'specialityName',
-      'asc'
+      'specialityId',
+      'desc'
     ).subscribe({
       next: (res: any) => {
         const specialities = Array.isArray(res) ? res : (res?.content || []);
@@ -130,7 +130,7 @@ export class Speciality implements OnInit {
             ? { ...r, specialityStatus: row.specialityStatus }
             : r);
             this.toastService.success(
-          `Contact ${isActive ? 'deactivated' : 'activated'} successfully`
+          `Speciality ${isActive ? 'deactivated' : 'activated'} successfully`
         );
         },
         error: (err) => {
@@ -180,18 +180,20 @@ onImport() {
     keyword,
     this.currentPage - 1,
     this.pageSize,
-    'specialityName',
-    'ASC'
+    'specialityId',
+    'DESC'
   ).subscribe({
     next: (blob: Blob) => {
 
       const url = window.URL.createObjectURL(blob);
-
+  
       const a = document.createElement('a');
       a.href = url;
       a.download = 'Specialities.xlsx';
+      document.body.appendChild(a);
       a.click();
-
+      document.body.removeChild(a);
+  
       window.URL.revokeObjectURL(url);
     }
   });
