@@ -28,7 +28,6 @@ export class Form implements OnChanges {
   @Output() fieldChange = new EventEmitter<{ name: string, value: any }>();
  
   formData: any = {};
-  originalOptions: { [key: string]: any[] } = {};
   errors: any = {};
  
   // ngOnChanges(changes: SimpleChanges) {
@@ -59,7 +58,6 @@ export class Form implements OnChanges {
  
         // Cache options for searchable dropdown filtering
         if (field.type === 'select' && Array.isArray(field.options)) {
-          this.originalOptions[field.name] = [...field.options];
           // For searchable dropdowns
           field._filtered = null;
           field._open = false;
@@ -85,7 +83,7 @@ export class Form implements OnChanges {
   /* ================= SEARCHABLE DROPDOWN ================= */
   onSearchInput(field: any, keyword: string): void {
     const term = (keyword || '').toLowerCase();
-    const baseOptions = this.originalOptions[field.name] || field.options || [];
+    const baseOptions = field.options || [];
  
     if (term.length >= 1) {
       field._filtered = baseOptions.filter((opt: any) =>
@@ -101,16 +99,14 @@ export class Form implements OnChanges {
     this.formData[field.name] = opt.value;
     field._open = false;
     field._filtered = null;
-    // Clear error when user selects an option
-    delete this.errors[field.name];
+    this.revalidateField(field.name);
     this.fieldChange.emit({ name: field.name, value: opt.value });
     field.onChange?.(opt.value);
   }
 
   onInputChange(field: any, value: any): void {
     this.formData[field.name] = value;
-    // Clear error when user types or modifies the field
-    delete this.errors[field.name];
+    this.revalidateField(field.name);
     this.fieldChange.emit({ name: field.name, value });
     field.onChange?.(value);
   }
@@ -141,8 +137,7 @@ export class Form implements OnChanges {
       this.formData[fieldName] = {};
     }
     this.formData[fieldName][optionValue] = isChecked;
-    // Clear error when user interacts with checkbox
-    delete this.errors[fieldName];
+    this.revalidateField(fieldName);
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
   }
 
@@ -151,18 +146,26 @@ export class Form implements OnChanges {
     if (this.formData[fieldName] === optionValue) {
       event.preventDefault();
       this.formData[fieldName] = null;
-      // Clear error when user interacts with radio
-      delete this.errors[fieldName];
+      this.revalidateField(fieldName);
       this.fieldChange.emit({ name: fieldName, value: null });
     } else {
       this.formData[fieldName] = optionValue;
-      // Clear error when user selects a radio option
-      delete this.errors[fieldName];
+      this.revalidateField(fieldName);
       this.fieldChange.emit({ name: fieldName, value: optionValue });
     }
   }
- 
+
   /* ================= VALIDATION ================= */
+  revalidateField(fieldName: string): void {
+    delete this.errors[fieldName];
+    const field = this.fields.find(f => f.name === fieldName);
+    if (field) {
+      const err = this.validateField(field);
+      if (err) {
+        this.errors[fieldName] = err;
+      }
+    }
+  }
   validateField(field: any): string | null {
     const value = this.formData[field.name];
  
