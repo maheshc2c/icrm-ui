@@ -115,7 +115,7 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
-  path: 'admin/competitor',
+  path: 'competitor',
   loadComponent: () =>
     import('./pages/Admin/competitor/competitor').then(m => m.Competitor)
 },
@@ -147,7 +147,7 @@ export const routes: Routes = [
 
 //SubSystem
 {
-  path: 'admin/sub-system',
+  path: 'sub-system',
   loadComponent: () =>
     import('./pages/Admin/sub-system/sub-system').then(m => m.SubSystem)
 },
@@ -708,6 +708,12 @@ export const routes: Routes = [
       {
         path: 'Approve-Leads',
         loadComponent: () => import('./pages/Customer Interaction Center/approve-leads/approve-leads').then(m => m.ApproveLeads),
+        canActivate: [authGuard],
+        data: { roles: ['Customer Interaction Center'] }
+      },
+      {
+        path: 'Approve-Leads/edit/:id',
+        loadComponent: () => import('./pages/Customer Interaction Center/approve-leads/edit-leads/edit-leads').then(m => m.EditLeads),
         canActivate: [authGuard],
         data: { roles: ['Customer Interaction Center'] }
       },

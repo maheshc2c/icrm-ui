@@ -6,7 +6,8 @@
     <app-search
       [fields]="searchFields"
       (searchChange)="onSearchFromChild($event)"
-      (fieldChange)="fieldChange.emit($event)">
+      (fieldChange)="fieldChange.emit($event)"
+      (dropdownSearch)="dropdownSearch.emit($event)">
     </app-search>
   }
   <app-button

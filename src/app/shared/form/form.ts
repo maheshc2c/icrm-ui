@@ -29,7 +29,10 @@ export class Form implements OnChanges {
  
   formData: any = {};
   errors: any = {};
+  touched: any = {};
  
+  touched: any = {};
+
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
   //      this.formData = { ...this.model };
@@ -103,7 +106,7 @@ export class Form implements OnChanges {
     this.fieldChange.emit({ name: field.name, value: opt.value });
     field.onChange?.(opt.value);
   }
-
+ 
   onInputChange(field: any, value: any): void {
     this.formData[field.name] = value;
     this.revalidateField(field.name);
@@ -139,8 +142,9 @@ export class Form implements OnChanges {
     this.formData[fieldName][optionValue] = isChecked;
     this.revalidateField(fieldName);
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
+    this.onFieldInput(fieldName);
   }
-
+ 
   /* ================= RADIO GROUP ================= */
   onRadioClick(fieldName: string, optionValue: any, event: Event) {
     if (this.formData[fieldName] === optionValue) {
@@ -170,8 +174,15 @@ export class Form implements OnChanges {
     const value = this.formData[field.name];
  
     // Required
-    if (field.required && (value === null || value === undefined || value === '')) {
-      return `${field.label} is required`;
+    if (field.required) {
+      if (field.type === 'checkbox') {
+        // Check if at least one checkbox is selected
+        if (!value || Object.values(value).every(v => !v)) {
+          return `${field.label} is required`;
+        }
+      } else if (value === null || value === undefined || value === '') {
+        return `${field.label} is required`;
+      }
     }
  
     // Pattern (only validate when something is provided)
@@ -194,16 +205,39 @@ export class Form implements OnChanges {
       return `${field.label} must be less than ${field.max}`;
     }
  
+   // Email Validation
+  if (
+    field.type === 'email' &&
+    value &&
+    !/^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/.test(value)
+  ) {
+    return 'Please enter a valid email address';
+  }
+ 
+  //mobile validation
+  if (
+  field.name === 'contactMobileNo' &&
+  value &&
+  !/^\d{10}$/.test(value)
+) {
+  return 'Mobile number must be 10 digits';
+}
+ 
     return null;
   }
  
   submit(form: any) {
     this.errors = {};
+    let firstInvalidFieldName: string | null = null;
  
     this.fields.forEach(field => {
       const err = this.validateField(field);
       if (err) {
         this.errors[field.name] = err;
+        this.touched[field.name] = true;
+        if (!firstInvalidFieldName) {
+          firstInvalidFieldName = field.name;
+        }
       }
     });
  
@@ -212,10 +246,46 @@ export class Form implements OnChanges {
       if (form?.controls) {
         Object.values(form.controls).forEach((control: any) => control?.markAsTouched?.());
       }
+      // Focus first invalid field
+      if (firstInvalidFieldName) {
+        setTimeout(() => {
+          const element = document.getElementById('form-field-' + firstInvalidFieldName);
+          if (element) {
+            // If it's a form element (input, select, textarea) - focus it directly
+            if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+              element.focus();
+            } else if (element.tagName === 'DIV') {
+              // For checkbox or radio groups (div containers) - focus first input
+              const firstInput = element.querySelector('input') as HTMLElement;
+              if (firstInput) {
+                firstInput.focus();
+              }
+            }
+          }
+        }, 0);
+      }
       return;
     }
  
     this.formSubmit.emit(this.formData);
+  }
+ 
+  onFieldInput(fieldName: string) {
+    this.touched[fieldName] = true;
+    // Find the field object by name
+    const field = this.fields.find(f => f.name === fieldName);
+    if (field) {
+      const err = this.validateField(field);
+      if (err) {
+        this.errors[fieldName] = err;
+      } else {
+        delete this.errors[fieldName];
+      }
+    }
+  }
+ 
+  clearError(fieldName: string) {
+    delete this.errors[fieldName];
   }
  
   cancel() {

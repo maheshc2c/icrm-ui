@@ -101,15 +101,17 @@ export class Addspec {
 }
 
   /* ================= SAVE ================= */
-  saveSpeciality(data: Partial<SpecialityModel>): void {
+ saveSpeciality(data: Partial<SpecialityModel>): void {
 
   const payload: any = {
-    name: data.specialityName!.trim(),
-    status: 1
+    specialityName: data.specialityName?.trim(),
+    specialityStatus: 1
   };
 
   if (this.isEditMode) {
-    payload.id = this.specialityId;
+
+    payload.specialityId = this.specialityId;
+
     this.adminService.updateSpeciality(payload).subscribe({
       next: () => {
         this.toastService.success('Speciality updated successfully');
@@ -121,7 +123,9 @@ export class Addspec {
         this.toastService.error('Update failed');
       }
     });
+
   } else {
+
     this.adminService.createSpeciality(payload).subscribe({
       next: () => {
         this.toastService.success('Speciality created successfully');
@@ -133,6 +137,7 @@ export class Addspec {
         this.toastService.error('Save failed');
       }
     });
+
   }
 }
 

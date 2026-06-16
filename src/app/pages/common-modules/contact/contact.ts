@@ -8,6 +8,7 @@
   import { Breadcrumb } from '../../../models/breadcrumb';
   import { SearchFieldConfig } from '../../../shared/search/search';
 import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
   @Component({
     selector: 'app-contact',
@@ -21,7 +22,8 @@ import { ToastService } from '../../../service/toast.service';
         private adminservice: Adminservice,
         private router: Router,
       private route: ActivatedRoute,
-      private toastService: ToastService
+      private toastService: ToastService,
+      private confirmService: ConfirmDialogService
       ) {}
 
       headerTitle = 'Manage Contact List';
@@ -98,17 +100,12 @@ private loadContact(): void {
 
       next: (response: any) => {
 
-        console.log('API RESPONSE FOR CONTACTS:', response.content);
-
         this.totalPages = response.totalPages;
         this.totalElements = response.totalElements;
         this.fullRows = response.content;
     
 
-        this.rows = response.content.map((c: any, index: number) => {
-          console.log('Contact row Customer object:', c.customer);
-          console.log('Contact row customerName string:', c.customerName);
-          return {
+        this.rows = response.content.map((c: any, index: number) => ({
 
   sno: ((this.currentPage - 1) * this.pageSize) + index + 1,
 
@@ -116,8 +113,8 @@ private loadContact(): void {
 
   // displayed
   contactFirstName: c.contactFirstName,
-  customerName: c.customer?.customerName || c.customerName || '',
-  specialityName: c.speciality?.specialityName || c.specialityName || '',
+  customerName: c.customer?.customerName ?? '',
+  specialityName: c.speciality?.specialityName ?? '',
   contactEmail: c.contactEmail,
   contactMobileNo: c.contactMobileNo,
 
@@ -132,8 +129,7 @@ private loadContact(): void {
 
   customerId: c.customer?.customerId,
   specialityId: c.speciality?.specialityId
-};
-        });
+}));
       },
 
       error: err => console.error(err)
@@ -224,8 +220,8 @@ onSearch(filters: any) {
     pagination: {
   pageNumber: this.currentPage - 1,
   pageSize: this.pageSize,
-  sortBy: 'contactFirstName',
-  sortOrder: 'ASC'
+  sortBy: 'contactId',
+    sortOrder: 'DESC'
 }
   };
 
@@ -283,27 +279,45 @@ onEdit(row: any) {
 
 
     //actiavte and deactivate
-  onDelete(row: any) {
+onDelete(row: any) {
 
   const isActive = row.contactStatus === 1;
 
-  const apiCall = this.adminservice.toggleContactStatus(
-  row.contactId
-);
+  this.confirmService.confirm({
+    title: 'Confirm',
+    message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this contact?`,
+    confirmText: isActive ? 'Deactivate' : 'Activate'
+  }).then((confirmed) => {
 
-  apiCall.subscribe({
-  next: (updated: any) => {
-    row.contactStatus = updated.contactStatus;
-    this.rows = [...this.rows];
-    this.toastService.success(
+    if (!confirmed) {
+      return;
+    }
+
+    this.adminservice.toggleContactStatus(row.contactId).subscribe({
+      next: (updated: any) => {
+
+        // If API returns updated object
+        row.contactStatus = updated.contactStatus;
+
+        // Or simply toggle locally
+        // row.contactStatus = isActive ? 2 : 1;
+
+        this.rows = [...this.rows];
+        this.fullRows = [...this.fullRows];
+
+        this.toastService.success(
           `Contact ${isActive ? 'deactivated' : 'activated'} successfully`
         );
-  },
-  error: (err) => {
-          console.error('Status update failed', err);
-          this.toastService.error('Failed to update status');
-        }
-});
+      },
+
+      error: (err: any) => {
+        console.error('Status update failed', err);
+        this.toastService.error('Failed to update status');
+      }
+    });
+
+  });
+
 }
 
 onReset(): void {
@@ -316,23 +330,19 @@ onReset(): void {
 
 searchFilters: any = {};
 currentFilters: any = {};
-
 onImport() {
 
-  console.log('CURRENT PAGE SIZE =>', this.pageSize);
-console.log('TOTAL ELEMENTS =>', this.totalElements);
-
   const payload = {
-  customerName: this.currentFilters?.customerName || '',
-  specialityName: this.currentFilters?.specialityName || '',
-  contactFirstName: this.currentFilters?.contactFirstName || '',
-  pagination: {
-    pageNumber: this.currentPage - 1,
-    pageSize: this.pageSize,
-    sortBy: 'contactFirstName',
-    sortOrder: 'ASC'
-  }
-};
+    customerName: this.currentFilters?.customerName || '',
+    specialityName: this.currentFilters?.specialityName || '',
+    contactFirstName: this.currentFilters?.contactFirstName || '',
+    pagination: {
+      pageNumber: 0,
+      pageSize: this.totalElements, 
+      sortBy: 'contactFirstName',
+      sortOrder: 'ASC'
+    }
+  };
 
   console.log('DOWNLOAD PAYLOAD =>', payload);
 
@@ -347,10 +357,11 @@ console.log('TOTAL ELEMENTS =>', this.totalElements);
       a.click();
 
       window.URL.revokeObjectURL(url);
+    },
+    error: err => {
+      console.error('Download failed', err);
     }
   });
 }
-
-
 
   }
