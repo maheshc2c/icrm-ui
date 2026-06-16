@@ -185,7 +185,7 @@ export class ApproveLeads implements OnInit {
   }
 
   onEdit(row: any): void {
-    console.log('Edit:', row);
+    this.router.navigate(['/Approve-Leads/edit', row.leadId]);
   }
 
   onApprove(row: any): void {

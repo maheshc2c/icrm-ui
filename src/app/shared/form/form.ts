@@ -30,6 +30,8 @@ export class Form implements OnChanges {
   formData: any = {};
   errors: any = {};
  
+  touched: any = {};
+
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
   //      this.formData = { ...this.model };
@@ -139,6 +141,7 @@ export class Form implements OnChanges {
     this.formData[fieldName][optionValue] = isChecked;
     this.revalidateField(fieldName);
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
+    this.onFieldInput(fieldName);
   }
 
   /* ================= RADIO GROUP ================= */
@@ -170,8 +173,15 @@ export class Form implements OnChanges {
     const value = this.formData[field.name];
  
     // Required
-    if (field.required && (value === null || value === undefined || value === '')) {
-      return `${field.label} is required`;
+    if (field.required) {
+      if (field.type === 'checkbox') {
+        // Check if at least one checkbox is selected
+        if (!value || Object.values(value).every(v => !v)) {
+          return `${field.label} is required`;
+        }
+      } else if (value === null || value === undefined || value === '') {
+        return `${field.label} is required`;
+      }
     }
  
     // Pattern (only validate when something is provided)
@@ -204,6 +214,10 @@ export class Form implements OnChanges {
       const err = this.validateField(field);
       if (err) {
         this.errors[field.name] = err;
+        this.touched[field.name] = true;
+        if (!firstInvalidFieldName) {
+          firstInvalidFieldName = field.name;
+        }
       }
     });
  
@@ -211,6 +225,24 @@ export class Form implements OnChanges {
       // Mark controls touched so template-driven validation UI can show
       if (form?.controls) {
         Object.values(form.controls).forEach((control: any) => control?.markAsTouched?.());
+      }
+      // Focus first invalid field
+      if (firstInvalidFieldName) {
+        setTimeout(() => {
+          const element = document.getElementById('form-field-' + firstInvalidFieldName);
+          if (element) {
+            // If it's a form element (input, select, textarea) - focus it directly
+            if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+              element.focus();
+            } else if (element.tagName === 'DIV') {
+              // For checkbox or radio groups (div containers) - focus first input
+              const firstInput = element.querySelector('input') as HTMLElement;
+              if (firstInput) {
+                firstInput.focus();
+              }
+            }
+          }
+        }, 0);
       }
       return;
     }

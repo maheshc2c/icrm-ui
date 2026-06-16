@@ -1,11 +1,311 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Header } from '../../../../layout/header/header';
+import { Sidebar } from '../../../../layout/sidebar/sidebar';
+import { Pageheader } from '../../../../shared/pageheader/pageheader';
+import { ModalComponent } from '../../../../shared/modal/modal';
+import { CustomerInteractionCenterService } from '../../../../service/customer-interaction-center.service';
+import { ToastService } from '../../../../service/toast.service';
+import { ConfirmDialogService } from '../../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-edit-leads',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, FormsModule, Header, Sidebar, Pageheader, ModalComponent],
   templateUrl: './edit-leads.html',
-  styleUrl: './edit-leads.css',
+  styleUrl: './edit-leads.css'
 })
-export class EditLeads {
+export class EditLeads implements OnInit {
+  leadId!: number;
+  lead: any = {
+    leadVisitRequirement: 0,
+    leadResourceRequirement: 0,
+    leadPurchasePotential: 0,
+    leadCmdLine1: '',
+    leadCmdLine2: '',
+    siteReadinessName: '',
+    distributorId: null
+  };
+  distributors: any[] = [];
+  siteReadinessOptions: any[] = [];
+  
+  // Modal states
+  showCustomerDetailsModal = false;
+  showInstallationBaseModal = false;
+  
+  // Customer & Installation base data
+  customerDetails: any = null;
+  installationBaseList: any[] = [];
 
+  headerTitle = 'Edit User Products';
+  headerBreadcrumbs = [
+    { label: 'Home', route: '/' },
+    { label: 'Approve Leads', route: '/Approve-Leads' },
+    { label: 'Edit User Products', route: '' }
+  ];
+
+  errors: any = {};
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private cicService: CustomerInteractionCenterService,
+    private toastService: ToastService,
+    private confirmService: ConfirmDialogService
+  ) {}
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      if (idParam) {
+        this.leadId = +idParam;
+        this.loadDropdownsAndLead();
+      }
+    });
+  }
+
+  loadDropdownsAndLead(): void {
+    // Load all dropdowns first, then fetch lead details to map them correctly
+    this.cicService.getDistributors().subscribe({
+      next: (dists) => {
+        this.distributors = dists || [];
+        this.cicService.getSiteReadiness().subscribe({
+          next: (sites) => {
+            this.siteReadinessOptions = sites || [];
+            this.loadLeadDetails();
+          },
+          error: (err) => {
+            console.error('Error fetching site readiness:', err);
+            this.loadLeadDetails();
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error fetching distributors:', err);
+        this.loadLeadDetails();
+      }
+    });
+  }
+
+  loadLeadDetails(): void {
+    this.cicService.getLeadById(this.leadId).subscribe({
+      next: (res) => {
+        this.lead = res;
+        
+        // Ensure values are numbers/strings
+        if (this.lead.leadVisitRequirement === undefined || this.lead.leadVisitRequirement === null) {
+          this.lead.leadVisitRequirement = 0;
+        }
+        if (this.lead.leadResourceRequirement === undefined || this.lead.leadResourceRequirement === null) {
+          this.lead.leadResourceRequirement = 0;
+        }
+        if (!this.lead.relationshipName) {
+          this.lead.relationshipName = '';
+        }
+        if (!this.lead.siteReadinessName) {
+          this.lead.siteReadinessName = '';
+        }
+
+        // Map distributor ID
+        const matchedDist = this.distributors.find(d => d.distributorName === this.lead.distributorName);
+        if (matchedDist) {
+          this.lead.distributorId = matchedDist.userId;
+        } else if (this.distributors.length > 0) {
+          this.lead.distributorId = this.distributors[0].userId; // default selection fallback
+        }
+        
+        // Fetch customer details & installation base details
+        if (this.lead.customerId) {
+          this.loadCustomerAndInstalledBase(this.lead.customerId);
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching lead details:', err);
+        this.toastService.error('Failed to load lead details');
+      }
+    });
+  }
+
+  loadCustomerAndInstalledBase(customerId: number): void {
+    this.cicService.getInstalledBase(customerId).subscribe({
+      next: (res) => {
+        this.customerDetails = res.customer;
+        if (this.customerDetails) {
+          if (this.customerDetails.locations && this.customerDetails.locations.length > 0) {
+            this.customerDetails.cityName = this.customerDetails.locations
+              .map((l: any) => l.locationName)
+              .filter(Boolean)
+              .join(', ');
+          } else {
+            this.customerDetails.cityName = '';
+          }
+        }
+        this.installationBaseList = res.customerInstallers || [];
+      },
+      error: (err) => {
+        console.error('Error fetching installation base:', err);
+      }
+    });
+  }
+
+  openCustomerModal(): void {
+    this.showCustomerDetailsModal = true;
+  }
+
+  closeCustomerModal(): void {
+    this.showCustomerDetailsModal = false;
+  }
+
+  openInstallationModal(): void {
+    this.showInstallationBaseModal = true;
+  }
+
+  closeInstallationModal(): void {
+    this.showInstallationBaseModal = false;
+  }
+
+  validateForm(): boolean {
+    this.errors = {};
+
+    // 1. Rapport with Customer
+    if (!this.lead.relationshipName) {
+      this.errors['relationshipName'] = 'Rapport with Customer is required';
+    }
+
+    // 2. Purchase Potential
+    if (this.lead.leadPurchasePotential !== null && this.lead.leadPurchasePotential !== undefined && this.lead.leadPurchasePotential !== '') {
+      const val = Number(this.lead.leadPurchasePotential);
+      if (isNaN(val) || val < 0) {
+        this.errors['leadPurchasePotential'] = 'Purchase Potential must be a positive number';
+      }
+    }
+
+    // 3. Site Readiness
+    if (!this.lead.siteReadinessName) {
+      this.errors['siteReadinessName'] = 'Site Readiness status is required';
+    }
+
+    // 4. Resource Required Information
+    if (this.lead.leadResourceRequirement === 1 && (!this.lead.resourceRequiredDetails || !this.lead.resourceRequiredDetails.trim())) {
+      this.errors['resourceRequiredDetails'] = 'Resource Required Information is required';
+    }
+
+    // 5. Distributor
+    if (!this.lead.distributorId) {
+      this.errors['distributorId'] = 'Distributor is required';
+    }
+
+    return Object.keys(this.errors).length === 0;
+  }
+
+  clearError(field: string): void {
+    if (!this.errors) return;
+
+    if (field === 'relationshipName' && this.lead.relationshipName) {
+      delete this.errors['relationshipName'];
+    }
+    if (field === 'siteReadinessName' && this.lead.siteReadinessName) {
+      delete this.errors['siteReadinessName'];
+    }
+    if (field === 'distributorId' && this.lead.distributorId) {
+      delete this.errors['distributorId'];
+    }
+    if (field === 'resourceRequiredDetails' && this.lead.resourceRequiredDetails && this.lead.resourceRequiredDetails.trim()) {
+      delete this.errors['resourceRequiredDetails'];
+    }
+    if (field === 'leadPurchasePotential') {
+      if (this.lead.leadPurchasePotential === null || this.lead.leadPurchasePotential === undefined || this.lead.leadPurchasePotential === '') {
+        delete this.errors['leadPurchasePotential'];
+      } else {
+        const val = Number(this.lead.leadPurchasePotential);
+        if (!isNaN(val) && val >= 0) {
+          delete this.errors['leadPurchasePotential'];
+        }
+      }
+    }
+  }
+
+  handleApprove(): void {
+    this.saveLead(() => {
+      this.cicService.approveLead(this.leadId).subscribe({
+        next: () => {
+          this.toastService.success(`Lead #${this.leadId} approved successfully`);
+          this.router.navigate(['/Approve-Leads']);
+        },
+        error: (err) => {
+          console.error('Error approving lead:', err);
+          this.toastService.error('Failed to approve lead');
+        }
+      });
+    });
+  }
+
+  handleReject(): void {
+    this.confirmService.confirm({
+      title: 'Confirm',
+      message: 'Are you sure you want to Reject?',
+      confirmText: 'Reject'
+    }).then((confirmed) => {
+      if (confirmed) {
+        this.saveLead(() => {
+          this.cicService.rejectLead(this.leadId).subscribe({
+            next: () => {
+              this.toastService.success(`Lead #${this.leadId} rejected successfully`);
+              this.router.navigate(['/Approve-Leads']);
+            },
+            error: (err) => {
+              console.error('Error rejecting lead:', err);
+              this.toastService.error('Failed to reject lead');
+            }
+          });
+        });
+      }
+    });
+  }
+
+  saveLead(callback?: () => void): void {
+    if (!this.validateForm()) {
+      this.toastService.error('Please resolve validation errors.');
+      return;
+    }
+
+    const dto = {
+      leadId: this.leadId,
+      customerName: this.lead.customerName,
+      contactFirstName: this.lead.contactFirstName,
+      createdBy: this.lead.username || 'System',
+      leadSource: this.lead.sourceName,
+      leadStatus: this.lead.leadStatus,
+      purchasePotential: this.lead.leadPurchasePotential || 0,
+      siteReadiness: this.lead.siteReadinessName,
+      visitRequirement: this.lead.leadVisitRequirement,
+      resourceRequirement: this.lead.leadResourceRequirement,
+      distributorId: +this.lead.distributorId,
+      commandLine1: this.lead.leadCmdLine1 || '',
+      commandLine2: this.lead.leadCmdLine2 || ''
+    };
+
+    this.cicService.editLead(dto).subscribe({
+      next: () => {
+        if (callback) {
+          callback();
+        } else {
+          this.toastService.success('Lead details saved successfully');
+        }
+      },
+      error: (err) => {
+        console.error('Error updating lead:', err);
+        this.toastService.error('Failed to save lead updates');
+      }
+    });
+  }
+
+  formatCustomerValue(val: any): string {
+    if (val === null || val === undefined || val === 0 || val === '0' || val === 'null' || val === 'NULL') {
+      return '';
+    }
+    return String(val).trim();
+  }
 }
