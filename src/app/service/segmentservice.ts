@@ -65,6 +65,22 @@ export class SegmentService {
       { headers: this.getAuthHeaders() }
     );
   }
+
+  deactivateSegment(id: number) {
+    return this.http.put(
+      `${this.baseUrl}/deactivate-group/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  activateSegment(id: number) {
+    return this.http.put(
+      `${this.baseUrl}/activate-group/${id}`,
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
  
    searchSegments(params: {
     categoryName?: string;

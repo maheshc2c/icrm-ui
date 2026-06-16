@@ -10,6 +10,7 @@ import { Form } from '../../../../shared/form/form';
 import { Adminservice } from '../../../../service/adminservice';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { SubsystemModel } from '../../../../models/subsystem-model';
+import { ToastService } from '../../../../service/toast.service';
 
 
 @Component({
@@ -24,7 +25,8 @@ export class Addsubsystem implements OnInit{
   constructor(
     private adminService: Adminservice,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
   /* HEADER */
@@ -67,7 +69,7 @@ export class Addsubsystem implements OnInit{
 
       this.headerBreadcrumbs = [
         { label: 'Home', route: '/admindashboard' },
-        { label: 'Sub System', route: '/admin/sub-system' },
+        { label: 'Sub System', route: '/sub-system' },
         { label: 'Edit Sub System' }
       ];
 
@@ -85,8 +87,8 @@ export class Addsubsystem implements OnInit{
         const item = list.find(x => x.subCategoryId === id);
 
         if (!item) {
-          alert('SubSystem not found');
-          this.router.navigate(['/admin/sub-system']);
+          this.toastService.error('Sub System not found');
+          this.router.navigate(['/sub-system']);
           return;
         }
 
@@ -96,14 +98,19 @@ export class Addsubsystem implements OnInit{
         };
       },
       error: () => {
-        alert('Failed to load SubSystem');
-        this.router.navigate(['/admin/sub-system']);
+        this.toastService.error('Failed to load Sub System');
+        this.router.navigate(['/sub-system']);
       }
     });
   }
 
   /* SAVE */
   saveSubSystem(data: Partial<SubsystemModel>): void {
+
+    if (!data.subcategoryName || data.subcategoryName.trim() === '') {
+  this.toastService.error('Sub System Name is required');
+  return;
+}
 
     const payload: SubsystemModel = {
       subCategoryId: this.isEditMode ? this.subCategoryId : 0,
@@ -117,10 +124,16 @@ export class Addsubsystem implements OnInit{
 
       this.adminService.updateSubSystem(this.subCategoryId, payload)
         .subscribe({
-          next: () => this.router.navigate(['/admin/sub-system']),
+          next: () =>{ 
+            this.toastService.success(
+        'Sub System updated successfully'
+      );
+            this.router.navigate(['/sub-system'])},
           error: err => {
             console.error(err);
-            alert('Update failed');
+            this.toastService.error(
+        err?.error?.message || 'Failed to update Sub System'
+      );
           }
         });
 
@@ -128,17 +141,23 @@ export class Addsubsystem implements OnInit{
 
       this.adminService.createSubSystem(payload)
         .subscribe({
-          next: () => this.router.navigate(['/admin/sub-system']),
+          next: () =>{
+             this.toastService.success(
+        'Sub System created successfully'
+      );
+             this.router.navigate(['/sub-system'])},
           error: err => {
             console.error(err);
-            alert('Create failed');
+            this.toastService.error(
+        err?.error?.message || 'Failed to create Sub System'
+      );
           }
         });
     }
   }
 
   onCancel(): void {
-    this.router.navigate(['/admin/sub-system']);
+    this.router.navigate(['/sub-system']);
   }
 }
 

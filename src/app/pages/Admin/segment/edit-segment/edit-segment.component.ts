@@ -10,6 +10,7 @@ import { SegmentDto } from '../../../../models/segment';
 import { SegmentService } from '../../../../service/segmentservice';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Adminservice } from '../../../../service/adminservice';
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
   selector: 'app-edit-segment',
@@ -31,7 +32,8 @@ export class EditSegment implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private segmentService: SegmentService
+    private segmentService: SegmentService,
+    private toastService: ToastService
   ) { }
  
   headerTitle = 'Edit Segment';
@@ -138,10 +140,12 @@ export class EditSegment implements OnInit {
     this.segmentService.updateSegment(this.segmentId, payload).subscribe({
       next: () => {
         console.log('Segment updated successfully');
+        this.toastService.success('Segment updated successfully');
         this.router.navigate(['/admin/segment']);
       },
       error: (err) => {
         console.error('Failed to update segment:', err);
+        this.toastService.error('Failed to update segment');
         if (err.status === 403) {
           console.error('Update failed: 403 Forbidden. Check permissions.');
         }

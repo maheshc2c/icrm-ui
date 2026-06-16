@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, map } from "rxjs";
 import { TrackLead, PaginationRequest, TrackLeadResponse } from "../models/track-lead-cic.model";
+import { AuthService } from "./auth-service";
 
 @Injectable({
   providedIn: 'root',
@@ -10,17 +11,21 @@ export class CustomerInteractionCenterService {
 
   private baseUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private auth: AuthService
+  ) {}
 
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    if (token) {
-      return new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      });
+    const token = this.auth.getToken();
+
+    if (!token) {
+      console.error('❌ No token found');
+      return new HttpHeaders({ 'Content-Type': 'application/json' });
     }
+
     return new HttpHeaders({
+      Authorization: token.startsWith('Bearer ') ? token : `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
   }

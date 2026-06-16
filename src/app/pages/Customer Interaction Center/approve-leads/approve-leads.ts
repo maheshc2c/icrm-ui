@@ -85,6 +85,27 @@ export class ApproveLeads implements OnInit {
   searchValues: any = {};
 
   ngOnInit(): void {
+    this.searchFields = [
+      { key: 'leadId', label: 'Lead ID', placeholder: 'Lead ID', type: 'text' },
+      {
+        key: 'customer',
+        label: 'Customer',
+        type: 'select',
+        options: [
+          { label: 'Select Customer', value: '' }
+        ],
+        dynamicLoad: this.loadDropdownCustomers.bind(this)
+      },
+      {
+        key: 'createdBy',
+        label: 'Owner',
+        type: 'select',
+        options: [
+          { label: 'Select Owner', value: '' }
+        ],
+        dynamicLoad: this.loadDropdownOwners.bind(this)
+      }
+    ];
     this.loadTrackLeads();
     this.onDropdownSearch({ key: 'customer', query: '' });
     this.onDropdownSearch({ key: 'createdBy', query: '' });

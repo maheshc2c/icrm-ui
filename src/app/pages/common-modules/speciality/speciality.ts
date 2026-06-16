@@ -65,11 +65,16 @@ export class Speciality implements OnInit {
       keyword,
       this.currentPage - 1, 
       this.pageSize,
-      'specialityName',
-      'asc'
+      'specialityId',
+  'DESC'
     ).subscribe({
       next: (res: any) => {
         const specialities = Array.isArray(res) ? res : (res?.content || []);
+        const sortedSpecialities = [...specialities].sort(
+  (a: any, b: any) =>
+    Number(b.specialityId || b.id) -
+    Number(a.specialityId || a.id)
+);
         
         // If it's a flat array, we can't know the true filtered total elements from the backend.
         // We'll approximate it by filtering the allSpecialities list locally just for the count.
@@ -82,9 +87,9 @@ export class Speciality implements OnInit {
            this.totalElements = res?.totalElements || 0;
         }
 
-        this.fullRows = specialities;
+        this.fullRows = sortedSpecialities;
 
-        this.rows = specialities.map((item: any, index: number) => {
+        this.rows = sortedSpecialities.map((item: any, index: number) => {
           // If the backend returned a flat string, map it to the full object (legacy fallback)
           const nameStr = typeof item === 'string' ? item : (item.name || item.specialityName);
           const fullObj = typeof item === 'string' 
@@ -130,7 +135,7 @@ export class Speciality implements OnInit {
             ? { ...r, specialityStatus: row.specialityStatus }
             : r);
             this.toastService.success(
-          `Contact ${isActive ? 'deactivated' : 'activated'} successfully`
+          `Speciality ${isActive ? 'deactivated' : 'activated'} successfully`
         );
         },
         error: (err) => {
@@ -180,18 +185,20 @@ onImport() {
     keyword,
     this.currentPage - 1,
     this.pageSize,
-    'specialityName',
-    'ASC'
+    'specialityId',
+  'DESC'
   ).subscribe({
     next: (blob: Blob) => {
 
       const url = window.URL.createObjectURL(blob);
-
+  
       const a = document.createElement('a');
       a.href = url;
       a.download = 'Specialities.xlsx';
+      document.body.appendChild(a);
       a.click();
-
+      document.body.removeChild(a);
+  
       window.URL.revokeObjectURL(url);
     }
   });

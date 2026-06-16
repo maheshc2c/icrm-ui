@@ -113,9 +113,18 @@ activateCompetitor(id: number) {
 
   // ================= GET ALL COMPETITORS =================
 
-  getCompetitors(page = 0, size = 10): Observable<any> {
+//   getCompetitors(page = 0, size = 10): Observable<any> {
+//   return this.http.get<any>(
+//     `${this.baseUrl}/admin/get-competitors?page=${page}&size=${size}`,
+//     {
+//       headers: this.getAuthHeaders()
+//     }
+//   );
+// }
+
+getCompetitors() {
   return this.http.get<any>(
-    `${this.baseUrl}/admin/get-competitors?page=${page}&size=${size}`,
+    `${this.baseUrl}/admin/get-competitors?page=0&size=1000`,
     {
       headers: this.getAuthHeaders()
     }
@@ -340,7 +349,13 @@ activateCustomer(id: number) {
       customerName,
       customerCategoryName,
       subCategoryName,
-      cityName
+      cityName,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000000,
+        sortBy: 'customerId',
+        sortOrder: 'desc'
+      }
     },
     {
       headers: this.getAuthHeaders(),
@@ -516,12 +531,12 @@ activateCustomer(id: number) {
   }
 
   updateSpeciality(data: SpecialityModel): Observable<SpecialityModel> {
-    return this.http.put<SpecialityModel>(
-      `${this.baseUrl}/customer/speciality`,
-      data,
-      { headers: this.getAuthHeaders() }
-    );
-  }
+  return this.http.put<SpecialityModel>(
+    `${this.baseUrl}/customer/speciality`,
+    data,
+    { headers: this.getAuthHeaders() }
+  );
+}
 
 
   downloadSpecialityExcel(
@@ -774,8 +789,10 @@ activateProduct(id: number) {
     pagination: {
       pageNumber: page,
       pageSize: fetchAll ? 1000000 : size,
-      sortBy: 'contactFirstName',
-      sortOrder: 'asc'
+      // sortBy: 'contactFirstName',
+      // sortOrder: 'asc'
+       sortBy: 'contactId',
+  sortOrder: 'DESC'
     }
   };
 
@@ -801,8 +818,8 @@ getContactsPaged(
   contactFirstName: string | null,
   pageNumber: number = 0,
   pageSize: number = 10,
-  sortBy: string = 'contactFirstName',
-  sortOrder: string = 'asc'
+  sortBy: string = 'contactId',
+  sortOrder: string = 'desc'
 ) {
 
   const payload = {
@@ -958,6 +975,17 @@ updateContact(id: number, payload: any) {
     }
     return this.cityDropdownCache$;
   }
+
+  toggleSubSystem(id: number) {
+  return this.http.delete(
+    `${this.baseUrl}/admin/subcategory/${id}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
+
+  
 
 
   getSubSystem(): Observable<SubsystemModel[]> {

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, SimpleChanges, OnInit, OnChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 /* ✅ UPDATED INTERFACE */
 export interface SearchFieldConfig {
@@ -13,7 +14,9 @@ export interface SearchFieldConfig {
   /* 🔽 DROPDOWN OPTIONS (only for type = select) */
   options?: { label: string; value: any }[];
   searchable?: boolean;        // ✅ Added searchable property
+  dynamicLoad?: (search: string) => Observable<{ label: string; value: any }[]>; // ✅ Dynamic API load function
   _filtered?: any[];           // For searchable dropdown state
+  _loading?: boolean;          // For loading state
 }
 
 @Component({
@@ -76,15 +79,31 @@ export class Search implements OnInit, OnChanges {
   }
 
   filterDropdownOptions(field: SearchFieldConfig, event: any) {
-    const searchText = event.target.value.toLowerCase();
-    const baseOptions = field.options || [];
+    const searchText = event.target.value;
 
-    if (!searchText) {
-      field._filtered = baseOptions;
+    if (field.dynamicLoad) {
+      field._loading = true;
+      field.dynamicLoad(searchText).subscribe({
+        next: (results) => {
+          field._filtered = results;
+          field._loading = false;
+        },
+        error: (err) => {
+          console.error('Failed to load dynamic options:', err);
+          field._loading = false;
+        }
+      });
     } else {
-      field._filtered = baseOptions.filter(opt => 
-        opt.label.toLowerCase().includes(searchText)
-      );
+      const baseOptions = field.options || [];
+      const searchLower = searchText.toLowerCase();
+
+      if (!searchText) {
+        field._filtered = baseOptions;
+      } else {
+        field._filtered = baseOptions.filter(opt => 
+          opt.label.toLowerCase().includes(searchLower)
+        );
+      }
     }
     this.dropdownSearch.emit({ key: field.key, query: event.target.value });
   }
