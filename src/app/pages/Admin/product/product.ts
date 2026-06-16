@@ -12,6 +12,8 @@ import { SearchFieldConfig } from '../../../shared/search/search';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Adminservice } from '../../../service/adminservice';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
+import { ToastService } from '../../../service/toast.service';
  
 @Component({
   standalone: true,
@@ -35,6 +37,8 @@ export class Product implements OnInit {
     private adminService: Adminservice,
     private router: Router,
     private route: ActivatedRoute,
+    private confirmService: ConfirmDialogService,
+    private toastService: ToastService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
  
@@ -60,9 +64,9 @@ export class Product implements OnInit {
   fullRows: any[] = []; // Master copy for search
  
   searchFields: SearchFieldConfig[] = [
-    { key: 'productName', label: 'Product Name', type: 'text' },
-    { key: 'category', label: 'Category', type: 'text' },
-    { key: 'segment', label: 'Segment', type: 'text' }
+    { key: 'productName', label: 'Product Name', type: 'text', placeholder: 'Search by Name' },
+    { key: 'category', label: 'Category', type: 'text', placeholder: 'Search by Category' },
+    { key: 'segment', label: 'Segment', type: 'text', placeholder: 'Search by Segment' }
   ];
  
   ngOnInit(): void {
@@ -77,6 +81,9 @@ export class Product implements OnInit {
       next: (products: any[]) => {
         console.log("API Response:", products);
  
+        // Sort descending by productId to show newest first
+        products.sort((a: any, b: any) => (b.productId || 0) - (a.productId || 0));
+
         this.fullRows = products;
         this.rows = products.map((c, index) => ({
           productId: c.productId ?? null,
@@ -95,7 +102,7 @@ export class Product implements OnInit {
         console.error("Failed to load product list:", err);
  
         if (err.status === 401) {
-          alert("Session expired, please login again.");
+          this.toastService.error("Session expired, please login again.");
           this.router.navigate(['/login']);
         }
       }
@@ -169,7 +176,7 @@ export class Product implements OnInit {
 
   onImport(): void {
     if (!this.rows || this.rows.length === 0) {
-      alert('No data available to download');
+      this.toastService.warning('No data available to download');
       return;
     }
 
@@ -221,23 +228,29 @@ export class Product implements OnInit {
 
   const isActive = Number(row.productStatus) === 1;
 
-  const apiCall = isActive
-    ? this.adminService.deactivateProduct(id)
-    : this.adminService.activateProduct(id);
+  this.confirmService.confirm({
+    title: 'Confirm',
+    message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this product?`,
+    confirmText: isActive ? 'Deactivate' : 'Activate'
+  }).then((confirmed) => {
+    if (!confirmed) return;
 
-  apiCall.subscribe({
-    next: () => {
+    const apiCall = isActive
+      ? this.adminService.deactivateProduct(id)
+      : this.adminService.activateProduct(id);
 
-      row.productStatus = isActive ? 2 : 1;
-
-      this.rows = [...this.rows];
-      this.fullRows = [...this.fullRows];
-
-    },
-    error: err => {
-      console.error('Status update failed', err);
-      alert('Failed to update status');
-    }
+    apiCall.subscribe({
+      next: () => {
+        row.productStatus = isActive ? 2 : 1;
+        this.rows = [...this.rows];
+        this.fullRows = [...this.fullRows];
+        this.toastService.success(`Product ${isActive ? 'deactivated' : 'activated'} successfully`);
+      },
+      error: err => {
+        console.error('Status update failed', err);
+        this.toastService.error('Failed to update status');
+      }
+    });
   });
 }
 }

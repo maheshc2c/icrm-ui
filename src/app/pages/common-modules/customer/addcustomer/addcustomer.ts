@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { CustomerModel } from '../../../../models/customer-model';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../../service/toast.service';
  
 @Component({
   selector: 'app-addcustomer',
@@ -22,7 +23,8 @@ export class Addcustomer implements OnInit {
   constructor(
     private adminService: Adminservice,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService
   ) {}
  
   /* ================= HEADER ================= */
@@ -71,7 +73,7 @@ export class Addcustomer implements OnInit {
       name: 'locations',
       label: 'City',
       type: 'select',
-      required: false,
+      required: true,
       options: [],
       searchable: true
     },
@@ -252,7 +254,7 @@ export class Addcustomer implements OnInit {
         );
  
         if (!fullCustomer) {
-          alert('Customer not found');
+          this.toastService.error('Customer not found');
           this.router.navigate(['/customer']);
           return;
         }
@@ -268,7 +270,7 @@ export class Addcustomer implements OnInit {
         this.populateCustomerForm(mergedCustomer);
       },
       error: () => {
-        alert('Failed to load customer');
+        this.toastService.error('Failed to load customer');
         this.router.navigate(['/customer']);
       }
     });
@@ -370,12 +372,12 @@ export class Addcustomer implements OnInit {
  
       this.adminService.updateCustomer(this.customerId, updatePayload).subscribe({
         next: () => {
-          alert('Customer updated successfully');
+          this.toastService.success('Customer updated successfully');
           this.router.navigate(['/customer']);
         },
         error: (err: any) => {
           console.error('Update failed:', err);
-          alert('Update failed. Check console.');
+          this.toastService.error('Update failed. Check console.');
         }
       });
     }
@@ -383,12 +385,12 @@ export class Addcustomer implements OnInit {
     else {
       this.adminService.createCustomer(payload).subscribe({
         next: () => {
-          alert('Customer created successfully');
+          this.toastService.success('Customer created successfully');
           this.router.navigate(['/customer']);
         },
         error: (err: any) => {
           console.error('Create failed:', err);
-          alert('Create failed. Check console.');
+          this.toastService.error('Create failed. Check console.');
         }
       });
     }

@@ -72,8 +72,8 @@ constructor() {
         children: [
           { label: 'Category', icon: 'fas fa-tags', route: '/admin/category' },
           { label: 'Segment', icon: 'fas fa-layer-group', route: '/admin/segment' },
-          { label: 'Competitor', icon: 'fas fa-user-secret', route: '/admin/competitor' },
-          { label: 'Sub System', icon: 'fas fa-sitemap', route: '/admin/sub-system' },
+          { label: 'Competitor', icon: 'fas fa-user-secret', route: '/competitor' },
+          { label: 'Sub System', icon: 'fas fa-sitemap', route: '/sub-system' },
           { label: 'Product', icon: 'fas fa-box', route: '/create-user' },
           { label: 'Demo', icon: 'fas fa-flask', route: '/admin-users' },
           { label: 'Financial Year', icon: 'fas fa-calendar-days', route: '/admin/financial-yr' },

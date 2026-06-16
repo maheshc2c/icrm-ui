@@ -349,7 +349,13 @@ activateCustomer(id: number) {
       customerName,
       customerCategoryName,
       subCategoryName,
-      cityName
+      cityName,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000000,
+        sortBy: 'customerId',
+        sortOrder: 'desc'
+      }
     },
     {
       headers: this.getAuthHeaders(),

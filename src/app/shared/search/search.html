@@ -43,12 +43,13 @@
           <li class="option-item" (click)="selectOption(field, {label: field.placeholder || 'Select', value: null})">
             -- {{ field.placeholder || 'Select' }} --
           </li>
+          <li class="no-results" *ngIf="field._loading">Loading...</li>
           <li class="option-item" 
               *ngFor="let opt of (field._filtered || field.options)" 
               (click)="selectOption(field, opt)">
             {{ opt.label }}
           </li>
-          <li class="no-results" *ngIf="(field._filtered || field.options)?.length === 0">No results found</li>
+          <li class="no-results" *ngIf="!field._loading && (field._filtered || field.options)?.length === 0">No results found</li>
         </ul>
       </div>
     </div>

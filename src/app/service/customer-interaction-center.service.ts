@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, map } from "rxjs";
 import { TrackLead, PaginationRequest, TrackLeadResponse } from "../models/track-lead-cic.model";
+import { AuthService } from "./auth-service";
 
 @Injectable({
   providedIn: 'root',
@@ -10,17 +11,21 @@ export class CustomerInteractionCenterService {
 
   private baseUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private auth: AuthService
+  ) {}
 
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    if (token) {
-      return new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      });
+    const token = this.auth.getToken();
+
+    if (!token) {
+      console.error('❌ No token found');
+      return new HttpHeaders({ 'Content-Type': 'application/json' });
     }
+
     return new HttpHeaders({
+      Authorization: token.startsWith('Bearer ') ? token : `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
   }
@@ -52,6 +57,52 @@ export class CustomerInteractionCenterService {
         headers: this.getAuthHeaders(),
         responseType: 'text'
       }
+    );
+  }
+
+  getDropdownOwners(search: string = ''): Observable<{ label: string; value: any }[]> {
+    let url = `${this.baseUrl}/CustomerInteractionCenter/dropdown-customers`;
+    if (search) {
+      url += `?customer=${encodeURIComponent(search)}`;
+    }
+    return this.http.get<any[]>(url, { headers: this.getAuthHeaders() }).pipe(
+      map(owners => {
+        const seen = new Set();
+        return owners
+          .map(owner => ({
+            label: `${owner.firstName} ${owner.lastName}`,
+            value: `${owner.firstName} ${owner.lastName}`,
+            id: owner.id // Add unique id
+          }))
+          .filter(item => {
+            if (seen.has(item.value)) return false;
+            seen.add(item.value);
+            return true;
+          });
+      })
+    );
+  }
+
+  getDropdownCustomers(search: string = ''): Observable<{ label: string; value: any }[]> {
+    let url = `${this.baseUrl}/CustomerInteractionCenter/dropdown-owners`;
+    if (search) {
+      url += `?owner=${encodeURIComponent(search)}`;
+    }
+    return this.http.get<any[]>(url, { headers: this.getAuthHeaders() }).pipe(
+      map(customers => {
+        const seen = new Set();
+        return customers
+          .map(customer => ({
+            label: customer.customerName || customer.name || customer,
+            value: customer.customerName || customer.name || customer,
+            id: customer.customerId // Add unique id
+          }))
+          .filter(item => {
+            if (seen.has(item.value)) return false;
+            seen.add(item.value);
+            return true;
+          });
+      })
     );
   }
 }

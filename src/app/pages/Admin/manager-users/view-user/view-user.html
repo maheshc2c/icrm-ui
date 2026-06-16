@@ -13,33 +13,13 @@
   <!-- Profile Details Content -->
   <div *ngIf="!isUserLoading && userData" class="profile-card">
     
-    <!-- Profile Banner -->
-    <div class="profile-banner">
-      <div class="user-meta">
-        <div class="avatar-circle">
-          <i class="fas fa-user"></i>
-        </div>
-        <div class="meta-text">
-          <h2>{{ userName }}</h2>
-          <span class="role-badge">{{ userData.roleName || 'N/A' }}</span>
-        </div>
-      </div>
-      
-      <!-- Quick Status -->
-      <div class="status-indicator">
-        <span class="status-dot" [class.active-dot]="userData.status !== 0"></span>
-        <span class="status-text">{{ userData.status === 0 ? 'INACTIVE' : 'ACTIVE' }}</span>
-      </div>
-    </div>
-
     <!-- Main Grid Sections -->
     <div class="profile-grid">
       
       <!-- Module 1: Basic Information -->
       <div class="grid-section">
         <div class="section-title">
-          <i class="fas fa-id-card"></i>
-          <span>Basic Profile</span>
+          User Details
         </div>
         <div class="info-grid">
           <div class="info-item">
@@ -72,8 +52,7 @@
       <!-- Module 2: Organization & Assignment -->
       <div class="grid-section">
         <div class="section-title">
-          <i class="fas fa-sitemap"></i>
-          <span>Organization & Scope</span>
+          Location & Products
         </div>
         <div class="info-grid">
           <div class="info-item">

@@ -6,7 +6,7 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { ProductService } from '../../../../service/productservice';
 import { Breadcrumb } from '../../../../models/breadcrumb';
-
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
   selector: 'app-add-product',
@@ -21,7 +21,8 @@ export class AddProduct implements OnInit {
   constructor(
     private productService: ProductService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService
   ) { }
 
   /* ================= HEADER ================= */
@@ -176,12 +177,12 @@ export class AddProduct implements OnInit {
 
     this.productService.createProduct(payload).subscribe({
       next: () => {
-        alert('Product Created Successfully!');
+        this.toastService.success('Product Created Successfully!');
         this.router.navigate(['/admin/product']);
       },
       error: err => {
         console.error('Create failed', err);
-        alert('Failed to create product');
+        this.toastService.error('Failed to create product');
       }
     });
   }

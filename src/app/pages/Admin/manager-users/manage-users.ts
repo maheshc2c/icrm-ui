@@ -10,6 +10,7 @@ import { UserTargetService } from '../../../service/user-target.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
+import { ToastService } from '../../../service/toast.service';
 
 @Component({
     standalone: true,
@@ -50,19 +51,21 @@ export class ManageUsersComponent implements OnInit {
     ];
 
     availableRoles: any[] = [];
+    currentSearchValues: any = {};
     rows: any[] = [];
 
     // Pagination State
-    currentPage = 0;
+    currentPage = 1;
     totalPages = 1;
-    totalItems = 0;
-    pageSize = 20;
+    totalItems: number | null = null;
+    pageSize = 10;
 
     constructor(
         private userTargetService: UserTargetService,
         private router: Router,
         private route: ActivatedRoute,
-        private confirmService: ConfirmDialogService
+        private confirmService: ConfirmDialogService,
+        private toastService: ToastService
     ) { }
 
     ngOnInit(): void {
@@ -70,7 +73,7 @@ export class ManageUsersComponent implements OnInit {
     }
 
     loadUsers() {
-        this.userTargetService.viewUserTarget(this.currentPage, this.pageSize).subscribe({
+        this.userTargetService.viewUserTarget(this.currentPage - 1, this.pageSize).subscribe({
             next: (response: any) => {
                 console.log("Manager Users API Response:", response);
 
@@ -82,7 +85,7 @@ export class ManageUsersComponent implements OnInit {
                 } else if (Array.isArray(response)) {
                     users = response;
                     this.totalPages = 1;
-                    this.totalItems = response.length;
+                    this.totalItems = null;
                 }
 
                 this.rows = users.map((c: any, index: number) => ({
@@ -91,11 +94,11 @@ export class ManageUsersComponent implements OnInit {
                     name: c.firstName && c.lastName
                         ? `${c.firstName} ${c.lastName}`
                         : (c.firstName ?? c.username ?? ''),
-                    role: c.roleName ?? '',
+                    role: c.roleName ?? c.role?.roleName ?? '',
                     employeeId: c.username ?? '',
                     email: c.email ?? '',
                     mobile: c.phoneNumber ?? '',
-                    status: c.status === 0 ? 'INACTIVE' : 'ACTIVE'
+                    status: c.status
                 }));
 
                 // Load roles after users are loaded
@@ -138,60 +141,51 @@ export class ManageUsersComponent implements OnInit {
         }
     }
 
-    onSearch(searchTerm?: string) {
-        console.log("Search manager users for:", searchTerm);
-        this.userTargetService.searchTarget(searchTerm, undefined, undefined, undefined, searchTerm).subscribe({
-            next: (users: any[]) => {
-                this.rows = users.map((c: any, index: number) => ({
-                    serialNumber: c.serialNumber ?? (index + 1),
-                    userId: c.userId ?? c.id ?? c.serialNumber ?? null,
-                    name: c.firstName && c.lastName
-                        ? `${c.firstName} ${c.lastName}`
-                        : (c.firstName ?? c.username ?? ''),
-                    role: c.roleName ?? '',
-                    employeeId: c.username ?? '',
-                    email: c.email ?? '',
-                    mobile: c.phoneNumber ?? '',
-                    status: c.status === 0 ? 'INACTIVE' : 'ACTIVE'
-                }));
-            },
-            error: (err: any) => {
-                console.error("Search failed:", err);
-            }
-        });
+    onSearch() {
+        this.onSearchFromChild(this.currentSearchValues);
     }
 
     onSearchFromChild(searchValues: any) {
         console.log("Search values from child:", searchValues);
+        this.currentSearchValues = searchValues || {};
 
         // Extract values from search object
-        const role = searchValues.role || undefined;
-        const name = searchValues.name || undefined;
-        const email = searchValues.email || undefined;
-        const phoneNumber = searchValues.mobile || undefined;
-        const username = searchValues.employeeId || undefined;
-        const status = searchValues.status || undefined;
+        const role = this.currentSearchValues.role || undefined;
+        const name = this.currentSearchValues.name || undefined;
+        const email = this.currentSearchValues.email || undefined;
+        const phoneNumber = this.currentSearchValues.mobile || undefined;
+        const username = this.currentSearchValues.employeeId || undefined;
+        const status = this.currentSearchValues.status || undefined;
 
         // Call the search API with all parameters
         this.userTargetService.searchTarget(username, role, email, phoneNumber, name).subscribe({
             next: (users: any[]) => {
+                this.totalItems = null;
                 this.rows = users.map((c: any, index: number) => ({
                     serialNumber: c.serialNumber ?? (index + 1),
                     userId: c.userId ?? c.id ?? c.serialNumber ?? null,
                     name: c.firstName && c.lastName
                         ? `${c.firstName} ${c.lastName}`
                         : (c.firstName ?? c.username ?? ''),
-                    role: c.roleName ?? '',
+                    role: c.roleName ?? c.role?.roleName ?? '',
                     employeeId: c.username ?? '',
                     email: c.email ?? '',
                     mobile: c.phoneNumber ?? '',
-                    status: c.status === 0 ? 'INACTIVE' : 'ACTIVE'
+                    status: c.status
                 }));
             },
             error: (err: any) => {
                 console.error("Search failed:", err);
+                if (err.status === 400 && err.error === 'No matching records found') {
+                    this.rows = [];
+                }
             }
         });
+    }
+
+    onReset(): void {
+        this.currentPage = 1;
+        this.loadUsers();
     }
 
     onAdd() {
@@ -205,32 +199,35 @@ export class ManageUsersComponent implements OnInit {
         this.router.navigate(['/admin/edit-user', row.userId]);
     }
 
-    async onDelete(row: any) {
+    onDelete(row: any) {
         console.log('Toggle status clicked for user:', row);
         if (!row.userId) {
-            alert("Unable to change status: User ID not found.");
+            this.toastService.error("Unable to change status: User ID not found.");
             return;
         }
 
-        const actionText = row.status === 'ACTIVE' ? 'deactivate' : 'activate';
-        const confirmed = await this.confirmService.confirm({
-            title: `Confirm ${actionText === 'deactivate' ? 'Deactivation' : 'Activation'}`,
-            message: `Are you sure you want to ${actionText} user ${row.name}?`,
-            confirmText: actionText === 'deactivate' ? 'Deactivate' : 'Activate'
-        });
+        const status = Number(row.status);
+        const isActive = status === 1;
 
-        if (confirmed) {
+        this.confirmService.confirm({
+            title: 'Confirm',
+            message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this user?`,
+            confirmText: isActive ? 'Deactivate' : 'Activate'
+        }).then((confirmed) => {
+            if (!confirmed) return;
+
             this.userTargetService.toggleUserStatus(row.userId).subscribe({
                 next: (response: any) => {
-                    alert(response.message || `User status changed successfully!`);
-                    this.loadUsers(); // Refresh the list
+                    row.status = isActive ? 0 : 1;
+                    this.rows = [...this.rows];
+                    this.toastService.success(`User ${isActive ? 'deactivated' : 'activated'} successfully`);
                 },
                 error: (err: any) => {
                     console.error('Failed to change user status:', err);
-                    alert('Failed to change user status. Please try again.');
+                    this.toastService.error('Failed to change user status. Please try again.');
                 }
             });
-        }
+        });
     }
 
     onDownload(): void {

@@ -135,7 +135,7 @@ export class Speciality implements OnInit {
             ? { ...r, specialityStatus: row.specialityStatus }
             : r);
             this.toastService.success(
-          `Contact ${isActive ? 'deactivated' : 'activated'} successfully`
+          `Speciality ${isActive ? 'deactivated' : 'activated'} successfully`
         );
         },
         error: (err) => {
@@ -191,12 +191,14 @@ onImport() {
     next: (blob: Blob) => {
 
       const url = window.URL.createObjectURL(blob);
-
+  
       const a = document.createElement('a');
       a.href = url;
       a.download = 'Specialities.xlsx';
+      document.body.appendChild(a);
       a.click();
-
+      document.body.removeChild(a);
+  
       window.URL.revokeObjectURL(url);
     }
   });

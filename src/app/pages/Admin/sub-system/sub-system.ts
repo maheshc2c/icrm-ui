@@ -8,6 +8,7 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { Adminservice } from '../../../service/adminservice';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   standalone: true,
@@ -22,14 +23,15 @@ export class SubSystem implements OnInit {
     private adminservice: Adminservice,
     private router: Router,
     private route: ActivatedRoute,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private confirmService: ConfirmDialogService
   ) {}
 
   headerTitle = 'Manage Sub System';
 
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Sub System', route: '/admin/sub-system' },
+    { label: 'Sub System', route: '/sub-system' },
     { label: 'Add New' }
   ];
 
@@ -80,27 +82,40 @@ export class SubSystem implements OnInit {
     this.router.navigate(['sub-system/edit', row.subCategoryId]);
   }
 
-    //actiavte and deactivate
-  onDelete(row: any) {
+    // actiavte and deactivate
+   onDelete(row: any) {
 
-  this.adminservice.toggleSubSystem(row.subCategoryId)
-    .subscribe({
-      next: () => {
+  const isActive = Number(row.status) === 1;
 
-        row.subcategoryStatus =
-  row.subcategoryStatus === 1 ? 2 : 1;
+  this.confirmService.confirm({
+    title: 'Confirm',
+    message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this Sub System?`,
+    confirmText: isActive ? 'Deactivate' : 'Activate'
+  }).then((confirmed) => {
 
-row.status = row.subcategoryStatus;
+    if (!confirmed) return;
 
-        this.rows = [...this.rows];
+    this.adminservice.toggleSubSystem(row.subCategoryId)
+      .subscribe({
+        next: () => {
 
-        this.loadSubSystems();
-      },
-      error: err => {
-        console.error(err);
-      }
-    });
+          row.status =
+            Number(row.status) === 1 ? 2 : 1;
+
+          this.rows = [...this.rows];
+          this.toastService.success(`SubSystem ${isActive ? 'deactivated' : 'activated'} successfully`);
+
+          this.loadSubSystems();
+        },
+        error: err => {
+          console.error(err);
+          this.toastService.error('Failed to update status');
+        }
+      });
+
+  });
 }
+
 
   onSearch(keyword: string) {
 
@@ -130,6 +145,8 @@ row.status = row.subcategoryStatus;
     }
   });
 }
+
+
 onImport() {
 
   if (!this.rows?.length) {
