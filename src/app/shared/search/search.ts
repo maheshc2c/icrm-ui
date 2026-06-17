@@ -8,7 +8,7 @@ export interface SearchFieldConfig {
   key: string;                 // companyName, email, status
   label: string;               // Label text
   placeholder?: string;        // Optional
-  type?: 'text' | 'email' | 'number' | 'date' | 'select'| 'datetime-local';
+  type?: 'text' | 'email' | 'number' | 'date' | 'select'| 'native-select' | 'datetime-local';
   dependsOn?: string;          // ✅ Add dependsOn property for conditional display
 
   /* 🔽 DROPDOWN OPTIONS (only for type = select) */

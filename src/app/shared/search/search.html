@@ -7,12 +7,21 @@
 
     <!-- 🔹 INPUT FIELD -->
     <input
-      *ngIf="field.type !== 'select'"
+      *ngIf="field.type !== 'select' && field.type !== 'native-select'"
       class="form-control"
       [type]="field.type || 'text'"
       [placeholder]="field.placeholder"
       [(ngModel)]="values[field.key]"
       (input)="onInput(field.key)" />
+
+    <!-- 🔹 NATIVE DROPDOWN -->
+    <select *ngIf="field.type === 'native-select'" 
+            class="form-control" 
+            [(ngModel)]="values[field.key]" 
+            (ngModelChange)="onInput(field.key)">
+      <option [ngValue]="null">-- {{ field.placeholder || 'Select' }} --</option>
+      <option *ngFor="let opt of field.options" [ngValue]="opt.value">{{ opt.label }}</option>
+    </select>
 
     <!-- 🔹 CUSTOM SEARCHABLE DROPDOWN -->
     <div *ngIf="field.type === 'select'" class="custom-dropdown-container">

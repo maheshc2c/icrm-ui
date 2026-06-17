@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
-// Shared components
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Header } from '../../../../layout/header/header';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { ModalComponent } from '../../../../shared/modal/modal';
+import { DataTable } from '../../../../shared/data-table/data-table';
 
 // Services
 import { Leadservice } from '../../../../service/leadservice';
@@ -15,6 +15,7 @@ import { AuthService } from '../../../../service/auth-service';
 import { Customerservice } from '../../../../service/customerservice';
 import { LeadPayload } from '../../../../models/lead-model';
 import { ConfirmDialogService } from '../../../../service/confirm-dialog.service';
+import { ToastService } from '../../../../service/toast.service';
 
 interface FormField {
   name: string;
@@ -28,7 +29,7 @@ interface FormField {
 @Component({
   selector: 'app-addlead',
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, ModalComponent],
+  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, ModalComponent, DataTable],
   templateUrl: './addlead.html',
   styleUrl: './addlead.css'
 })
@@ -51,7 +52,69 @@ export class AddleadComponent implements OnInit {
   showInstallationBaseDetailsModal = false;
   installationBaseDetails: any[] = [];
   
+  // Validation errors
+  errors: { [key: string]: string } = {};
+  
   tabs = ['Lead Details', 'Opportunities', 'Quote', 'Contract Note'];
+
+  /* ================= OPPORTUNITIES DATA TABLE ================= */
+  oppColumns = [
+    { header: 'ID', field: 'id' },
+    { header: 'Product', field: 'productAndCategory' },
+    { header: 'Quantity', field: 'qty' },
+    { header: 'Stage', field: 'stage' },
+    { header: 'Category', field: 'category' },
+    { header: 'Probability', field: 'probability' }
+  ];
+
+  /* ================= OPPORTUNITY MODAL STATE ================= */
+  showOppModal = false;
+  openOppDropdown: string | null = null;
+  oppSearchQueries: any = {};
+
+  oppFields: any[] = [
+    // Row 1
+    { name: 'productCategoryId', label: 'Product Category', type: 'select', options: [], required: true },
+    { name: 'decisionMaker1', label: 'Decision Maker1', type: 'select', options: [], required: true },
+    // Row 2
+    { name: 'productGroupId', label: 'Product Segment', type: 'select', options: [], required: true },
+    { name: 'decisionMaker2', label: 'Decision Maker2', type: 'select', options: [], isSearchable: true },
+    // Row 3
+    { name: 'productId', label: 'Product Name', type: 'select', options: [], required: true },
+    { name: 'decisionMaker3', label: 'Decision Maker3', type: 'select', options: [], isSearchable: true },
+    // Row 4
+    { name: 'expectedOrderConclusion', label: 'Expected Order Conclusion Date', type: 'date', required: true },
+    { name: 'decisionMaker4', label: 'Decision Maker4', type: 'select', options: [], isSearchable: true },
+    // Row 5
+    { name: 'quantity', label: 'Quantity', type: 'number', required: true },
+    { name: 'decisionMaker5', label: 'Decision Maker5', type: 'select', options: [], isSearchable: true },
+    // Row 6
+    { name: 'fundSourceId', label: 'Source of Funding', type: 'select', options: [], required: true },
+    { name: 'relationshipId', label: 'Relationship with Decision Maker', type: 'select', options: [], required: true },
+    // Row 7
+    { name: 'expectedInvoicingDate', label: 'Expected Invoice Date', type: 'date' },
+    { name: 'status', label: 'Opportunity stages', type: 'select', options: [], required: true },
+    // Row 8
+    { name: 'competitors', label: 'Competitors', type: 'text' }
+  ];
+
+  oppModel: any = {
+    productCategoryId: '',
+    decisionMaker1: '',
+    productGroupId: '',
+    decisionMaker2: '',
+    productId: '',
+    decisionMaker3: '',
+    quantity: null,
+    decisionMaker4: '',
+    fundSourceId: '',
+    decisionMaker5: '',
+    relationshipId: '',
+    status: '',
+    expectedOrderConclusion: '',
+    expectedInvoicingDate: '',
+    competitors: ''
+  };
 
   /* ================= DROPDOWN DATA ================= */
   customersData: any[] = [];
@@ -176,13 +239,26 @@ export class AddleadComponent implements OnInit {
     }
   ];
 
+  openCustomerDropdown: boolean = false;
+  filteredCustomerOptions: any[] = [];
+  customerSearchTerm: string = '';
+
+  openContact1Dropdown: boolean = false;
+  filteredContact1Options: any[] = [];
+  contact1SearchTerm: string = '';
+
+  openContact2Dropdown: boolean = false;
+  filteredContact2Options: any[] = [];
+  contact2SearchTerm: string = '';
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private leadservice: Leadservice,
     private auth: AuthService,
     private customerService: Customerservice,
-    private confirmService: ConfirmDialogService
+    private confirmService: ConfirmDialogService,
+    private toastService: ToastService
   ) {}
 
   /* ================= INIT ================= */
@@ -220,6 +296,7 @@ export class AddleadComponent implements OnInit {
     });
 
     this.loadDropdowns();
+    this.loadOppDropdowns();
   }
 
   /* ================= GET USERNAME FROM TOKEN ================= */
@@ -254,6 +331,7 @@ export class AddleadComponent implements OnInit {
       next: (data) => {
         this.customersData = data;
         this.setFieldOptions('customer', data, 'customerName', 'customerId');
+        this.filteredCustomerOptions = this.leadFields.find(f => f.name === 'customer')?.options || [];
       },
       error: (err) => console.error('Failed to load customers:', err)
     });
@@ -280,8 +358,17 @@ export class AddleadComponent implements OnInit {
     this.leadservice.getContacts().subscribe({
       next: (data) => {
         this.contactPersonsData = data;
-        this.updateContactOptions('contact1', data);
-        this.updateContactOptions('contact2', data);
+        
+        let filteredContacts = data;
+        if (this.leadForm.customer) {
+          filteredContacts = data.filter((c: any) => 
+            (c.customer && (c.customer.customerId === this.leadForm.customer || c.customer.id === this.leadForm.customer)) || 
+            c.customerId === this.leadForm.customer
+          );
+        }
+        
+        this.updateContactOptions('contact1', filteredContacts);
+        this.updateContactOptions('contact2', filteredContacts);
       },
       error: (err) => console.error('Failed to load contacts:', err)
     });
@@ -324,6 +411,18 @@ export class AddleadComponent implements OnInit {
           commentLine1: data.leadCmdLine1 || '',
           commentLine2: data.leadCmdLine2 || ''
         };
+        
+        // Filter contacts specifically for this loaded customer if contact data is already fetched
+        if (this.contactPersonsData && this.contactPersonsData.length > 0) {
+          const selectedCustomerId = data.customerId;
+          const filteredContacts = this.contactPersonsData.filter((c: any) => 
+            (c.customer && (c.customer.customerId === selectedCustomerId || c.customer.id === selectedCustomerId)) || 
+            c.customerId === selectedCustomerId
+          );
+          this.updateContactOptions('contact1', filteredContacts);
+          this.updateContactOptions('contact2', filteredContacts);
+        }
+
         // Trigger field binding refresh
         this.leadFields = [...this.leadFields];
       },
@@ -337,7 +436,6 @@ export class AddleadComponent implements OnInit {
     if (!field) return;
 
     field.options = [
-      { label: '-- Select --', value: '' },
       ...data.map((item: any) => {
         if (typeof item === 'string') return { label: item, value: item };
         const label = item[labelKey] || item.name || 'Unknown';
@@ -354,7 +452,6 @@ export class AddleadComponent implements OnInit {
     const field = this.leadFields.find(f => f.name === fieldName);
     if (field) {
       field.options = [
-        { label: '-- Select --', value: '' },
         ...data.map((c: any) => ({
           label: `${c.contactFirstName || ''} ${c.contactLastName || ''}`.trim() || c.name || 'Unknown',
           value: c.contactId || c.id
@@ -366,18 +463,216 @@ export class AddleadComponent implements OnInit {
 
   /* ================= HANDLE FIELD CHANGES ================= */
   onFieldChange(event: {name: string, value: any}): void {
+    // Clear error on change
+    delete this.errors[event.name];
+
     if (event.name === 'customer') {
       this.showInstallationBaseDetailsModal = false;
       this.installationBaseDetails = [];
+
+      // Filter contacts based on selected customer
+      const selectedCustomerId = event.value;
+      let filteredContacts = this.contactPersonsData || [];
+      if (selectedCustomerId) {
+        filteredContacts = filteredContacts.filter((c: any) => 
+          (c.customer && (c.customer.customerId === selectedCustomerId || c.customer.id === selectedCustomerId)) || 
+          c.customerId === selectedCustomerId
+        );
+      }
+      this.updateContactOptions('contact1', filteredContacts);
+      this.updateContactOptions('contact2', filteredContacts);
+
+      // Reset selected contacts since the list changed
+      this.leadForm.contact1 = '';
+      this.leadForm.contact2 = '';
     }
+  }
+
+  /* ================= CUSTOMER DROPDOWN LOGIC ================= */
+  toggleCustomerDropdown(event: Event): void {
+    event.stopPropagation();
+    this.openCustomerDropdown = !this.openCustomerDropdown;
+    this.openContact1Dropdown = false;
+    this.openContact2Dropdown = false;
+    if (this.openCustomerDropdown) {
+      this.customerSearchTerm = '';
+      this.filteredCustomerOptions = this.leadFields.find(f => f.name === 'customer')?.options || [];
+    }
+  }
+
+  filterCustomerOptions(event: any): void {
+    const term = (event.target.value || '').toLowerCase();
+    this.customerSearchTerm = term;
+    const baseOptions = this.leadFields.find(f => f.name === 'customer')?.options || [];
+    
+    if (term.length >= 1) {
+      this.filteredCustomerOptions = baseOptions.filter((opt: any) =>
+        (opt.label || '').toLowerCase().includes(term)
+      );
+    } else {
+      this.filteredCustomerOptions = baseOptions;
+    }
+  }
+
+  selectCustomerOption(value: any): void {
+    this.leadForm.customer = value;
+    this.openCustomerDropdown = false;
+    this.onFieldChange({ name: 'customer', value: value });
+  }
+
+  getCustomerLabel(value: any): string {
+    if (!value) return '';
+    const field = this.leadFields.find(f => f.name === 'customer');
+    const opt = field?.options?.find(o => o.value == value);
+    return opt ? opt.label : '';
+  }
+
+  /* ================= CONTACT1 DROPDOWN LOGIC ================= */
+  toggleContact1Dropdown(event: Event): void {
+    event.stopPropagation();
+    this.openContact1Dropdown = !this.openContact1Dropdown;
+    this.openCustomerDropdown = false;
+    this.openContact2Dropdown = false;
+    if (this.openContact1Dropdown) {
+      this.contact1SearchTerm = '';
+      this.filteredContact1Options = this.leadFields.find(f => f.name === 'contact1')?.options || [];
+    }
+  }
+
+  filterContact1Options(event: any): void {
+    const term = (event.target.value || '').toLowerCase();
+    this.contact1SearchTerm = term;
+    const baseOptions = this.leadFields.find(f => f.name === 'contact1')?.options || [];
+    
+    if (term.length >= 1) {
+      this.filteredContact1Options = baseOptions.filter((opt: any) =>
+        (opt.label || '').toLowerCase().includes(term)
+      );
+    } else {
+      this.filteredContact1Options = baseOptions;
+    }
+  }
+
+  selectContact1Option(value: any): void {
+    this.leadForm.contact1 = value;
+    this.openContact1Dropdown = false;
+    this.onFieldChange({ name: 'contact1', value: value });
+  }
+
+  getContact1Label(value: any): string {
+    if (!value) return '';
+    const field = this.leadFields.find(f => f.name === 'contact1');
+    const opt = field?.options?.find(o => o.value == value);
+    return opt ? opt.label : '';
+  }
+
+  /* ================= CONTACT2 DROPDOWN LOGIC ================= */
+  toggleContact2Dropdown(event: Event): void {
+    event.stopPropagation();
+    this.openContact2Dropdown = !this.openContact2Dropdown;
+    this.openCustomerDropdown = false;
+    this.openContact1Dropdown = false;
+    if (this.openContact2Dropdown) {
+      this.contact2SearchTerm = '';
+      this.filteredContact2Options = this.leadFields.find(f => f.name === 'contact2')?.options || [];
+    }
+  }
+
+  filterContact2Options(event: any): void {
+    const term = (event.target.value || '').toLowerCase();
+    this.contact2SearchTerm = term;
+    const baseOptions = this.leadFields.find(f => f.name === 'contact2')?.options || [];
+    
+    if (term.length >= 1) {
+      this.filteredContact2Options = baseOptions.filter((opt: any) =>
+        (opt.label || '').toLowerCase().includes(term)
+      );
+    } else {
+      this.filteredContact2Options = baseOptions;
+    }
+  }
+
+  selectContact2Option(value: any): void {
+    this.leadForm.contact2 = value;
+    this.openContact2Dropdown = false;
+    this.onFieldChange({ name: 'contact2', value: value });
+  }
+
+  getContact2Label(value: any): string {
+    if (!value) return '';
+    const field = this.leadFields.find(f => f.name === 'contact2');
+    const opt = field?.options?.find(o => o.value == value);
+    return opt ? opt.label : '';
+  }
+
+  // Close dropdown when clicking outside
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    this.openCustomerDropdown = false;
+    this.openContact1Dropdown = false;
+    this.openContact2Dropdown = false;
+    
+    if (!(event.target as HTMLElement).closest('.custom-dropdown-container')) {
+      this.openOppDropdown = null;
+    }
+  }
+
+  toggleOppDropdown(key: string, event: Event) {
+    event.stopPropagation();
+    if (this.openOppDropdown === key) {
+      this.openOppDropdown = null;
+    } else {
+      this.openOppDropdown = key;
+    }
+  }
+
+  getOppFilteredOptions(field: any): any[] {
+    const query = (this.oppSearchQueries[field.name] || '').toLowerCase();
+    if (!query) return field.options;
+    return field.options.filter((opt: any) => 
+      (opt.label || '').toLowerCase().includes(query)
+    );
+  }
+
+  selectOppOption(field: any, opt: any) {
+    this.oppModel[field.name] = opt.value;
+    this.openOppDropdown = null;
+    this.oppSearchQueries[field.name] = ''; // clear search after selection
+    this.onOppFieldChange({ name: field.name, value: opt.value });
+  }
+
+  getOppSelectedLabel(field: any): string {
+    const value = this.oppModel[field.name];
+    if (value === null || value === undefined || value === '') return '-- Select --';
+    const opt = field.options.find((o: any) => String(o.value) === String(value));
+    return opt ? opt.label : '-- Select --';
+  }
+
+  /* ================= VALIDATION ================= */
+  validateField(field: any): string | null {
+    const value = this.leadForm[field.name];
+    if (field.required && (value === null || value === undefined || value === '')) {
+      return `${field.label} is required`;
+    }
+    return null;
   }
 
   onSubmit(formData: any) {
     console.log('========== LEAD FORM SUBMITTED ==========');
     
-    // Removed formData.campaign from mandatory check
-    if (!formData.source || !formData.customer || !formData.contact1) {
-      alert('Please fill in all required fields (Source, Customer, Contact)');
+    this.errors = {};
+    let hasErrors = false;
+
+    // Validate all fields
+    this.leadFields.forEach(field => {
+      const err = this.validateField(field);
+      if (err) {
+        this.errors[field.name] = err;
+        hasErrors = true;
+      }
+    });
+
+    if (hasErrors) {
       return;
     }
 
@@ -436,25 +731,25 @@ export class AddleadComponent implements OnInit {
     if (this.isEditMode && this.leadId) {
       this.leadservice.updateLead(this.leadId, payload).subscribe({
         next: (response) => {
-          alert('Lead updated successfully!');
+          this.toastService.success('Lead updated successfully!');
           this.router.navigate(['/openleads']);
         },
         error: (err) => {
           console.error('Lead update failed:', err);
           const errorMsg = err.error?.message || err.message || 'Unknown error';
-          alert('Failed to update lead: ' + errorMsg);
+          this.toastService.error('Failed to update lead: ' + errorMsg);
         }
       });
     } else {
       this.leadservice.createLead(payload).subscribe({
         next: (response) => {
-          alert('Lead created successfully!');
+          this.toastService.success('Lead created successfully!');
           this.router.navigate(['/openleads']);
         },
         error: (err) => {
           console.error('Lead creation failed:', err);
           const errorMsg = err.error?.message || err.message || err.statusText || 'Unknown error';
-          alert('Failed to create lead: ' + errorMsg);
+          this.toastService.error('Failed to create lead: ' + errorMsg);
         }
       });
     }
@@ -468,7 +763,7 @@ export class AddleadComponent implements OnInit {
   switchTab(tab: string): void {
     this.activeTab = tab;
     if (tab === 'Opportunities' && this.leadId) {
-      this.fetchOpportunities(this.leadId);
+      this.fetchOpportunities(this.leadId!);
     }
   }
 
@@ -476,16 +771,253 @@ export class AddleadComponent implements OnInit {
     this.leadservice.getOpportunitiesByLeadId(id).subscribe({
       next: (data) => {
         console.log('Fetched Opportunities:', data);
-        this.opportunities = data;
+        this.opportunities = data.map((opp: any) => ({
+          ...opp,
+          probabilityDisplay: opp.probability ? opp.probability + '%' : '0%'
+        }));
       },
       error: (err) => console.error('Failed to fetch opportunities:', err)
     });
   }
 
+  onEditOpp(row: any): void {
+    console.log("Edit Opportunity clicked, row:", row);
+    const oppId = row.id || row.Id || row.opportunityId || row.OpportunityId;
+    if (!oppId) {
+      alert("Invalid opportunity ID");
+      return;
+    }
+
+    this.leadservice.getOpportunityById(oppId).subscribe({
+      next: (fullOpp: any) => {
+        console.log("Fetched full Opportunity data:", fullOpp);
+        this.isEditOppMode = true;
+        this.editOppId = oppId;
+        
+        // Map the full API data back to oppModel
+        this.oppModel = {
+          productCategoryId: fullOpp.productCategoryId || fullOpp.ProductCategoryId || fullOpp.categoryId || fullOpp.CategoryId || '',
+          productGroupId: fullOpp.productGroupId || fullOpp.ProductGroupId || fullOpp.groupId || fullOpp.GroupId || '',
+          productId: fullOpp.productId || fullOpp.ProductId || '',
+          quantity: fullOpp.oppRequiredQuantity || fullOpp.OppRequiredQuantity || fullOpp.qty || fullOpp.quantity || null,
+          fundSourceId: fullOpp.oppFundSourceId || fullOpp.OppFundSourceId || fullOpp.fundSourceId || fullOpp.FundSourceId || '',
+          relationshipId: fullOpp.oppRelationshipId || fullOpp.OppRelationshipId || fullOpp.relationshipId || fullOpp.RelationshipId || '',
+          expectedOrderConclusion: fullOpp.oppExpectedOrderConclusion ? new Date(fullOpp.oppExpectedOrderConclusion).toISOString().split('T')[0] : '',
+          status: fullOpp.oppStatus || fullOpp.OppStatus || fullOpp.status || fullOpp.Status || '',
+          expectedInvoicingDate: fullOpp.oppExpectedInvoicingDate ? new Date(fullOpp.oppExpectedInvoicingDate).toISOString().split('T')[0] : '',
+          decisionMaker1: fullOpp.oppDecisionMaker1 || fullOpp.OppDecisionMaker1 || fullOpp.decisionMaker1 || fullOpp.DecisionMaker1 || fullOpp.contact1 || '',
+          decisionMaker2: fullOpp.oppDecisionMaker2 || fullOpp.OppDecisionMaker2 || fullOpp.decisionMaker2 || fullOpp.DecisionMaker2 || fullOpp.contact2 || '',
+          decisionMaker3: fullOpp.oppDecisionMaker3 || fullOpp.OppDecisionMaker3 || fullOpp.decisionMaker3 || fullOpp.DecisionMaker3 || fullOpp.contact3 || '',
+          decisionMaker4: fullOpp.oppDecisionMaker4 || fullOpp.OppDecisionMaker4 || fullOpp.decisionMaker4 || fullOpp.DecisionMaker4 || fullOpp.contact4 || '',
+          decisionMaker5: fullOpp.oppDecisionMaker5 || fullOpp.OppDecisionMaker5 || fullOpp.decisionMaker5 || fullOpp.DecisionMaker5 || fullOpp.contact5 || '',
+          competitors: fullOpp.oppRemarks1 || fullOpp.OppRemarks1 || fullOpp.competitors || fullOpp.Competitors || fullOpp.remarks || ''
+        };
+
+        if (this.oppModel.productCategoryId) {
+          this.leadservice.getSegmentsByCategory(this.oppModel.productCategoryId).subscribe((data: any) => {
+            const field = this.oppFields.find(f => f.name === 'productGroupId');
+            if (field) field.options = data.map((d: any) => ({ label: d.groupName || d.GroupName, value: d.groupId || d.GroupId }));
+          });
+        }
+        if (this.oppModel.productGroupId) {
+          this.leadservice.getProductsBySegment(this.oppModel.productGroupId).subscribe((data: any) => {
+            const field = this.oppFields.find(f => f.name === 'productId');
+            if (field) field.options = data.map((d: any) => ({ label: d.productName || d.ProductName || 'Unnamed Product', value: d.productId || d.ProductId }));
+          });
+        }
+
+        this.showOppModal = true;
+      },
+      error: (err) => {
+        console.error("Failed to fetch opportunity details:", err);
+        this.toastService.error("Failed to fetch full opportunity details.");
+      }
+    });
+  }
+
+  onViewOpp(row: any): void {
+    console.log("View Opportunity:", row);
+  }
+
+  /* ================= OPPORTUNITY MODAL LOGIC ================= */
+  loadOppDropdowns(): void {
+    // Decision Makers (Contacts for this lead)
+    this.leadservice.getContacts().subscribe({
+      next: (data: any[]) => {
+        const dmFields = ['decisionMaker1', 'decisionMaker2', 'decisionMaker3', 'decisionMaker4', 'decisionMaker5'];
+        dmFields.forEach(fieldName => {
+          const field = this.oppFields.find(f => f.name === fieldName);
+          if (field) {
+            field.options = data.map(c => ({
+              label: `${c.contactFirstName || c.first_name || ''} ${c.contactLastName || c.last_name || ''}`.trim() || c.name || c.contactSalutation || 'Unknown',
+              value: c.contactId || c.contact_id || c.id || c.ContactId
+            }));
+          }
+        });
+        // Force Angular to detect changes to oppFields array reference
+        this.oppFields = [...this.oppFields];
+      },
+      error: (err) => console.error("Failed to fetch decision makers:", err)
+    });
+
+    // Product Category
+    this.leadservice.getCategories().subscribe((data: any) => {
+      const field = this.oppFields.find(f => f.name === 'productCategoryId');
+      if (field) field.options = data.map((d: any) => ({ label: d.categoryName || d.CategoryName, value: d.categoryId || d.CategoryId }));
+    });
+
+    // Funding Source
+    this.leadservice.getFunds().subscribe((data: any) => {
+      const field = this.oppFields.find(f => f.name === 'fundSourceId');
+      if (field) field.options = data.map((d: any) => ({ label: d.fundSourceName || d.FundSourceName, value: d.fundSourceID || d.FundSourceID }));
+    });
+
+    // Relationship
+    this.leadservice.getRelationships().subscribe((data: any) => {
+      const field = this.oppFields.find(f => f.name === 'relationshipId');
+      if (field) field.options = data.map((d: any) => ({ label: d.relationshipName || d.RelationshipName, value: d.relationshipId || d.RelationshipId }));
+    });
+
+    // Status
+    this.leadservice.getStatus().subscribe((data: any) => {
+      const field = this.oppFields.find(f => f.name === 'status');
+      if (field) field.options = data.map((d: any) => ({ label: d.oppName || d.OppName, value: d.oppStatusId || d.OppStatusId }));
+    });
+  }
+
+  onOppFieldChange(event: any): void {
+    if (event.name === 'productCategoryId') {
+      const categoryId = event.value;
+      if (categoryId) {
+        this.leadservice.getSegmentsByCategory(categoryId).subscribe((data: any) => {
+          const field = this.oppFields.find(f => f.name === 'productGroupId');
+          if (field) field.options = data.map((d: any) => ({ label: d.groupName || d.GroupName, value: d.groupId || d.GroupId }));
+        });
+      } else {
+        const field = this.oppFields.find(f => f.name === 'productGroupId');
+        if (field) field.options = [];
+      }
+      this.oppModel.productGroupId = '';
+      this.oppModel.productId = '';
+      const prodField = this.oppFields.find(f => f.name === 'productId');
+      if (prodField) prodField.options = [];
+    }
+
+    if (event.name === 'productGroupId') {
+      const segmentId = event.value;
+      if (segmentId) {
+        this.leadservice.getProductsBySegment(segmentId).subscribe((data: any) => {
+          const field = this.oppFields.find(f => f.name === 'productId');
+          if (field) field.options = data.map((d: any) => ({ label: d.productName || d.ProductName || 'Unnamed Product', value: d.productId || d.ProductId }));
+        });
+      } else {
+        const field = this.oppFields.find(f => f.name === 'productId');
+        if (field) field.options = [];
+      }
+      this.oppModel.productId = '';
+    }
+  }
+
+  isEditOppMode: boolean = false;
+  editOppId: number | null = null;
+
   onAddOpportunity(): void {
-    console.log('Navigating to Add Opportunity for Lead:', this.leadId);
-    // Future: this.router.navigate(['/salesmanager/opportunity/add'], { queryParams: { leadId: this.leadId } });
-    alert('Add Opportunity functionality will be implemented in the next step.');
+    this.isEditOppMode = false;
+    this.editOppId = null;
+    this.oppModel = {
+      productCategoryId: '',
+      decisionMaker1: '',
+      productGroupId: '',
+      decisionMaker2: '',
+      productId: '',
+      decisionMaker3: '',
+      quantity: null,
+      decisionMaker4: '',
+      fundSourceId: '',
+      decisionMaker5: '',
+      relationshipId: '',
+      status: '',
+      expectedOrderConclusion: '',
+      expectedInvoicingDate: '',
+      competitors: ''
+    };
+    this.showOppModal = true;
+  }
+
+  closeOppModal(): void {
+    this.showOppModal = false;
+  }
+
+  oppErrors: any = {};
+
+  onSubmitOpp(formData: any): void {
+    let isValid = true;
+    this.oppErrors = {};
+
+    this.oppFields.forEach(field => {
+      if (field.required && (this.oppModel[field.name] === '' || this.oppModel[field.name] === null || this.oppModel[field.name] === undefined)) {
+        this.oppErrors[field.name] = `${field.label} is required`;
+        isValid = false;
+      }
+    });
+
+    if (!isValid) {
+      this.toastService.error("Please fill all required fields.");
+      return;
+    }
+
+    if (!this.leadId) {
+      this.toastService.error("Lead ID is missing. Cannot add opportunity.");
+      return;
+    }
+
+    const toNullIfEmpty = (val: any) => (val === '' || val === null || val === undefined) ? null : val;
+
+    const payload = {
+      productCategoryId: this.oppModel.productCategoryId,
+      productGroupId: this.oppModel.productGroupId,
+      productId: this.oppModel.productId,
+      oppRequiredQuantity: this.oppModel.quantity,
+      oppFundSourceId: toNullIfEmpty(this.oppModel.fundSourceId),
+      oppRelationshipId: toNullIfEmpty(this.oppModel.relationshipId),
+      oppExpectedOrderConclusion: this.oppModel.expectedOrderConclusion,
+      oppStatus: toNullIfEmpty(this.oppModel.status),
+      oppExpectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
+      oppDecisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1),
+      oppDecisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2),
+      oppDecisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3),
+      oppDecisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4),
+      oppDecisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5),
+      oppRemarks1: this.oppModel.competitors || null
+    };
+
+    if (this.isEditOppMode && this.editOppId) {
+      this.leadservice.updateOpportunity(this.editOppId, payload).subscribe({
+        next: (res) => {
+          this.toastService.success('Opportunity updated successfully!');
+          this.closeOppModal();
+          this.fetchOpportunities(this.leadId!); // Refresh table
+        },
+        error: (err) => {
+          console.error('Error updating opportunity:', err);
+          const errorMessage = err.error ? (typeof err.error === 'string' ? err.error : err.error.message || JSON.stringify(err.error)) : 'Unknown error';
+          this.toastService.error(`Failed to update Opportunity: ${errorMessage}`);
+        }
+      });
+    } else {
+      this.leadservice.createOpportunity(this.leadId, payload).subscribe({
+        next: (res) => {
+          this.toastService.success('Opportunity created successfully!');
+          this.closeOppModal();
+          this.fetchOpportunities(this.leadId!); // Refresh table
+        },
+        error: (err) => {
+          console.error('Error saving opportunity:', err);
+          const errorMessage = err.error ? (typeof err.error === 'string' ? err.error : err.error.message || JSON.stringify(err.error)) : 'Unknown error';
+          this.toastService.error(`Failed to save Opportunity: ${errorMessage}`);
+        }
+      });
+    }
   }
 
   onDetails(): void {

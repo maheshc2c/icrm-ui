@@ -188,9 +188,14 @@ export class Leadservice {
   }
 
   /* ================= GET ALL OPPORTUNITIES (TABLE) ================= */
-  getOpportunityTable(): Observable<OpportunityTableModel[]> {
-    return this.http.get<OpportunityTableModel[]>(`${this.baseUrl}/SalesEngineer/opportunity/table`, {
-      headers: this.getAuthHeaders()
+  getOpportunityTable(page: number = 0, size: number = 10): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<any>(`${this.baseUrl}/SalesEngineer/opportunity/table`, {
+      headers: this.getAuthHeaders(),
+      params: params
     });
   }
 

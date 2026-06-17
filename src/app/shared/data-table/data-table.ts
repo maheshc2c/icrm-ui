@@ -25,6 +25,7 @@ export class DataTable
   @Input() showDeleteButton: boolean = true;
   @Input() showEditButton: boolean = true;
   @Input() showViewButton: boolean = false;
+  @Input() noMargin: boolean = false;
 
    filteredRows = [...this.rows];
 
