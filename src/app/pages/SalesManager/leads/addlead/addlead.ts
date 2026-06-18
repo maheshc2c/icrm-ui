@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -67,6 +67,35 @@ export class AddleadComponent implements OnInit {
     { header: 'Probability', field: 'probability' }
   ];
 
+  /* ================= QUOTE DATA TABLE ================= */
+  quoteColumns = [
+    { header: 'Quote ID', field: 'quoteId' },
+    { header: 'Opportunity Details', field: 'opportunityDetails' },
+    { header: 'Discount', field: 'discount' },
+    { header: 'Current Stage', field: 'currentStage' },
+    { header: 'Status', field: 'quoteStatus' },
+    { header: 'Final Approver', field: 'finalApprover' },
+    { header: 'Revisions', field: 'revisions' }
+  ];
+
+  quotes: any[] = [
+    {
+      id: 1,
+      quoteId: 'KAR 26 S Rev 2',
+      opportunityDetails: '101 Defense (Qty 1)',
+      discount: '1.06%',
+      currentStage: 'CH',
+      quoteStatus: 'Quote Approved',
+      finalApprover: 'CH',
+      revisions: 'Rev 2'
+    }
+  ];
+
+  /* ================= QUOTE MODAL STATE ================= */
+  showAddQuoteModal = false;
+  showRevisionHistoryModal = false;
+  showQuoteRevisionModal = false;
+
   /* ================= OPPORTUNITY MODAL STATE ================= */
   showOppModal = false;
   openOppDropdown: string | null = null;
@@ -75,12 +104,12 @@ export class AddleadComponent implements OnInit {
   oppFields: any[] = [
     // Row 1
     { name: 'productCategoryId', label: 'Product Category', type: 'select', options: [], required: true },
-    { name: 'decisionMaker1', label: 'Decision Maker1', type: 'select', options: [], required: true },
+    { name: 'decisionMaker1', label: 'Decision Maker1', type: 'select', options: [], required: true, isSearchable: true },
     // Row 2
     { name: 'productGroupId', label: 'Product Segment', type: 'select', options: [], required: true },
     { name: 'decisionMaker2', label: 'Decision Maker2', type: 'select', options: [], isSearchable: true },
     // Row 3
-    { name: 'productId', label: 'Product Name', type: 'select', options: [], required: true },
+    { name: 'productId', label: 'Product Name', type: 'select', options: [], required: true, isSearchable: true },
     { name: 'decisionMaker3', label: 'Decision Maker3', type: 'select', options: [], isSearchable: true },
     // Row 4
     { name: 'expectedOrderConclusion', label: 'Expected Order Conclusion Date', type: 'date', required: true },
@@ -258,7 +287,8 @@ export class AddleadComponent implements OnInit {
     private auth: AuthService,
     private customerService: Customerservice,
     private confirmService: ConfirmDialogService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   /* ================= INIT ================= */
@@ -362,8 +392,8 @@ export class AddleadComponent implements OnInit {
         let filteredContacts = data;
         if (this.leadForm.customer) {
           filteredContacts = data.filter((c: any) => 
-            (c.customer && (c.customer.customerId === this.leadForm.customer || c.customer.id === this.leadForm.customer)) || 
-            c.customerId === this.leadForm.customer
+            (c.customer && (c.customer.customerId == this.leadForm.customer || c.customer.id == this.leadForm.customer)) || 
+            c.customerId == this.leadForm.customer
           );
         }
         
@@ -416,8 +446,8 @@ export class AddleadComponent implements OnInit {
         if (this.contactPersonsData && this.contactPersonsData.length > 0) {
           const selectedCustomerId = data.customerId;
           const filteredContacts = this.contactPersonsData.filter((c: any) => 
-            (c.customer && (c.customer.customerId === selectedCustomerId || c.customer.id === selectedCustomerId)) || 
-            c.customerId === selectedCustomerId
+            (c.customer && (c.customer.customerId == selectedCustomerId || c.customer.id == selectedCustomerId)) || 
+            c.customerId == selectedCustomerId
           );
           this.updateContactOptions('contact1', filteredContacts);
           this.updateContactOptions('contact2', filteredContacts);
@@ -475,8 +505,8 @@ export class AddleadComponent implements OnInit {
       let filteredContacts = this.contactPersonsData || [];
       if (selectedCustomerId) {
         filteredContacts = filteredContacts.filter((c: any) => 
-          (c.customer && (c.customer.customerId === selectedCustomerId || c.customer.id === selectedCustomerId)) || 
-          c.customerId === selectedCustomerId
+          (c.customer && (c.customer.customerId == selectedCustomerId || c.customer.id == selectedCustomerId)) || 
+          c.customerId == selectedCustomerId
         );
       }
       this.updateContactOptions('contact1', filteredContacts);
@@ -795,21 +825,27 @@ export class AddleadComponent implements OnInit {
         this.editOppId = oppId;
         
         // Map the full API data back to oppModel
+        const extractId = (val: any) => {
+          if (!val || val === '0' || val === 0) return '';
+          if (typeof val === 'object') return val.contactId || val.id || val.value || val.contact_id || '';
+          return val;
+        };
+
         this.oppModel = {
-          productCategoryId: fullOpp.productCategoryId || fullOpp.ProductCategoryId || fullOpp.categoryId || fullOpp.CategoryId || '',
-          productGroupId: fullOpp.productGroupId || fullOpp.ProductGroupId || fullOpp.groupId || fullOpp.GroupId || '',
-          productId: fullOpp.productId || fullOpp.ProductId || '',
+          productCategoryId: extractId(fullOpp.productCategoryId || fullOpp.ProductCategoryId || fullOpp.categoryId || fullOpp.CategoryId),
+          productGroupId: extractId(fullOpp.productGroupId || fullOpp.ProductGroupId || fullOpp.groupId || fullOpp.GroupId),
+          productId: extractId(fullOpp.productId || fullOpp.ProductId),
           quantity: fullOpp.oppRequiredQuantity || fullOpp.OppRequiredQuantity || fullOpp.qty || fullOpp.quantity || null,
-          fundSourceId: fullOpp.oppFundSourceId || fullOpp.OppFundSourceId || fullOpp.fundSourceId || fullOpp.FundSourceId || '',
-          relationshipId: fullOpp.oppRelationshipId || fullOpp.OppRelationshipId || fullOpp.relationshipId || fullOpp.RelationshipId || '',
+          fundSourceId: extractId(fullOpp.oppFundSourceId || fullOpp.OppFundSourceId || fullOpp.fundSourceId || fullOpp.FundSourceId),
+          relationshipId: extractId(fullOpp.oppRelationshipId || fullOpp.OppRelationshipId || fullOpp.relationshipId || fullOpp.RelationshipId),
           expectedOrderConclusion: fullOpp.oppExpectedOrderConclusion ? new Date(fullOpp.oppExpectedOrderConclusion).toISOString().split('T')[0] : '',
-          status: fullOpp.oppStatus || fullOpp.OppStatus || fullOpp.status || fullOpp.Status || '',
+          status: extractId(fullOpp.oppStatus || fullOpp.OppStatus || fullOpp.status || fullOpp.Status),
           expectedInvoicingDate: fullOpp.oppExpectedInvoicingDate ? new Date(fullOpp.oppExpectedInvoicingDate).toISOString().split('T')[0] : '',
-          decisionMaker1: fullOpp.oppDecisionMaker1 || fullOpp.OppDecisionMaker1 || fullOpp.decisionMaker1 || fullOpp.DecisionMaker1 || fullOpp.contact1 || '',
-          decisionMaker2: fullOpp.oppDecisionMaker2 || fullOpp.OppDecisionMaker2 || fullOpp.decisionMaker2 || fullOpp.DecisionMaker2 || fullOpp.contact2 || '',
-          decisionMaker3: fullOpp.oppDecisionMaker3 || fullOpp.OppDecisionMaker3 || fullOpp.decisionMaker3 || fullOpp.DecisionMaker3 || fullOpp.contact3 || '',
-          decisionMaker4: fullOpp.oppDecisionMaker4 || fullOpp.OppDecisionMaker4 || fullOpp.decisionMaker4 || fullOpp.DecisionMaker4 || fullOpp.contact4 || '',
-          decisionMaker5: fullOpp.oppDecisionMaker5 || fullOpp.OppDecisionMaker5 || fullOpp.decisionMaker5 || fullOpp.DecisionMaker5 || fullOpp.contact5 || '',
+          decisionMaker1: extractId(fullOpp.oppDecisionMaker1 || fullOpp.oppDecisionMaker1Id || fullOpp.decisionMaker1Id || fullOpp.DecisionMaker1Id || fullOpp.OppDecisionMaker1 || fullOpp.decisionMaker1 || fullOpp.DecisionMaker1 || fullOpp.contact1),
+          decisionMaker2: extractId(fullOpp.oppDecisionMaker2 || fullOpp.oppDecisionMaker2Id || fullOpp.decisionMaker2Id || fullOpp.DecisionMaker2Id || fullOpp.OppDecisionMaker2 || fullOpp.decisionMaker2 || fullOpp.DecisionMaker2 || fullOpp.contact2),
+          decisionMaker3: extractId(fullOpp.oppDecisionMaker3 || fullOpp.oppDecisionMaker3Id || fullOpp.decisionMaker3Id || fullOpp.DecisionMaker3Id || fullOpp.OppDecisionMaker3 || fullOpp.decisionMaker3 || fullOpp.DecisionMaker3 || fullOpp.contact3),
+          decisionMaker4: extractId(fullOpp.oppDecisionMaker4 || fullOpp.oppDecisionMaker4Id || fullOpp.decisionMaker4Id || fullOpp.DecisionMaker4Id || fullOpp.OppDecisionMaker4 || fullOpp.decisionMaker4 || fullOpp.DecisionMaker4 || fullOpp.contact4),
+          decisionMaker5: extractId(fullOpp.oppDecisionMaker5 || fullOpp.oppDecisionMaker5Id || fullOpp.decisionMaker5Id || fullOpp.DecisionMaker5Id || fullOpp.OppDecisionMaker5 || fullOpp.decisionMaker5 || fullOpp.DecisionMaker5 || fullOpp.contact5),
           competitors: fullOpp.oppRemarks1 || fullOpp.OppRemarks1 || fullOpp.competitors || fullOpp.Competitors || fullOpp.remarks || ''
         };
 
@@ -886,6 +922,7 @@ export class AddleadComponent implements OnInit {
   }
 
   onOppFieldChange(event: any): void {
+    delete this.oppErrors[event.name];
     if (event.name === 'productCategoryId') {
       const categoryId = event.value;
       if (categoryId) {
@@ -953,16 +990,37 @@ export class AddleadComponent implements OnInit {
   onSubmitOpp(formData: any): void {
     let isValid = true;
     this.oppErrors = {};
+    let firstInvalidField: string | null = null;
 
     this.oppFields.forEach(field => {
-      if (field.required && (this.oppModel[field.name] === '' || this.oppModel[field.name] === null || this.oppModel[field.name] === undefined)) {
+      let val = this.oppModel[field.name];
+      if (typeof val === 'string') val = val.trim();
+      
+      const isSelectEmpty = field.type === 'select' && (val === 0 || val === '0' || val === 'null' || val === 'undefined');
+      
+      if (field.required && (val === '' || val === null || val === undefined || isSelectEmpty)) {
         this.oppErrors[field.name] = `${field.label} is required`;
         isValid = false;
+        if (!firstInvalidField) {
+          firstInvalidField = field.name;
+        }
       }
     });
 
     if (!isValid) {
       this.toastService.error("Please fill all required fields.");
+      
+      if (firstInvalidField) {
+        setTimeout(() => {
+          const element = document.getElementById(firstInvalidField!);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+              element.focus();
+            }
+          }
+        }, 100);
+      }
       return;
     }
 
@@ -983,13 +1041,31 @@ export class AddleadComponent implements OnInit {
       oppExpectedOrderConclusion: this.oppModel.expectedOrderConclusion,
       oppStatus: toNullIfEmpty(this.oppModel.status),
       oppExpectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
+      
       oppDecisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1),
+      decisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1),
+      contact1: toNullIfEmpty(this.oppModel.decisionMaker1),
+      
       oppDecisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2),
+      decisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2),
+      contact2: toNullIfEmpty(this.oppModel.decisionMaker2),
+      
       oppDecisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3),
+      decisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3),
+      contact3: toNullIfEmpty(this.oppModel.decisionMaker3),
+      
       oppDecisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4),
+      decisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4),
+      contact4: toNullIfEmpty(this.oppModel.decisionMaker4),
+      
       oppDecisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5),
+      decisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5),
+      contact5: toNullIfEmpty(this.oppModel.decisionMaker5),
+      
       oppRemarks1: this.oppModel.competitors || null
     };
+
+    console.log("?? SENDING OPPORTUNITY PAYLOAD TO BACKEND:", payload);
 
     if (this.isEditOppMode && this.editOppId) {
       this.leadservice.updateOpportunity(this.editOppId, payload).subscribe({
@@ -1161,5 +1237,13 @@ export class AddleadComponent implements OnInit {
       return '';
     }
     return String(val).trim();
+  }
+
+  onQuoteRevisionInfo(row: any) {
+    this.showRevisionHistoryModal = true;
+  }
+
+  onQuoteRevisionAdd(row: any) {
+    this.router.navigate(['/quoteRevision', this.leadId || '5']);
   }
 }

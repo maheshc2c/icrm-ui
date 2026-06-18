@@ -33,11 +33,18 @@
           <table class="table table-bordered table-striped soft-header">
             <thead>
               <tr>
-                <th style="width: 80px;">S.NO</th>
+                @if (showCheckboxColumn) {
+                  <th style="width: 40px; text-align: center;"><input type="checkbox"></th>
+                }
+                @if (showSno) {
+                  <th style="width: 80px;">S.NO</th>
+                }
                 @for (col of columns; track col) {
                   <th>{{ col.header }}</th>
                 }
-                <th style="width:Auto;">Actions</th>
+                @if (showActions) {
+                  <th style="width:Auto;">Actions</th>
+                }
               </tr>
             </thead>
             <tbody>
@@ -53,8 +60,14 @@
               } @else {
                 @for (row of (showPagination ? paginatedRows : filteredRows); track detectKey(row, $index); let i = $index) {
                   <tr>
+                    <!-- CHECKBOX -->
+                    @if (showCheckboxColumn) {
+                      <td style="text-align: center;"><input type="checkbox"></td>
+                    }
                     <!-- S.NO -->
-                    <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
+                    @if (showSno) {
+                      <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
+                    }
 
                     <!-- DATA -->
                     @for (col of columns; track col) {
@@ -78,6 +91,27 @@
                             <span class="status-badge" [class.active]="row.hasQuote" [class.inactive]="!row.hasQuote">Quote</span>
                             <span class="status-badge" [class.active]="row.hasCNote" [class.inactive]="!row.hasCNote">C Note</span>
                           </div>
+                        } @else if (col.field === 'editableQuantity') {
+                          <input type="text" 
+                            [value]="row[col.field]" 
+                            (change)="onQuantityChange(row, col.field, $any($event.target).value)"
+                            style="width: 60px; text-align: center; color: #ef4444; font-weight: 500; border: 1px solid #ccc; border-radius: 4px; padding: 4px;">
+                        } @else if (col.field === 'editableDiscount') {
+                          <div style="display: flex; gap: 5px; align-items: center; justify-content: center;">
+                            <select 
+                              [value]="row['discountType'] || 'in %'"
+                              (change)="onDiscountChange(row, col.field, row[col.field], $any($event.target).value)"
+                              style="padding: 4px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; background: #fff;">
+                              <option value="in %">in %</option>
+                              <option value="Flat">Flat</option>
+                            </select>
+                            <input type="text" 
+                              [value]="row[col.field]"
+                              (change)="onDiscountChange(row, col.field, $any($event.target).value, row['discountType'] || 'in %')"
+                              style="padding: 4px; border: 1px solid #ccc; border-radius: 4px; width: 60px; font-size: 12px;">
+                          </div>
+                        } @else if (col.field === 'productNameWithIcon') {
+                          <span style="color: #333;"><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 5px;"></i> {{ row['productName'] || row[col.field] }}</span>
                         } @else {
                           {{ row[col.field] }}
                         }
@@ -85,87 +119,107 @@
                     }
 
                     <!-- ACTIONS -->
-                    <td class="action-cell">
-                      <div class="action-buttons">
-                        @if (showApprove) {
-                          <button
-                            class="btn btn-sm btn-success approve-btn"
-                            (click)="approve(row)"
-                            title="Approve">
-                            <i class="fas fa-check"></i>
-                          </button>
-                        }
-
-                        @if (showReject) {
-                          <button
-                            class="btn btn-sm btn-danger reject-btn"
-                            (click)="reject(row)"
-                            title="Reject">
-                            <i class="fas fa-times"></i>
-                          </button>
-                        }
-
-                        @if (showView) {
-                          <button
-                            class="btn btn-sm btn-info view-btn"
-                            (click)="view(row)"
-                            title="View">
-                            <i class="fas fa-eye"></i>
-                          </button>
-                        }
-
-                        @if (showEdit) {
-                          <button
-                            class="btn btn-sm btn-warning edit-btn"
-                            style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
-                            (click)="edit(row)"
-                            title="Edit">
-                            <i class="fas fa-edit"></i>
-                          </button>
-                        }
-
-                        @if (showAssign) {
-                          <button
-                            class="btn btn-sm btn-primary assign-btn"
-                            (click)="assign(row)"
-                            title="Assign Target">
-                            <i class="fas fa-user-plus"></i>
-                          </button>
-                        }
-
-                        @if (showUpload) {
-                          <button
-                            class="btn btn-sm btn-success upload-btn"
-                            style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; margin-right: 8px;"
-                            (click)="upload(row)"
-                            title="Upload Target">
-                            <i class="fas fa-upload"></i>
-                          </button>
-                        }
-
-                        @if (showDelete && showDeleteButton) {
-                          @if (showStatusToggle && getRowStatus(row) !== undefined) {
+                    @if (showActions) {
+                      <td class="action-cell">
+                        <div class="action-buttons">
+                          @if (showApprove) {
                             <button
-                              class="btn btn-sm"
-                              [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
-                              (click)="delete(row)"
-                              [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
-                              <i
-                                class="fas"
-                                [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
-                              </i>
-                            </button>
-                          } @else {
-                            <button
-                              class="btn btn-sm delete-btn"
-                              (click)="delete(row)"
-                              title="Delete">
-                              <i class="fas fa-trash-alt"></i>
+                              class="btn btn-sm btn-success approve-btn"
+                              (click)="approve(row)"
+                              title="Approve">
+                              <i class="fas fa-check"></i>
                             </button>
                           }
-                        }
-                      </div>
-                    </td>
+
+                          @if (showReject) {
+                            <button
+                              class="btn btn-sm btn-danger reject-btn"
+                              (click)="reject(row)"
+                              title="Reject">
+                              <i class="fas fa-times"></i>
+                            </button>
+                          }
+
+                          @if (showView) {
+                            <button
+                              class="btn btn-sm btn-info view-btn"
+                              (click)="view(row)"
+                              title="View">
+                              <i class="fas fa-eye"></i>
+                            </button>
+                          }
+
+                          @if (showQuoteDoc) {
+                            <button
+                              class="btn btn-sm btn-primary"
+                              style="background: #3b82f6; border-color: #3b82f6; color: white;"
+                              title="Document">
+                              <i class="fas fa-file-alt"></i>
+                            </button>
+                          }
+
+                          @if (showQuoteCloud) {
+                            <button
+                              class="btn btn-sm btn-info"
+                              style="background: #3b82f6; border-color: #3b82f6; color: white;"
+                              title="Download Quote">
+                              <i class="fas fa-cloud-download-alt"></i>
+                            </button>
+                          }
+
+                          @if (showEdit) {
+                            <button
+                              class="btn btn-sm btn-warning edit-btn"
+                              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
+                              (click)="edit(row)"
+                              title="Edit">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                          }
+
+                          @if (showAssign) {
+                            <button
+                              class="btn btn-sm btn-primary assign-btn"
+                              (click)="assign(row)"
+                              title="Assign Target">
+                              <i class="fas fa-user-plus"></i>
+                            </button>
+                          }
+
+                          @if (showUpload) {
+                            <button
+                              class="btn btn-sm btn-success upload-btn"
+                              style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; margin-right: 8px;"
+                              (click)="upload(row)"
+                              title="Upload Target">
+                              <i class="fas fa-upload"></i>
+                            </button>
+                          }
+
+                          @if (showDelete && showDeleteButton) {
+                            @if (showStatusToggle && getRowStatus(row) !== undefined) {
+                              <button
+                                class="btn btn-sm"
+                                [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
+                                (click)="delete(row)"
+                                [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
+                                <i
+                                  class="fas"
+                                  [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+                                </i>
+                              </button>
+                            } @else {
+                              <button
+                                class="btn btn-sm delete-btn"
+                                (click)="delete(row)"
+                                title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                              </button>
+                            }
+                          }
+                        </div>
+                      </td>
+                    }
                   </tr>
                 }
               }

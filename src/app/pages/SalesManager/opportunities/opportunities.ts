@@ -40,14 +40,11 @@ export class OpportunitiesComponent implements OnInit {
     { key: 'oppId', label: 'Opp ID', type: 'text', placeholder: 'Opp ID' },
     { key: 'customer', label: 'Customer', type: 'select', placeholder: 'Select Customer', options: [] },
     { key: 'productCategory', label: 'Product Category', type: 'select', placeholder: 'Select Product Category', options: [] },
-    { key: 'stage', label: 'Stage', type: 'select', placeholder: 'Select Stage', options: [
-      { value: 1, label: 'Qualification' },
-      { value: 2, label: 'Proposal' },
-      { value: 3, label: 'Negotiation' }
-    ]},
+    { key: 'stage', label: 'Stage', type: 'select', placeholder: 'Select Stage', options: [] },
     { key: 'category', label: 'Category', type: 'select', placeholder: 'Select Category', options: [
-      { value: 'New Business', label: 'New Business' },
-      { value: 'Existing', label: 'Existing' }
+      { value: 1, label: 'Hot' },
+      { value: 2, label: 'Warm' },
+      { value: 3, label: 'Cold' }
     ]},
     { key: 'region', label: 'Region', type: 'select', placeholder: 'Select Region', options: [] },
     { key: 'sourceOfLead', label: 'Source of Lead', type: 'select', placeholder: 'Select Source of Lead', options: [] },
@@ -141,10 +138,11 @@ export class OpportunitiesComponent implements OnInit {
 
   loadDropdownData(): void {
     // Load leads for dropdown
-    this.leadService.getOpenLeads().subscribe(data => {
+    this.leadService.getOpenLeads().subscribe((data: any) => {
       const leadField = this.oppFields.find(f => f.name === 'leadId');
       if (leadField) {
-        leadField.options = data.map(l => ({ label: l.customerName, value: l.leadId }));
+        const leadsArray = data.content || data || [];
+        leadField.options = leadsArray.map((l: any) => ({ label: l.customerName, value: l.leadId }));
       }
     });
 
@@ -278,6 +276,14 @@ export class OpportunitiesComponent implements OnInit {
         field.options = data.map(s => ({ value: s.sourceId, label: s.sourceName }));
       }
     });
+
+    // 5. Load Stages from backend
+    this.leadService.getStages().subscribe(data => {
+      const field = this.searchFields.find(f => f.key === 'stage');
+      if (field && data) {
+        field.options = data.map(s => ({ value: s.stageId, label: s.stageName }));
+      }
+    });
   }
 
   onSearchChange(filters: any): void {
@@ -288,10 +294,11 @@ export class OpportunitiesComponent implements OnInit {
     const backendParams: any = {};
 
     if (this.currentFilters.searchBy) backendParams.text = this.currentFilters.searchBy;
-    if (this.currentFilters.oppId) backendParams.text = this.currentFilters.oppId; 
+    if (this.currentFilters.oppId) backendParams.opportunityId = this.currentFilters.oppId; 
     if (this.currentFilters.customer) backendParams.customerId = this.currentFilters.customer;
     if (this.currentFilters.productCategory) backendParams.productCategory = this.currentFilters.productCategory;
     if (this.currentFilters.stage) backendParams.stage = this.currentFilters.stage;
+    if (this.currentFilters.category) backendParams.category = this.currentFilters.category;
     if (this.currentFilters.sourceOfLead) backendParams.leadSource = this.currentFilters.sourceOfLead;
     if (this.currentFilters.region) backendParams.region = this.currentFilters.region;
     if (this.currentFilters.oppCreatedStartDate) backendParams.startDate = this.currentFilters.oppCreatedStartDate;
@@ -299,18 +306,21 @@ export class OpportunitiesComponent implements OnInit {
     if (this.currentFilters.orderConclusionStartDate) backendParams.startOrder = this.currentFilters.orderConclusionStartDate;
     if (this.currentFilters.orderConclusionEndDate) backendParams.endOrder = this.currentFilters.orderConclusionEndDate;
 
-    this.leadService.searchOpportunitiesTable(backendParams).subscribe({
+    this.leadService.searchOpportunitiesTable(backendParams, this.currentPage - 1, this.pageSize).subscribe({
       next: (data) => {
-        this.filteredOpportunities = data.map(opp => ({
+        const opps = data.content || data;
+        this.filteredOpportunities = opps.map((opp: any) => ({
           ...opp,
           product: opp.productAndCategory,
           lifeTime: opp.lifeTimeDays,
           value: opp.value || (opp.qty ? opp.qty * 125000 : 0)
         }));
+        this.totalElements = data.totalElements !== undefined ? data.totalElements : opps.length;
       },
       error: (err) => {
         console.error('Search failed:', err);
         this.filteredOpportunities = [];
+        this.totalElements = 0;
       }
     });
   }

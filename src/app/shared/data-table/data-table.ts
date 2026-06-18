@@ -78,6 +78,12 @@ export class DataTable
 
   @Input() showView = false;
   @Input() showDownload = true;
+  @Input() showQuoteDoc = false;
+  @Input() showQuoteCloud = false;
+  // New inputs to control table columns
+  @Input() showSno: boolean = true;
+  @Input() showActions: boolean = true;
+  @Input() showCheckboxColumn: boolean = false;
 
   /* ===== TOOLBAR EVENTS ===== */
 
@@ -90,6 +96,31 @@ export class DataTable
   @Output() uploadRow = new EventEmitter<any>();
   @Output() approveRow = new EventEmitter<any>();
   @Output() rejectRow = new EventEmitter<any>();
+  @Output() quoteRevisionInfo = new EventEmitter<any>();
+  @Output() quoteRevisionAdd = new EventEmitter<any>();
+
+  /* ===== INLINE EDITING EVENTS ===== */
+  @Output() quantityChange = new EventEmitter<{row: any, field: string, value: any}>();
+  @Output() discountChange = new EventEmitter<{row: any, field: string, value: any, discountType: string}>();
+
+  onQuantityChange(row: any, field: string, event: any) {
+    this.quantityChange.emit({ row, field, value: event.target.value });
+  }
+
+  onDiscountChange(row: any, field: string, value: any, discountType: string) {
+    this.discountChange.emit({ row, field, value, discountType });
+  }
+
+  quoteInfo(row: any, event?: Event) {
+    if (event) event.stopPropagation();
+    this.quoteRevisionInfo.emit(row);
+  }
+
+  quoteAddRevision(row: any, event?: Event) {
+    if (event) event.stopPropagation();
+    console.log('quoteAddRevision clicked for row:', row);
+    this.quoteRevisionAdd.emit(row);
+  }
 
   assign(row: any) {
     this.assignRow.emit(row);
