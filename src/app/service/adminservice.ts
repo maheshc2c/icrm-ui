@@ -249,7 +249,7 @@ activateCustomer(id: number) {
       `${this.baseUrl}/customer/search`,
       {
         headers: this.getAuthHeaders(),
-        params: { name: name } 
+        params: { name }
       }
     );
   }

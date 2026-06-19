@@ -79,6 +79,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+
 }
  
 /* ================= ACTION HEADER BUTTONS ================= */
@@ -494,4 +496,9 @@
  
 .searchable-dropdown-item:last-child {
   border-bottom: none;
+}
+
+.breadcrumb span {
+  color: #a0aec0;
+  font-weight: 400;
 }

@@ -13,12 +13,14 @@
   [showImport]="false"
   [showAdd]="true"
   [showStatusToggle]="true"
+  [statusField]="'specialityStatus'"
+  [trackByField]="'id'"
   (searchChange)="onSearchChange($event)"
   (search)="onSearch()"
   (download)="onDownload()"
   (add)="onAdd()"
   (editRow)="onEdit($event)"
-  (statusToggle)="onStatusToggle($event)">
+  (deleteRow)="onDelete($event)">
 </app-data-table>
 
 

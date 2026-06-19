@@ -64,6 +64,10 @@ export class ApproveLeads implements OnInit {
     return this.cicService.getDropdownOwners(search);
   }
 
+  onDropdownSearch(event: any) {
+    // handled by dynamicLoad
+  }
+
   /* TABLE DATA */
   rows: any[] = [];
   allRows: any[] = [];
@@ -185,7 +189,7 @@ export class ApproveLeads implements OnInit {
   }
 
   onEdit(row: any): void {
-    console.log('Edit:', row);
+    this.router.navigate(['/Approve-Leads/edit', row.leadId]);
   }
 
   onApprove(row: any): void {
