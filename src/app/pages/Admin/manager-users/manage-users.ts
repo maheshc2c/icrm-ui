@@ -88,6 +88,13 @@ export class ManageUsersComponent implements OnInit {
                     this.totalItems = null;
                 }
 
+                // Sort to show latest user first (descending by ID)
+                users.sort((a: any, b: any) => {
+                    const idA = a.userId ?? a.id ?? 0;
+                    const idB = b.userId ?? b.id ?? 0;
+                    return idB - idA;
+                });
+
                 this.rows = users.map((c: any, index: number) => ({
                     serialNumber: c.serialNumber ?? (index + 1),
                     userId: c.userId ?? c.id ?? c.serialNumber ?? null,
@@ -161,6 +168,14 @@ export class ManageUsersComponent implements OnInit {
         this.userTargetService.searchTarget(username, role, email, phoneNumber, name).subscribe({
             next: (users: any[]) => {
                 this.totalItems = null;
+
+                // Sort to show latest user first (descending by ID)
+                users.sort((a: any, b: any) => {
+                    const idA = a.userId ?? a.id ?? 0;
+                    const idB = b.userId ?? b.id ?? 0;
+                    return idB - idA;
+                });
+
                 this.rows = users.map((c: any, index: number) => ({
                     serialNumber: c.serialNumber ?? (index + 1),
                     userId: c.userId ?? c.id ?? c.serialNumber ?? null,

@@ -8,6 +8,7 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { GlobalHeadService } from '../../../../service/GlobalHeadService';
+import { ToastService } from '../../../../service/toast.service';
 
 
 @Component({
@@ -27,8 +28,8 @@ export class AddVisitComponent implements OnInit {
     fields: any[] = [
         { name: 'leadId', label: 'Lead', type: 'select', options: [] as any[], required: true },
         { name: 'purposeId', label: 'Purpose', type: 'select', options: [] as any[], required: true },
-        { name: 'startDate', label: 'Start Date', type: 'datetime-local', required: true },
-        { name: 'endDate', label: 'End Date', type: 'datetime-local', required: true },
+        { name: 'startDate', label: 'Start Date', type: 'date', required: true },
+        { name: 'endDate', label: 'End Date', type: 'date', required: true },
         { name: 'remarks1', label: 'Remarks 1', type: 'textarea' },
         { name: 'remarks2', label: 'Remarks 2', type: 'textarea' },
         { name: 'remarks3', label: 'Remarks 3', type: 'textarea' }
@@ -37,7 +38,8 @@ export class AddVisitComponent implements OnInit {
     constructor(
         private globalHeadService: GlobalHeadService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private toastService: ToastService
     ) { }
 
     ngOnInit(): void {
@@ -89,7 +91,7 @@ export class AddVisitComponent implements OnInit {
         // Dynamic: Only proceed if we have authentication
         if (!token) {
             console.error('No authentication token found. Please login first.');
-            alert('Please login to access this form.');
+            this.toastService.error('Please login to access this form.');
             this.router.navigate(['/login']);
             return;
         }
@@ -133,12 +135,12 @@ export class AddVisitComponent implements OnInit {
                 console.error('Failed to load leads:', err);
                 
                 if (err.status === 401) {
-                    alert('Session expired. Please login again.');
+                    this.toastService.error('Session expired. Please login again.');
                     this.router.navigate(['/login']);
                     return;
                 }
                 
-                alert('Failed to load leads. Please try again later.');
+                this.toastService.error('Failed to load leads. Please try again later.');
             }
         });
 
@@ -168,12 +170,12 @@ export class AddVisitComponent implements OnInit {
                 console.error('Failed to load purposes:', err);
                 
                 if (err.status === 401) {
-                    alert('Session expired. Please login again.');
+                    this.toastService.error('Session expired. Please login again.');
                     this.router.navigate(['/login']);
                     return;
                 }
                 
-                alert('Failed to load visit purposes. Please try again later.');
+                this.toastService.error('Failed to load visit purposes. Please try again later.');
             }
         });
     }
@@ -202,22 +204,24 @@ export class AddVisitComponent implements OnInit {
             this.globalHeadService.updateVisit(this.visitId, payload).subscribe({
                 next: (response) => {
                     console.log('Visit updated successfully:', response);
+                    this.toastService.success('Visit updated successfully');
                     this.router.navigate(['/globalhead/manage-visits']);
                 },
                 error: (err) => {
                     console.error('Failed to update visit:', err);
-                    alert('Failed to update visit: ' + (err.error?.message || err.message));
+                    this.toastService.error('Failed to update visit: ' + (err.error?.message || err.message));
                 }
             });
         } else {
             this.globalHeadService.createVisit(payload).subscribe({
                 next: (response) => {
                     console.log('Visit created successfully:', response);
+                    this.toastService.success('Visit created successfully');
                     this.router.navigate(['/globalhead/manage-visits']);
                 },
                 error: (err) => {
                     console.error('Failed to create visit:', err);
-                    alert('Failed to create visit: ' + (err.error?.message || err.message));
+                    this.toastService.error('Failed to create visit: ' + (err.error?.message || err.message));
                 }
             });
         }

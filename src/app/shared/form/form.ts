@@ -85,7 +85,11 @@ export class Form implements OnChanges {
     const term = (keyword || '').toLowerCase();
     const baseOptions = field.options || [];
  
-    if (term.length >= 1) {
+    if (field.dynamicLoad) {
+      field.dynamicLoad(term).subscribe((results: any[]) => {
+        field._filtered = results;
+      });
+    } else if (term.length >= 1) {
       field._filtered = baseOptions.filter((opt: any) =>
         (opt?.label || '').toLowerCase().includes(term)
       );
@@ -100,13 +104,25 @@ export class Form implements OnChanges {
     field._open = false;
     field._filtered = null;
     this.revalidateField(field.name);
+    this.resetDependentFields(field.name);
     this.fieldChange.emit({ name: field.name, value: opt.value });
     field.onChange?.(opt.value);
+  }
+ 
+  private resetDependentFields(fieldName: string): void {
+    if (!this.fields) return;
+    this.fields.forEach((f: any) => {
+      if (f.dependsOn === fieldName) {
+        this.formData[f.name] = null;
+        this.revalidateField(f.name);
+      }
+    });
   }
 
   onInputChange(field: any, value: any): void {
     this.formData[field.name] = value;
     this.revalidateField(field.name);
+    this.resetDependentFields(field.name);
     this.fieldChange.emit({ name: field.name, value });
     field.onChange?.(value);
   }
@@ -212,6 +228,16 @@ export class Form implements OnChanges {
       if (form?.controls) {
         Object.values(form.controls).forEach((control: any) => control?.markAsTouched?.());
       }
+      setTimeout(() => {
+        const firstError = document.querySelector('.validation-error');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const input = firstError.parentElement?.querySelector('input, select, textarea') as HTMLElement;
+          if (input) {
+            input.focus();
+          }
+        }
+      }, 0);
       return;
     }
  

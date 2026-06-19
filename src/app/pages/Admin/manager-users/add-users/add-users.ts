@@ -8,6 +8,7 @@ import { Sidebar } from "../../../../layout/sidebar/sidebar";
 import { Pageheader } from "../../../../shared/pageheader/pageheader";
 import { Breadcrumb } from "../../../../models/breadcrumb";
 import { Userservice } from "../../../../service/userservice";
+import { ToastService } from "../../../../service/toast.service";
 
 @Component({
   selector: 'app-add-users',
@@ -21,6 +22,7 @@ export class AddUsersComponent implements OnInit {
 
   constructor(
     private userService: Userservice,
+    private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -83,12 +85,15 @@ export class AddUsersComponent implements OnInit {
   /* ================= CASCADE STATE: PRODUCTS ================= */
   allGroups: any[] = [];
   groupOptions: any[] = [];
+  groupedGroups: { category: string; groups: any[] }[] = [];
   productOptions: string[] = [];
+  groupedProducts: { group: string; products: string[] }[] = [];
 
   selCategories: string[] = [];
   selGroups: string[] = [];
   selProducts: string[] = [];
   categories: string[] = [];
+  step4Submitted: boolean = false;
 
   /* ================= ON INIT ================= */
   ngOnInit(): void {
@@ -204,21 +209,37 @@ export class AddUsersComponent implements OnInit {
 
   /* ================= SAVE & NAVIGATION ================= */
 
+  handleFormError(form?: any): void {
+    if (form && form.form) {
+      form.form.markAllAsTouched();
+    }
+    setTimeout(() => {
+      const firstError = document.querySelector('.is-invalid') as HTMLElement;
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstError.focus();
+      }
+    }, 0);
+  }
+
   handleStepSubmit(data: any): void {
     // Merge data from current step
     this.formInitialData = { ...this.formInitialData, ...data };
 
     // Validation for Product Details (Step 4)
     if (this.currentStep === 4) {
-      if (this.selCategories.length > 0) {
-        if (this.selGroups.length === 0) {
-          alert('Please select at least one Product Group for the chosen Categories.');
-          return;
-        }
-        if (this.selProducts.length === 0) {
-          alert('Please select at least one Product for the chosen Groups.');
-          return;
-        }
+      this.step4Submitted = true;
+      if (this.categories.length > 0 && this.selCategories.length === 0) {
+        this.handleFormError();
+        return;
+      }
+      if (this.groupOptions.length > 0 && this.selGroups.length === 0) {
+        this.handleFormError();
+        return;
+      }
+      if (this.productOptions.length > 0 && this.selProducts.length === 0) {
+        this.handleFormError();
+        return;
       }
     }
 
@@ -245,20 +266,25 @@ export class AddUsersComponent implements OnInit {
 
     if (this.isEditMode) {
       this.userService.updateUser(this.userId, payload).subscribe({
-        next: () => this.router.navigate(['/admin/manage-users']),
+        next: () => {
+          this.toastService.success('User updated successfully');
+          this.router.navigate(['/admin/manage-users']);
+        },
         error: (err: any) => {
           console.error('Update failed', err);
-          const msg = err.error || 'Failed to update Users';
-          alert(msg);
+          const msg = err.error?.message || err.error || 'Failed to update Users';
+          this.toastService.error(msg);
         }
       });
     } else {
       this.userService.createUserAdmin(payload).subscribe({
-        next: () => this.router.navigate(['/admin/manage-users']),
+        next: () => {
+          this.toastService.success('User created successfully');
+          this.router.navigate(['/admin/manage-users']);
+        },
         error: (err: any) => {
           console.error('Create failed', err);
-          const msg = err.error?.message || err.error || 'Failed to create user. Please check your input and try again.';
-          alert(msg);
+          this.toastService.error('Failed to create user. Please check your input and try again.');
         }
       });
     }
@@ -272,7 +298,7 @@ export class AddUsersComponent implements OnInit {
   /* ================= STEP NAVIGATION ================= */
   onNextStep(): void {
     if (!this.selectedRole) {
-      alert('Please select a role');
+      this.toastService.warning('Please select a role');
       return;
     }
 
@@ -406,12 +432,20 @@ export class AddUsersComponent implements OnInit {
     this.formInitialData.categoryNames = this.selCategories;
     
     this.groupOptions = []; this.selGroups = []; this.formInitialData.groupNames = [];
+    this.groupedGroups = [];
     this.productOptions = []; this.selProducts = []; this.formInitialData.productNames = [];
 
     if (this.selCategories.length) {
       this.groupOptions = this.allGroups.filter(g =>
         this.selCategories.includes(g.category?.categoryName)
       );
+
+      this.selCategories.forEach(cat => {
+        const catGroups = this.groupOptions.filter(g => g.category?.categoryName === cat);
+        if (catGroups.length > 0) {
+          this.groupedGroups.push({ category: cat, groups: catGroups });
+        }
+      });
     }
   }
 
@@ -425,12 +459,20 @@ export class AddUsersComponent implements OnInit {
     this.formInitialData.groupNames = this.selGroups;
 
     this.productOptions = []; this.selProducts = []; this.formInitialData.productNames = [];
+    this.groupedProducts = [];
 
     const selectedGroupObjs = this.groupOptions.filter(g => this.selGroups.includes(g.groupName));
     if (selectedGroupObjs.length) {
       forkJoin(selectedGroupObjs.map(g => this.userService.getProductsByGroupId(g.groupId)))
         .subscribe((results: any[][]) => {
           this.productOptions = Array.from(new Set(results.flat()));
+          
+          this.groupedProducts = selectedGroupObjs.map((g, index) => {
+            return {
+              group: g.groupName,
+              products: results[index]
+            };
+          }).filter(g => g.products && g.products.length > 0);
         });
     }
   }

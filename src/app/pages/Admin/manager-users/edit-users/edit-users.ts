@@ -43,6 +43,8 @@ export class EditUsersComponent implements OnInit {
   /* ─── State ───────────────────────────────────────────── */
   userId!: number;
   userData: any = {};
+  userDetailsSubmitted = false;
+  productsSubmitted = false;
   userName = '';           // displayed in breadcrumb / header
   isLoading = false;
   isUserLoading = true;
@@ -304,9 +306,35 @@ export class EditUsersComponent implements OnInit {
   /* ══════════════════════════════════════════════════════
      USER DETAILS SAVE
   ══════════════════════════════════════════════════════ */
+  scrollToError(): void {
+    const firstError = document.querySelector('.is-invalid') as HTMLElement;
+    if (firstError) {
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstError.focus();
+    }
+  }
+
   saveUserDetails(): void {
-    if (!this.userData.firstName || !this.userData.email || !this.userData.username) {
-      this.toastService.error('Please fill in all required fields (First Name, Email, Employee ID).');
+    this.userDetailsSubmitted = true;
+    if (
+      !this.userData.firstName || 
+      !this.userData.email || 
+      !this.userData.username ||
+      !this.userData.phoneNumber ||
+      !this.userData.branchName ||
+      !this.userData.city
+    ) {
+      this.toastService.error('Please fill in all required fields.');
+      setTimeout(() => {
+        const firstError = document.querySelector('.text-danger');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const input = firstError.parentElement?.querySelector('input, select, textarea') as HTMLElement;
+          if (input) {
+            input.focus();
+          }
+        }
+      }, 0);
       return;
     }
     this.isSubmitting = true;
@@ -381,6 +409,22 @@ export class EditUsersComponent implements OnInit {
      PRODUCTS SAVE
   ══════════════════════════════════════════════════════ */
   saveProducts(): void {
+    this.productsSubmitted = true;
+    if (this.categories.length > 0 && this.selCategories.length === 0) {
+      this.toastService.error('Please select at least one Category.');
+      setTimeout(() => this.scrollToError(), 0);
+      return;
+    }
+    if (this.groupOptions.length > 0 && this.selGroups.length === 0) {
+      this.toastService.error('Please select at least one Group.');
+      setTimeout(() => this.scrollToError(), 0);
+      return;
+    }
+    if (this.productOptions.length > 0 && this.selProducts.length === 0) {
+      this.toastService.error('Please select at least one Product.');
+      setTimeout(() => this.scrollToError(), 0);
+      return;
+    }
     this.isSubmitting = true;
 
     this.userData.categoryNames = this.selCategories;

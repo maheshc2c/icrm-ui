@@ -6,6 +6,7 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Userservice } from '../../../../service/userservice';
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
   selector: 'app-view-user',
@@ -19,6 +20,7 @@ export class ViewUserComponent implements OnInit {
 
   constructor(
     private userService: Userservice,
+    private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -40,7 +42,7 @@ export class ViewUserComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      alert('User ID not provided');
+      this.toastService.error('User ID not provided');
       this.router.navigate(['/admin/manage-users']);
       return;
     }
@@ -71,7 +73,7 @@ export class ViewUserComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Failed to load user profile details:', err);
-        alert('Could not retrieve user details.');
+        this.toastService.error('Could not retrieve user details.');
         this.router.navigate(['/admin/manage-users']);
       }
     });
