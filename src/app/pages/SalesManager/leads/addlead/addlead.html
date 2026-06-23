@@ -359,9 +359,34 @@
   </div>
 </div>
 
-<div class="container-fluid py-5 text-center bg-white rounded shadow-sm mx-3 my-3" style="width: auto;" *ngIf="activeTab === 'Contract Note'">
-  <h4 class="text-muted">Contract Note</h4>
-  <p>No contract notes available for this lead yet.</p>
+<div *ngIf="activeTab === 'Contract Note'" style="position: relative; z-index: 5;">
+  <div class="form-wrapper" style="padding-top: 24px; min-height: 400px; margin-bottom: 60px; flex-direction: column;">
+      
+      <!-- Add Contract Note Button -->
+      <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 16px; width: 100%;">
+        <button (click)="showAddContractNoteModal = true" style="background: #2196f3; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+          <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Contract Note
+        </button>
+      </div>
+
+      <!-- Contract Note Table -->
+      <app-data-table
+        [noMargin]="true"
+        style="display: block; width: 100%;"
+        [columns]="contractNoteColumns"
+        [rows]="contractNotes"
+        [showImport]="false"
+        [showDownload]="false"
+        [showAdd]="false"
+        [showReset]="false"
+        [showSearch]="false"
+        [showPagination]="false"
+        [showEdit]="false"
+        [showView]="false"
+        [showDelete]="false">
+      </app-data-table>
+
+  </div>
 </div>
 
 <!-- Details Modal -->
@@ -865,4 +890,52 @@
   </div>
 </app-modal>
 
+<!-- Add Contract Note Modal -->
+<app-modal [show]="showAddContractNoteModal" [title]="'Add Contract Note'" size="lg" (closeDialog)="showAddContractNoteModal = false">
+  <div style="padding: 20px; font-family: 'Inter', sans-serif;">
+    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: center; margin-bottom: 16px;">
+      
+      <!-- Quote -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Quote <span style="color: red;">*</span></div>
+      <div>
+        <select class="form-select" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff; height: 35px; color: #555;">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+
+      <!-- PO Number -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">PO Number <span style="color: red;">*</span></div>
+      <div>
+        <input type="text" class="form-control" placeholder="Po Number" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; height: 35px; color: #555;">
+      </div>
+
+      <!-- PO Date -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">PO Date <span style="color: red;">*</span></div>
+      <div>
+        <input type="date" class="form-control" placeholder="YYYY-MM-DD" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; height: 35px; color: #555;">
+      </div>
+
+      <!-- Institution Code -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Institution Code <span style="color: red;">*</span></div>
+      <div>
+        <input type="text" class="form-control" placeholder="Institution Code" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; height: 35px; color: #555;">
+      </div>
+
+      <!-- Billing to Party -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Billing to Party <span style="color: red;">*</span></div>
+      <div>
+        <input type="text" class="form-control" placeholder="Billing to Party" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; height: 35px; color: #555;">
+      </div>
+
+    </div>
+    
+    <!-- Actions -->
+    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 30px;">
+      <button (click)="showAddContractNoteModal = false" style="background: white; border: 1px solid #ccc; padding: 8px 16px; border-radius: 4px; font-size: 13px; cursor: pointer;">Cancel</button>
+      <button style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center;">
+        <i class="fas fa-check" style="margin-right: 6px;"></i> Submit
+      </button>
+    </div>
+  </div>
+</app-modal>
 

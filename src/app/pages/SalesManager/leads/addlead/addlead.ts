@@ -96,6 +96,35 @@ export class AddleadComponent implements OnInit {
   showRevisionHistoryModal = false;
   showQuoteRevisionModal = false;
 
+  /* ================= CONTRACT NOTE DATA TABLE ================= */
+  contractNoteColumns = [
+    { header: 'C Note ID', field: 'cNoteId' },
+    { header: 'Quote Ref ID', field: 'quoteRefId' },
+    { header: 'Billing', field: 'billing' },
+    { header: 'Discount', field: 'discount' },
+    { header: 'PO Number', field: 'poNumber' },
+    { header: 'PO Date', field: 'poDate' },
+    { header: 'SO Number', field: 'soNumber' },
+    { header: 'Stage', field: 'stage' }
+  ];
+
+  contractNotes: any[] = [
+    {
+      id: 1,
+      cNoteId: 22,
+      quoteRefId: 'KAR-26-26-Rev-1',
+      billing: 'Company',
+      discount: '0%',
+      poNumber: '1234',
+      poDate: '2026-06-19',
+      soNumber: '',
+      stage: 'Waiting at SO Entry'
+    }
+  ];
+
+  /* ================= CONTRACT NOTE MODAL STATE ================= */
+  showAddContractNoteModal = false;
+
   /* ================= OPPORTUNITY MODAL STATE ================= */
   showOppModal = false;
   openOppDropdown: string | null = null;
