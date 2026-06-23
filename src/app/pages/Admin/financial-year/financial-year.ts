@@ -10,6 +10,8 @@ import { Header } from "../../../layout/header/header";
 import { Adminservice } from '../../../service/adminservice';
 import { CommonModule } from '@angular/common';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-financial-year',
@@ -23,7 +25,9 @@ export class FinancialYear {
   constructor(
     private adminservice: Adminservice,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService,
+  
   ) {}
 
    headerTitle = 'Manage Financial Year';
@@ -60,9 +64,9 @@ export class FinancialYear {
       isEditMode = false;
       companyId!: number
 
-  onDelete(row: any) {
-    console.log('Delete row:', row);
-  }
+  // onDelete(row: any) {
+  //   console.log('Delete row:', row);
+  // }
     
 
   
@@ -179,6 +183,11 @@ onImport() {
       alert(`Download failed: ${err.status}`);
     }
   });
+}
+
+
+onView(){
+  console.log("view clicked");
 }
 
 }

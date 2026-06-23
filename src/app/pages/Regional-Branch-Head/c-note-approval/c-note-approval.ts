@@ -68,6 +68,8 @@ export class CNoteApproval {
 ];
 
 
+
+
   onView(row: any): void {
     this.router.navigate([
       '/admin/c-note/view',
@@ -82,5 +84,12 @@ export class CNoteApproval {
     ]);
   }
 
+  onSearch(){
+
+  };
+
+  onReset(){
+    
+  }
 
 }

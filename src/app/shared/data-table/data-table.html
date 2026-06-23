@@ -15,7 +15,9 @@
     [showAdd]="showAdd"
     [showReset]="showReset"
     [showRefresh]="showRefresh"
+    [showUpload]="showUpload"
     [showDownload]="showDownload"
+    (upload)="uploadRow.emit()"
     (reset)="onResetClick()"
     (refresh)="onRefreshClick()"
     (search)="onSearchClick()"
@@ -123,16 +125,7 @@
                           </button>
                         }
 
-                        @if (showUpload) {
-                          <button
-                            class="btn btn-sm btn-success upload-btn"
-                            style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; margin-right: 8px;"
-                            (click)="upload(row)"
-                            title="Upload Target">
-                            <i class="fas fa-upload"></i>
-                          </button>
-                        }
-
+                       
                         @if (showDelete && showDeleteButton) {
                           @if (showStatusToggle && getRowStatus(row) !== undefined) {
                             <button

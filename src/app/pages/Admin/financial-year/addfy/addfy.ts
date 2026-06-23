@@ -8,6 +8,8 @@ import { Adminservice } from '../../../../service/adminservice';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { FinancialyrModel } from '../../../../models/financialyr-model';
+import { ToastService } from '../../../../service/toast.service';
+
 
 @Component({
   selector: 'app-addfy',
@@ -21,7 +23,8 @@ export class Addfy implements OnInit {
   constructor(
     private adminService: Adminservice,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
   /* ================= HEADER ================= */
@@ -94,7 +97,7 @@ export class Addfy implements OnInit {
         const financial = financialYears.find(f => f.fyId === id);
 
         if (!financial) {
-          alert('Financial Year not found');
+          this.toastService.error('Financial Year not found');
           this.router.navigate(['/admin/financial-yr']);
           return;
         }
@@ -108,7 +111,7 @@ export class Addfy implements OnInit {
         };
       },
       error: () => {
-        alert('Failed to load financial year');
+        this.toastService.error('Failed to load financial year');
         this.router.navigate(['/admin/financial-yr']);
       }
     });
@@ -127,20 +130,28 @@ export class Addfy implements OnInit {
   if (this.isEditMode) {
 
     this.adminService.updatefy(this.fyId, payload as any).subscribe({
-      next: () => this.router.navigate(['/admin/financial-yr']),
+      next: () =>{ 
+        this.toastService.success('Financial Year updated successfully');
+        this.router.navigate(['/admin/financial-yr'])},
       error: err => {
-        console.error('Update failed:', err);
-        alert('Failed to update financial year');
+        console.error(err);
+        this.toastService.error(
+          err?.error?.message || 'Failed to update Financial Year'
+        );
       }
     });
 
   } else {
 
     this.adminService.createfy(payload as any).subscribe({
-      next: () => this.router.navigate(['/admin/financial-yr']),
+      next: () =>{ 
+        this.toastService.success('Financial Year created successfully');
+        this.router.navigate(['/admin/financial-yr'])},
       error: err => {
-        console.error('Create failed:', err);
-        alert('Failed to create financial year');
+        console.error(err);
+         this.toastService.error(
+          err?.error?.message || 'Failed to create Financial Year'
+        );
       }
     });
   }

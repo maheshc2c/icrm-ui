@@ -8,16 +8,16 @@
 .content {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 70px); /* Allow it to grow */
+  min-height: calc(100vh - 70px); 
   margin-left: 287px;
   width: calc(100% - 287px);
   padding: 20px;
   box-sizing: border-box;
-  overflow-y: auto; /* Enable scrolling if constrained by parent */
+  overflow-y: auto; 
 }
 
 /* ================= SHARED WIDTH COLUMN ================= */
-/* 🔥 THIS IS THE MOST IMPORTANT PART */
+
 .datatable-toolbar,
 .content-wrapper {
   width: 100%;
@@ -28,12 +28,10 @@
 /* ================= TOOLBAR ================= */
 .datatable-toolbar {
   display: flex;
-  flex-wrap: wrap;              /* ✅ auto wrap */
-  align-items: flex-end;
+  flex-wrap: wrap;              
+  align-items: center;
   gap: 16px;
-
-  /* 🔒 LOCK TOOLBAR WIDTH TO TABLE WIDTH */
-  overflow: hidden;             /* prevent crossing table edge */
+  overflow: hidden;           
   margin-bottom: 16px;
 }
 
@@ -59,7 +57,7 @@
 
 /* ================= CARD (TABLE WIDTH SOURCE) ================= */
 .card {
-  width: 100%;                  /* 🔥 THIS DEFINES THE EDGE */
+  width: 100%;                 
   max-width: 100%;
   box-sizing: border-box;
 
@@ -72,7 +70,7 @@
 /* ================= TABLE BODY ================= */
 .table-responsive {
   width: 100%;
-  overflow-x: auto; /* keep horizontal scroll for small screens */
+  overflow-x: auto; 
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-sizing: border-box;
@@ -163,8 +161,8 @@
 /* ================= NO RECORDS FOUND (MATCHES TABLE DESIGN) ================= */
 
 .table tbody tr.no-records-row td {
-  background: #ffffff;               /* same as card */
-  color: #101010;                    /* subtle muted text */
+  background: #ffffff;               
+  color: #101010;                   
   font-size: 18px;
   font-weight: 500;
   padding: 10px 10px;
@@ -174,7 +172,7 @@
 /* ================= TABLE CELL BORDERS ================= */
 .table th,
 .table td {
-  border-bottom: 1px solid #e5e7eb;   /* row separator */
+  border-bottom: 1px solid #e5e7eb;  
   padding: 6px 16px;
   vertical-align: middle;
 }
@@ -190,7 +188,6 @@
 } */
 
 
-/* search css */
 /* ================= SEARCH INPUT ================= */
 
 .datatable-toolbar .form-control {
@@ -198,7 +195,7 @@
   min-width: 220px;
   padding: 6px 12px;
   font-size: 14px;
-  border-radius: 6px;               /* match button radius */
+  border-radius: 6px;               
   border: 1px solid #eadcff;
   background: #ffffff;
   color: #333;
@@ -382,7 +379,7 @@
 
 .dropdown-panel {
   position: absolute;
-  bottom: 100%; /* Open upwards in pagination */
+  bottom: 100%; 
   left: 0;
   right: 0;
   background: #fff;
@@ -409,7 +406,7 @@
 
 .option-item:hover {
   background: #f5f8fa;
-  color: #e74c3c; /* Match table red theme */
+  color: #e74c3c; 
 }
 
 

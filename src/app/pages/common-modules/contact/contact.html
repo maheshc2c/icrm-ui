@@ -7,14 +7,14 @@
   [columns]="columns"
   [rows]="rows"
   [searchFields]="searchFields"
-
   [currentPage]="currentPage"
   [pageSize]="pageSize"
   [totalPages]="totalPages"
   [totalElements]="totalElements"
   [showReset]="true"
+  [showUpload]="true"
+  (uploadRow)="onUpload()"
   (reset)="onReset()"
-
   (pageChange)="onPageChange($event)"
   (pageSizeChange)="onPageSizeChange($event)"
   [showStatusToggle]="true"
@@ -28,3 +28,38 @@
 </app-data-table>
 
 <!-- (search)="onSearch($event)" -->
+
+<div class="upload-modal-backdrop" *ngIf="showUploadModal">
+  <div class="upload-modal">
+
+    <h3>Contact Upload Instructions</h3>
+
+<ul>
+  <li>Use the provided template format.</li>
+  <li>Duplicate and existing records will not be uploaded.</li>
+  <li>Create Customer/Speciality records before upload if they do not exist in the system.</li>
+  <li>Mandatory fields cannot be blank.</li>
+  <li>Only valid records will be uploaded; invalid records will be skipped.</li>
+</ul>
+
+    <div class="modal-actions">
+
+      <button class="btn btn-secondary"
+              (click)="downloadTemplate()">
+        Download Sample Template
+      </button>
+
+      <button class="btn btn-primary"
+              (click)="uploadExcel()">
+        Upload File
+      </button>
+
+      <button class="btn btn-danger"
+              (click)="closeUploadModal()">
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+</div>
