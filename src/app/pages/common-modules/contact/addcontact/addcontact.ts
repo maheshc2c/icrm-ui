@@ -46,7 +46,8 @@ export class Addcontact implements OnInit {
       type: 'select',
       placeholder: 'Select Speciality',
       required: true,
-      options: []
+      options: [],
+      searchable: true
     },
     {
       name: 'customerId',
@@ -54,7 +55,8 @@ export class Addcontact implements OnInit {
       placeholder: 'Select Customer',
       type: 'select',
       required: true,
-      options: []
+      options: [],
+      searchable: true
     },
  
     { name: 'contactMobileNo', label: 'Mobile', placeholder: 'Enter mobile number', type: 'text', required: true },

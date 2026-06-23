@@ -17,6 +17,8 @@
   [showEdit]="true"
   [showDelete]="false"
   [showView]="true"
+      [showReset]="true"
+  (reset)="onReset()"
 
   (search)="onSearch($event)"
   (viewRow)="onView($event)"

@@ -19,7 +19,7 @@
 }
 
 /* ================= SHARED WIDTH COLUMN ================= */
-/* 🔥 THIS IS THE MOST IMPORTANT PART */
+
 .datatable-toolbar,
 .content-wrapper {
   width: 100%;
@@ -62,8 +62,7 @@
 
 /* ================= CARD (TABLE WIDTH SOURCE) ================= */
 .card {
-  width: 100%;
-  /* 🔥 THIS DEFINES THE EDGE */
+  width: 100%;                 
   max-width: 100%;
   box-sizing: border-box;
 
@@ -199,7 +198,6 @@
 } */
 
 
-/* search css */
 /* ================= SEARCH INPUT ================= */
 
 .datatable-toolbar .form-control {

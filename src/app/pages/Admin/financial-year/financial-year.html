@@ -9,13 +9,16 @@
 [rows]="rows"
 [columns]="columns"
 [showImport]="true"
+[showView]="true"
+[showDelete] = "false"
+(viewRow) = "onView()"
 [showAdd]="true"
 (search)="onSearch($event)"
 [searchFields]="searchFields"
 (download)="onImport()"
 (add)="onAdd()"
 (editRow)="onEdit($event)"
-(deleteRow)="onDelete($event)" >
+ >
 
 </app-data-table>
 <!-- 
