@@ -8,7 +8,7 @@ export interface SearchFieldConfig {
   key: string;                 // companyName, email, status
   label: string;               // Label text
   placeholder?: string;        // Optional
-  type?: 'text' | 'email' | 'number' | 'date' | 'select'| 'datetime-local';
+  type?: 'text' | 'email' | 'number' | 'date' | 'select'| 'native-select' | 'datetime-local';
   dependsOn?: string;          // ✅ Add dependsOn property for conditional display
 
   /* 🔽 DROPDOWN OPTIONS (only for type = select) */
@@ -35,6 +35,7 @@ export class Search implements OnInit, OnChanges {
 
   @Output() searchChange = new EventEmitter<any>();
   @Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
+  @Output() dropdownSearch = new EventEmitter<{ key: string; query: string }>();
 
 
   ngOnInit() {
@@ -56,7 +57,11 @@ export class Search implements OnInit, OnChanges {
 
   toggleDropdown(fieldKey: string, event: Event) {
     event.stopPropagation();
-    this.openDropdown = this.openDropdown === fieldKey ? null : fieldKey;
+    const isOpening = this.openDropdown !== fieldKey;
+    this.openDropdown = isOpening ? fieldKey : null;
+    if (isOpening) {
+      this.dropdownSearch.emit({ key: fieldKey, query: '' });
+    }
   }
 
   selectOption(field: SearchFieldConfig, option: any) {
@@ -100,6 +105,7 @@ export class Search implements OnInit, OnChanges {
         );
       }
     }
+    this.dropdownSearch.emit({ key: field.key, query: event.target.value });
   }
 
   // Close dropdowns when clicking outside

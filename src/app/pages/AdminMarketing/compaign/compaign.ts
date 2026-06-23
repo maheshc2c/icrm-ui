@@ -9,6 +9,7 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import { adminMarketingservice } from '../../../service/adminmarketingservice';
 import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -23,7 +24,8 @@ export class ManageCompaign implements OnInit {
   constructor(
     private adminMarketingservice: adminMarketingservice,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private confirmService: ConfirmDialogService
   ) {}
 
   headerTitle = 'Manage Campaign';
@@ -151,45 +153,39 @@ export class ManageCompaign implements OnInit {
     this.openModal(row);
   }
 
-  // Delete Campaign
+  // Activate/Deactivate Campaign
   onDelete(row: any) {
-    console.log('Delete row:', row);
-  }
-
-  // Status Toggle
-  onStatusToggle(row: any) {
-    console.log('Status toggle clicked for row:', row);
-    const campaignId = row.campaignId || row.id;
-    const currentStatus = Number(row.specialityStatus);
-
-    if (!campaignId && campaignId !== 0) {
-      this.toastService.error('Cannot toggle status: ID is missing.');
+    const id = row.campaignId || row.id;
+    if (!id && id !== 0) {
       return;
     }
+    const status = Number(row.specialityStatus);
+    const isActive = status === 1;
 
-    if (currentStatus === 1) {
-      this.adminMarketingservice.deactivateCampaign(campaignId).subscribe({
+    this.confirmService.confirm({
+      title: 'Confirm',
+      message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this campaign?`,
+      confirmText: isActive ? 'Deactivate' : 'Activate'
+    }).then((confirmed) => {
+      if (!confirmed) return;
+
+      const apiCall = isActive
+        ? this.adminMarketingservice.deactivateCampaign(id)
+        : this.adminMarketingservice.activateCampaign(id);
+
+      apiCall.subscribe({
         next: () => {
-          this.toastService.success('Campaign deactivated successfully');
-          this.loadCampaigns();
+          row.specialityStatus = isActive ? 2 : 1;
+          this.rows = [...this.rows];
+          this.fullRows = [...this.fullRows];
+          this.toastService.success(`Campaign ${isActive ? 'deactivated' : 'activated'} successfully`);
         },
         error: (err) => {
-          console.error('Deactivate failed', err);
-          this.toastService.error('Failed to deactivate campaign. Please check console.');
+          console.error('Status update failed', err);
+          this.toastService.error('Failed to update status');
         }
       });
-    } else {
-      this.adminMarketingservice.activateCampaign(campaignId).subscribe({
-        next: () => {
-          this.toastService.success('Campaign activated successfully');
-          this.loadCampaigns();
-        },
-        error: (err) => {
-          console.error('Activate failed', err);
-          this.toastService.error('Failed to activate campaign. Please check console.');
-        }
-      });
-    }
+    });
   }
 
   // Store search values when changed

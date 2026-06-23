@@ -8,12 +8,14 @@
 .content {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 70px); 
+  min-height: calc(100vh - 70px);
+  /* Allow it to grow */
   margin-left: 287px;
   width: calc(100% - 287px);
   padding: 20px;
   box-sizing: border-box;
-  overflow-y: auto; 
+  overflow-y: auto;
+  /* Enable scrolling if constrained by parent */
 }
 
 /* ================= SHARED WIDTH COLUMN ================= */
@@ -28,18 +30,20 @@
 /* ================= TOOLBAR ================= */
 .datatable-toolbar {
   display: flex;
-  flex-wrap: wrap;              
-  align-items: center;
+  flex-wrap: wrap;
+  /* ✅ auto wrap */
+  align-items: flex-end;
   gap: 16px;
-  overflow: hidden;           
+
+  /* 🔒 LOCK TOOLBAR WIDTH TO TABLE WIDTH */
+  overflow: visible;             /* prevent dropdowns from being cut off */
   margin-bottom: 16px;
 }
 
 /* Search fields */
 .datatable-toolbar app-search {
+  flex: 1;
   min-width: 220px;
-  max-width: 100%;
-  flex: 0 0 auto;
 }
 
 /* Buttons */
@@ -48,6 +52,7 @@
   gap: 10px;
   align-items: center;
   flex: 0 0 auto;
+  margin-left: auto;
 }
 
 /* ================= TABLE ================= */
@@ -63,14 +68,15 @@
 
   background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: none;
 }
 
 /* ================= TABLE BODY ================= */
 .table-responsive {
   width: 100%;
-  overflow-x: auto; 
+  overflow-x: auto;
+  /* keep horizontal scroll for small screens */
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   box-sizing: border-box;
@@ -127,6 +133,7 @@
   background: #ffebee;
   color: #d32f2f;
 }
+
 .action-buttons .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -161,8 +168,10 @@
 /* ================= NO RECORDS FOUND (MATCHES TABLE DESIGN) ================= */
 
 .table tbody tr.no-records-row td {
-  background: #ffffff;               
-  color: #101010;                   
+  background: #ffffff;
+  /* same as card */
+  color: #101010;
+  /* subtle muted text */
   font-size: 18px;
   font-weight: 500;
   padding: 10px 10px;
@@ -172,8 +181,8 @@
 /* ================= TABLE CELL BORDERS ================= */
 .table th,
 .table td {
-  border-bottom: 1px solid #e5e7eb;  
-  padding: 6px 16px;
+  border-bottom: 1px solid #e5e7eb;   /* row separator */
+  padding: 6px 8px;
   vertical-align: middle;
 }
 
@@ -182,6 +191,7 @@
 .table td:not(:last-child) {
   border-right: 1px solid #f0f0f0;
 }
+
 /* ================= ROW HOVER ================= */
 /* .table tbody tr:hover {
   background-color: #fafafa;
@@ -195,7 +205,8 @@
   min-width: 220px;
   padding: 6px 12px;
   font-size: 14px;
-  border-radius: 6px;               
+  border-radius: 6px;
+  /* match button radius */
   border: 1px solid #eadcff;
   background: #ffffff;
   color: #333;
@@ -245,7 +256,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .pagination-info {
@@ -379,14 +390,15 @@
 
 .dropdown-panel {
   position: absolute;
-  bottom: 100%; 
+  bottom: 100%;
+  /* Open upwards in pagination */
   left: 0;
   right: 0;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 6px 6px 0 0;
   z-index: 1000;
-  box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1);
   margin-bottom: 2px;
 }
 
@@ -406,7 +418,8 @@
 
 .option-item:hover {
   background: #f5f8fa;
-  color: #e74c3c; 
+  color: #e74c3c;
+  /* Match table red theme */
 }
 
 
@@ -593,5 +606,33 @@
   .table-responsive {
     overflow-x: auto;
   }
-  
+}
+
+/* ================= STATUS BADGES ================= */
+.status-badge-container {
+  display: flex;
+  gap: 1px;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+.status-badge {
+  padding: 1px 3px;
+  border-radius: 2px;
+  font-size: 9.5px;
+  font-weight: 600;
+  display: inline-block;
+  letter-spacing: -0.2px;
+}
+
+.status-badge.active {
+  background-color: #5cb85c;
+  color: #fff;
+  border: 1px solid #4cae4c;
+}
+
+.status-badge.inactive {
+  background-color: #e0e0e0;
+  color: #555;
+  border: 1px solid #d3d3d3;
 }

@@ -13,7 +13,10 @@
   (searchChange)="onSearch($event)"
   [showImport]="true"
   [showAdd]="true"
+  [showReset]="true"
+  [showDelete]="false"
   [showPagination]="true"
+  (reset)="onReset()"
   (download)="onDownload()"
   (add)="onAdd()"
   (editRow)="onEdit($event)">

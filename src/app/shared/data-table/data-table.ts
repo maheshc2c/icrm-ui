@@ -25,6 +25,7 @@ export class DataTable
   @Input() showDeleteButton: boolean = true;
   @Input() showEditButton: boolean = true;
   @Input() showViewButton: boolean = false;
+  @Input() noMargin: boolean = false;
 
    filteredRows = [...this.rows];
 
@@ -151,6 +152,7 @@ onSearchClick() {
 @Input() searchFields: SearchFieldConfig[] = [];
 @Output() searchChange = new EventEmitter<any>();
 @Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
+@Output() dropdownSearch = new EventEmitter<{ key: string; query: string }>();
 
 
 onSearchFromChild(values: any) {

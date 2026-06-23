@@ -31,6 +31,8 @@ export class Form implements OnChanges {
   errors: any = {};
   touched: any = {};
  
+  touched: any = {};
+
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
   //      this.formData = { ...this.model };
@@ -156,7 +158,7 @@ export class Form implements OnChanges {
       this.fieldChange.emit({ name: fieldName, value: optionValue });
     }
   }
- 
+
   /* ================= VALIDATION ================= */
   revalidateField(fieldName: string): void {
     delete this.errors[fieldName];

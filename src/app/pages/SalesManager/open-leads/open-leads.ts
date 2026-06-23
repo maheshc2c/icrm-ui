@@ -27,9 +27,13 @@ export class OpenLeads implements OnInit {
   searchFields: SearchFieldConfig[] = [
     { key: 'leadId', label: 'Lead ID', type: 'text', placeholder: 'Lead ID' },
     { key: 'customer', label: 'Customer', type: 'select', placeholder: 'Select Customer', options: [] },
-    { key: 'status', label: 'Status', type: 'select', placeholder: 'Select Status', options: [
-      { value: 'Lead', label: 'Lead' },
-      { value: 'Approved', label: 'Approved' }
+    { key: 'status', label: 'Status', type: 'native-select', placeholder: 'Select Status', options: [
+      { value: '1', label: 'Waiting for Approval' },
+      { value: '2', label: 'Lead Approved' },
+      { value: '3', label: 'Opportunity Created' },
+      { value: '4', label: 'All Opportunities Dropped' },
+      { value: '5', label: 'All Opportunities Lost or Dropped' },
+      { value: '6', label: 'Partial Quote' }
     ]},
     { key: 'startDate', label: 'Start Date', type: 'date', placeholder: 'Start Date' },
     { key: 'endDate', label: 'End Date', type: 'date', placeholder: 'End Date' }
@@ -103,7 +107,7 @@ export class OpenLeads implements OnInit {
     const searchParams = {
       leadId: filters.leadId,
       customerName: filters.customer,
-      status: filters.status === 'Lead' ? '1' : (filters.status === 'Approved' ? '2' : filters.status),
+      status: filters.status,
       startDate: filters.startDate,
       endDate: filters.endDate
     };
@@ -128,6 +132,10 @@ export class OpenLeads implements OnInit {
         console.error('Error searching leads:', err);
       }
     });
+  }
+
+  onReset(): void {
+    this.loadLeads();
   }
 
   onAdd(): void {

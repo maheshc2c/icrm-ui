@@ -90,11 +90,12 @@ export class ClosedOpportunitiesComponent implements OnInit {
   /* ================= LOAD CLOSED OPPORTUNITIES ================= */
   loadClosedOpportunities(): void {
     this.leadService.getOpportunityTable().subscribe({
-      next: (data) => {
+      next: (data: any) => {
+        const opps = data.content || data;
         // Filter to only include opportunities where stage is Won or Lost
-        const closedData = data.filter(opp => opp.stage === 'Won' || opp.stage === 'Lost' || opp.stage === 'Dropped');
+        const closedData = opps.filter((opp: any) => opp.stage === 'Won' || opp.stage === 'Lost' || opp.stage === 'Dropped');
         
-        this.closedOpportunities = closedData.map(opp => ({
+        this.closedOpportunities = closedData.map((opp: any) => ({
           ...opp,
           product: opp.productAndCategory,
           lifeTime: opp.lifeTimeDays,

@@ -12,8 +12,14 @@
   [searchFields]="searchFields"
   [showImport]="true"
   [showAdd]="true"
+  [showReset]="true"
+  [totalElements]="totalElements"
+  [currentPage]="currentPage"
   (searchChange)="onSearchChange($event)"
   (search)="onSearch()"
+  (reset)="onReset()"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
   (download)="downloadExcel()"
   (add)="onAdd()"
   (editRow)="onEdit($event)">
@@ -27,7 +33,7 @@
       
       <select *ngIf="field.type === 'select'" [(ngModel)]="oppModel[field.name]" [id]="field.name" class="form-control" (ngModelChange)="onFieldChange(field.name, $event)">
         <option value="" disabled selected>Choose {{ field.label }}</option>
-        <option *ngFor="let opt of field.options" [value]="opt.value">{{ opt.label }}</option>
+        <option *ngFor="let opt of field.options" [ngValue]="opt.value">{{ opt.label }}</option>
       </select>
 
       <input *ngIf="field.type === 'number'" type="number" [(ngModel)]="oppModel[field.name]" [id]="field.name" class="form-control" [placeholder]="'Enter ' + field.label">
