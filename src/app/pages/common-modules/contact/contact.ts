@@ -366,6 +366,11 @@ onImport() {
 }
 
 showUploadModal = false;
+showFileModal = false;
+
+selectedFile: File | null = null;
+
+
 onUpload() {
   this.showUploadModal = true;
 }
@@ -382,54 +387,41 @@ downloadTemplate() {
 
   link.click();
 }
+onFileSelected(event: any) {
 
-uploadExcel() {
+  const file = event.target.files[0];
 
-  const input = document.createElement('input');
-
-  input.type = 'file';
-  input.accept = '.xlsx,.xls';
-
-  input.onchange = (event: any) => {
-
-    const file = event.target.files[0];
-
-    if (!file) {
-      return;
-    }
-
-    this.showUploadModal = false;
-
-    this.adminservice.uploadContact(file).subscribe({
-      next: (response: string) => {
-
-  console.log(response);
-
-  if (response.includes('Row')) {
-
-    this.toastService.warning(
-      response,
-      15000
-    );
+  if (!file) {
+    return;
   }
 
-  if (response.includes('Successfully')) {
+  const extension = file.name.split('.').pop()?.toLowerCase();
 
-    this.toastService.success(
-      'Valid contacts uploaded successfully',
-      5000
+  if (
+    extension !== 'xlsx' &&
+    extension !== 'xls'
+  ) {
+
+    this.toastService.error(
+      'Only Excel files are allowed'
     );
+
+    event.target.value = '';
+    this.selectedFile = null;
+    return;
   }
 
-  this.loadContact();
-}
-    });
-  };
-
-  input.click();
+  this.selectedFile = file;
 }
 
-// onUpload() {
+closeFileModal() {
+
+  this.showFileModal = false;
+  this.selectedFile = null;
+
+}
+
+// uploadExcel() {
 
 //   const input = document.createElement('input');
 
@@ -443,68 +435,108 @@ uploadExcel() {
 //     if (!file) {
 //       return;
 //     }
+//     this.showUploadModal = false;
+//   this.showFileModal = true;
+
+//     this.showUploadModal = false;
 
 //     this.adminservice.uploadContact(file).subscribe({
-
 //       next: (response: string) => {
 
-//   console.log('UPLOAD RESPONSE =>', response);
+//   console.log(response);
 
-//   const rows =
-//     [...new Set(
-//       [...response.matchAll(/Row\s+(\d+)/gi)]
-//         .map(match => match[1])
-//     )];
+//   if (response.includes('Row')) {
 
-//   // Validation rows found
-//   if (rows.length > 0) {
-
-//     // Green Success
-//     this.toastService.success(
-//       'Contacts uploaded successfully.',
-//       5000
-//     );
-
-//     // Yellow Warning
 //     this.toastService.warning(
-//       `Row(s) ${rows.join(', ')} contain invalid data and were not uploaded.`,
-//       10000
+//       response,
+//       15000
 //     );
+//   }
 
-//   } else {
+//   if (response.includes('Successfully')) {
 
-//     // All rows uploaded
 //     this.toastService.success(
-//       'Contacts uploaded successfully.',
+//       'Valid contacts uploaded successfully',
 //       5000
 //     );
 //   }
 
 //   this.loadContact();
-// },
-
-//       error: (err: any) => {
-
-//         console.log('STATUS =>', err.status);
-//         console.log('ERROR =>', err.error);
-//         console.log('FULL ERROR =>', err);
-
-//         const errorMessage =
-//           typeof err.error === 'string'
-//             ? err.error
-//             : err?.error?.message ||
-//               err?.message ||
-//               'Upload failed';
-
-//         this.toastService.error(
-//           errorMessage,
-//           10000
-//         );
-//       }
+// }
 //     });
 //   };
 
 //   input.click();
 // }
+uploadExcel() {
+  this.showUploadModal = false;
+  this.showFileModal = true;
+}
+
+submitUpload() {
+
+if (!this.selectedFile) {
+
+
+this.toastService.warning(
+  'Please select an Excel file'
+);
+
+return;
+
+
+}
+
+this.adminservice.uploadContact(this.selectedFile).subscribe({
+
+
+next: (response: string) => {
+
+  console.log('UPLOAD RESPONSE =>', response);
+
+  if (response.includes('Row')) {
+
+    this.toastService.warning(
+      response,
+      15000
+    );
+  }
+
+  if (
+    response.includes('Successfully') ||
+    response.includes('Uploaded Successfully')
+  ) {
+
+    this.toastService.success(
+      'Valid contacts uploaded successfully',
+      5000
+    );
+  }
+
+  this.showFileModal = false;
+  this.selectedFile = null;
+
+  this.loadContact();
+},
+
+error: (err: any) => {
+
+  const errorMessage =
+    typeof err.error === 'string'
+      ? err.error
+      : err?.error?.message ||
+        err?.message ||
+        'Upload failed';
+
+  this.toastService.error(
+    errorMessage,
+    10000
+  );
+}
+
+
+});
+}
+
 
   }

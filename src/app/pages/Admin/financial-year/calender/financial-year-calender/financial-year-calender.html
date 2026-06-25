@@ -1,0 +1,67 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+[title]="headerTitle"
+[breadcrumbs]="headerBreadcrumbs"></app-pageheader>
+
+
+<div class="financial-year-container">
+
+  <h2 class="fy-title">
+    Financial Year : {{ financialYearName }}
+  </h2>
+
+  <div class="month-grid">
+
+    <div class="month-card"
+         *ngFor="let month of calendarData">
+
+      <table class="month-table">
+
+        <thead>
+          <tr>
+            <th colspan="4" class="month-header">
+              {{ month.monthName }}
+            </th>
+          </tr>
+
+          <tr>
+            <th>S No</th>
+            <th>Week No</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr
+  *ngFor="let week of month.weeks; let i = index"
+  [class.fy-start-row]="
+    week.startDate <= financialYearStartDate &&
+    week.endDate >= financialYearStartDate
+  ">
+
+            <td>{{ i + 1 }}</td>
+            <td>{{ week.weekNo }}</td>
+            <td>{{ week.startDate }}</td>
+            <td>{{ week.endDate }}</td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+     
+  </div>
+  <div class="back-btn-container">
+  <button class="back-btn"
+          (click)="goBack()">
+    Back
+  </button>
+</div>
+
+</div>

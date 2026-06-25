@@ -165,7 +165,7 @@ export const routes: Routes = [
 //Financial Yr
 
 {
-  path: 'admin/financial-yr',
+  path: 'financial-yr',
   loadComponent: () =>
     import('./pages/Admin/financial-year/financial-year').then(m => m.FinancialYear)
 },
@@ -175,9 +175,9 @@ export const routes: Routes = [
     import('./pages/Admin/financial-year/addfy/addfy').then(m => m.Addfy)
 },
 {
-  path: 'financial-yr/edit/:id',
+  path: 'financial-year-calendar',
   loadComponent: () =>
-    import('./pages/Admin/financial-year/addfy/addfy').then(m => m.Addfy)
+    import('./pages/Admin/financial-year/calender/financial-year-calender/financial-year-calender').then(m => m.FinancialYearCalender)
 },
 
 //UserLog

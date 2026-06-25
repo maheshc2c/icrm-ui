@@ -1,0 +1,50 @@
+.financial-year-container {
+  padding: 20px;
+}
+
+.fy-title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 500;
+  margin-bottom: 25px;
+}
+
+.month-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(320px, 1fr));
+
+  gap: 24px;
+
+  align-items: start;
+}
+
+.month-card {
+  background: #fff;
+}
+
+.month-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.month-header {
+  background: #6f9ccc;
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  padding: 10px;
+}
+
+.month-table th,
+.month-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.month-table thead tr:nth-child(2) {
+  background: #79a6d6;
+  color: white;
+}
