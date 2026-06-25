@@ -178,8 +178,45 @@
             </div>
           </div>
 
+            <!-- Distributor Details appended here -->
+            <ng-container *ngIf="isDistributor">
+                <div style="grid-column: span 2; margin-top: 20px; margin-bottom: 10px;">
+                    <hr style="border-top: 1px solid #ccc; margin-bottom: 20px;">
+                    <h4 style="color: #555; font-weight: 500;">Distributor Details</h4>
+                </div>
+                <div class="form-row" *ngFor="let field of distributorDetailsFields">
+                    <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required" class="text-danger">*</span></label>
+                    <div class="input-container">
+                        <input type="text" class="form-control" [placeholder]="field.placeholder"
+                            [(ngModel)]="userData[field.name]" [name]="field.name" [required]="field.required" #distCtrl="ngModel"
+                            [ngClass]="{'is-invalid': (userDetailsSubmitted || distCtrl.touched) && distCtrl.invalid}">
+                        <div *ngIf="(userDetailsSubmitted || distCtrl.touched) && distCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                            {{field.label}} is required.
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
 
-          <div class="panel-actions">
+            <!-- Stockist Details appended here -->
+            <ng-container *ngIf="isStockist">
+                <div style="grid-column: span 2; margin-top: 20px; margin-bottom: 10px;">
+                    <hr style="border-top: 1px solid #ccc; margin-bottom: 20px;">
+                    <h4 style="color: #555; font-weight: 500;">Stockist Details</h4>
+                </div>
+                <div class="form-row" *ngFor="let field of stockistDetailsFields">
+                    <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required" class="text-danger">*</span></label>
+                    <div class="input-container">
+                        <input type="text" class="form-control" [placeholder]="field.placeholder"
+                            [(ngModel)]="userData[field.name]" [name]="field.name" [required]="field.required" #stockCtrl="ngModel"
+                            [ngClass]="{'is-invalid': (userDetailsSubmitted || stockCtrl.touched) && stockCtrl.invalid}">
+                        <div *ngIf="(userDetailsSubmitted || stockCtrl.touched) && stockCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                            {{field.label}} is required.
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <div class="panel-actions">
             <button type="button" class="btn btn-cancel" (click)="closePanel()">Cancel</button>
             <button type="submit" class="btn btn-save" [disabled]="isSubmitting">
               {{ isSubmitting ? 'Saving…' : 'Save User Details' }}
@@ -255,15 +292,15 @@
 
           <form (ngSubmit)="saveLocations()">
 
-          <!-- ── WORLD MODE ── -->
-          <ng-container *ngIf="locationMode === 'world'">
-            <div class="form-row">
-              <p class="hint-text text-muted" style="font-size:13px; margin:0;">
-                <i class="fas fa-info-circle"></i>
-                This role has access to all locations.
-              </p>
-            </div>
-          </ng-container>
+            <!-- 🌐 WORLD MODE 🌐 -->
+            <ng-container *ngIf="locationMode === 'world'">
+              <div style="padding: 30px; display: block; width: 100%;">
+                  <h4 style="margin-bottom: 60px; color: #555; text-align: left; font-weight: normal;">Assign locations to user</h4>
+                  <div style="text-align: center; font-weight: bold; font-size: 18px; color: #555; margin-bottom: 60px;">
+                      All GEOS
+                  </div>
+              </div>
+            </ng-container>
 
           <!-- ── GEO MODE ── -->
           <ng-container *ngIf="locationMode === 'geo'">
@@ -390,7 +427,17 @@
           <p>Syncing product details...</p>
         </div>
         <div *ngIf="!isUserLoading">
-          <form (ngSubmit)="saveProducts()">
+          <ng-container *ngIf="productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'">
+            <div style="padding: 30px; display: block; width: 100%;">
+                <h4 style="margin-bottom: 60px; color: #555; text-align: left; font-weight: normal;">Assign products to user</h4>
+                <div style="text-align: center; font-weight: bold; font-size: 18px; color: #555; margin-bottom: 60px;">
+                    {{ productType === 'NO_PRODUCTS' ? 'No Need of Assigning Products' : 'All Products Assigned' }}
+                </div>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="productType !== 'NO_PRODUCTS' && productType !== 'ALL_PRODUCTS'">
+            <form (ngSubmit)="saveProducts()">
 
           <!-- Categories -->
             <div class="form-row">
@@ -456,12 +503,12 @@
             </button>
           </div>
 
-        </form>
+          </form>
+          </ng-container>
+          </div>
         </div>
-      </div>
-    </div><!-- /panel products -->
+      </div><!-- /panel products -->
 
 
   </div><!-- /edit-user-content -->
 </div><!-- /edit-user-wrapper -->
-

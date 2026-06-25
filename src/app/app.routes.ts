@@ -66,28 +66,28 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/manage-users',
+        path: 'users',
         loadComponent: () =>
           import('./pages/Admin/manager-users/manage-users').then(m => m.ManageUsersComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/add-users',
+        path: 'users/add',
         loadComponent: () =>
           import('./pages/Admin/manager-users/add-users/add-users').then(m => m.AddUsersComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/edit-user/:id',
+        path: 'users/edit/:id',
         loadComponent: () =>
           import('./pages/Admin/manager-users/edit-users/edit-users').then(m => m.EditUsersComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/view-user/:id',
+        path: 'users/view/:id',
         loadComponent: () =>
           import('./pages/Admin/manager-users/view-user/view-user').then(m => m.ViewUserComponent),
         canActivate: [authGuard],
@@ -269,21 +269,27 @@ export const routes: Routes = [
     import('./pages/Admin/territory/territory').then(m => m.Territory)
 },
 //segment
-{
-        path: 'admin/segment',
-        loadComponent: () =>
-          import('./pages/Admin/segment/segment.component').then(m => m.SegmentComponent)
-      },
-      {
-        path: 'admin/add-segment',
-        loadComponent: () =>
-          import('./pages/Admin/segment/add-segment/add-segment.component').then(m => m.AddSegment)
-      },
-      {
-        path: 'admin/segment/edit/:id',
-        loadComponent: () =>
-          import('./pages/Admin/segment/edit-segment/edit-segment.component').then(m => m.EditSegment)
-      },
+        {
+          path: 'segment',
+          loadComponent: () =>
+            import('./pages/Admin/segment/segment.component').then(m => m.SegmentComponent),
+          canActivate: [authGuard],
+          data: { roles: ['ADMIN'] }
+        },
+        {
+          path: 'segment/add',
+          loadComponent: () =>
+            import('./pages/Admin/segment/add-segment/add-segment.component').then(m => m.AddSegment),
+          canActivate: [authGuard],
+          data: { roles: ['ADMIN'] }
+        },
+        {
+          path: 'segment/edit/:id',
+          loadComponent: () =>
+            import('./pages/Admin/segment/edit-segment/edit-segment.component').then(m => m.EditSegment),
+          canActivate: [authGuard],
+          data: { roles: ['ADMIN'] }
+        },
 
 
 //discount 
@@ -383,22 +389,27 @@ export const routes: Routes = [
     import('./pages/Admin/region/addregion/addregion').then(m => m.Addregion),
 },
 
-{
-    path: 'admin/product',
-    loadComponent: () =>
+  {
+    path: 'product',
+      loadComponent: () =>
       import('./pages/Admin/product/product').then(m => m.Product),
-     
-  },
-  {
-    path: 'admin/add-product',
-    loadComponent: () =>
-      import('./pages/Admin/product/add-product/add-product.component').then(m => m.AddProduct)
-  },
-  {
-    path: 'admin/product/edit/:id',
-    loadComponent: () =>
-      import('./pages/Admin/product/edit-product/edit-product.component').then(m => m.EditProduct)
-  },
+      canActivate: [authGuard],
+      data: { roles: ['ADMIN'] }
+    },
+    {
+    path: 'product/add',
+      loadComponent: () =>
+      import('./pages/Admin/product/add-product/add-product.component').then(m => m.AddProduct),
+      canActivate: [authGuard],
+      data: { roles: ['ADMIN'] }
+    },
+    {
+    path: 'product/edit/:id',
+      loadComponent: () =>
+      import('./pages/Admin/product/edit-product/edit-product.component').then(m => m.EditProduct),
+      canActivate: [authGuard],
+      data: { roles: ['ADMIN'] }
+    },
 
   
 

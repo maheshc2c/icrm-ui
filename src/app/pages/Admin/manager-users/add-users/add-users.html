@@ -36,9 +36,6 @@
             <div class="tab-item" [class.active]="currentStep === 4">
                 Product Details
             </div>
-            <div class="tab-item" *ngIf="isDistributor" [class.active]="currentStep === 5">
-                Distributor Details
-            </div>
         </div>
 
         <div class="tabs-actions">
@@ -136,30 +133,74 @@
                     </ng-container>
                 </div>
 
+                <!-- Distributor Details appended here -->
+                <ng-container *ngIf="isDistributor">
+                    <div style="grid-column: span 2; margin-top: 20px; margin-bottom: 10px;">
+                        <hr style="border-top: 1px solid #ccc; margin-bottom: 20px;">
+                        <h4 style="color: #555; font-weight: 500;">Distributor Details</h4>
+                    </div>
+                    <div class="form-row" *ngFor="let field of distributorDetailsFields">
+                        <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required" class="text-danger">*</span></label>
+                        <div class="input-container">
+                            <input type="text" class="form-control" [placeholder]="field.placeholder"
+                                [(ngModel)]="formInitialData[field.name]" [name]="field.name" [required]="field.required" #distCtrl="ngModel"
+                                [ngClass]="{'is-invalid': (step2Form.submitted || distCtrl.touched) && distCtrl.invalid}">
+                            <div *ngIf="(step2Form.submitted || distCtrl.touched) && distCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- Stockist Details appended here -->
+                <ng-container *ngIf="isStockist">
+                    <div style="grid-column: span 2; margin-top: 20px; margin-bottom: 10px;">
+                        <hr style="border-top: 1px solid #ccc; margin-bottom: 20px;">
+                        <h4 style="color: #555; font-weight: 500;">Stockist Details</h4>
+                    </div>
+                    <div class="form-row" *ngFor="let field of stockistDetailsFields">
+                        <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required" class="text-danger">*</span></label>
+                        <div class="input-container">
+                            <input type="text" class="form-control" [placeholder]="field.placeholder"
+                                [(ngModel)]="formInitialData[field.name]" [name]="field.name" [required]="field.required" #stockCtrl="ngModel"
+                                [ngClass]="{'is-invalid': (step2Form.submitted || stockCtrl.touched) && stockCtrl.invalid}">
+                            <div *ngIf="(step2Form.submitted || stockCtrl.touched) && stockCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
                 <div class="form-actions mt-4">
-                    <button type="button" class="btn btn-outline-secondary btn-rounded"
-                        (click)="handleStepCancel()">Cancel</button>
-                    <button type="submit" class="btn btn-primary btn-rounded ms-3">Submit</button>
-                </div>
+                      <button type="button" class="btn btn-outline-secondary btn-rounded"
+                          (click)="handleStepCancel()">Cancel</button>
+
+                      <button *ngIf="locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS')"
+                              type="button" 
+                              class="btn btn-primary btn-rounded ms-3"
+                              (click)="step2Form.form.valid ? onFormSubmit(formInitialData) : handleFormError(step2Form)">
+                          Submit
+                      </button>
+
+                      <button *ngIf="!(locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'))"
+                              type="submit" class="btn btn-primary btn-rounded ms-3">Next Step</button>
+                  </div>
             </form>
         </div>
     </div>
 
     <!-- Step 3: Location Details (Cascading) -->
     <div *ngIf="currentStep === 3" class="wizard-form-body">
-        <h3 class="section-title">Location Details</h3>
+        <h3 class="section-title" *ngIf="locationMode !== 'world'">Location Details</h3>
         <div class="wizard-form-container">
             <form (ngSubmit)="handleStepSubmit({})">
 
                 <!-- === WORLD-LEVEL ROLES: Admin Marketing / Global Head / Stockist / CIC === -->
                 <ng-container *ngIf="locationMode === 'world'">
-                    <div class="form-row">
-                        <label class="form-label inline-label text-right"></label>
-                        <div class="input-container">
-                            <p class="text-muted" style="font-size:13px; margin:0;">
-                                <i class="fas fa-info-circle"></i>
-                                This role has access to all locations.
-                            </p>
+                    <div style="padding: 30px; display: block; grid-column: span 2; width: 100%;">
+                        <h4 style="margin-bottom: 60px; color: #555; text-align: left; font-weight: normal;">Assign locations to user</h4>
+                        <div style="text-align: center; font-weight: bold; font-size: 18px; color: #555; margin-bottom: 60px;">
+                            All GEOS
                         </div>
                     </div>
                 </ng-container>
@@ -279,12 +320,20 @@
                 </ng-container>
                 <!-- End cascade ng-container -->
 
-                <!-- Form Actions (shared for all modes) -->
-                <div class="form-actions mt-4">
-                    <button type="button" class="btn btn-outline-secondary btn-rounded"
-                        (click)="handleStepCancel()">Previous</button>
-                    <button type="submit" class="btn btn-primary btn-rounded ms-3">Next Step</button>
-                </div>
+                  <div class="form-actions mt-4">
+                      <button type="button" class="btn btn-outline-secondary btn-rounded"
+                          (click)="handleStepCancel()">Previous</button>
+
+                      <button *ngIf="locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS')"
+                              type="button" 
+                              class="btn btn-primary btn-rounded ms-3"
+                              (click)="onFormSubmit({})">
+                          Submit
+                      </button>
+
+                      <button *ngIf="!(locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'))"
+                              type="submit" class="btn btn-primary btn-rounded ms-3">Next Step</button>
+                  </div>
 
             </form>
         </div>
@@ -293,9 +342,19 @@
 
     <!-- Step 4: Product Details (Cascading) -->
     <div *ngIf="currentStep === 4" class="wizard-form-body">
-        <h3 class="section-title">Product Details</h3>
+        <h3 class="section-title" *ngIf="productType === 'SELECT_PRODUCTS'">Product Details</h3>
         <div class="wizard-form-container">
             <form (ngSubmit)="handleStepSubmit({})">
+                <ng-container *ngIf="productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'">
+                    <div style="padding: 30px; display: block; grid-column: span 2; width: 100%;">
+                        <h4 style="margin-bottom: 60px; color: #555; text-align: left; font-weight: normal;">Assign products to user</h4>
+                        <div style="text-align: center; font-weight: bold; font-size: 18px; color: #555; margin-bottom: 60px;">
+                            {{ productType === 'NO_PRODUCTS' ? 'No Need of Assigning Products' : 'All Products Assigned' }}
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="productType === 'SELECT_PRODUCTS'">
 
                 <!-- Categories (checkboxes) -->
                 <div class="form-row">
@@ -361,33 +420,10 @@
                     </div>
                 </div>
 
-                <div class="form-actions mt-4">
-                    <button type="button" class="btn btn-outline-secondary btn-rounded"
-                        (click)="handleStepCancel()">Previous</button>
-                    <button type="submit" class="btn btn-primary btn-rounded ms-3">
-                        {{ isDistributor ? 'Next Step' : 'Submit' }}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+                </ng-container>
 
-    <!-- Step 5: Distributor Details Form (only shown when role = Distributor) -->
-    <div *ngIf="currentStep === 5 && isDistributor" class="wizard-form-body">
-        <h3 class="section-title">Distributor Details</h3>
-        <div class="wizard-form-container">
-            <form (ngSubmit)="handleStepSubmit(formInitialData)">
-                <div class="form-row" *ngFor="let field of distributorDetailsFields">
-                    <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required"
-                            class="text-danger">*</span></label>
-                    <div class="input-container">
-                        <input type="text" class="form-control" [placeholder]="field.placeholder"
-                            [(ngModel)]="formInitialData[field.name]" [name]="field.name" [required]="field.required">
-                    </div>
-                </div>
                 <div class="form-actions mt-4">
-                    <button type="button" class="btn btn-outline-secondary btn-rounded"
-                        (click)="handleStepCancel()">Previous</button>
+                    <button type="button" class="btn btn-outline-secondary btn-rounded" (click)="handleStepCancel()">Previous</button>
                     <button type="submit" class="btn btn-primary btn-rounded ms-3">Submit</button>
                 </div>
             </form>

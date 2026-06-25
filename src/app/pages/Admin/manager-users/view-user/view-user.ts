@@ -29,7 +29,7 @@ export class ViewUserComponent implements OnInit {
   headerTitle = 'View User Profile';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Users', route: '/admin/manage-users' },
+    { label: 'Manage Users', route: '/users' },
     { label: 'View User' }
   ];
 
@@ -43,7 +43,7 @@ export class ViewUserComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.toastService.error('User ID not provided');
-      this.router.navigate(['/admin/manage-users']);
+      this.router.navigate(['/users']);
       return;
     }
     this.userId = +id;
@@ -65,7 +65,7 @@ export class ViewUserComponent implements OnInit {
           
           this.headerBreadcrumbs = [
             { label: 'Home', route: '/admindashboard' },
-            { label: 'Manage Users', route: '/admin/manage-users' },
+            { label: 'Manage Users', route: '/users' },
             { label: `View ${this.userName}${roleLabel}` }
           ];
         }
@@ -74,8 +74,22 @@ export class ViewUserComponent implements OnInit {
       error: (err: any) => {
         console.error('Failed to load user profile details:', err);
         this.toastService.error('Could not retrieve user details.');
-        this.router.navigate(['/admin/manage-users']);
+        this.router.navigate(['/users']);
       }
     });
+  }
+
+  get isDistributor(): boolean {
+    const roleName = this.userData?.role?.roleName || this.userData?.roleName || '';
+    return roleName.toUpperCase() === 'DISTRIBUTOR';
+  }
+
+  get isStockist(): boolean {
+    const roleName = this.userData?.role?.roleName || this.userData?.roleName || '';
+    return roleName.toUpperCase() === 'STOCKIST';
+  }
+
+  goBack(): void {
+    this.router.navigate(['/users']);
   }
 }

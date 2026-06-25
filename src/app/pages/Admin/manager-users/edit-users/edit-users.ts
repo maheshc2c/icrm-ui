@@ -24,6 +24,44 @@ type ActivePanel = 'userDetails' | 'changeRole' | 'locations' | 'products' | nul
 })
 export class EditUsersComponent implements OnInit {
 
+  distributorDetailsFields = [
+    { name: 'distributorName', label: 'Distributor Name', placeholder: 'Distributor Name', type: 'text', required: true },
+    { name: 'panNumber', label: 'PAN Number', placeholder: 'PAN Number', type: 'text', required: false },
+    { name: 'tinNumber', label: 'TIN Number', placeholder: 'TIN Number', type: 'text', required: false },
+    { name: 'tanNumber', label: 'TAN Number', placeholder: 'TAN Number', type: 'text', required: false },
+    { name: 'serviceTaxNumber', label: 'Service Tax Number', placeholder: 'Service Tax Number', type: 'text', required: false },
+    { name: 'salesTaxNumber', label: 'Sales Tax Number', placeholder: 'Sales Tax Number', type: 'text', required: false },
+    { name: 'exciseNumber', label: 'Excise Number', placeholder: 'Excise Number', type: 'text', required: false },
+    { name: 'bankName', label: 'Bank Name', placeholder: 'Bank Name', type: 'text', required: false },
+    { name: 'branch', label: 'Bank Branch', placeholder: 'Bank Branch', type: 'text', required: false },
+    { name: 'accountHolderName', label: 'Account Holder Name', placeholder: 'Account Holder Name', type: 'text', required: false },
+    { name: 'accountNumber', label: 'Account Number', placeholder: 'Account Number', type: 'text', required: false },
+    { name: 'ifscCode', label: 'IFSC Code', placeholder: 'IFSC Code', type: 'text', required: false }
+  ];
+
+  stockistDetailsFields = [
+    { name: 'stockistName', label: 'Stockist Name', placeholder: 'Stockist Name', type: 'text', required: true },
+    { name: 'panNumber', label: 'PAN Number', placeholder: 'PAN Number', type: 'text', required: false },
+    { name: 'tinNumber', label: 'TIN Number', placeholder: 'TIN Number', type: 'text', required: false },
+    { name: 'tanNumber', label: 'TAN Number', placeholder: 'TAN Number', type: 'text', required: false },
+    { name: 'serviceTaxNumber', label: 'Service Tax Number', placeholder: 'Service Tax Number', type: 'text', required: false },
+    { name: 'salesTaxNumber', label: 'Sales Tax Number', placeholder: 'Sales Tax Number', type: 'text', required: false },
+    { name: 'exciseNumber', label: 'Excise Number', placeholder: 'Excise Number', type: 'text', required: false },
+    { name: 'bankName', label: 'Bank', placeholder: 'Bank Name', type: 'text', required: false },
+    { name: 'branch', label: 'Bank Branch', placeholder: 'Bank Branch', type: 'text', required: false },
+    { name: 'accountHolderName', label: 'Account Name', placeholder: 'Account Name', type: 'text', required: false },
+    { name: 'accountNumber', label: 'Bank Account Number', placeholder: 'Account Number', type: 'text', required: false },
+    { name: 'ifscCode', label: 'IFSC', placeholder: 'IFSC', type: 'text', required: false }
+  ];
+
+  get isDistributor(): boolean {
+    return this.userData?.roleName?.toLowerCase() === 'distributor';
+  }
+
+  get isStockist(): boolean {
+    return this.userData?.roleName?.toLowerCase() === 'stockist';
+  }
+
   constructor(
     private userService: Userservice,
     private userTargetService: UserTargetService,
@@ -36,7 +74,7 @@ export class EditUsersComponent implements OnInit {
   headerTitle = 'Edit User';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Users', route: '/admin/manage-users' },
+    { label: 'Manage Users', route: '/users' },
     { label: 'Edit User' }
   ];
 
@@ -81,18 +119,9 @@ export class EditUsersComponent implements OnInit {
   selGroups: string[] = [];
   selProducts: string[] = [];
 
-  /* ─── Role rules (same as add-users) ─────────────────── */
-  private readonly WORLD_LEVEL_ROLES = [
-    'admin', 'adminmarketing', 'globalhead', 'stockist', 'customerinteractioncenter'
-  ];
-  private readonly GEO_LEVEL_ROLES = ['salesdirector'];
-
-  get locationMode(): 'world' | 'geo' | 'cascade' {
-    const r = (this.userData.roleName || '').toLowerCase().replace(/\s+/g, '');
-    if (this.WORLD_LEVEL_ROLES.includes(r)) return 'world';
-    if (this.GEO_LEVEL_ROLES.includes(r)) return 'geo';
-    return 'cascade';
-  }
+  /* ================= DYNAMIC CONFIGURATION ================= */
+  locationMode: 'world' | 'geo' | 'cascade' = 'cascade';
+  productType: string = '';
 
   /* ══════════════════════════════════════════════════════
      LIFECYCLE
@@ -101,7 +130,7 @@ export class EditUsersComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       this.toastService.error('User ID not provided');
-      this.router.navigate(['/admin/manage-users']);
+      this.router.navigate(['/users']);
       return;
     }
     this.userId = +id;
@@ -163,20 +192,52 @@ export class EditUsersComponent implements OnInit {
 
         if (!user) {
           this.toastService.error('User not found');
-          this.router.navigate(['/admin/manage-users']);
+          this.router.navigate(['/users']);
           return;
         }
 
-        this.userData = { ...user };
+        this.userData = { 
+          ...user,
+          roleName: user.role?.roleName || user.roleName,
+          branchName: user.branch?.branchName || user.branchName,
+          companyName: user.company?.companyName || user.companyName
+        };
         this.userName = user.firstName && user.lastName
           ? `${user.firstName} ${user.lastName}`
           : (user.firstName ?? user.username ?? '');
 
         this.updateBreadcrumbs();
 
-        this.prepopulateSelections();
-        this.isUserLoading = false;
-        this.isLoading = false;
+        if (this.userData.roleName) {
+          this.userService.getRoleConfiguration(this.userData.roleName).subscribe({
+            next: (config) => {
+              const locType = config?.locationType?.toUpperCase() || '';
+              if (locType === 'ALL_GEOS' || locType === 'WORLD') {
+                this.locationMode = 'world';
+              } else if (locType === 'SELECT_GEO' || locType === 'GEO') {
+                this.locationMode = 'geo';
+              } else {
+                this.locationMode = 'cascade';
+              }
+              this.productType = config?.productType || '';
+              
+              this.prepopulateSelections();
+              this.isUserLoading = false;
+              this.isLoading = false;
+            },
+            error: (err) => {
+              console.error('Failed to load role config', err);
+              this.locationMode = 'cascade';
+              this.prepopulateSelections();
+              this.isUserLoading = false;
+              this.isLoading = false;
+            }
+          });
+        } else {
+          this.prepopulateSelections();
+          this.isUserLoading = false;
+          this.isLoading = false;
+        }
       },
       error: (err: any) => {
         console.error('Failed to load user', err);
@@ -279,7 +340,7 @@ export class EditUsersComponent implements OnInit {
     
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
-      { label: 'Manage Users', route: '/admin/manage-users' },
+      { label: 'Manage Users', route: '/users' },
       { label: baseLabel }
     ];
 
@@ -314,6 +375,22 @@ export class EditUsersComponent implements OnInit {
     }
   }
 
+  getCleanPayload(): any {
+    return {
+      ...this.userData,
+      roleName: this.userData.role?.roleName || this.userData.roleName,
+      branchName: this.userData.branch?.branchName || this.userData.branchName,
+      companyName: this.userData.company?.companyName || this.userData.companyName,
+      branch: undefined, // remove nested objects to avoid mapping errors on backend
+      role: undefined,
+      company: undefined,
+      locationInfo: undefined,
+      LocationInfo: undefined,
+      createdTime: undefined,
+      modifiedTime: undefined
+    };
+  }
+
   saveUserDetails(): void {
     this.userDetailsSubmitted = true;
     if (
@@ -322,7 +399,9 @@ export class EditUsersComponent implements OnInit {
       !this.userData.username ||
       !this.userData.phoneNumber ||
       !this.userData.branchName ||
-      !this.userData.city
+      !this.userData.city ||
+      (this.isDistributor && !this.userData.distributorName) ||
+      (this.isStockist && !this.userData.stockistName)
     ) {
       this.toastService.error('Please fill in all required fields.');
       setTimeout(() => {
@@ -339,7 +418,7 @@ export class EditUsersComponent implements OnInit {
     }
     this.isSubmitting = true;
 
-    this.userService.updateUser(this.userId, this.userData).subscribe({
+    this.userService.updateUser(this.userId, this.getCleanPayload()).subscribe({
       next: () => {
         this.toastService.success('User details updated successfully!');
         this.isSubmitting = false;
@@ -363,11 +442,34 @@ export class EditUsersComponent implements OnInit {
     }
     this.isSubmitting = true;
 
-    this.userService.updateUser(this.userId, this.userData).subscribe({
+    this.userService.updateUser(this.userId, this.getCleanPayload()).subscribe({
       next: () => {
         this.toastService.success('Role updated successfully!');
-        this.isSubmitting = false;
-        this.closePanel();
+        
+        // Fetch new role configuration and update locationMode/productType
+        this.userService.getRoleConfiguration(this.userData.roleName).subscribe({
+          next: (config) => {
+            const locType = config?.locationType?.toUpperCase() || '';
+            if (locType === 'ALL_GEOS' || locType === 'WORLD') {
+              this.locationMode = 'world';
+            } else if (locType === 'SELECT_GEO' || locType === 'GEO') {
+              this.locationMode = 'geo';
+            } else {
+              this.locationMode = 'cascade';
+            }
+            this.productType = config?.productType || '';
+            
+            this.prepopulateSelections();
+            this.isSubmitting = false;
+            this.closePanel();
+          },
+          error: (err) => {
+            console.error('Error fetching role config after update', err);
+            this.locationMode = 'cascade';
+            this.isSubmitting = false;
+            this.closePanel();
+          }
+        });
       },
       error: (err: any) => {
         console.error('Error updating role:', err);
@@ -391,7 +493,7 @@ export class EditUsersComponent implements OnInit {
     this.userData.districtNames = this.locationMode === 'cascade' ? this.selDistricts : [];
     this.userData.cityNames = this.locationMode === 'cascade' ? this.selCities : [];
 
-    this.userService.updateUser(this.userId, this.userData).subscribe({
+    this.userService.updateUser(this.userId, this.getCleanPayload()).subscribe({
       next: () => {
         this.toastService.success('Location details updated successfully!');
         this.isSubmitting = false;
@@ -431,7 +533,7 @@ export class EditUsersComponent implements OnInit {
     this.userData.groupNames = this.selGroups;
     this.userData.productNames = this.selProducts;
 
-    this.userService.updateUser(this.userId, this.userData).subscribe({
+    this.userService.updateUser(this.userId, this.getCleanPayload()).subscribe({
       next: () => {
         this.toastService.success('Product details updated successfully!');
         this.isSubmitting = false;
@@ -582,6 +684,6 @@ export class EditUsersComponent implements OnInit {
      NAVIGATION
   ══════════════════════════════════════════════════════ */
   goBack(): void {
-    this.router.navigate(['/admin/manage-users']);
+    this.router.navigate(['/users']);
   }
 }
