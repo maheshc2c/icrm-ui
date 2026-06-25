@@ -40,6 +40,13 @@ export const routes: Routes = [
     }
   ]
 },
+{
+  path: 'quoteRevision/:id',
+  loadComponent: () =>
+    import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
+  canActivate: [authGuard],
+  data: { roles: ['SUPERADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+},
 
 {
   path: 'superadmin/company',
