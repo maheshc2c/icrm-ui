@@ -76,7 +76,7 @@ constructor() {
           { label: 'Sub System', icon: 'fas fa-sitemap', route: '/sub-system' },
           { label: 'Product', icon: 'fas fa-box', route: '/create-user' },
           { label: 'Demo', icon: 'fas fa-flask', route: '/admin-users' },
-          { label: 'Financial Year', icon: 'fas fa-calendar-days', route: '/admin/financial-yr' },
+          { label: 'Financial Year', icon: 'fas fa-calendar-days', route: '/financial-yr' },
           { label: 'User Product Target', icon: 'fas fa-bullseye', route: '/admin-users' },
         ]
       },

@@ -383,86 +383,60 @@ activateCustomer(id: number) {
   }
 
   // ================= FINANCIAL YEAR =================
-
-  // ================= GET ALL FY =================
-  getfinancialyr(): Observable<FinancialyrModel[]> {
-    return this.http.get<FinancialyrModel[]>(
-      `${this.baseUrl}/admin/view-Fy`, // ✅ FIXED
-      { headers: this.getAuthHeaders() }
-    );
-  }
-
-  searchfy(name: string) {
-    return this.http.get<FinancialyrModel[]>(
-      `${this.baseUrl}/admin/search-financial-year`,
-      {
-        headers: this.getAuthHeaders(),
-        params: { name } // ✅ MATCHES BACKEND
+// Search + View
+getFinancialYears(
+  fyName: string | null = null,
+  pageNumber: number = 0,
+  pageSize: number = 10
+) {
+  return this.http.post<any>(
+    `${this.baseUrl}/product/financial-year-search`,
+    {
+      fyName,
+      pagination: {
+        pageNumber,
+        pageSize,
+        sortBy: 'fyId',
+        sortOrder: 'DESC'
       }
-    );
-  }
+    },
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
+// Create
+createfy(payload: any) {
+  return this.http.post(
+    `${this.baseUrl}/product/financial-year`,
+    payload,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
-  getDropfy(): Observable<string[]> {
-    return this.http.get<string[]>(
-      `${this.baseUrl}/admin/dropdown-financial-year`,
-      { headers: this.getAuthHeaders() }
-    );
-  }
+// Dropdown
+getDropfy() {
+  return this.http.get<string[]>(
+    `${this.baseUrl}/product/financial-year/dropdown`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
-  // ================= Download FY =================
+// Calendar View
+getFinancialYearCalendar(fyId: number) {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/product/financial-year/calendar/${fyId}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
-  downloadFinancialYearExcel(data: FinancialyrModel[]): Observable<Blob> {
-    return this.http.post(
-      `${this.baseUrl}/admin/financialyear-excel`,
-      data,
-      {
-        headers: this.getAuthHeaders(),
-        responseType: 'blob'
-      }
-    );
-  }
-
-
-
-  //http://localhost:8080/admin/search-financial-year?name=2025
-
-  // ================= CREATE FY =================
-  createfy(payload: FinancialyrModel): Observable<any> {
-    const headers = this.getAuthHeaders();
-
-    console.log('FY CREATE HEADERS =>', headers);
-    console.log('FY CREATE PAYLOAD =>', payload);
-
-    return this.http.post(
-      `${this.baseUrl}/admin/create-Fy`,
-      payload,
-      {
-        headers,
-        responseType: 'text'   // ✅ IMPORTANT FIX
-      }
-    );
-  }
-
-
-  // ================= UPDATE COMPETITORS =================
-
-  updatefy(id: number, payload: FinancialyrModel): Observable<any> {
-    const headers = this.getAuthHeaders();
-
-    return this.http.put(
-      `${this.baseUrl}/admin/edite-Fy/${id}`,
-      payload,
-      { headers }
-    );
-  }
-
-
-  // updatefy(id: number, data: FinancialyrModel): Observable<FinancialyrModel> {
-  //   return this.http.put<FinancialyrModel>(
-  //     `${this.baseUrl}/admin/edite-Fy/${id}`, // ⚠ backend spelling preserved
-  //     data,
-  //     { headers: this.getAuthHeaders() }
 
   // ================= SPECIALTIY =================
 

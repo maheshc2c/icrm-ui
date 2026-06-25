@@ -1,0 +1,183 @@
+.financial-year-container {
+  margin-left: 287px;
+  margin-right: 20px;
+
+  padding: 25px;
+
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Title */
+.fy-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #2c3e50;
+
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+
+  border-bottom: 1px solid #ececec;
+}
+
+/* Month Layout */
+.month-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.month-card {
+  width: 330px;
+  height: auto;
+  min-height: unset;
+}
+
+.month-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Table */
+.month-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #fff;
+}
+
+/* Month Header */
+.month-header {
+  background: #5b9bd5;
+  color: #fff;
+
+  text-align: center;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  padding: 8px;
+
+  text-transform: uppercase;
+}
+
+/* Column Headers */
+.month-table thead tr:nth-child(2) th {
+  background: #79a6d6;
+  color: #fff;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  padding: 8px 5px;
+}
+
+/* Table Cells */
+.month-table th,
+.month-table td {
+  border: 1px solid #d9d9d9;
+
+  text-align: center;
+
+  padding: 7px 5px;
+
+  font-size: 12px;
+  color: #333;
+}
+
+/* Body Rows */
+.month-table tbody td {
+  height: 25px;
+  background: #fff;
+}
+
+/* Hover Effect */
+.month-table tbody tr:hover td {
+  background: #f5f8fc;
+}
+
+/* Financial Year Start Week */
+.fy-start-row td {
+  background: #c7a2a2 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+/* Back Button Section */
+.back-btn-container {
+  margin-top: 30px;
+  padding-top: 10px;
+
+  border-top: 1px solid #ececec;
+
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Back Button */
+.back-btn {
+  min-width: 120px;
+  height: 40px;
+
+  background: #428bca;
+  color: #fff;
+
+  border: none;
+  border-radius: 4px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #3071a9;
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .month-card {
+    width: 310px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .month-card {
+    width: 290px;
+  }
+
+  .month-grid {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 992px) {
+
+  .financial-year-container {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 15px;
+  }
+
+  .month-grid {
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .month-card {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .back-btn-container {
+    justify-content: center;
+  }
+}

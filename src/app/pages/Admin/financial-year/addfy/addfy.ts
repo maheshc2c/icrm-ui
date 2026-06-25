@@ -31,11 +31,6 @@ export class Addfy implements OnInit {
   headerTitle = 'Add New Financial Year';
   headerBreadcrumbs: Breadcrumb[] = [];
 
-  /* ================= STATE ================= */
-  isEditMode = false;
-  fyId!: number;
-  formInitialData: Partial<FinancialyrModel> = {};
-
   /* ================= FORM FIELDS ================= */
   fyFields = [
   {
@@ -64,102 +59,68 @@ export class Addfy implements OnInit {
 
   /* ================= INIT ================= */
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
 
-    if (idParam !== null) {
-      this.isEditMode = true;
-      this.fyId = Number(idParam);
+  this.headerTitle = 'Add New Financial Year';
 
-      this.headerTitle = 'Edit Financial Year';
-      this.headerBreadcrumbs = [
-        { label: 'Home', route: '/admindashboard' },
-        { label: 'Financial Year', route: '/admin/financial-yr' },
-        { label: 'Edit Financial Year' }
-      ];
+  this.headerBreadcrumbs = [
+    { label: 'Home', route: '/admindashboard' },
+    { label: 'Financial Year', route: '/financial-yr' },
+    { label: 'Add Financial Year' }
+  ];
+}
 
-      this.loadFyById(this.fyId);
-    } else {
-      this.isEditMode = false;
-      this.headerTitle = 'Add New Financial Year';
-      this.headerBreadcrumbs = [
-        { label: 'Home', route: '/admindashboard' },
-        { label: 'Financial Year', route: '/admin/financial-yr' },
-        { label: 'Add Financial Year' }
-      ];
-    }
-  }
-
-  /* ================= LOAD ================= */
-  private loadFyById(id: number): void {
-    this.adminService.getfinancialyr().subscribe({
-      next: (financialYears: FinancialyrModel[]) => {
-
-        const financial = financialYears.find(f => f.fyId === id);
-
-        if (!financial) {
-          this.toastService.error('Financial Year not found');
-          this.router.navigate(['/admin/financial-yr']);
-          return;
-        }
-
-        this.formInitialData = {
-          fyId: financial.fyId,
-          fyName: financial.fyName,
-          fyStartDate: financial.fyStartDate,
-          fyEndDate: financial.fyEndDate,
-          fyStatus: financial.fyStatus
-        };
-      },
-      error: () => {
-        this.toastService.error('Failed to load financial year');
-        this.router.navigate(['/admin/financial-yr']);
-      }
-    });
-  }
 
   /* ================= SAVE ================= */
   savefy(data: Partial<FinancialyrModel>): void {
 
   const payload = {
-    fyName: data.fyName!.trim(),
-    fyStartDate: String(data.fyStartDate),
-    fyEndDate: String(data.fyEndDate),
-    fyStatus: data.fyStatus ?? 1
+    fyName: data.fyName?.trim(),
+    fyStartDate: data.fyStartDate,
+    fyEndDate: data.fyEndDate,
+    fyStatus: 1
   };
 
-  if (this.isEditMode) {
+  this.adminService.createfy(payload).subscribe({
 
-    this.adminService.updatefy(this.fyId, payload as any).subscribe({
-      next: () =>{ 
-        this.toastService.success('Financial Year updated successfully');
-        this.router.navigate(['/admin/financial-yr'])},
-      error: err => {
-        console.error(err);
-        this.toastService.error(
-          err?.error?.message || 'Failed to update Financial Year'
-        );
-      }
-    });
+    next: (response: any) => {
 
-  } else {
+      this.toastService.success(
+        'Financial Year created successfully'
+      );
 
-    this.adminService.createfy(payload as any).subscribe({
-      next: () =>{ 
-        this.toastService.success('Financial Year created successfully');
-        this.router.navigate(['/admin/financial-yr'])},
-      error: err => {
-        console.error(err);
-         this.toastService.error(
-          err?.error?.message || 'Failed to create Financial Year'
-        );
-      }
-    });
-  }
+      this.adminService
+        .getFinancialYearCalendar(response.fyId)
+        .subscribe({
+
+          next: (calendarResponse: any) => {
+
+            this.router.navigate(
+              ['/financial-year-calendar'],
+              {
+                state: {
+                  data: calendarResponse,
+                  fyName: response.fyName,
+                  fyStartDate: response.fyStartDate
+                }
+              }
+            );
+          }
+        });
+    },
+
+    error: err => {
+
+      this.toastService.error(
+        err?.error?.message ||
+        'Failed to create Financial Year'
+      );
+    }
+  });
 }
 
   /* ================= CANCEL ================= */
   onCancel(): void {
-    this.router.navigate(['/admin/financial-yr']);
+    this.router.navigate(['/financial-yr']);
   }
 
 }
