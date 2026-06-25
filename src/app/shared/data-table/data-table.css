@@ -33,6 +33,7 @@
   flex-wrap: wrap;
   /* ✅ auto wrap */
   align-items: flex-end;
+  justify-content: flex-start;
   gap: 16px;
 
   /* 🔒 LOCK TOOLBAR WIDTH TO TABLE WIDTH */
@@ -42,7 +43,7 @@
 
 /* Search fields */
 .datatable-toolbar app-search {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 220px;
 }
 
@@ -52,7 +53,6 @@
   gap: 10px;
   align-items: center;
   flex: 0 0 auto;
-  margin-left: auto;
 }
 
 /* ================= TABLE ================= */

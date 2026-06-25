@@ -7,16 +7,16 @@
 /* SEARCH GROUP CONTAINER */
 .search-group {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: flex-end;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  width: 100%;
 }
 
 /* EACH SEARCH FIELD */
 .search-field {
-  flex: 1;
-  min-width: 130px;
+  flex: 0 0 auto;
+  min-width: 180px;
 }
 
 /* LABEL STYLE (MATCH TEXT TONE) */
