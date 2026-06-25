@@ -31,7 +31,6 @@ export class Form implements OnChanges {
   errors: any = {};
   touched: any = {};
  
-  touched: any = {};
 
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
