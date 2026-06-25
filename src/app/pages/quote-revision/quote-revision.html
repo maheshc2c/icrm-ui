@@ -1,0 +1,97 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<div class="content-wrapper">
+  <app-pageheader [title]="'Quote Revision'" [breadcrumbs]="breadcrumbs" [homeIcon]="'fas fa-home'"></app-pageheader>
+  <div class="form-wrapper" style="padding-top: 24px">
+    <div class="company-form-container">
+      <div class="form-header-block">
+        <h4 class="form-title-heading">Quote Details</h4>
+      </div>
+      
+      <div class="form-body-section" style="padding: 24px;">
+        <!-- Quote ID Row -->
+        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; border: 1px solid #dee2e6; width: 100%; max-width: 800px; background: #fff;">
+            <div style="width: 250px; text-align: right; padding: 10px 16px; font-size: 13px; font-weight: 500; color: #333; background: #f8f9fa; border-right: 1px solid #dee2e6;">
+              Quote ID
+            </div>
+            <div style="flex: 1; padding: 6px 12px; background: #fff;">
+              <input type="text" [value]="quoteId" readonly style="width: 100%; padding: 6px; border: 1px solid #dee2e6; border-radius: 2px; font-size: 13px; background: #f8f9fa;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Table Row -->
+        <div style="margin-bottom: 20px;">
+          <app-data-table
+            [noMargin]="true"
+            [columns]="quoteColumns"
+            [rows]="quotes"
+            [showImport]="false"
+            [showDownload]="false"
+            [showAdd]="false"
+            [showReset]="false"
+            [showSearch]="false"
+            [showPagination]="false"
+            [showEdit]="false"
+            [showView]="false"
+            [showDelete]="false"
+            [showSno]="false"
+            [showActions]="false"
+            [showCheckboxColumn]="true"
+            (quantityChange)="onQuantityChange($event)"
+            (discountChange)="onDiscountChange($event)">
+          </app-data-table>
+        </div>
+
+    <div style="display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: start; max-width: 800px; margin: 0 auto;">
+      <!-- Billing Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Billing <span style="color: red;">*</span></div>
+      <div>
+        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
+          <option>Company</option>
+        </select>
+      </div>
+
+      <!-- Warranty Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Warranty <span style="color: red;">*</span></div>
+      <div>
+        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
+          <option>12 Months</option>
+        </select>
+      </div>
+
+      <!-- Advance Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Advance <span style="color: red;">*</span></div>
+      <div style="display: flex; gap: 10px;">
+        <select class="form-control" style="width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
+          <option>in %</option>
+        </select>
+        <input type="text" class="form-control" value="100.00" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
+      </div>
+
+      <!-- Dealer Commission Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Dealer Commission (%) <span style="color: red;">*</span></div>
+      <div>
+        <input type="text" class="form-control" placeholder="Dealer Commission (%)" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
+      </div>
+
+      <!-- Billing Through Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Billing Through</div>
+      <div>
+        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
+          <option>Parkeze Technologies</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 40px; margin-bottom: 20px;">
+      <button (click)="goBack()" style="background: white; border: 1px solid #ccc; padding: 8px 16px; border-radius: 4px; font-size: 13px; cursor: pointer; color: #333;">Cancel</button>
+      <button style="background: #3b82f6; color: white; border: none; padding: 8px 24px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">Submit</button>
+    </div>
+
+      </div>
+    </div>
+  </div>
+</div>
