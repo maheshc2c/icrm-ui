@@ -42,36 +42,49 @@ export class SubSystem implements OnInit {
 
   rows: any[] = [];
   fullRows: any[] = [];
+  totalElements = 0;
+pageNumber = 0;
+pageSize = 10;
 
   ngOnInit(): void {
     this.loadSubSystems();
   }
 
-  // Load Subsystems
-  private loadSubSystems(): void {
-  this.adminservice.getSubSystem().subscribe({
-    next: (res: any) => {
+  // new Load Subsystems
+ private loadSubSystems(
+  pageNumber: number = 0,
+  pageSize: number = 10,
+  keyword: string = ''
+): void {
 
-      console.log('API Response:', res);
+  this.adminservice
+    .getSubSystems(keyword, pageNumber, pageSize)
+    .subscribe({
 
-      const subsystems = (Array.isArray(res) ? res : [res])
-        .sort((a: any, b: any) => b.subCategoryId - a.subCategoryId);
+      next: (res: any) => {
 
-      this.fullRows = subsystems;
+        const data = res?.content || [];
 
-      this.rows = subsystems.map((c, index) => ({
-        sno: index + 1,
-        subCategoryId: c.subCategoryId,
-        subcategoryName: c.subcategoryName || c.name,
-        status: c.subcategoryStatus || c.status
-      }));
-    },
-    error: err => {
-      console.error('API ERROR:', err);
-      this.rows = [];
-    }
-  });
+        this.totalElements = res?.totalElements || 0;
+
+        this.rows = data
+          .filter((s: any) => s?.subcategoryName)
+          .map((s: any, index: number) => ({
+            sno: pageNumber * pageSize + index + 1,
+            subCategoryId: s.SubCategoryId ?? s.subCategoryId,
+            subcategoryName: s.subcategoryName,
+            status: s.SubcategoryStatus ?? s.subcategoryStatus
+          }));
+      },
+
+      error: err => {
+        console.error(err);
+        this.rows = [];
+        this.totalElements = 0;
+      }
+    });
 }
+
   // Add
   onAdd() {
     this.router.navigate(['sub-system/add']);
@@ -116,54 +129,32 @@ export class SubSystem implements OnInit {
   });
 }
 
+searchKeyword = '';
 
-  onSearch(keyword: string) {
+onSearch(keyword: string): void {
 
-  if (!keyword?.trim()) {
-    this.loadSubSystems();
-    return;
-  }
+  this.searchKeyword = keyword?.trim() || '';
 
-  this.adminservice.searchSubSystem(keyword).subscribe({
-    next: (res: any) => {
-
-      console.log('Search Response:', res);
-
-      // Handle object OR array response
-      const results = Array.isArray(res) ? res : [res];
-
-      this.rows = results.map((s, index) => ({
-        sno: index + 1,
-        subCategoryId: s.subCategoryId,
-        subcategoryName: s.subcategoryName || s.name,
-        status: s.subcategoryStatus || s.status
-      }));
-    },
-    error: err => {
-      console.error('Search Error:', err);
-      this.rows = [];
-    }
-  });
+  this.loadSubSystems(
+    0,
+    this.pageSize,
+    this.searchKeyword
+  );
 }
-
 
 onImport() {
 
-  if (!this.rows?.length) {
-    alert('No data available to download');
-    return;
-  }
-  
+  const payload = {
+    name: this.searchKeyword || null,
+    pagination: {
+      pageNumber: 0,
+      pageSize: 100000,
+      sortBy: 'SubcategoryCreatedTime',
+      sortOrder: 'DESC'
+    }
+  };
 
-  console.log('ROWS =>', this.rows);
-
-const payload = this.rows.map(row => ({
-  subCategoryId: row.subCategoryId,
-  subcategoryName: row.subcategoryName,
-  subcategoryStatus: row.subcategoryStatus
-}));
-
-console.log('DOWNLOAD PAYLOAD =>', payload);
+  console.log('DOWNLOAD PAYLOAD =>', payload);
 
   this.adminservice.downloadSubSystemExcel(payload).subscribe({
     next: (blob: Blob) => {
@@ -182,12 +173,45 @@ console.log('DOWNLOAD PAYLOAD =>', payload);
       window.URL.revokeObjectURL(url);
     },
     error: err => {
-      console.error('Download error:', err);
-      alert('Excel download failed');
+      console.error(err);
+      this.toastService.error('Excel download failed');
     }
   });
 }
 
+onReset(): void {
+
+  this.searchKeyword = '';
+  this.pageNumber = 0;
+  this.currentPage = 1;
+
+  this.loadSubSystems();
+}
+
+currentPage = 1;
+totalPages = 1;
+
+onPageChange(page: number) {
+
+  this.currentPage = page;
+
+  this.loadSubSystems(
+    page - 1,
+    this.pageSize,
+    this.searchKeyword
+  );
+}
+onPageSizeChange(size: number) {
+
+  this.pageSize = size;
+  this.pageNumber = 0;
+  this.currentPage = 1;
+
+  this.loadSubSystems(
+    this.pageNumber,
+    this.pageSize
+  );
+}
   
 searchFields: SearchFieldConfig[] = [
   {

@@ -16,7 +16,9 @@
     [showAdd]="showAdd"
     [showReset]="showReset"
     [showRefresh]="showRefresh"
+    [showUpload]="showUpload"
     [showDownload]="showDownload"
+    (upload)="uploadRow.emit()"
     (reset)="onResetClick()"
     (refresh)="onRefreshClick()"
     (search)="onSearchClick()"
@@ -167,17 +169,9 @@
                             </button>
                           }
 
-                          @if (showEdit) {
-                            <button
-                              class="btn btn-sm btn-warning edit-btn"
-                              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
-                              (click)="edit(row)"
-                              title="Edit">
-                              <i class="fas fa-edit"></i>
-                            </button>
-                          }
-
-                          @if (showAssign) {
+                       
+                        @if (showDelete && showDeleteButton) {
+                          @if (showStatusToggle && getRowStatus(row) !== undefined) {
                             <button
                               class="btn btn-sm btn-primary assign-btn"
                               (click)="assign(row)"

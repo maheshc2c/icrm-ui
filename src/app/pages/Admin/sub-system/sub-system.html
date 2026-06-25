@@ -18,5 +18,13 @@
  (download)="onImport()"
   (add)="onAdd()"
   (editRow)="onEdit($event)"
-  (deleteRow)="onDelete($event)">
+  (deleteRow)="onDelete($event)"
+    [showReset]="true"
+
+      [pageSize]="pageSize"
+  [totalElements]="totalElements"
+
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
+  (reset)="onReset()">
 </app-data-table>

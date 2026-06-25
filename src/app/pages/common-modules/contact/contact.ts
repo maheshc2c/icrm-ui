@@ -9,10 +9,11 @@
   import { SearchFieldConfig } from '../../../shared/search/search';
 import { ToastService } from '../../../service/toast.service';
 import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
+import { CommonModule } from '@angular/common';
 
   @Component({
     selector: 'app-contact',
-    imports: [Pageheader, Header, DataTable, Sidebar, ],
+    imports: [Pageheader, Header, DataTable, Sidebar, CommonModule ],
     templateUrl: './contact.html',
     styleUrl: './contact.css',
   })
@@ -326,10 +327,10 @@ onReset(): void {
   this.loadContact();
 }
 
-
-
 searchFilters: any = {};
 currentFilters: any = {};
+
+
 onImport() {
 
   const payload = {
@@ -363,5 +364,147 @@ onImport() {
     }
   });
 }
+
+showUploadModal = false;
+onUpload() {
+  this.showUploadModal = true;
+}
+closeUploadModal() {
+  this.showUploadModal = false;
+}
+downloadTemplate() {
+
+  const link = document.createElement('a');
+
+  link.href = 'assets/templates/Contact_Template.xlsx';
+
+  link.download = 'Contact_Template.xlsx';
+
+  link.click();
+}
+
+uploadExcel() {
+
+  const input = document.createElement('input');
+
+  input.type = 'file';
+  input.accept = '.xlsx,.xls';
+
+  input.onchange = (event: any) => {
+
+    const file = event.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.showUploadModal = false;
+
+    this.adminservice.uploadContact(file).subscribe({
+      next: (response: string) => {
+
+  console.log(response);
+
+  if (response.includes('Row')) {
+
+    this.toastService.warning(
+      response,
+      15000
+    );
+  }
+
+  if (response.includes('Successfully')) {
+
+    this.toastService.success(
+      'Valid contacts uploaded successfully',
+      5000
+    );
+  }
+
+  this.loadContact();
+}
+    });
+  };
+
+  input.click();
+}
+
+// onUpload() {
+
+//   const input = document.createElement('input');
+
+//   input.type = 'file';
+//   input.accept = '.xlsx,.xls';
+
+//   input.onchange = (event: any) => {
+
+//     const file = event.target.files[0];
+
+//     if (!file) {
+//       return;
+//     }
+
+//     this.adminservice.uploadContact(file).subscribe({
+
+//       next: (response: string) => {
+
+//   console.log('UPLOAD RESPONSE =>', response);
+
+//   const rows =
+//     [...new Set(
+//       [...response.matchAll(/Row\s+(\d+)/gi)]
+//         .map(match => match[1])
+//     )];
+
+//   // Validation rows found
+//   if (rows.length > 0) {
+
+//     // Green Success
+//     this.toastService.success(
+//       'Contacts uploaded successfully.',
+//       5000
+//     );
+
+//     // Yellow Warning
+//     this.toastService.warning(
+//       `Row(s) ${rows.join(', ')} contain invalid data and were not uploaded.`,
+//       10000
+//     );
+
+//   } else {
+
+//     // All rows uploaded
+//     this.toastService.success(
+//       'Contacts uploaded successfully.',
+//       5000
+//     );
+//   }
+
+//   this.loadContact();
+// },
+
+//       error: (err: any) => {
+
+//         console.log('STATUS =>', err.status);
+//         console.log('ERROR =>', err.error);
+//         console.log('FULL ERROR =>', err);
+
+//         const errorMessage =
+//           typeof err.error === 'string'
+//             ? err.error
+//             : err?.error?.message ||
+//               err?.message ||
+//               'Upload failed';
+
+//         this.toastService.error(
+//           errorMessage,
+//           10000
+//         );
+//       }
+//     });
+//   };
+
+//   input.click();
+// }
 
   }

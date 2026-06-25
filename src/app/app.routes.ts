@@ -666,6 +666,12 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
+      {
+        path: 'planDemo',
+        loadComponent: () => import('./pages/SalesManager/plan-demo/plan-demo').then(m => m.PlanDemoComponent),
+        // canActivate: [authGuard],
+        // data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',] }
+      },
 
 {
         path: 'national-sales-manager-dashboard',

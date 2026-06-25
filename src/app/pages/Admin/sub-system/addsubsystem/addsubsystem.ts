@@ -80,22 +80,17 @@ export class Addsubsystem implements OnInit{
   /* LOAD FOR EDIT */
   private loadSubSystemById(id: number): void {
 
-    this.adminService.getSubSystem().subscribe({
-      next: (res: any) => {
+    this.adminService.getSubSystemById(id).subscribe({
+  next: (item: any) => {
 
-        const list = Array.isArray(res) ? res : [res];
-        const item = list.find(x => x.subCategoryId === id);
+  console.log('EDIT RESPONSE =>', item);
 
-        if (!item) {
-          this.toastService.error('Sub System not found');
-          this.router.navigate(['/sub-system']);
-          return;
-        }
+  this.formInitialData = {
+    subcategoryName: item.subcategoryName,
+    subcategoryStatus:
+      item.SubcategoryStatus ?? item.subcategoryStatus
+  };
 
-        this.formInitialData = {
-          subcategoryName: item.subcategoryName,
-          subcategoryStatus: item.subcategoryStatus
-        };
       },
       error: () => {
         this.toastService.error('Failed to load Sub System');

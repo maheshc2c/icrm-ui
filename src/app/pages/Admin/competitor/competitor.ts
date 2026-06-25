@@ -65,34 +65,32 @@ columns = [
    ngOnInit(): void {
     this.loadCompetitors();
   }
+private loadCompetitors(): void {
 
- private loadCompetitors(): void {
-
-  this.adminservice.getCompetitors().subscribe({
+  this.adminservice.getCompetitors(
+    null,
+    this.currentPage - 1,
+    this.pageSize
+  ).subscribe({
     next: (response: any) => {
 
-      const allCompetitors = [...response.content].sort(
-        (a: any, b: any) => b.competitorId - a.competitorId
+      this.totalElements = response.totalElements;
+      this.totalPages = response.totalPages;
+
+      this.fullRows = response.content;
+
+      this.rows = response.content.map(
+        (c: any, index: number) => ({
+          sno: ((this.currentPage - 1) * this.pageSize) + index + 1,
+          competitorId: c.competitorId,
+          competitorName: c.competitorName,
+          competitorRating: c.competitorRating,
+          competitorStatus: c.competitorStatus
+        })
       );
-
-      this.totalElements = allCompetitors.length;
-      this.totalPages = Math.ceil(this.totalElements / this.pageSize);
-
-      const start = (this.currentPage - 1) * this.pageSize;
-      const end = start + this.pageSize;
-
-      const pageData = allCompetitors.slice(start, end);
-      // this.displayedRows = pageData; // only current page
-
-      this.fullRows = allCompetitors;
-
-      this.rows = pageData.map((c: any, index: number) => ({
-        sno: start + index + 1,
-        competitorId: c.competitorId,
-        competitorName: c.competitorName,
-        competitorRating: c.competitorRating,
-        competitorStatus: c.competitorStatus
-      }));
+    },
+    error: (err) => {
+      console.error(err);
     }
   });
 }
@@ -115,7 +113,6 @@ onPageSizeChange(size: number) {
 }
 
 //actiavte and deactivate
-
 onDelete(row: any) {
 
   if (!row?.competitorId) {
@@ -134,108 +131,81 @@ onDelete(row: any) {
       return;
     }
 
-    const apiCall = isActive
-      ? this.adminservice.deactivateCompetitor(row.competitorId)
-      : this.adminservice.activateCompetitor(row.competitorId);
+    this.adminservice
+      .toggleCompetitorStatus(row.competitorId)
+      .subscribe({
 
-    apiCall.subscribe({
-      next: () => {
+        next: () => {
 
-        row.competitorStatus = isActive ? 2 : 1;
+          row.competitorStatus = isActive ? 2 : 1;
 
-        this.rows = [...this.rows];
+          this.rows = [...this.rows];
 
-        this.loadCompetitors();
+          this.toastService.success(
+            `Competitor ${isActive ? 'deactivated' : 'activated'} successfully`
+          );
 
-        this.toastService.success(
-          `Competitor ${isActive ? 'deactivated' : 'activated'} successfully`
-        );
-      },
+          this.loadCompetitors();
+        },
 
-      error: (err: any) => {
-        console.error('Status update failed', err);
+        error: (err: any) => {
 
-        this.toastService.error(
-          'Failed to update competitor status'
-        );
-      }
-    });
+          console.error('Status update failed', err);
 
+          this.toastService.error(
+            'Failed to update competitor status'
+          );
+        }
+      });
   });
-
 }
 searchFilters: any = {};
 
 onReset(): void {
+
+  this.currentSearchKeyword = '';
   this.searchFilters = {};
   this.currentPage = 1;
+
   this.loadCompetitors();
 }
  
 //new download
+
 onImport() {
 
-  if (!this.fullRows?.length) {
-    this.toastService.error('No data available to download');
-    return;
-  }
-
-  const payload = this.fullRows.map((row: any) => ({
-    competitorId: row.competitorId,
-    competitorName: row.competitorName,
-    competitorRating: row.competitorRating,
-    competitorStatus: row.competitorStatus
-  }));
-
-  this.adminservice.downloadCompetitorExcel(payload).subscribe({
-    next: (blob: Blob) => {
-
-      const file = new Blob([blob], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      });
-
-      const url = window.URL.createObjectURL(file);
-
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'Competitor.xlsx';
-      link.click();
-
-      window.URL.revokeObjectURL(url);
-    },
-    error: err => {
-      console.error('Download error:', err);
-      this.toastService.error('Excel download failed');
+  const payload = {
+    competitorName: this.currentSearchKeyword || null,
+    pagination: {
+      pageNumber: 0,
+      pageSize: 100000,
+      sortBy: 'competitorId',
+      sortOrder: 'DESC'
     }
-  });
+  };
+
+  this.adminservice.downloadCompetitor(payload)
+    .subscribe({
+
+      next: (blob: Blob) => {
+
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'Competitor.xlsx';
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+
+      error: (err) => {
+        console.error(err);
+        this.toastService.error('Excel download failed');
+      }
+    });
 }
 
-//Download
-
-// displayedRows: any[] = [];
-// onImport() {
-
-//   if (!this.rows || this.rows.length === 0) {
-//     alert('No data available to download');
-//     return;
-//   }
-
-//   this.adminservice.downloadCompetitorExcel(this.rows).subscribe({
-//     next: (blob: Blob) => {
-
-//       const url = window.URL.createObjectURL(blob);
-//       const a = document.createElement('a');
-//       a.href = url;
-//       a.download = 'Competitors.xlsx';
-//       a.click();
-
-//       window.URL.revokeObjectURL(url);
-//     },
-//     error: (err) => {
-//       console.error('Download failed:', err);
-//     }
-//   });
-// }
 
   onAdd() {
     this.router.navigate(['competitor/add']);
@@ -261,7 +231,11 @@ searchFields: SearchFieldConfig[] = [
   }
 ];
 
+
+currentSearchKeyword = '';
 onSearch(keyword: string) {
+
+  this.currentSearchKeyword = keyword || '';
 
   if (!keyword || keyword.trim() === '') {
     this.currentPage = 1;
@@ -269,54 +243,28 @@ onSearch(keyword: string) {
     return;
   }
 
-  this.adminservice.searchCompetitors(keyword).subscribe({
-    next: (results: any[]) => {
+  this.adminservice.getCompetitors(
+    keyword,
+    0,
+    this.pageSize
+  ).subscribe({
+    next: (response: any) => {
 
-      this.fullRows = results;
-
-      // FIX
-      this.totalElements = results.length;
-      this.totalPages = Math.ceil(results.length / this.pageSize);
+      this.totalElements = response.totalElements;
+      this.totalPages = response.totalPages;
       this.currentPage = 1;
 
-      this.rows = results.map((c, index) => ({
+      this.rows = response.content.map((c: any, index: number) => ({
         sno: index + 1,
         competitorId: c.competitorId,
         competitorName: c.competitorName,
         competitorRating: c.competitorRating,
         competitorStatus: c.competitorStatus
       }));
-    },
-    error: (err) => {
-      console.error('Search failed', err);
     }
   });
 }
 
-
-//  filtering without search button help
-
-
-// onSearchFromTable(filters: any) {
-//   const name = filters.competitorName || '';
-
-//   if (!name.trim()) {
-//     this.loadCompetitors();
-//     return;
-//   }
-
-//   this.adminservice.searchCompetitors(name).subscribe({
-//     next: (results) => {
-//       this.fullRows = results;
-//       this.rows = results.map((c, index) => ({
-//         sno: index + 1,
-//         competitorId: c.competitorId,
-//         competitorName: c.competitorName,
-//         competitorRating: c.competitorRating
-//       }));
-//     }
-//   });
-// }
 
 
 

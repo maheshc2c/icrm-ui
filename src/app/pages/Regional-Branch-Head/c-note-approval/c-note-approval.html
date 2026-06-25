@@ -10,13 +10,15 @@
 <app-data-table
   [columns]="columns"
   [rows]="rows"
-
   [showAdd]="false"
   [showDownload]="false"
   [showEdit]="true"
   [showDelete]="false"
   [showView]="true"
-
+    [showReset]="true"
+  (reset)="onReset()"
+  [searchFields]="searchFields"
+  (search)="onSearch()"
   (editRow)="onEdit($event)"
   (viewRow)="onView($event)">
 </app-data-table>
