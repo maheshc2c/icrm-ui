@@ -718,6 +718,12 @@ export const routes: Routes = [
         data: { roles: ['Customer Interaction Center'] }
       },
       {
+        path: 'Approve-Leads/edit/:id',
+        loadComponent: () => import('./pages/Customer Interaction Center/approve-leads/edit-leads/edit-leads').then(m => m.EditLeads),
+        canActivate: [authGuard],
+        data: { roles: ['Customer Interaction Center'] }
+      },
+      {
         path: 'SO-Number-Open',
         loadComponent: () => import('./pages/Customer Interaction Center/So-Number-Entry/so-entry-open/so-entry-open').then(m => m.SoEntryOpen), 
         canActivate: [authGuard],

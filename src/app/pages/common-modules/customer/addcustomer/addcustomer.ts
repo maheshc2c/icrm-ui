@@ -51,7 +51,7 @@ export class Addcustomer implements OnInit {
       label: 'Category',
       placeholder: 'Select-Category',
       type: 'select',
-      required: false,
+      required: true,
       options: [],
     },
     {
@@ -59,7 +59,7 @@ export class Addcustomer implements OnInit {
       label: 'Sub Category',
       dependsOn: 'customerCategory',
       type: 'select',
-      required: false,
+      required: true,
       options: [],
     },
  
@@ -330,22 +330,22 @@ export class Addcustomer implements OnInit {
   saveCompany(data: any): void {
  
     // Filter out rows where all fields are empty and format numbers correctly
-    const cleanInstalledBases = this.installedBases
-      .filter(b => 
-        (b.competitors && b.competitors.trim() !== '') || 
-        (b.productModel && b.productModel.trim() !== '') || 
-        (b.make && b.make.trim() !== '') || 
-        b.quantity !== null ||
-        (b.yearOfPurchase && b.yearOfPurchase.trim() !== '') || 
-        (b.replacementYear && b.replacementYear.trim() !== '')
-      )
-      .map(b => ({
-        ...b,
-        customerInstalledBaseId: b.customerInstalledBaseId || 0,
-        quantity: b.quantity ? Number(b.quantity) : null,
-        yearOfPurchase: b.yearOfPurchase ? Number(b.yearOfPurchase) : null,
-        replacementYear: b.replacementYear ? Number(b.replacementYear) : null
-      }));
+      const cleanInstalledBases = this.installedBases
+        .filter(b => 
+          (b.competitors && b.competitors.trim() !== '') || 
+          (b.productModel && b.productModel.trim() !== '') || 
+          (b.make && b.make.trim() !== '') || 
+          b.quantity !== null ||
+          (b.yearOfPurchase && b.yearOfPurchase.trim() !== '') || 
+          (b.replacementYear && b.replacementYear.trim() !== '')
+        )
+        .map(b => ({
+          ...b,
+          customerInstalledBaseId: b.customerInstalledId || b.customerInstalledBaseId || null,
+          quantity: b.quantity ? Number(b.quantity) : null,
+          yearOfPurchase: b.yearOfPurchase ? Number(b.yearOfPurchase) : null,
+          replacementYear: b.replacementYear ? Number(b.replacementYear) : null
+        }));
 
     const payload = {
       ...data,

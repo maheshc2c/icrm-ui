@@ -15,7 +15,8 @@
 
 /* EACH SEARCH FIELD */
 .search-field {
-  min-width: 200px;
+  flex: 1;
+  min-width: 130px;
 }
 
 /* LABEL STYLE (MATCH TEXT TONE) */

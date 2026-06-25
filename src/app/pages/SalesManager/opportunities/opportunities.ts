@@ -112,6 +112,10 @@ export class OpportunitiesComponent implements OnInit {
   filteredOpportunities: OpportunityTableModel[] = [];
   currentFilters: any = {};
 
+  totalElements = 0;
+  currentPage = 1;
+  pageSize = 10;
+
   /* ================= TABLE COLUMNS ================= */
   columns = [
     { header: 'ID', field: 'id' },
@@ -220,21 +224,24 @@ export class OpportunitiesComponent implements OnInit {
 
   /* ================= LOAD OPPORTUNITIES ================= */
   loadOpportunities(): void {
-    this.leadService.getOpportunityTable().subscribe({
-      next: (data) => {
-        this.opportunities = data.map(opp => ({
+    this.leadService.getOpportunityTable(this.currentPage - 1, this.pageSize).subscribe({
+      next: (data: any) => {
+        const opps = data.content || data; // handle both Page object and raw array just in case
+        this.opportunities = opps.map((opp: any) => ({
           ...opp,
           product: opp.productAndCategory,
           lifeTime: opp.lifeTimeDays,
           value: opp.value || (opp.qty ? opp.qty * 125000 : 0)
         }));
         this.filteredOpportunities = [...this.opportunities];
+        this.totalElements = data.totalElements !== undefined ? data.totalElements : opps.length;
         this.populateSearchDropdowns();
       },
       error: (err) => {
         console.error('Error loading opportunities:', err);
         this.opportunities = [];
         this.filteredOpportunities = [];
+        this.totalElements = 0;
       }
     });
   }
@@ -306,6 +313,33 @@ export class OpportunitiesComponent implements OnInit {
         this.filteredOpportunities = [];
       }
     });
+  }
+
+  onReset(): void {
+    this.currentFilters = {};
+    this.currentPage = 1;
+    this.loadOpportunities();
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    if (Object.keys(this.currentFilters).length > 0) {
+      // If there's an active search, re-run search. 
+      // Note: Backend search doesn't support pagination yet, but we trigger it just in case.
+      this.onSearch();
+    } else {
+      this.loadOpportunities();
+    }
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+    if (Object.keys(this.currentFilters).length > 0) {
+      this.onSearch();
+    } else {
+      this.loadOpportunities();
+    }
   }
 
   private extractCustomerName(leadDetails: string | null | undefined): string {
@@ -442,12 +476,12 @@ export class OpportunitiesComponent implements OnInit {
     this.leadService.getOpportunityById(row.id).subscribe({
       next: (data) => {
         // Pre-fill model
-        this.oppModel.leadId = data.oppLeadId;
-        this.oppModel.productCategoryId = data.productCategoryId;
-        this.oppModel.productGroupId = data.productGroupId;
-        this.oppModel.productId = data.productId;
-        this.oppModel.quantity = data.oppRequiredQuantity;
-        this.oppModel.fundSourceId = data.oppFundSourceId;
+        this.oppModel.leadId = data.oppLeadId || '';
+        this.oppModel.productCategoryId = data.productCategoryId || '';
+        this.oppModel.productGroupId = data.productGroupId || '';
+        this.oppModel.productId = data.productId || '';
+        this.oppModel.quantity = data.oppRequiredQuantity || null;
+        this.oppModel.fundSourceId = data.oppFundSourceId || '';
         
         // Dates format
         const formatDate = (dateArr: number[]) => {
@@ -458,14 +492,14 @@ export class OpportunitiesComponent implements OnInit {
         this.oppModel.expectedOrderConclusion = typeof data.oppExpectedOrderConclusion === 'string' ? data.oppExpectedOrderConclusion : (Array.isArray(data.oppExpectedOrderConclusion) ? formatDate(data.oppExpectedOrderConclusion) : '');
         this.oppModel.expectedInvoicingDate = typeof data.oppExpectedInvoicingDate === 'string' ? data.oppExpectedInvoicingDate : (Array.isArray(data.oppExpectedInvoicingDate) ? formatDate(data.oppExpectedInvoicingDate) : '');
         
-        this.oppModel.decisionMaker1 = data.oppDecisionMaker1;
-        this.oppModel.decisionMaker2 = data.oppDecisionMaker2;
-        this.oppModel.decisionMaker3 = data.oppDecisionMaker3;
-        this.oppModel.decisionMaker4 = data.oppDecisionMaker4;
-        this.oppModel.decisionMaker5 = data.oppDecisionMaker5;
-        this.oppModel.relationshipId = data.oppRelationshipId;
-        this.oppModel.status = data.oppStatus;
-        this.oppModel.competitors = data.oppRemarks1;
+        this.oppModel.decisionMaker1 = data.oppDecisionMaker1 || '';
+        this.oppModel.decisionMaker2 = data.oppDecisionMaker2 || '';
+        this.oppModel.decisionMaker3 = data.oppDecisionMaker3 || '';
+        this.oppModel.decisionMaker4 = data.oppDecisionMaker4 || '';
+        this.oppModel.decisionMaker5 = data.oppDecisionMaker5 || '';
+        this.oppModel.relationshipId = data.oppRelationshipId || '';
+        this.oppModel.status = data.oppStatus || '';
+        this.oppModel.competitors = data.oppRemarks1 || '';
 
         // Load segments and products for the selected category/group
         if (data.productCategoryId) {
