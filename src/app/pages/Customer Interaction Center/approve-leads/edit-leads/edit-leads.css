@@ -631,8 +631,12 @@ textarea.is-invalid {
 
 /* Override app-modal header colors */
 ::ng-deep app-modal .modal-header {
-    background: #ffd0ca !important;
-    color: #475569 !important;
+    background-color: #f0f2f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 ::ng-deep app-modal .modal-title {

@@ -80,6 +80,8 @@ export class DataTable
   @Input() showDownload = true;
   @Input() showQuoteDoc = false;
   @Input() showQuoteCloud = false;
+  @Input() showBulkUpload = false;
+  @Input() showSubmit = false;
   // New inputs to control table columns
   @Input() showSno: boolean = true;
   @Input() showActions: boolean = true;
@@ -92,16 +94,20 @@ export class DataTable
   @Output() add = new EventEmitter<void>();
   @Output() editRow = new EventEmitter<any>();
   @Output() viewRow = new EventEmitter<any>();
+  @Output() downloadRow = new EventEmitter<any>();
   @Output() assignRow = new EventEmitter<any>();
   @Output() uploadRow = new EventEmitter<any>();
   @Output() approveRow = new EventEmitter<any>();
   @Output() rejectRow = new EventEmitter<any>();
   @Output() quoteRevisionInfo = new EventEmitter<any>();
   @Output() quoteRevisionAdd = new EventEmitter<any>();
+  @Output() bulkUpload = new EventEmitter<void>();
+  @Output() submit = new EventEmitter<void>();
 
   /* ===== INLINE EDITING EVENTS ===== */
   @Output() quantityChange = new EventEmitter<{row: any, field: string, value: any}>();
   @Output() discountChange = new EventEmitter<{row: any, field: string, value: any, discountType: string}>();
+  @Output() cellChange = new EventEmitter<{row: any, field: string, value: any}>();
 
   onQuantityChange(row: any, field: string, event: any) {
     this.quantityChange.emit({ row, field, value: event.target.value });
@@ -109,6 +115,17 @@ export class DataTable
 
   onDiscountChange(row: any, field: string, value: any, discountType: string) {
     this.discountChange.emit({ row, field, value, discountType });
+  }
+
+  onCellChange(row: any, field: string, value: any) {
+    this.cellChange.emit({ row, field, value });
+  }
+
+  onIconClick(row: any, col: any, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.downloadRow.emit(row);
   }
 
   quoteInfo(row: any, event?: Event) {

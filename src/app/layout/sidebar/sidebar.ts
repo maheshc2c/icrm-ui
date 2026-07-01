@@ -158,7 +158,7 @@ constructor() {
     );
   }
 
-   if (role === 'ADMINMARKETING') {
+   if (role === 'ADMIN MARKETING') {
       this.menuItems.push(
         {
           label: 'Home',

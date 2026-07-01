@@ -717,6 +717,18 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },
+      {
+        path: 'country-head/marketing-document',
+        loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/dashboard/marketing-document',
+        loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
 
       {
         path: 'Approve-Leads',
@@ -838,7 +850,7 @@ export const routes: Routes = [
   
         {
           path: 'adminmarketing/managedacument',
-          loadComponent: () => import('./pages/AdminMarketing/managedacument/managedacument').then(m => m.UploadDocument),
+          loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING'] }
         },

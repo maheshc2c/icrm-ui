@@ -20,6 +20,10 @@
     [showDownload]="showDownload"
     (upload)="uploadRow.emit()"
     (reset)="onResetClick()"
+    [showBulkUpload]="showBulkUpload"
+    [showSubmit]="showSubmit"
+    (bulkUpload)="bulkUpload.emit()"
+    (submit)="submit.emit()"
     (refresh)="onRefreshClick()"
     (search)="onSearchClick()"
     (add)="add.emit()"
@@ -114,6 +118,20 @@
                           </div>
                         } @else if (col.field === 'productNameWithIcon') {
                           <span style="color: #333;"><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 5px;"></i> {{ row['productName'] || row[col.field] }}</span>
+                        } @else if (col.type === 'icon') {
+                          <button
+                            type="button"
+                            class="icon-action-btn"
+                            [title]="col.title || col.header"
+                            (click)="onIconClick(row, col, $event)">
+                            <i [class]="col.icon || 'fas fa-download'"></i>
+                          </button>
+                        } @else if (col.editable) {
+                          <input type="text"
+                            class="form-control"
+                            [(ngModel)]="row[col.field]"
+                            (ngModelChange)="onCellChange(row, col.field, $event)"
+                            style="width: 100%; min-width: 120px;" />
                         } @else {
                           {{ row[col.field] }}
                         }
@@ -151,6 +169,15 @@
                             </button>
                           }
 
+                          @if (showEdit && showEditButton) {
+                            <button
+                              class="btn btn-sm edit-btn"
+                              (click)="edit(row)"
+                              title="Edit">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                          }
+
                           @if (showQuoteDoc) {
                             <button
                               class="btn btn-sm btn-primary"
@@ -170,8 +197,7 @@
                           }
 
                        
-                        @if (showDelete && showDeleteButton) {
-                          @if (showStatusToggle && getRowStatus(row) !== undefined) {
+                          @if (showAssign) {
                             <button
                               class="btn btn-sm btn-primary assign-btn"
                               (click)="assign(row)"
@@ -211,7 +237,6 @@
                               </button>
                             }
                           }
-                        }
                         </div>
                       </td>
                     }
