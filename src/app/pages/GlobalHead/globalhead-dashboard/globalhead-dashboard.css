@@ -76,70 +76,84 @@
     flex: 1;
     height: 90px;
     border-radius: 6px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-top: 4px solid transparent;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     cursor: pointer;
-    color: #ffffff;
+    color: #333;
     font-size: 0.75rem;
     font-weight: 600;
     text-align: center;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
     text-decoration: none;
 }
  
 .nav-card:hover {
-    opacity: 0.88;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     transform: translateY(-2px);
 }
  
 .nav-card i {
     font-size: 1.5rem;
-    color: #ffffff;
+    color: inherit;
 }
  
 .nav-card span {
     font-size: 0.78rem;
     font-weight: 600;
-    color: #ffffff;
+    color: #555;
 }
  
 /* ================= CARD COLORS ================= */
 .green-card {
-    background-color: #388e3c;
+    border-top-color: #388e3c;
+    color: #388e3c;
 }
  
 .red-card {
-    background-color: #d32f2f;
+    border-top-color: #d32f2f;
+    color: #d32f2f;
 }
  
 .olive-card {
-    background-color: #689f38;
+    border-top-color: #689f38;
+    color: #689f38;
 }
  
 .salmon-card {
-    background-color: #e57373;
+    border-top-color: #e57373;
+    color: #e57373;
 }
  
 .slate-card {
-    background-color: #546e7a;
+    border-top-color: #546e7a;
+    color: #546e7a;
 }
  
 .brown-card {
-    background-color: #6d4c41;
+    border-top-color: #6d4c41;
+    color: #6d4c41;
 }
  
 .blue-card {
-    background-color: #1565c0;
+    border-top-color: #1565c0;
+    color: #1565c0;
 }
  
 .gold-card {
-    background-color: #f9a825;
+    border-top-color: #f9a825;
+    color: #f9a825;
 }
  
 .dark-card {
-    background-color: #212121;
+    border-top-color: #212121;
+    color: #212121;
 }
  
 .crimson-card {
-    background-color: #c62828;
+    border-top-color: #c62828;
+    color: #c62828;
 }
  
 /* ================= ALERTS PANEL ================= */

@@ -44,7 +44,7 @@ export class SegmentComponent implements OnInit {
  
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admin' },
-    { label: 'Segment', route: '/admin/segment' }
+    { label: 'Segment', route: '/segment' }
   ];
  
   columns = [
@@ -172,12 +172,12 @@ onImport() {
  
  
   onAdd(): void {
-    this.router.navigate(['/admin/add-segment']);
+    this.router.navigate(['/segment/add']);
   }
  
   onEdit(row: any): void {
     console.log('Edit received in Segment:', row);
-    this.router.navigate(['/admin/segment/edit', row.groupId]);
+    this.router.navigate(['/segment/edit', row.groupId]);
   }
  
   onDelete(row: any) {

@@ -8,6 +8,7 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { GlobalHeadService } from '../../../../service/GlobalHeadService';
+import { ToastService } from '../../../../service/toast.service';
 
 
 @Component({
@@ -37,7 +38,8 @@ export class EditVisitComponent implements OnInit {
     constructor(
         private globalHeadService: GlobalHeadService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private toastService: ToastService
     ) { }
 
     ngOnInit(): void {
@@ -70,7 +72,7 @@ export class EditVisitComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Failed to load visit data:', err);
-                alert('Failed to load visit data. Please try again.');
+                this.toastService.error('Failed to load visit data. Please try again.');
                 this.router.navigate(['/globalhead/manage-visits']);
             }
         });
@@ -96,7 +98,7 @@ export class EditVisitComponent implements OnInit {
         // Dynamic: Only proceed if we have authentication
         if (!token) {
             console.error('No authentication token found. Please login first.');
-            alert('Please login to access this form.');
+            this.toastService.error('Please login to access this form.');
             // this.router.navigate(['/login']);
             return;
         }
@@ -140,12 +142,12 @@ export class EditVisitComponent implements OnInit {
                 console.error('Failed to load leads:', err);
                 
                 if (err.status === 401) {
-                    alert('Session expired. Please login again.');
+                    this.toastService.error('Session expired. Please login again.');
                     // this.router.navigate(['/login']);
                     return;
                 }
                 
-                alert('Failed to load leads. Please try again later.');
+                this.toastService.error('Failed to load leads. Please try again later.');
             }
         });
 
@@ -175,12 +177,12 @@ export class EditVisitComponent implements OnInit {
                 console.error('Failed to load purposes:', err);
                 
                 if (err.status === 401) {
-                    alert('Session expired. Please login again.');
+                    this.toastService.error('Session expired. Please login again.');
                     // this.router.navigate(['/login']);
                     return;
                 }
                 
-                alert('Failed to load visit purposes. Please try again later.');
+                this.toastService.error('Failed to load visit purposes. Please try again later.');
             }
         });
     }
@@ -210,12 +212,12 @@ export class EditVisitComponent implements OnInit {
         this.globalHeadService.updateVisit(this.visitId, payload).subscribe({
             next: (response) => {
                 console.log('Visit updated successfully:', response);
-                alert('Visit updated successfully!');
+                this.toastService.success('Visit updated successfully!');
                 this.router.navigate(['/globalhead/manage-visits']);
             },
             error: (err) => {
                 console.error('Failed to update visit:', err);
-                alert('Failed to update visit: ' + (err.error?.message || err.message));
+                this.toastService.error('Failed to update visit: ' + (err.error?.message || err.message));
             }
         });
     }

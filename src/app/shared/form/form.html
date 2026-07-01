@@ -30,11 +30,10 @@
                 [id]="'form-field-' + field.name"
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
 
-              <!-- DATE -->
-              <input *ngIf="field.type === 'date'" type="date" class="company-text-input"
-                [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required"
-                [id]="'form-field-' + field.name"
-                (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
+              <!-- DATE / DATETIME -->
+              <input *ngIf="field.type === 'date' || field.type === 'datetime-local'" [type]="field.type" class="company-text-input"
+                [ngModel]="formData[field.name]" (ngModelChange)="onInputChange(field, $event)"
+                [name]="field.name" [required]="!!field.required" />
 
               <!-- TIME -->
               <input *ngIf="field.type === 'time'"
@@ -60,15 +59,22 @@
                 [name]="field.name"
                 [id]="'form-field-' + field.name">
 
-                <option [ngValue]="null">{{ field.placeholder }}</option>
+ 
+                  <ul class="options-list">
+                    <li class="option-item" (click)="selectSearchableOption(field, {label: field.placeholder || 'Select', value: null})">
+                      -- {{ field.placeholder || 'Select' }} --
+                    </li>
+                    <li class="option-item"
+                        *ngFor="let opt of (field._filtered || field.options)"
+                        (click)="selectSearchableOption(field, opt)">
+                      {{ opt.label }}
+                    </li>
+                    <li class="no-results" *ngIf="(field._filtered || field.options)?.length === 0">No results found</li>
+                  </ul>
+                </div>
+              </div>
 
-                <option *ngFor="let opt of field.options" [value]="opt.value">
-                  {{ opt.label }}
-                </option>
-
-              </select>
-
-              <!-- DYNAMIC DROPDOWN (DEPENDENT) -->
+ 
               <select *ngIf="field.type === 'select-dynamic'"
                 class="company-text-input"
                 [(ngModel)]="formData[field.name]"
@@ -77,8 +83,8 @@
                   formData[field.name] = $event;
                   fieldChange.emit({ name: field.name, value: $event });
                   field.onChange?.($event)
-                " [name]="field.name" [required]="!!field.required">
-                   [id]="'form-field-' + field.name">
+                " [name]="field.name" [required]="!!field.required"
+                [id]="'form-field-' + field.name">
 
                 <option value="">-- Select --</option>
 

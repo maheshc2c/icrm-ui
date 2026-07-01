@@ -46,7 +46,7 @@ export class Product implements OnInit {
  
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admin' },
-    { label: 'Product', route: '/admin/product' }
+    { label: 'Product', route: '/product' }
   ];
  
   columns = [
@@ -210,12 +210,12 @@ export class Product implements OnInit {
   }
  
   onAdd(): void {
-    this.router.navigate(['/admin/add-product']);
+    this.router.navigate(['/product/add']);
   }
  
   onEdit(row: any): void {
     console.log('Edit received in Product:', row);
-    this.router.navigate(['/admin/product/edit', row.productId]);
+    this.router.navigate(['/product/edit', row.productId]);
   }
  
   onDelete(row: any) {
@@ -226,31 +226,27 @@ export class Product implements OnInit {
     return;
   }
 
-  const isActive = Number(row.productStatus) === 1;
-
-  this.confirmService.confirm({
-    title: 'Confirm',
-    message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this product?`,
-    confirmText: isActive ? 'Deactivate' : 'Activate'
-  }).then((confirmed) => {
-    if (!confirmed) return;
-
-    const apiCall = isActive
-      ? this.adminService.deactivateProduct(id)
-      : this.adminService.activateProduct(id);
-
-    apiCall.subscribe({
-      next: () => {
-        row.productStatus = isActive ? 2 : 1;
-        this.rows = [...this.rows];
-        this.fullRows = [...this.fullRows];
-        this.toastService.success(`Product ${isActive ? 'deactivated' : 'activated'} successfully`);
-      },
-      error: err => {
-        console.error('Status update failed', err);
-        this.toastService.error('Failed to update status');
-      }
+    const isActive = Number(row.productStatus) === 1;
+  
+    this.confirmService.confirm({
+      title: 'Confirm',
+      message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this product?`,
+      confirmText: isActive ? 'Deactivate' : 'Activate'
+    }).then((confirmed) => {
+      if (!confirmed) return;
+  
+      this.productService.activateDeactivateProduct(id).subscribe({
+        next: () => {
+          row.productStatus = isActive ? 2 : 1;
+          this.rows = [...this.rows];
+          this.fullRows = [...this.fullRows];
+          this.toastService.success(`Product ${isActive ? 'deactivated' : 'activated'} successfully`);
+        },
+        error: err => {
+          console.error('Status update failed', err);
+          this.toastService.error('Failed to update status');
+        }
+      });
     });
-  });
-}
+  }
 }

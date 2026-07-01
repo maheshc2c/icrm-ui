@@ -69,13 +69,20 @@ export class TargetRoleComponent implements OnInit {
             next: (users: any[]) => {
                 console.log("API Response:", users);
 
+                // Sort descending by userId so latest is first
+                users.sort((a: any, b: any) => {
+                    const idA = a.userId ?? a.id ?? a.serialNumber ?? 0;
+                    const idB = b.userId ?? b.id ?? b.serialNumber ?? 0;
+                    return idB - idA;
+                });
+
                 this.rows = users.map((c: any, index: number) => ({
                     serialNumber: c.serialNumber ?? (index + 1),
                     userId: c.userId ?? c.id ?? c.serialNumber ?? null,  // Use real database user ID if available
                     name: c.firstName && c.lastName
                         ? `${c.firstName} ${c.lastName}`
                         : (c.firstName ?? c.username ?? ''),
-                    role: c.roleName ?? '',
+                    role: c.roleName ?? c.role?.roleName ?? '',
                     employeeId: c.username ?? '',
                     email: c.email ?? '',
                     mobile: c.phoneNumber ?? ''
@@ -99,13 +106,19 @@ export class TargetRoleComponent implements OnInit {
         if (searchTerm) {
             this.userTargetService.searchTarget(undefined, undefined, undefined, undefined, searchTerm).subscribe({
                 next: (users: any[]) => {
+                    // Sort descending by userId so latest is first
+                    users.sort((a: any, b: any) => {
+                        const idA = a.userId ?? a.id ?? a.serialNumber ?? 0;
+                        const idB = b.userId ?? b.id ?? b.serialNumber ?? 0;
+                        return idB - idA;
+                    });
                     this.rows = users.map((c: any, index: number) => ({
                         serialNumber: c.serialNumber ?? (index + 1),
                         userId: c.userId ?? c.id ?? c.serialNumber ?? null,
                         name: c.firstName && c.lastName
                             ? `${c.firstName} ${c.lastName}`
                             : (c.firstName ?? c.username ?? ''),
-                        role: c.roleName ?? '',
+                        role: c.roleName ?? c.role?.roleName ?? '',
                         employeeId: c.username ?? '',
                         email: c.email ?? '',
                         mobile: c.phoneNumber ?? ''
@@ -141,13 +154,19 @@ export class TargetRoleComponent implements OnInit {
         // Call the search API with all parameters
         this.userTargetService.searchTarget(username, role, email, phoneNumber, name).subscribe({
             next: (users: any[]) => {
+                // Sort descending by userId so latest is first
+                users.sort((a: any, b: any) => {
+                    const idA = a.userId ?? a.id ?? a.serialNumber ?? 0;
+                    const idB = b.userId ?? b.id ?? b.serialNumber ?? 0;
+                    return idB - idA;
+                });
                 this.rows = users.map((c: any, index: number) => ({
                     serialNumber: c.serialNumber ?? (index + 1),
                     userId: c.userId ?? c.id ?? c.serialNumber ?? null,
                     name: c.firstName && c.lastName
                         ? `${c.firstName} ${c.lastName}`
                         : (c.firstName ?? c.username ?? ''),
-                    role: c.roleName ?? '',
+                    role: c.roleName ?? c.role?.roleName ?? '',
                     employeeId: c.username ?? '',
                     email: c.email ?? '',
                     mobile: c.phoneNumber ?? ''

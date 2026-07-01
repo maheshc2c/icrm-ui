@@ -9,6 +9,7 @@ import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Adminservice } from '../../../../service/adminservice';
 import { ProductService } from '../../../../service/productservice';
 import { DemoProductModel } from '../../../../models/demo-product-model';
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
   selector: 'app-add',
@@ -23,7 +24,8 @@ export class Add implements OnInit {
     private adminService: Adminservice,
     private productService: ProductService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService
   ) {}
 
   isEditMode = false;
@@ -164,7 +166,7 @@ private loadDemoById(id: number) {
       const demo = data.find(d => d.demoProductDetailId == id);
 
       if (!demo) {
-        alert('Demo product not found');
+        this.toastService.error('Demo product not found');
         this.router.navigate(['/admin/demo']);
         return;
       }
@@ -179,7 +181,7 @@ private loadDemoById(id: number) {
       this.loadEditDropdowns(demo);
     },
     error: () => {
-      alert('Failed to load demo');
+      this.toastService.error('Failed to load demo');
       this.router.navigate(['/admin/demo']);
     }
   });
@@ -472,7 +474,7 @@ saveDemo(formData: any): void {
   const city = this.cities.find(c => c.locationId == formData.cityId);
 
   if (!category || !group || !product || !region || !branch || !city) {
-    alert('Dropdown data missing');
+    this.toastService.error('Dropdown data missing');
     return;
   }
 
@@ -495,15 +497,21 @@ saveDemo(formData: any): void {
 
 
     this.adminService.updateDemo(id, payload).subscribe({
-      next: () => this.router.navigate(['/admin/demo']),
-      error: () => alert('Failed to update demo')
+      next: () => {
+        this.toastService.success('Demo updated successfully');
+        this.router.navigate(['/admin/demo']);
+      },
+      error: (err: any) => this.toastService.error(err.error?.message || 'Failed to update demo')
     });
 
   } else {
 
     this.adminService.createDemo(payload).subscribe({
-      next: () => this.router.navigate(['/admin/demo']),
-      error: () => alert('Failed to create demo')
+      next: () => {
+        this.toastService.success('Demo created successfully');
+        this.router.navigate(['/admin/demo']);
+      },
+      error: (err: any) => this.toastService.error(err.error?.message || 'Failed to create demo')
     });
   }
 }

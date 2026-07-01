@@ -10,6 +10,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class ProductService {
   private baseUrl = 'http://localhost:8080/admin';
+  private productApiUrl = 'http://localhost:8080/product';
 
   constructor(
     private http: HttpClient,
@@ -32,40 +33,38 @@ export class ProductService {
     }
   }
 
-  // Get all products
+  // Get all products using search with empty body
   getProducts(page: number = 0, size: number = 100000): Observable<Product[]> {
-    return this.http.get<any>(`${this.baseUrl}/view-product`, {
-      headers: this.getAuthHeaders(),
-      params: {
-        page: String(page),
-        size: String(size)
-      }
+    return this.http.post<any>(`${this.productApiUrl}/search`, {
+        pagination: { pageNumber: page, pageSize: size, sortBy: "productId", sortOrder: "DESC" }
+    }, {
+      headers: this.getAuthHeaders()
     }).pipe(
-      map(res => Array.isArray(res) ? res : (res?.content || []))
+      map(res => {
+        if (Array.isArray(res)) return res;
+        if (res && Array.isArray(res.content)) return res.content;
+        return [];
+      })
     );
   }
 
   // Get product by ID
   getProductById(id: number): Observable<Product> {
-    return this.getProducts(0, 100000).pipe(
-      map(products => {
-        const product = products.find(p => p.productId === id);
-        if (!product) throw new Error('Product not found');
-        return product;
-      })
-    );
+    return this.http.get<Product>(`${this.productApiUrl}/${id}`, {
+      headers: this.getAuthHeaders()
+    });
   }
 
   // Create new product
   createProduct(productDto: ProductDto): Observable<Product> {
-    return this.http.post<Product>(`${this.baseUrl}/create-Product`, productDto, {
+    return this.http.post<Product>(`${this.productApiUrl}`, productDto, {
       headers: this.getAuthHeaders()
     });
   }
 
   // Update product
   updateProduct(id: number, productDto: ProductDto): Observable<Product> {
-    return this.http.put<Product>(`${this.baseUrl}/edite-product/${id}`, productDto, {
+    return this.http.put<Product>(`${this.productApiUrl}/${id}`, productDto, {
       headers: this.getAuthHeaders()
     });
   }
@@ -78,9 +77,21 @@ export class ProductService {
     description?: string;
     typeName?: string;
   }): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/search-product`, {
-      headers: this.getAuthHeaders(),
-      params: params
+    return this.http.post<any>(`${this.productApiUrl}/search`, params, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (Array.isArray(res)) return res;
+        if (res && Array.isArray(res.content)) return res.content;
+        return [];
+      })
+    );
+  }
+
+  // Activate/Deactivate Product
+  activateDeactivateProduct(id: number): Observable<any> {
+    return this.http.delete(`${this.productApiUrl}/${id}`, {
+      headers: this.getAuthHeaders()
     });
   }
 

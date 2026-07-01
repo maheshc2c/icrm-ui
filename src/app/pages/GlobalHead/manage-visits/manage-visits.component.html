@@ -4,5 +4,6 @@
 </app-pageheader>
 
 <app-data-table title="Visits List" [columns]="columns" [rows]="rows" [showAdd]="true" [searchFields]="searchFields"
-    (add)="onAdd()" (editRow)="onEdit($event)">
+    [showStatusToggle]="true" [statusField]="'status'" [showRefresh]="true" (refresh)="loadVisits()"
+    (add)="onAdd()" (editRow)="onEdit($event)" (deleteRow)="onDelete($event)">
 </app-data-table>
