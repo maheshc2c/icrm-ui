@@ -8,6 +8,7 @@ import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Contactmodel } from '../../../../models/contactmodel';
 import { Form } from '../../../../shared/form/form';
 import { Adminservice } from '../../../../service/adminservice';
+import { ToastService } from '../../../../service/toast.service';
  
 @Component({
   selector: 'app-addcontact',
@@ -20,7 +21,8 @@ export class Addcontact implements OnInit {
   constructor(
     private adminService: Adminservice,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) { }
  
   /* ================= HEADER ================= */
@@ -44,7 +46,8 @@ export class Addcontact implements OnInit {
       type: 'select',
       placeholder: 'Select Speciality',
       required: true,
-      options: []
+      options: [],
+      searchable: true
     },
     {
       name: 'customerId',
@@ -52,7 +55,8 @@ export class Addcontact implements OnInit {
       placeholder: 'Select Customer',
       type: 'select',
       required: true,
-      options: []
+      options: [],
+      searchable: true
     },
  
     { name: 'contactMobileNo', label: 'Mobile', placeholder: 'Enter mobile number', type: 'text', required: true },
@@ -133,17 +137,18 @@ customerId: data.customerId,
  
     apiCall.subscribe({
       next: () => {
-        alert(`Contact ${this.isEditMode ? 'updated' : 'created'} successfully`);
+         this.toastService.success(
+    `Contact ${this.isEditMode ? 'updated' : 'created'} successfully`
+  );
         this.router.navigate(['contact']);
       },
       error: err => {
-  console.error('FULL ERROR =>', err);
   console.error('STATUS =>', err.status);
   console.error('ERROR BODY =>', err.error);
+  console.error('FULL ERROR =>', err);
 
-  alert(
-    'Status: ' + err.status +
-    '\nMessage: ' + JSON.stringify(err.error)
+  this.toastService.error(
+    err?.error?.message || 'Failed to save contact'
   );
 }
     });

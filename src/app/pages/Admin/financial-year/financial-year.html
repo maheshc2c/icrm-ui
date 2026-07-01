@@ -8,16 +8,25 @@
 <app-data-table
 [rows]="rows"
 [columns]="columns"
-[showImport]="true"
+[showView]="true"
+[showReset]="true"
+(viewRow) = "onView($event)"
 [showAdd]="true"
 (search)="onSearch($event)"
 [searchFields]="searchFields"
-(download)="onImport()"
 (add)="onAdd()"
-(editRow)="onEdit($event)"
-(deleteRow)="onDelete($event)" >
+ [showEdit]="false"
+  [showDownload]="false"
+  [showDelete]="false"
+  [showStatusToggle]="false"
+  (reset)="onReset()"
+ >
 
 </app-data-table>
+
+
+
+
 <!-- 
 [searchFields]="searchFields" -->
 <!-- (deleteRow)="onDelete($event)" -->

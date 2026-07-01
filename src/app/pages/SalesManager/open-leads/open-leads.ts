@@ -27,9 +27,13 @@ export class OpenLeads implements OnInit {
   searchFields: SearchFieldConfig[] = [
     { key: 'leadId', label: 'Lead ID', type: 'text', placeholder: 'Lead ID' },
     { key: 'customer', label: 'Customer', type: 'select', placeholder: 'Select Customer', options: [] },
-    { key: 'status', label: 'Status', type: 'select', placeholder: 'Select Status', options: [
-      { value: 'Lead', label: 'Lead' },
-      { value: 'Approved', label: 'Approved' }
+    { key: 'status', label: 'Status', type: 'native-select', placeholder: 'Select Status', options: [
+      { value: '1', label: 'Waiting for Approval' },
+      { value: '2', label: 'Lead Approved' },
+      { value: '3', label: 'Opportunity Created' },
+      { value: '4', label: 'All Opportunities Dropped' },
+      { value: '5', label: 'All Opportunities Lost or Dropped' },
+      { value: '6', label: 'Partial Quote' }
     ]},
     { key: 'startDate', label: 'Start Date', type: 'date', placeholder: 'Start Date' },
     { key: 'endDate', label: 'End Date', type: 'date', placeholder: 'End Date' }
@@ -46,6 +50,10 @@ export class OpenLeads implements OnInit {
 
   originalLeads: LeadSummary[] = [];
   rows: any[] = [];
+  
+  currentPage = 1;
+  pageSize = 10;
+  totalElements: number = 0;
 
   constructor(
     private router: Router,
@@ -56,7 +64,6 @@ export class OpenLeads implements OnInit {
     this.loadLeads();
     this.loadCustomers();
   }
-
 
   loadCustomers(): void {
     this.leadService.getCustomers().subscribe({
@@ -76,9 +83,12 @@ export class OpenLeads implements OnInit {
   }
 
   loadLeads(): void {
-    this.leadService.getOpenLeads().subscribe({
-      next: (data: LeadSummary[]) => {
-        this.rows = data.map(item => ({
+    this.leadService.getOpenLeads(this.currentPage - 1, this.pageSize).subscribe({
+      next: (data: any) => {
+        const leadsData = data.content || [];
+        this.totalElements = data.totalElements || leadsData.length;
+        
+        this.rows = leadsData.map((item: any) => ({
           leadId: item.leadId,
           customer: item.customerName,
           contactPerson: item.contactFirstName,
@@ -90,7 +100,7 @@ export class OpenLeads implements OnInit {
           hasQuote: item.hasQuote,
           hasCNote: item.hasCNote
         }));
-        this.originalLeads = data;
+        this.originalLeads = leadsData;
       },
       error: (err) => {
         console.error('Error loading leads:', err);
@@ -98,12 +108,23 @@ export class OpenLeads implements OnInit {
     });
   }
 
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadLeads();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1; // Reset to page 1 on size change
+    this.loadLeads();
+  }
+
   onSearch(filters: any): void {
     console.log('Search filters:', filters);
     const searchParams = {
       leadId: filters.leadId,
       customerName: filters.customer,
-      status: filters.status === 'Lead' ? '1' : (filters.status === 'Approved' ? '2' : filters.status),
+      status: filters.status,
       startDate: filters.startDate,
       endDate: filters.endDate
     };
@@ -128,6 +149,10 @@ export class OpenLeads implements OnInit {
         console.error('Error searching leads:', err);
       }
     });
+  }
+
+  onReset(): void {
+    this.loadLeads();
   }
 
   onAdd(): void {

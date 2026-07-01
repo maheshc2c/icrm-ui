@@ -10,6 +10,7 @@ import { Form } from '../../../../shared/form/form';
 import { Adminservice } from '../../../../service/adminservice';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { CompetitorModel } from '../../../../models/competitor-model';
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
   selector: 'app-add-competitor',
@@ -24,7 +25,8 @@ export class AddCompetitor implements OnInit {
   constructor(
     private adminService: Adminservice,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {}
 
 
@@ -70,7 +72,7 @@ export class AddCompetitor implements OnInit {
     this.headerTitle = 'Edit Competitor';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
-      { label: 'Competitor', route: '/admin/competitor' },
+      { label: 'Competitor', route: '/competitor' },
       { label: 'Edit Competitor' }
     ];
 
@@ -94,8 +96,8 @@ export class AddCompetitor implements OnInit {
       );
 
       if (!competitor) {
-        alert('Competitor not found');
-        this.router.navigate(['/admin/competitor']);
+         this.toastService.error('Competitor not found');
+        this.router.navigate(['/competitor']);
         return;
       }
 
@@ -105,8 +107,8 @@ export class AddCompetitor implements OnInit {
       };
     },
     error: () => {
-      alert('Failed to load competitor');
-      this.router.navigate(['/admin/competitor']);
+      this.toastService.error('Failed to load competitor');
+      this.router.navigate(['/competitor']);
     }
   });
 }
@@ -116,9 +118,9 @@ export class AddCompetitor implements OnInit {
 
     // Competitor Name Validation
   if (!data.competitorName || data.competitorName.trim() === '') {
-    alert('This value is required.');
-    return;
-  }
+  this.toastService.error('Competitor Name is required');
+  return;
+}
 
     if (this.isEditMode) {
       // ✅ FULL MODEL FOR UPDATE
@@ -130,10 +132,14 @@ export class AddCompetitor implements OnInit {
       };
 
       this.adminService.updateCompetitor(this.competitorId, payload).subscribe({
-        next: () => this.router.navigate(['/admin/competitor']),
+        next: () =>
+         { 
+          this.toastService.success('Competitor updated successfully');
+          this.router.navigate(['/competitor'])
+         },
         error: err => {
           console.error(err);
-          alert('Failed to update competitor');
+          this.toastService.error('Failed to create competitor');
         }
       });
 
@@ -147,16 +153,19 @@ export class AddCompetitor implements OnInit {
       };
 
       this.adminService.createCompetitor(payload).subscribe({
-        next: () => this.router.navigate(['/admin/competitor']),
+        next: () => {
+          this.toastService.success('Competitor created successfully');
+          this.router.navigate(['/competitor'])}
+        ,
         error: err => {
           console.error(err);
-          alert('Failed to create competitor');
+          this.toastService.error('Failed to update competitor');
         }
       });
     }
   }
 
   onCancel(): void {
-    this.router.navigate(['/admin/competitor']);
+    this.router.navigate(['/competitor']);
   }
 }

@@ -18,6 +18,14 @@
      <!-- <i class="fas fa-file-excel" aria-hidden="true"></i> -->
   </button>
 
+  <button *ngIf="showUpload"
+        class="icon-btn"
+        (click)="upload.emit()"
+        title="Upload Target">
+  <i class="fas fa-upload"></i>
+</button>
+  
+
 
   <!-- ADD -->
   <button *ngIf="showAdd"

@@ -1,0 +1,143 @@
+.upload-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-modal {
+  width: 800px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #dcdcdc;
+  box-shadow: none;
+}
+
+/* Header like screenshot 1 */
+.upload-modal h3 {
+  margin: 0;
+  padding: 18px 24px;
+
+  background: #2d8cdf;
+  color: #fff;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  border-bottom: none;
+}
+
+/* Body */
+.upload-modal ul {
+  list-style: none;
+
+  padding: 28px 38px;
+  margin: 0;
+
+  background: #f5f5f5;
+}
+
+.upload-modal ul li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 18px;
+
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.upload-modal ul li::before {
+  content: "✓";
+
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  color: #5b9bd5;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* Footer */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+
+  gap: 16px;
+
+  padding: 20px;
+
+  border-top: 1px solid #dcdcdc;
+  background: #f5f5f5;
+}
+
+/* Common button */
+.modal-actions button {
+  min-width: 160px;
+  height: 40px;
+
+  border: none;
+  border-radius: 3px;
+
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Download */
+.btn-secondary {
+  background: #428bca;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #3276b1;
+}
+
+/* Upload */
+.btn-primary {
+  background: #5b9bd5;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #4a8ac5;
+}
+
+/* Cancel */
+.btn-danger {
+  background: #d9534f;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #c9302c;
+}
+.file-upload-body {
+  padding: 30px;
+  background: #f5f5f5;
+}
+
+.upload-label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.required {
+  color: red;
+}
+
+.file-upload-body input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+}

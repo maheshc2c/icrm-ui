@@ -29,8 +29,8 @@ export class Form implements OnChanges {
  
   formData: any = {};
   errors: any = {};
- 
   touched: any = {};
+ 
 
   // ngOnChanges(changes: SimpleChanges) {
   //   if (changes['model'] && changes['model'].currentValue) {
@@ -159,7 +159,7 @@ export class Form implements OnChanges {
     this.fieldChange.emit({ name: fieldName, value: this.formData[fieldName] });
     this.onFieldInput(fieldName);
   }
-
+ 
   /* ================= RADIO GROUP ================= */
   onRadioClick(fieldName: string, optionValue: any, event: Event) {
     if (this.formData[fieldName] === optionValue) {
@@ -220,6 +220,24 @@ export class Form implements OnChanges {
       return `${field.label} must be less than ${field.max}`;
     }
  
+   // Email Validation
+  if (
+    field.type === 'email' &&
+    value &&
+    !/^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/.test(value)
+  ) {
+    return 'Please enter a valid email address';
+  }
+ 
+  //mobile validation
+  if (
+  field.name === 'contactMobileNo' &&
+  value &&
+  !/^\d{10}$/.test(value)
+) {
+  return 'Mobile number must be 10 digits';
+}
+ 
     return null;
   }
  
@@ -276,6 +294,24 @@ export class Form implements OnChanges {
     }
  
     this.formSubmit.emit(this.formData);
+  }
+ 
+  onFieldInput(fieldName: string) {
+    this.touched[fieldName] = true;
+    // Find the field object by name
+    const field = this.fields.find(f => f.name === fieldName);
+    if (field) {
+      const err = this.validateField(field);
+      if (err) {
+        this.errors[fieldName] = err;
+      } else {
+        delete this.errors[fieldName];
+      }
+    }
+  }
+ 
+  clearError(fieldName: string) {
+    delete this.errors[fieldName];
   }
  
   cancel() {

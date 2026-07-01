@@ -19,7 +19,7 @@
 }
 
 /* ================= SHARED WIDTH COLUMN ================= */
-/* 🔥 THIS IS THE MOST IMPORTANT PART */
+
 .datatable-toolbar,
 .content-wrapper {
   width: 100%;
@@ -36,16 +36,14 @@
   gap: 16px;
 
   /* 🔒 LOCK TOOLBAR WIDTH TO TABLE WIDTH */
-  overflow: hidden;
-  /* prevent crossing table edge */
+  overflow: visible;             /* prevent dropdowns from being cut off */
   margin-bottom: 16px;
 }
 
 /* Search fields */
 .datatable-toolbar app-search {
+  flex: 1;
   min-width: 220px;
-  max-width: 100%;
-  flex: 0 0 auto;
 }
 
 /* Buttons */
@@ -54,6 +52,7 @@
   gap: 10px;
   align-items: center;
   flex: 0 0 auto;
+  margin-left: auto;
 }
 
 /* ================= TABLE ================= */
@@ -63,8 +62,7 @@
 
 /* ================= CARD (TABLE WIDTH SOURCE) ================= */
 .card {
-  width: 100%;
-  /* 🔥 THIS DEFINES THE EDGE */
+  width: 100%;                 
   max-width: 100%;
   box-sizing: border-box;
 
@@ -183,9 +181,8 @@
 /* ================= TABLE CELL BORDERS ================= */
 .table th,
 .table td {
-  border-bottom: 1px solid #e5e7eb;
-  /* row separator */
-  padding: 6px 16px;
+  border-bottom: 1px solid #e5e7eb;   /* row separator */
+  padding: 6px 8px;
   vertical-align: middle;
 }
 
@@ -201,7 +198,6 @@
 } */
 
 
-/* search css */
 /* ================= SEARCH INPUT ================= */
 
 .datatable-toolbar .form-control {
@@ -524,180 +520,119 @@
    RESPONSIVE MEDIA QUERIES
    ========================================= */
 
-/* Large Laptops & Small Desktops */
-@media (max-width: 1400px) {
-  .content {
-    margin-left: 260px;
-    width: calc(100% - 260px);
-  }
-}
-
 /* Tablets Landscape */
 @media (max-width: 1200px) {
-
+ 
   .content {
     margin-left: 240px;
     width: calc(100% - 240px);
     padding: 16px;
   }
-
+ 
   .datatable-toolbar {
     gap: 12px;
   }
-
+ 
   .pagination-container {
     padding: 10px 14px;
   }
 }
-
-/* Tablets Portrait */
-@media (max-width: 992px) {
-
+ 
+/* =========================================
+   FIX CONTENT LAYOUT
+========================================= */
+ 
+.content {
+  margin-left: 280px;
+  width: calc(100% - 280px);
+  padding: 20px;
+  overflow-x: hidden;
+}
+ 
+.content-wrapper,
+.datatable-toolbar,
+.card,
+.table-responsive {
+  width: 100%;
+  max-width: 100%;
+}
+ 
+/* Laptop */
+@media screen and (max-width: 1366px) {
+ 
   .content {
-    margin-left: 0;
-    width: 100%;
+    margin-left: 280px;
+    width: calc(100% - 280px);
     padding: 15px;
   }
-
+ 
   .datatable-toolbar {
-    flex-direction: column;
-    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
   }
-
-  .datatable-toolbar app-search,
-  .datatable-toolbar app-button {
+ 
+  .table {
     width: 100%;
   }
-
+ 
   .table th,
   .table td {
-    white-space: nowrap;
-  }
-
-  .pagination-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .pagination-right {
-    justify-content: space-between;
-    width: 100%;
-  }
-}
-
-/* Mobile Landscape */
-@media (max-width: 768px) {
-
-  .content {
-    padding: 12px;
-  }
-
-  .card {
-    border-radius: 6px;
-  }
-
-  .table-responsive {
-    max-height: none;
-  }
-
-  .soft-header thead th {
+    font-size: 15px;
     padding: 10px;
-    font-size: 13px;
   }
-
-  .table td {
-    font-size: 13px;
-    padding: 8px 10px;
-  }
-
-  .action-buttons {
-    gap: 4px;
-  }
-
+ 
   .action-buttons .btn {
     width: 34px;
     height: 34px;
   }
-
-  .pagination-right {
+}
+ 
+/* Tablet */
+@media screen and (max-width: 992px) {
+ 
+  .content {
+    margin-left: 0;
+    width: 100%;
+    padding: 12px;
+  }
+ 
+  .datatable-toolbar {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
   }
-
-  .pagination-controls {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .pagination-container select {
-    width: 100%;
+ 
+  .table-responsive {
+    overflow-x: auto;
   }
 }
 
-/* Mobile Portrait */
-@media (max-width: 576px) {
-
-  .content {
-    padding: 10px;
-  }
-
-  .datatable-toolbar {
-    gap: 10px;
-  }
-
-  .soft-header thead th {
-    font-size: 12px;
-    padding: 8px;
-  }
-
-  .table td {
-    font-size: 12px;
-    padding: 8px;
-  }
-
-  .pagination-info {
-    text-align: center;
-    width: 100%;
-    font-size: 12px;
-  }
-
-  .pagination-controls button {
-    min-width: 36px;
-    padding: 5px 8px;
-    font-size: 12px;
-  }
-
-  .action-buttons .btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-  }
+/* ================= STATUS BADGES ================= */
+.status-badge-container {
+  display: flex;
+  gap: 1px;
+  flex-wrap: nowrap;
+  justify-content: center;
 }
 
-/* Very Small Devices */
-@media (max-width: 400px) {
+.status-badge {
+  padding: 1px 3px;
+  border-radius: 2px;
+  font-size: 9.5px;
+  font-weight: 600;
+  display: inline-block;
+  letter-spacing: -0.2px;
+}
 
-  .content {
-    padding: 8px;
-  }
+.status-badge.active {
+  background-color: #5cb85c;
+  color: #fff;
+  border: 1px solid #4cae4c;
+}
 
-  .pagination-controls {
-    gap: 4px;
-  }
-
-  .pagination-controls button {
-    padding: 4px 6px;
-    font-size: 11px;
-  }
-
-  .pagination-container {
-    padding: 8px;
-  }
-
-  .table td,
-  .table th {
-    font-size: 11px;
-  }
+.status-badge.inactive {
+  background-color: #e0e0e0;
+  color: #555;
+  border: 1px solid #d3d3d3;
 }

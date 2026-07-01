@@ -60,49 +60,53 @@ export class CustomerInteractionCenterService {
     );
   }
 
-  getDropdownOwners(search: string = ''): Observable<{ label: string; value: any }[]> {
-    let url = `${this.baseUrl}/CustomerInteractionCenter/dropdown-customers`;
-    if (search) {
-      url += `?customer=${encodeURIComponent(search)}`;
-    }
-    return this.http.get<any[]>(url, { headers: this.getAuthHeaders() }).pipe(
-      map(owners => {
-        const seen = new Set();
-        return owners
-          .map(owner => ({
-            label: `${owner.firstName} ${owner.lastName}`,
-            value: `${owner.firstName} ${owner.lastName}`,
-            id: owner.id // Add unique id
-          }))
-          .filter(item => {
-            if (seen.has(item.value)) return false;
-            seen.add(item.value);
-            return true;
-          });
-      })
+  getLeadById(leadId: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/SalesEngineer/salesmanager/lead/${leadId}`,
+      { headers: this.getAuthHeaders() }
     );
   }
 
-  getDropdownCustomers(search: string = ''): Observable<{ label: string; value: any }[]> {
-    let url = `${this.baseUrl}/CustomerInteractionCenter/dropdown-owners`;
-    if (search) {
-      url += `?owner=${encodeURIComponent(search)}`;
-    }
-    return this.http.get<any[]>(url, { headers: this.getAuthHeaders() }).pipe(
-      map(customers => {
-        const seen = new Set();
-        return customers
-          .map(customer => ({
-            label: customer.customerName || customer.name || customer,
-            value: customer.customerName || customer.name || customer,
-            id: customer.customerId // Add unique id
-          }))
-          .filter(item => {
-            if (seen.has(item.value)) return false;
-            seen.add(item.value);
-            return true;
-          });
-      })
+  editLead(dto: any): Observable<any> {
+    return this.http.put<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/editLeads`,
+      dto,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getInstalledBase(customerId: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/installed-base/${customerId}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getDistributors(): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/distributor`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getSiteReadiness(): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/site-readiness`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getDropdownCustomers(query: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/CustomerInteractionCenter/dropdown-customers?customer=${encodeURIComponent(query)}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getDropdownOwners(query: string): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/CustomerInteractionCenter/dropdown-owners?owner=${encodeURIComponent(query)}`,
+      { headers: this.getAuthHeaders() }
     );
   }
 

@@ -16,6 +16,8 @@
   [showEdit]="false"
   [showDelete]="false"
   [showView]="true"
+  [searchFields]="searchFields"
+  (search)="onSearch()"
 
   (viewRow)="onView($event)">
 </app-data-table>

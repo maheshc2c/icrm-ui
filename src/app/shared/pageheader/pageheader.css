@@ -1,46 +1,46 @@
+/* ================= PAGE HEADER ================= */
 .page-header {
+  background: #fff;
+  padding: 1.25rem 2rem;
+  margin: 0 0 20px 0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  width: calc(100% - 280px);
   margin-left: 280px;
-  padding: 16px 30px;
-  background-color: #fff;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #edf2f7;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  min-height: 100px;
+  margin-top: -17px;
 }
 
 .page-title h1 {
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
   margin: 0;
-  color: #333;
 }
 
-.page-title .breadcrumb {
-  font-size: 13px;
-  color: #666;
-  margin-top: 6px;
+.breadcrumb {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
 }
 
-.page-title .breadcrumb a {
-  color: #007bff;
+.breadcrumb a {
+  color: #2d3748;
   text-decoration: none;
+  transition: color 0.2s;
 }
 
-.page-title .breadcrumb a:hover {
-  text-decoration: underline;
+.breadcrumb a:hover {
+  color: #6d28d9;
 }
 
-.page-title .breadcrumb span {
-  color: #999;
-}
-
-@media (max-width: 768px) {
-  .page-header {
-    margin-left: 0;
-    padding: 15px;
-  }
+.breadcrumb span {
+  color: #a0aec0;
+  font-weight: 400;
 }
 
 /* ================= RESET ================= */
@@ -248,42 +248,10 @@
  
 /* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
-  .form-wrapper {
-    margin-left: 0;
-    padding: 16px;
-  }
- 
-  .company-form-container {
-    max-width: 100%;
-  }
- 
-  .company-field-row {
-    row-gap: 6px;
-    align-items: flex-start;
-  }
- 
-  .form-grid-container {
-    grid-template-columns: 1fr;
-    row-gap: 15px;
-  }
- 
-  .company-field-row.full-width {
-    grid-column: span 1;
-  }
- 
-  .field-label-text {
-    text-align: left;
-    white-space: normal;
-  }
- 
-  .form-action-buttons {
-    flex-direction: column;
-    align-items: stretch;
-  }
- 
-  .submit-button,
-  .cancel-button {
+  .page-header {
     width: 100%;
+    margin-left: 0;
+    padding: 1rem;
   }
  
  

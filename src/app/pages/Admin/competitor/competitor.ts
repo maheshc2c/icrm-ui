@@ -11,6 +11,7 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { CompetitorModel } from '../../../models/competitor-model';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 // import * as XLSX from 'xlsx';
 // import { saveAs } from 'file-saver';
 
@@ -34,14 +35,15 @@ export class Competitor implements OnInit {
     private adminservice: Adminservice,
     private router: Router,
     private route: ActivatedRoute,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private confirmService: ConfirmDialogService
   ) {}
 
   headerTitle = 'Manage Competitor';
 
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Competitor', route: '/admin/competitor' },
+    { label: 'Competitor', route: '/competitor' },
     { label: 'Add New' }
   ];
 
@@ -63,36 +65,34 @@ columns = [
    ngOnInit(): void {
     this.loadCompetitors();
   }
-
-  // ✅ LIST API ONLY
 private loadCompetitors(): void {
 
-  this.adminservice
-    .getCompetitors(this.currentPage - 1, this.pageSize)
-    .subscribe({
+  this.adminservice.getCompetitors(
+    null,
+    this.currentPage - 1,
+    this.pageSize
+  ).subscribe({
+    next: (response: any) => {
 
-      next: (response: any) => {
+      this.totalElements = response.totalElements;
+      this.totalPages = response.totalPages;
 
-        const competitors = response.content;
+      this.fullRows = response.content;
 
-        this.totalElements = response.totalElements;
-        this.totalPages = response.totalPages;
-
-        this.fullRows = competitors;
-
-        this.rows = competitors.map((c: any, index: number) => ({
-          sno: (this.currentPage - 1) * this.pageSize + index + 1,
+      this.rows = response.content.map(
+        (c: any, index: number) => ({
+          sno: ((this.currentPage - 1) * this.pageSize) + index + 1,
           competitorId: c.competitorId,
           competitorName: c.competitorName,
           competitorRating: c.competitorRating,
           competitorStatus: c.competitorStatus
-        }));
-      },
-
-      error: (err) => {
-        console.error(err);
-      }
-    });
+        })
+      );
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
 }
 
 //pagination
@@ -113,7 +113,6 @@ onPageSizeChange(size: number) {
 }
 
 //actiavte and deactivate
-
 onDelete(row: any) {
 
   if (!row?.competitorId) {
@@ -122,69 +121,91 @@ onDelete(row: any) {
 
   const isActive = row.competitorStatus === 1;
 
-  const apiCall = isActive
-    ? this.adminservice.deactivateCompetitor(row.competitorId)
-    : this.adminservice.activateCompetitor(row.competitorId);
+  this.confirmService.confirm({
+    title: 'Confirm',
+    message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this competitor?`,
+    confirmText: isActive ? 'Deactivate' : 'Activate'
+  }).then((confirmed) => {
 
-  apiCall.subscribe({
-    next: () => {
-
-      row.competitorStatus = isActive ? 2 : 1;
-
-      this.rows = [...this.rows];
-
-      this.loadCompetitors();
-
-      this.toastService.success(
-        `Competitor ${isActive ? 'deactivated' : 'activated'} successfully`
-      );
-    },
-
-    error: (err) => {
-      console.error('Status update failed', err);
-
-      this.toastService.error(
-        'Failed to update competitor status'
-      );
+    if (!confirmed) {
+      return;
     }
+
+    this.adminservice
+      .toggleCompetitorStatus(row.competitorId)
+      .subscribe({
+
+        next: () => {
+
+          row.competitorStatus = isActive ? 2 : 1;
+
+          this.rows = [...this.rows];
+
+          this.toastService.success(
+            `Competitor ${isActive ? 'deactivated' : 'activated'} successfully`
+          );
+
+          this.loadCompetitors();
+        },
+
+        error: (err: any) => {
+
+          console.error('Status update failed', err);
+
+          this.toastService.error(
+            'Failed to update competitor status'
+          );
+        }
+      });
   });
 }
-
 searchFilters: any = {};
 
 onReset(): void {
+
+  this.currentSearchKeyword = '';
   this.searchFilters = {};
   this.currentPage = 1;
+
   this.loadCompetitors();
 }
  
+//new download
 
-//Download
+onImport() {
 
- onImport() {
-
-  if (!this.fullRows || this.fullRows.length === 0) {
-    alert('No data available to download');
-    return;
-  }
-
-  this.adminservice.downloadCompetitorExcel(this.fullRows).subscribe({
-    next: (blob: Blob) => {
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'Competitors.xlsx';
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-    },
-    error: (err) => {
-      console.error('Download failed:', err);
-      alert(`Download failed: ${err.status}`);
+  const payload = {
+    competitorName: this.currentSearchKeyword || null,
+    pagination: {
+      pageNumber: 0,
+      pageSize: 100000,
+      sortBy: 'competitorId',
+      sortOrder: 'DESC'
     }
-  });
+  };
+
+  this.adminservice.downloadCompetitor(payload)
+    .subscribe({
+
+      next: (blob: Blob) => {
+
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'Competitor.xlsx';
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+
+      error: (err) => {
+        console.error(err);
+        this.toastService.error('Excel download failed');
+      }
+    });
 }
+
 
   onAdd() {
     this.router.navigate(['competitor/add']);
@@ -211,57 +232,39 @@ searchFields: SearchFieldConfig[] = [
 ];
 
 
+currentSearchKeyword = '';
 onSearch(keyword: string) {
 
+  this.currentSearchKeyword = keyword || '';
+
   if (!keyword || keyword.trim() === '') {
-    // 🔁 If empty search → reload full list
+    this.currentPage = 1;
     this.loadCompetitors();
     return;
   }
 
-  this.adminservice.searchCompetitors(keyword).subscribe({
-    next: (results: any[]) => {
+  this.adminservice.getCompetitors(
+    keyword,
+    0,
+    this.pageSize
+  ).subscribe({
+    next: (response: any) => {
 
-      this.fullRows = results;
+      this.totalElements = response.totalElements;
+      this.totalPages = response.totalPages;
+      this.currentPage = 1;
 
-      this.rows = results.map((c, index) => ({
+      this.rows = response.content.map((c: any, index: number) => ({
         sno: index + 1,
         competitorId: c.competitorId,
         competitorName: c.competitorName,
         competitorRating: c.competitorRating,
         competitorStatus: c.competitorStatus
       }));
-    },
-    error: (err) => {
-      console.error('Search failed', err);
     }
   });
 }
 
-
-//  filtering without search button help
-
-
-// onSearchFromTable(filters: any) {
-//   const name = filters.competitorName || '';
-
-//   if (!name.trim()) {
-//     this.loadCompetitors();
-//     return;
-//   }
-
-//   this.adminservice.searchCompetitors(name).subscribe({
-//     next: (results) => {
-//       this.fullRows = results;
-//       this.rows = results.map((c, index) => ({
-//         sno: index + 1,
-//         competitorId: c.competitorId,
-//         competitorName: c.competitorName,
-//         competitorRating: c.competitorRating
-//       }));
-//     }
-//   });
-// }
 
 
 

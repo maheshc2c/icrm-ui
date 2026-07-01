@@ -60,88 +60,75 @@ export class Adminservice {
     'Content-Type': 'application/json'
   });
 }
-  // ================= SEARCH COMPETITOR =================
-  searchCompetitors(name: string) {
-    return this.http.get<CompetitorModel[]>(
-      `${this.baseUrl}/admin/search-competitor`,
-      {
-        headers: this.getAuthHeaders(),
-        params: { competitorName: name }
+
+
+  // ================= COMPETITOR =================
+
+
+getCompetitors(
+  competitorName: string | null = null,
+  pageNumber: number = 0,
+  pageSize: number = 10
+) {
+  return this.http.post<any>(
+    `${this.baseUrl}/product/competitor-search`,
+    {
+      competitorName,
+      pagination: {
+        pageNumber,
+        pageSize,
+        sortBy: 'competitorId',
+        sortOrder: 'DESC'
       }
-    );
-  }
-
-  
-
-  deactivateCompetitor(id: number) {
-  const token = localStorage.getItem('token'); // or your existing token key
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  return this.http.put<SpecialityModel>(
-    `${this.baseUrl}/admin/deactivate-competitor/${id}`,
-    {},
-    { headers }
+    },
+    { headers: this.getAuthHeaders() }
   );
 }
 
-activateCompetitor(id: number) {
-  const token = localStorage.getItem('token'); // or your existing token key
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  return this.http.put<SpecialityModel>(
-    `${this.baseUrl}/admin/activate-competitor/${id}`,
-    {},
-    { headers }
+  createCompetitor(data: any) {
+  return this.http.post(
+    `${this.baseUrl}/product/competitor`,
+    data,
+    { headers: this.getAuthHeaders() }
   );
 }
 
-  // ================= EXCEL DOWNLOAD COMPETITORS=================
-  downloadCompetitorExcel(data: CompetitorModel[]): Observable<Blob> {
-    return this.http.post(
-      `${this.baseUrl}/admin/competitor-excel`,
-      data,
-      {
-        headers: this.getAuthHeaders(),
-        responseType: 'blob'
-      }
-    );
-  }
+getCompetitorById(id: number) {
+  return this.http.get(
+    `${this.baseUrl}/product/competitor/${id}`,
+    { headers: this.getAuthHeaders() }
+  );
+}
 
-  // ================= GET ALL COMPETITORS =================
-
-  getCompetitors(page = 0, size = 10): Observable<any> {
-  return this.http.get<any>(
-    `${this.baseUrl}/admin/get-competitors?page=${page}&size=${size}`,
+toggleCompetitorStatus(id: number) {
+  console.log('PATCH URL =>', `${this.baseUrl}/competitor/${id}`);
+  return this.http.patch(
+    `${this.baseUrl}/product/competitor/${id}`,
+    {},
     {
       headers: this.getAuthHeaders()
     }
   );
 }
 
+downloadCompetitor(payload: any) {
+  return this.http.post(
+    `${this.baseUrl}/product/competitor/download`,
+    payload,
+    {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    }
+  );
+}
 
-  // ================= CREATE COMPETITORS =================
-  createCompetitor(data: CompetitorModel): Observable<CompetitorModel> {
-    return this.http.post<CompetitorModel>(
-      `${this.baseUrl}/admin/create-competitor`,
-      data,
-      { headers: this.getAuthHeaders() }
-    );
-  }
-
-
-
-  // ================= UPDATE COMPETITORS =================
-  updateCompetitor(id: number, data: CompetitorModel): Observable<CompetitorModel> {
-    return this.http.put<CompetitorModel>(
-      `${this.baseUrl}/admin/edite-competitor/${id}`, // ⚠ backend spelling preserved
-      data,
-      { headers: this.getAuthHeaders() }
-    );
-  }
+  updateCompetitor(id: number, data: any) {
+  return this.http.put(
+    `${this.baseUrl}/product/competitor/${id}`,
+    data,
+    { headers: this.getAuthHeaders() }
+  );
+}
 
   // ================= CUSTOMER =================
 
@@ -358,87 +345,60 @@ activateCustomer(id: number) {
   }
 
   // ================= FINANCIAL YEAR =================
-
-  // ================= GET ALL FY =================
-  getfinancialyr(): Observable<FinancialyrModel[]> {
-    return this.http.get<FinancialyrModel[]>(
-      `${this.baseUrl}/admin/view-Fy`, // ✅ FIXED
-      { headers: this.getAuthHeaders() }
-    );
-  }
-
-  // ================= SEARCH COMPETITOR =================
-  searchfy(name: string) {
-    return this.http.get<FinancialyrModel[]>(
-      `${this.baseUrl}/admin/search-financial-year`,
-      {
-        headers: this.getAuthHeaders(),
-        params: { name } // ✅ MATCHES BACKEND
+// Search + View
+getFinancialYears(
+  fyName: string | null = null,
+  pageNumber: number = 0,
+  pageSize: number = 10
+) {
+  return this.http.post<any>(
+    `${this.baseUrl}/product/financial-year-search`,
+    {
+      fyName,
+      pagination: {
+        pageNumber,
+        pageSize,
+        sortBy: 'fyId',
+        sortOrder: 'DESC'
       }
-    );
-  }
+    },
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
+// Create
+createfy(payload: any) {
+  return this.http.post(
+    `${this.baseUrl}/product/financial-year`,
+    payload,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
-  getDropfy(): Observable<string[]> {
-    return this.http.get<string[]>(
-      `${this.baseUrl}/admin/dropdown-financial-year`,
-      { headers: this.getAuthHeaders() }
-    );
-  }
+// Dropdown
+getDropfy() {
+  return this.http.get<string[]>(
+    `${this.baseUrl}/product/financial-year/dropdown`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
-  // ================= Download FY =================
+// Calendar View
+getFinancialYearCalendar(fyId: number) {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/product/financial-year/calendar/${fyId}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
-  downloadFinancialYearExcel(data: FinancialyrModel[]): Observable<Blob> {
-    return this.http.post(
-      `${this.baseUrl}/admin/financialyear-excel`,
-      data,
-      {
-        headers: this.getAuthHeaders(),
-        responseType: 'blob'
-      }
-    );
-  }
-
-
-
-  //http://localhost:8080/admin/search-financial-year?name=2025
-
-  // ================= CREATE FY =================
-  createfy(payload: FinancialyrModel): Observable<any> {
-    const headers = this.getAuthHeaders();
-
-    console.log('FY CREATE HEADERS =>', headers);
-    console.log('FY CREATE PAYLOAD =>', payload);
-
-    return this.http.post(
-      `${this.baseUrl}/admin/create-Fy`,
-      payload,
-      {
-        headers,
-        responseType: 'text'   // ✅ IMPORTANT FIX
-      }
-    );
-  }
-
-
-  // ================= UPDATE COMPETITORS =================
-
-  updatefy(id: number, payload: FinancialyrModel): Observable<any> {
-    const headers = this.getAuthHeaders();
-
-    return this.http.put(
-      `${this.baseUrl}/admin/edite-Fy/${id}`,
-      payload,
-      { headers }
-    );
-  }
-
-
-  // updatefy(id: number, data: FinancialyrModel): Observable<FinancialyrModel> {
-  //   return this.http.put<FinancialyrModel>(
-  //     `${this.baseUrl}/admin/edite-Fy/${id}`, // ⚠ backend spelling preserved
-  //     data,
-  //     { headers: this.getAuthHeaders() }
 
   // ================= SPECIALTIY =================
 
@@ -484,12 +444,12 @@ activateCustomer(id: number) {
   }
 
   updateSpeciality(data: SpecialityModel): Observable<SpecialityModel> {
-    return this.http.put<SpecialityModel>(
-      `${this.baseUrl}/customer/speciality`,
-      data,
-      { headers: this.getAuthHeaders() }
-    );
-  }
+  return this.http.put<SpecialityModel>(
+    `${this.baseUrl}/customer/speciality`,
+    data,
+    { headers: this.getAuthHeaders() }
+  );
+}
 
 
   downloadSpecialityExcel(
@@ -727,8 +687,10 @@ activateDemo(id: number) {
     pagination: {
       pageNumber: page,
       pageSize: fetchAll ? 1000000 : size,
-      sortBy: 'contactFirstName',
-      sortOrder: 'asc'
+      // sortBy: 'contactFirstName',
+      // sortOrder: 'asc'
+       sortBy: 'contactId',
+  sortOrder: 'DESC'
     }
   };
 
@@ -748,14 +710,33 @@ activateDemo(id: number) {
 
   return obs;
 }
+
+uploadContact(file: File) {
+
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  return this.http.post(
+    `${this.baseUrl}/contact/upload`,
+    formData,
+    {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }),
+      responseType: 'text'
+    }
+  );
+}
+
 getContactsPaged(
   customerName: string | null,
   specialityName: string | null,
   contactFirstName: string | null,
   pageNumber: number = 0,
   pageSize: number = 10,
-  sortBy: string = 'contactFirstName',
-  sortOrder: string = 'asc'
+  sortBy: string = 'contactId',
+  sortOrder: string = 'desc'
 ) {
 
   const payload = {
@@ -913,58 +894,79 @@ updateContact(id: number, payload: any) {
   }
 
 
-  getSubSystem(): Observable<SubsystemModel[]> {
-    return this.http.get<SubsystemModel[]>(
-      `${this.baseUrl}/admin/view-subcategory`,
-      { headers: this.getAuthHeaders() }
-    );
-  }
+  // ================= SUB SYSTEM =================
 
-  searchSubSystem(name: string) {
-    return this.http.get<any[]>(
-      `${this.baseUrl}/admin/search-subcategory`,
-      {
-        headers: this.getAuthHeaders(),
-        params: { subcategoryName: name }
+// Search + View
+getSubSystems(
+  name: string | null = null,
+  pageNumber: number = 0,
+  pageSize: number = 10
+) {
+  return this.http.post<any>(
+    `${this.baseUrl}/product/subcategory-search`,
+    {
+      name,
+      pagination: {
+        pageNumber,
+        pageSize,
+        sortBy: 'SubcategoryCreatedTime',
+        sortOrder: 'DESC'
       }
-    );
-  }
+    },
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
 
+// Get By Id
+getSubSystemById(id: number) {
+  return this.http.get(
+    `${this.baseUrl}/product/subcategory/${id}`,
+    { headers: this.getAuthHeaders() }
+  );
+}
 
-  // ================= CREATE SubSystem =================
-  createSubSystem(data: SubsystemModel): Observable<SubsystemModel> {
-    return this.http.post<SubsystemModel>(
-      `${this.baseUrl}/admin/create-subcategory`,
-      data,
-      { headers: this.getAuthHeaders() }
-    );
-  }
+// Create
+createSubSystem(payload: any) {
+  return this.http.post(
+    `${this.baseUrl}/product/subcategory`,
+    payload,
+    { headers: this.getAuthHeaders() }
+  );
+}
 
+// Update
+updateSubSystem(id: number, payload: any) {
+  return this.http.put(
+    `${this.baseUrl}/product/subcategory/${id}`,
+    payload,
+    { headers: this.getAuthHeaders() }
+  );
+}
 
+// Activate / Deactivate
+toggleSubSystem(id: number) {
+  return this.http.patch(
+    `${this.baseUrl}/product/subcategory/${id}`,
+    {},
+    { headers: this.getAuthHeaders() }
+  );
+}
 
-  // ================= UPDATE SubSystem =================
+// Download
+downloadSubSystemExcel(payload: any) {
+  return this.http.post(
+    `${this.baseUrl}/product/subcategory/download`,
+    payload,
+    {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    }
+  );
+}
+  
 
-  updateSubSystem(id: number, data: SubsystemModel): Observable<SubsystemModel> {
-    return this.http.put<SubsystemModel>(
-      `${this.baseUrl}/admin/edit-subcategory/${id}`, // ⚠ backend spelling preserved
-      data,
-      { headers: this.getAuthHeaders() }
-    );
-  }
-
-
-  // ================= EXCEL DOWNLOAD COMPETITORS=================
-
-  downloadSubSystemExcel(data: any[]): Observable<Blob> {
-    return this.http.post(
-      `${this.baseUrl}/admin/subsystem-excel`,
-      data,
-      {
-        headers: this.getAuthHeaders(),
-        responseType: 'blob'
-      }
-    ) as Observable<Blob>;
-  }
 
   getUserLogs(): Observable<UserlogModel[]> {
     return this.http.get<UserlogModel[]>(

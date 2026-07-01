@@ -18,14 +18,16 @@ export class Button {
   @Input() showView = true;
   @Input() showRefresh = false;
   @Input() showReset = false;
+  @Input() showUpload = false;
 
   @Output() search = new EventEmitter<void>();
   @Output() reset = new EventEmitter<void>();
   @Output() download = new EventEmitter<void>();
   @Output() refresh = new EventEmitter<void>();
-  @Output() import = new EventEmitter<void>(); // (can remove later)
+  @Output() import = new EventEmitter<void>(); 
   @Output() add = new EventEmitter<void>();
   @Output() view = new EventEmitter<void>();
+  @Output() upload = new EventEmitter<void>();
 
 @Output() clicked = new EventEmitter<void>();
 

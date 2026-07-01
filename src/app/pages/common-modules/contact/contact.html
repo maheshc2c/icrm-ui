@@ -1,30 +1,113 @@
-<app-header></app-header>
-<app-sidebar></app-sidebar>
+<app-header></app-header> <app-sidebar></app-sidebar>
 
-<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs"></app-pageheader>
+<app-pageheader
+[title]="headerTitle"
+[breadcrumbs]="headerBreadcrumbs"> </app-pageheader>
 
 <app-data-table
-  [columns]="columns"
-  [rows]="rows"
-  [searchFields]="searchFields"
+[columns]="columns"
+[rows]="rows"
+[searchFields]="searchFields"
+[currentPage]="currentPage"
+[pageSize]="pageSize"
+[totalPages]="totalPages"
+[totalElements]="totalElements"
+[showReset]="true"
+[showUpload]="true"
+[showStatusToggle]="true"
+(uploadRow)="onUpload()"
+(reset)="onReset()"
+(pageChange)="onPageChange($event)"
+(pageSizeChange)="onPageSizeChange($event)"
+(add)="onAdd()"
+(editRow)="onEdit($event)"
+(deleteRow)="onDelete($event)"
+(download)="onImport()"
+(searchChange)="onSearch($event)"> </app-data-table>
 
-  [currentPage]="currentPage"
-  [pageSize]="pageSize"
-  [totalPages]="totalPages"
-  [totalElements]="totalElements"
-  [showReset]="true"
-  (reset)="onReset()"
+<!-- Upload Instructions Modal -->
 
-  (pageChange)="onPageChange($event)"
-  (pageSizeChange)="onPageSizeChange($event)"
-  [showStatusToggle]="true"
+<div class="upload-modal-backdrop" *ngIf="showUploadModal">
+  <div class="upload-modal">
 
-  (add)="onAdd()"
-  (editRow)="onEdit($event)"
-  (deleteRow)="onDelete($event)"
-  (download)="onImport()"
-  (searchChange)="onSearch($event)">
 
-</app-data-table>
+<h3>Contact Upload Instructions</h3>
 
-<!-- (search)="onSearch($event)" -->
+<ul>
+  <li>Use the provided template format.</li>
+  <li>Duplicate and existing records will not be uploaded.</li>
+  <li>Create Customer/Speciality records before upload if they do not exist in the system.</li>
+  <li>Mandatory fields cannot be blank.</li>
+  <li>Only valid records will be uploaded; invalid records will be skipped.</li>
+</ul>
+
+<div class="modal-actions">
+
+  <button
+    class="btn btn-secondary"
+    (click)="downloadTemplate()">
+    Download Sample Template
+  </button>
+
+  <button
+    class="btn btn-primary"
+    (click)="uploadExcel()">
+    Upload File
+  </button>
+
+  <button
+    class="btn btn-danger"
+    (click)="closeUploadModal()">
+    Cancel
+  </button>
+
+</div>
+
+
+  </div>
+</div>
+
+<!-- File Upload Modal -->
+
+<div class="upload-modal-backdrop" *ngIf="showFileModal">
+
+  <div class="upload-modal">
+
+
+<h3>Bulk Upload Contacts</h3>
+
+<div class="file-upload-body">
+
+  <label class="upload-label">
+    Upload File
+    <span class="required">*</span>
+    <small>(allowed excel files only)</small>
+  </label>
+
+  <input
+    type="file"
+    accept=".xlsx,.xls"
+    (change)="onFileSelected($event)" />
+
+</div>
+
+<div class="modal-actions">
+
+  <button
+    class="btn btn-danger"
+    (click)="closeFileModal()">
+    Cancel
+  </button>
+
+  <button
+    class="btn btn-primary"
+    (click)="submitUpload()">
+    Submit
+  </button>
+
+</div>
+
+
+  </div>
+
+</div>

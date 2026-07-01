@@ -8,10 +8,12 @@
   import { Breadcrumb } from '../../../models/breadcrumb';
   import { SearchFieldConfig } from '../../../shared/search/search';
 import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
+import { CommonModule } from '@angular/common';
 
   @Component({
     selector: 'app-contact',
-    imports: [Pageheader, Header, DataTable, Sidebar, ],
+    imports: [Pageheader, Header, DataTable, Sidebar, CommonModule ],
     templateUrl: './contact.html',
     styleUrl: './contact.css',
   })
@@ -21,7 +23,8 @@ import { ToastService } from '../../../service/toast.service';
         private adminservice: Adminservice,
         private router: Router,
       private route: ActivatedRoute,
-      private toastService: ToastService
+      private toastService: ToastService,
+      private confirmService: ConfirmDialogService
       ) {}
 
       headerTitle = 'Manage Contact List';
@@ -218,8 +221,8 @@ onSearch(filters: any) {
     pagination: {
   pageNumber: this.currentPage - 1,
   pageSize: this.pageSize,
-  sortBy: 'contactFirstName',
-  sortOrder: 'ASC'
+  sortBy: 'contactId',
+    sortOrder: 'DESC'
 }
   };
 
@@ -277,27 +280,45 @@ onEdit(row: any) {
 
 
     //actiavte and deactivate
-  onDelete(row: any) {
+onDelete(row: any) {
 
   const isActive = row.contactStatus === 1;
 
-  const apiCall = this.adminservice.toggleContactStatus(
-  row.contactId
-);
+  this.confirmService.confirm({
+    title: 'Confirm',
+    message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this contact?`,
+    confirmText: isActive ? 'Deactivate' : 'Activate'
+  }).then((confirmed) => {
 
-  apiCall.subscribe({
-  next: (updated: any) => {
-    row.contactStatus = updated.contactStatus;
-    this.rows = [...this.rows];
-    this.toastService.success(
+    if (!confirmed) {
+      return;
+    }
+
+    this.adminservice.toggleContactStatus(row.contactId).subscribe({
+      next: (updated: any) => {
+
+        // If API returns updated object
+        row.contactStatus = updated.contactStatus;
+
+        // Or simply toggle locally
+        // row.contactStatus = isActive ? 2 : 1;
+
+        this.rows = [...this.rows];
+        this.fullRows = [...this.fullRows];
+
+        this.toastService.success(
           `Contact ${isActive ? 'deactivated' : 'activated'} successfully`
         );
-  },
-  error: (err) => {
-          console.error('Status update failed', err);
-          this.toastService.error('Failed to update status');
-        }
-});
+      },
+
+      error: (err: any) => {
+        console.error('Status update failed', err);
+        this.toastService.error('Failed to update status');
+      }
+    });
+
+  });
+
 }
 
 onReset(): void {
@@ -306,27 +327,23 @@ onReset(): void {
   this.loadContact();
 }
 
-
-
 searchFilters: any = {};
 currentFilters: any = {};
 
+
 onImport() {
 
-  console.log('CURRENT PAGE SIZE =>', this.pageSize);
-console.log('TOTAL ELEMENTS =>', this.totalElements);
-
   const payload = {
-  customerName: this.currentFilters?.customerName || '',
-  specialityName: this.currentFilters?.specialityName || '',
-  contactFirstName: this.currentFilters?.contactFirstName || '',
-  pagination: {
-    pageNumber: this.currentPage - 1,
-    pageSize: this.pageSize,
-    sortBy: 'contactFirstName',
-    sortOrder: 'ASC'
-  }
-};
+    customerName: this.currentFilters?.customerName || '',
+    specialityName: this.currentFilters?.specialityName || '',
+    contactFirstName: this.currentFilters?.contactFirstName || '',
+    pagination: {
+      pageNumber: 0,
+      pageSize: this.totalElements, 
+      sortBy: 'contactFirstName',
+      sortOrder: 'ASC'
+    }
+  };
 
   console.log('DOWNLOAD PAYLOAD =>', payload);
 
@@ -341,10 +358,185 @@ console.log('TOTAL ELEMENTS =>', this.totalElements);
       a.click();
 
       window.URL.revokeObjectURL(url);
+    },
+    error: err => {
+      console.error('Download failed', err);
     }
   });
 }
 
+showUploadModal = false;
+showFileModal = false;
+
+selectedFile: File | null = null;
+
+
+onUpload() {
+  this.showUploadModal = true;
+}
+closeUploadModal() {
+  this.showUploadModal = false;
+}
+downloadTemplate() {
+
+  const link = document.createElement('a');
+
+  link.href = 'assets/templates/Contact_Template.xlsx';
+
+  link.download = 'Contact_Template.xlsx';
+
+  link.click();
+}
+onFileSelected(event: any) {
+
+  const file = event.target.files[0];
+
+  if (!file) {
+    return;
+  }
+
+  const extension = file.name.split('.').pop()?.toLowerCase();
+
+  if (
+    extension !== 'xlsx' &&
+    extension !== 'xls'
+  ) {
+
+    this.toastService.error(
+      'Only Excel files are allowed'
+    );
+
+    event.target.value = '';
+    this.selectedFile = null;
+    return;
+  }
+
+  this.selectedFile = file;
+}
+
+closeFileModal() {
+
+  this.showFileModal = false;
+  this.selectedFile = null;
+
+}
+
+// uploadExcel() {
+
+//   const input = document.createElement('input');
+
+//   input.type = 'file';
+//   input.accept = '.xlsx,.xls';
+
+//   input.onchange = (event: any) => {
+
+//     const file = event.target.files[0];
+
+//     if (!file) {
+//       return;
+//     }
+//     this.showUploadModal = false;
+//   this.showFileModal = true;
+
+//     this.showUploadModal = false;
+
+//     this.adminservice.uploadContact(file).subscribe({
+//       next: (response: string) => {
+
+//   console.log(response);
+
+//   if (response.includes('Row')) {
+
+//     this.toastService.warning(
+//       response,
+//       15000
+//     );
+//   }
+
+//   if (response.includes('Successfully')) {
+
+//     this.toastService.success(
+//       'Valid contacts uploaded successfully',
+//       5000
+//     );
+//   }
+
+//   this.loadContact();
+// }
+//     });
+//   };
+
+//   input.click();
+// }
+uploadExcel() {
+  this.showUploadModal = false;
+  this.showFileModal = true;
+}
+
+submitUpload() {
+
+if (!this.selectedFile) {
+
+
+this.toastService.warning(
+  'Please select an Excel file'
+);
+
+return;
+
+
+}
+
+this.adminservice.uploadContact(this.selectedFile).subscribe({
+
+
+next: (response: string) => {
+
+  console.log('UPLOAD RESPONSE =>', response);
+
+  if (response.includes('Row')) {
+
+    this.toastService.warning(
+      response,
+      15000
+    );
+  }
+
+  if (
+    response.includes('Successfully') ||
+    response.includes('Uploaded Successfully')
+  ) {
+
+    this.toastService.success(
+      'Valid contacts uploaded successfully',
+      5000
+    );
+  }
+
+  this.showFileModal = false;
+  this.selectedFile = null;
+
+  this.loadContact();
+},
+
+error: (err: any) => {
+
+  const errorMessage =
+    typeof err.error === 'string'
+      ? err.error
+      : err?.error?.message ||
+        err?.message ||
+        'Upload failed';
+
+  this.toastService.error(
+    errorMessage,
+    10000
+  );
+}
+
+
+});
+}
 
 
   }

@@ -72,11 +72,11 @@ constructor() {
         children: [
           { label: 'Category', icon: 'fas fa-tags', route: '/admin/category' },
           { label: 'Segment', icon: 'fas fa-layer-group', route: '/segment' },
-          { label: 'Competitor', icon: 'fas fa-user-secret', route: '/admin/competitor' },
-          { label: 'Sub System', icon: 'fas fa-sitemap', route: '/admin/sub-system' },
+          { label: 'Competitor', icon: 'fas fa-user-secret', route: '/competitor' },
+          { label: 'Sub System', icon: 'fas fa-sitemap', route: '/sub-system' },
           { label: 'Product', icon: 'fas fa-box', route: '/product' },
           { label: 'Demo', icon: 'fas fa-flask', route: '/admin-users' },
-          { label: 'Financial Year', icon: 'fas fa-calendar-days', route: '/admin/financial-yr' },
+          { label: 'Financial Year', icon: 'fas fa-calendar-days', route: '/financial-yr' },
           { label: 'User Product Target', icon: 'fas fa-bullseye', route: '/admin-users' },
         ]
       },
@@ -219,55 +219,55 @@ constructor() {
           route: '/regional-branch-head-dashboard',
           children: [
             { label: 'Funnel Report', icon: 'fas fa-chart-line', route: '/dashboard' },
-            { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: '/country-head/margin-analysis' },
-            { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: '/country-head/reports/margin-analysis-c-note' },
-            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/country-head/opportunity-lost' },
-            { label: 'Open Orders', icon: 'fas fa-box-open', route: '/country-head/open-order-reports' },
-            { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/country-head/stock-in-hand-report' },
-            { label: 'Fresh Business', icon: 'fas fa-briefcase', route: '/country-head/fresh-business' },
-            { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/country-head/target-sales-report' },
-            { label: 'Runrate Projection', icon: 'fas fa-chart-area', route: '/country-head/runrate-projection' },
-            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: '/country-head/incentives' },
-            { label: 'Outstanding Report', icon: 'fas fa-file-invoice-dollar', route: '/country-head/outstanding-report' },
+            { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: '/regional-branch-head/margin-analysis' },
+            { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: '/regional-branch-head/reports/margin-analysis-c-note' },
+            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/regional-branch-head/opportunity-lost' },
+            { label: 'Open Orders', icon: 'fas fa-box-open', route: '/regional-branch-head/open-order-reports' },
+            { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/regional-branch-head/stock-in-hand-report' },
+            { label: 'Fresh Business', icon: 'fas fa-briefcase', route: '/regional-branch-head/fresh-business' },
+            { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/regional-branch-head/target-sales-report' },
+            { label: 'Runrate Projection', icon: 'fas fa-chart-area', route: '/regional-branch-head/runrate-projection' },
+            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: '/regional-branch-head/incentives' },
+            { label: 'Outstanding Report', icon: 'fas fa-file-invoice-dollar', route: '/regional-branch-head/outstanding-report' },
           ]
         },
         {
           label: 'Calendar',
           icon: 'fas fa-calendar',
-          route: '/country-head/view-calendar'
+          route: '/regional-branch-head/view-calendar'
         },
         {
           label: 'Commission',
           icon: 'fas fa-money-bill-wave',
-          route: '/country-head/commission'
+          route: '/regional-branch-head/commission'
         },
         {
           label: 'Leads',
           icon: 'fas fa-users',
-          route: '/customer-interaction-center/approve-leads',
+          route: '/regional-branch-head/approve-leads',
           children: [
-            { label: 'New', icon: 'fas fa-edit', route: '/customer-interaction-center/approve-leads' },
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/customer-interaction-center/approve-leads' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/customer-interaction-center/approve-leads' }
+            { label: 'New', icon: 'fas fa-edit', route: '/regional-branch-head/approve-leads' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/regional-branch-head/approve-leads' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/regional-branch-head/approve-leads' }
           ]
         },
         {
           label: 'Opportunity',
           icon: 'fas fa-briefcase',
-          route: '/country-head/so-number-entry/open',
+          route: '/regional-branch-head/so-number-entry/open',
           children: [
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/so-number-entry/open' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/so-number-entry/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/dashboard' }
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/regional-branch-head/so-number-entry/open' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/regional-branch-head/so-number-entry/closed' },
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/regional-branch-head/dashboard' }
           ]
         },
         {
           label: 'Plan Visit/Demo',
           icon: 'fas fa-calendar-check',
-          route: '/country-head/plan-a-visit',
+          route: '/regional-branch-head/plan-a-visit',
           children: [
-            { label: 'Visit', icon: 'fas fa-route', route: '/country-head/plan-a-visit' },
-            { label: 'Demo', icon: 'fas fa-suitcase', route: '/country-head/plan-a-demo' }
+            { label: 'Visit', icon: 'fas fa-route', route: '/regional-branch-head/plan-a-visit' },
+            { label: 'Demo', icon: 'fas fa-suitcase', route: '/planDemo' }
           ]
         },
         {
@@ -788,7 +788,7 @@ constructor() {
         route: '/plan-visit-demo',
         children: [
           { label: 'Plan a Visit', icon: 'fas fa-walking', route: '/salesmanager/visit' },
-          { label: 'Plan a Demo', icon: 'fas fa-laptop', route: '/salesmanager/plan-demo' }
+          { label: 'Plan a Demo', icon: 'fas fa-laptop', route: '/planDemo' }
         ]
       },
       {
@@ -882,7 +882,7 @@ constructor() {
       route: '/salesdirector/report',
         children: [
           { label: 'Plan a Visit', icon: 'fas fa-map-location-dot', route: '/salesdirector/planVisit' },
-          { label: 'Plan a Demo', icon: 'fas fa-display', route: '/salesdirector/Demo' },
+          { label: 'Plan a Demo', icon: 'fas fa-display', route: '/planDemo' },
         ]
     },
     {

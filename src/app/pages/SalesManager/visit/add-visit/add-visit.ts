@@ -79,11 +79,12 @@ export class AddVisitComponent implements OnInit {
 
   loadLeads(): void {
     this.leadService.getOpenLeads().subscribe({
-      next: (data) => {
-        this.leads = data;
+      next: (data: any) => {
+        const leadsArray = data.content || data || [];
+        this.leads = leadsArray;
         const leadOptions = [
           { label: '-- Select Lead --', value: '' },
-          ...data.map(l => ({
+          ...leadsArray.map((l: any) => ({
             label: `Lead ID: ${l.leadId} - ${l.customerName}`,
             value: l.leadId
           }))

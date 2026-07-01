@@ -40,6 +40,13 @@ export const routes: Routes = [
     }
   ]
 },
+{
+  path: 'quoteRevision/:id',
+  loadComponent: () =>
+    import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
+  canActivate: [authGuard],
+  data: { roles: ['SUPERADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+},
 
 {
   path: 'superadmin/company',
@@ -115,7 +122,7 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
-  path: 'admin/competitor',
+  path: 'competitor',
   loadComponent: () =>
     import('./pages/Admin/competitor/competitor').then(m => m.Competitor)
 },
@@ -147,7 +154,7 @@ export const routes: Routes = [
 
 //SubSystem
 {
-  path: 'admin/sub-system',
+  path: 'sub-system',
   loadComponent: () =>
     import('./pages/Admin/sub-system/sub-system').then(m => m.SubSystem)
 },
@@ -165,7 +172,7 @@ export const routes: Routes = [
 //Financial Yr
 
 {
-  path: 'admin/financial-yr',
+  path: 'financial-yr',
   loadComponent: () =>
     import('./pages/Admin/financial-year/financial-year').then(m => m.FinancialYear)
 },
@@ -175,9 +182,9 @@ export const routes: Routes = [
     import('./pages/Admin/financial-year/addfy/addfy').then(m => m.Addfy)
 },
 {
-  path: 'financial-yr/edit/:id',
+  path: 'financial-year-calendar',
   loadComponent: () =>
-    import('./pages/Admin/financial-year/addfy/addfy').then(m => m.Addfy)
+    import('./pages/Admin/financial-year/calender/financial-year-calender/financial-year-calender').then(m => m.FinancialYearCalender)
 },
 
 //UserLog
@@ -669,6 +676,12 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/SalesManager/contact/addcontact/addcontact').then(m => m.AddcontactComponent),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+      },
+      {
+        path: 'planDemo',
+        loadComponent: () => import('./pages/SalesManager/plan-demo/plan-demo').then(m => m.PlanDemoComponent),
+        // canActivate: [authGuard],
+        // data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',] }
       },
 
 {
