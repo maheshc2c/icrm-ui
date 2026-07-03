@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -34,6 +34,7 @@ interface DocumentRow {
   styleUrls: ['./marketing-document.css'],
 })
 export class MarketingDocumentComponent implements OnInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
   isCountryHead = false;
   isAdminMarketing = false;
   headerTitle = 'Upload Documents';
@@ -68,9 +69,6 @@ export class MarketingDocumentComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const userRole = localStorage.getItem('role') || '';
-    this.isAdminMarketing = userRole.replace(/[\s_]+/g, '').toUpperCase() === 'ADMINMARKETING';
-
     const currentUrl = this.router.url;
     this.isCountryHead = currentUrl.includes('country-head');
 
@@ -90,27 +88,32 @@ export class MarketingDocumentComponent implements OnInit, OnDestroy {
       ];
     }
 
-    const toastMessage = sessionStorage.getItem('toastMessage');
-    const toastType = sessionStorage.getItem('toastType') as 'success' | 'error' | 'warning' | 'info';
-    if (toastMessage && toastType) {
-      this.toastService.show(toastMessage, toastType);
-      sessionStorage.removeItem('toastMessage');
-      sessionStorage.removeItem('toastType');
-    }
+    if (isPlatformBrowser(this.platformId)) {
+      const userRole = localStorage.getItem('role') || '';
+      this.isAdminMarketing = userRole.replace(/[\s_]+/g, '').toUpperCase() === 'ADMINMARKETING';
 
-    if (this.useMock) {
-      this.rows = [
-        { id: 1, name: 'Mass Mailing', description: 'Sam K', access: 'ADMIN MARKETING', attachment: 'sample.pdf', locations: 'Anjaw, Lower Dibang Valley' },
-        { id: 2, name: 'Offline', description: 'test', access: 'ADMIN MARKETING', attachment: 'sample2.pdf', locations: 'DHARMAVARAM, PARIGI' },
-      ];
-      return;
-    }
-    this.loadDocuments();
+      const toastMessage = sessionStorage.getItem('toastMessage');
+      const toastType = sessionStorage.getItem('toastType') as 'success' | 'error' | 'warning' | 'info';
+      if (toastMessage && toastType) {
+        this.toastService.show(toastMessage, toastType);
+        sessionStorage.removeItem('toastMessage');
+        sessionStorage.removeItem('toastType');
+      }
 
-    this.refreshSub = this.adminMarketingservice['refreshSubject'].subscribe(() => {
-      console.log('[MarketingDocumentComponent] refresh event received, reloading documents');
+      if (this.useMock) {
+        this.rows = [
+          { id: 1, name: 'Mass Mailing', description: 'Sam K', access: 'ADMIN MARKETING', attachment: 'sample.pdf', locations: 'Anjaw, Lower Dibang Valley' },
+          { id: 2, name: 'Offline', description: 'test', access: 'ADMIN MARKETING', attachment: 'sample2.pdf', locations: 'DHARMAVARAM, PARIGI' },
+        ];
+        return;
+      }
       this.loadDocuments();
-    });
+
+      this.refreshSub = this.adminMarketingservice['refreshSubject'].subscribe(() => {
+        console.log('[MarketingDocumentComponent] refresh event received, reloading documents');
+        this.loadDocuments();
+      });
+    }
   }
 
   onSearchChange(values: any) {

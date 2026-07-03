@@ -175,7 +175,7 @@ export class CustomerInteractionCenterService {
     });
 
     return this.http.post(
-      `${this.baseUrl}/CustomerInteractionCenter/so-entries/bulk-upload`,
+      `${this.baseUrl}/CustomerInteractionCenter/so-entries/upload`,
       formData,
       { headers: headersWithoutContentType, responseType: 'text' }
     );
@@ -183,7 +183,7 @@ export class CustomerInteractionCenterService {
 
   downloadContractNotePdf(cnoteId: number): Observable<Blob> {
     return this.http.get(
-      `${this.baseUrl}/CustomerInteractionCenter/so-entries/download-pdf/${cnoteId}`,
+      `${this.baseUrl}/CustomerInteractionCenter/so-entries/download/${cnoteId}`,
       { headers: this.getAuthHeaders(), responseType: 'blob' }
     );
   }
@@ -205,7 +205,7 @@ export class CustomerInteractionCenterService {
     };
 
     return this.http.post(
-      `${this.baseUrl}/CustomerInteractionCenter/so-entries/download-excel?isOpen=${isOpen}`,
+      `${this.baseUrl}/CustomerInteractionCenter/so-entries/download?isOpen=${isOpen}`,
       requestBody,
       { headers: this.getAuthHeaders(), responseType: 'blob' }
     );

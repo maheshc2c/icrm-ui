@@ -29,6 +29,13 @@ export class DataTable
 
    filteredRows = [...this.rows];
 
+  get totalColumnsCount(): number {
+    return (this.showCheckboxColumn ? 1 : 0) +
+           (this.showSno ? 1 : 0) +
+           (this.columns ? this.columns.length : 0) +
+           (this.showActions ? 1 : 0);
+  }
+
   edit(row: any) {
     console.log("Edit clicked:", row);
     this.editRow.emit(row);

@@ -1,5 +1,5 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, HostListener, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
@@ -18,6 +18,7 @@ import { SoEntryOpenRow } from '../../../../models/so-entry-open.model';
   styleUrl: './so-entry-open.css',
 })
 export class SoEntryOpen implements OnInit {
+  private platformId = inject(PLATFORM_ID);
   headerTitle = 'So Entry Open';
   headerBreadcrumbs = [
     { label: 'Home', route: '/' },
@@ -67,7 +68,9 @@ export class SoEntryOpen implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadOpenSoEntries();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadOpenSoEntries();
+    }
   }
 
   loadOpenSoEntries() {
@@ -193,7 +196,13 @@ export class SoEntryOpen implements OnInit {
     const input = event.target as HTMLInputElement;
     console.log('File selection change event fired. Files list:', input.files);
     if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0];
+      const file = input.files[0];
+      if (!file.name.toLowerCase().endsWith('.csv')) {
+        this.toastService.error('Only CSV files are allowed');
+        input.value = '';
+        return;
+      }
+      this.selectedFile = file;
       this.selectedFileName = this.selectedFile.name;
       console.log('Successfully selected file:', this.selectedFileName);
     }

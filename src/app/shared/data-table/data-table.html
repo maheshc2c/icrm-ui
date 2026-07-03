@@ -56,7 +56,7 @@
             <tbody>
               @if (filteredRows.length === 0) {
                 <tr class="no-records-row">
-                  <td [attr.colspan]="columns.length + 2">
+                  <td [attr.colspan]="totalColumnsCount">
                     <div class="no-records-content">
                       <i class="fas fa-search"></i>
                       {{ emptyMessage }}

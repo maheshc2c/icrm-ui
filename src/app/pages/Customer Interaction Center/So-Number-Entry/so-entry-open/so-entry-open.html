@@ -23,6 +23,8 @@
   [totalPages]="totalPages"
   [showActions]="false"
   [showSno]="false"
+  [showAdd]="false"
+  [showImport]="true"
   (pageChange)="onPageChange($event)"
   (pageSizeChange)="onPageSizeChange($event)"
   (searchChange)="onSearch($event)"
@@ -48,13 +50,13 @@
     </div>
     <div class="modal-body">
       <div class="upload-section">
-        <h4>Select File</h4>
+        <h4>Upload File <span style="color: red;">*</span> <span style="font-weight: normal; font-size: 0.95em; color: #6b7280; margin-left: 4px;">(allowed csv files only)</span></h4>
         <div class="file-input-container">
           <input
             type="file"
             #fileInput
             style="display: none"
-            accept=".xlsx,.xls,.csv"
+            accept=".csv"
             (change)="onFileSelected($event)" />
           <button class="choose-file-btn" (click)="fileInput.click()">Choose File</button>
           <span class="file-display">{{ selectedFileName || 'No file chosen' }}</span>
