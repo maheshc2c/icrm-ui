@@ -87,7 +87,11 @@
             <div class="form-group">
               <label for="firstName">First Name <span class="req">*</span></label>
               <input id="firstName" name="firstName" type="text" class="form-control"
+                [ngClass]="{'is-invalid': userDetailsSubmitted && !userData.firstName}"
                 [(ngModel)]="userData.firstName" placeholder="First name" required>
+              <div *ngIf="userDetailsSubmitted && !userData.firstName" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                First Name is required.
+              </div>
             </div>
             <div class="form-group">
               <label for="lastName">Last Name</label>
@@ -100,12 +104,20 @@
             <div class="form-group">
               <label for="email">Email Address <span class="req">*</span></label>
               <input id="email" name="email" type="email" class="form-control"
+                [ngClass]="{'is-invalid': userDetailsSubmitted && !userData.email}"
                 [(ngModel)]="userData.email" placeholder="Email address" required>
+              <div *ngIf="userDetailsSubmitted && !userData.email" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                Email Address is required.
+              </div>
             </div>
             <div class="form-group">
-              <label for="phoneNumber">Mobile Number</label>
+              <label for="phoneNumber">Mobile Number <span class="req">*</span></label>
               <input id="phoneNumber" name="phoneNumber" type="tel" class="form-control"
-                [(ngModel)]="userData.phoneNumber" placeholder="Mobile number">
+                [ngClass]="{'is-invalid': userDetailsSubmitted && !userData.phoneNumber}"
+                [(ngModel)]="userData.phoneNumber" placeholder="Mobile number" required>
+              <div *ngIf="userDetailsSubmitted && !userData.phoneNumber" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                Mobile Number is required.
+              </div>
             </div>
           </div>
 
@@ -113,7 +125,11 @@
             <div class="form-group">
               <label for="username">Employee ID <span class="req">*</span></label>
               <input id="username" name="username" type="text" class="form-control"
+                [ngClass]="{'is-invalid': userDetailsSubmitted && !userData.username}"
                 [(ngModel)]="userData.username" placeholder="Employee ID" required>
+              <div *ngIf="userDetailsSubmitted && !userData.username" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                Employee ID is required.
+              </div>
             </div>
             <div class="form-group">
               <label for="alternateNumber">Alternate Number</label>
@@ -124,17 +140,25 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="branchName">Branch</label>
+              <label for="branchName">Branch <span class="req">*</span></label>
               <select id="branchName" name="branchName" class="form-control"
-                [(ngModel)]="userData.branchName">
+                [ngClass]="{'is-invalid': userDetailsSubmitted && !userData.branchName}"
+                [(ngModel)]="userData.branchName" required>
                 <option value="">-- Select Branch --</option>
                 <option *ngFor="let b of branches" [value]="b">{{ b }}</option>
               </select>
+              <div *ngIf="userDetailsSubmitted && !userData.branchName" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                Branch is required.
+              </div>
             </div>
             <div class="form-group">
-              <label for="city">City</label>
+              <label for="city">City <span class="req">*</span></label>
               <input id="city" name="city" type="text" class="form-control"
-                [(ngModel)]="userData.city" placeholder="City">
+                [ngClass]="{'is-invalid': userDetailsSubmitted && !userData.city}"
+                [(ngModel)]="userData.city" placeholder="City" required>
+              <div *ngIf="userDetailsSubmitted && !userData.city" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                City is required.
+              </div>
             </div>
           </div>
 
@@ -154,8 +178,45 @@
             </div>
           </div>
 
+            <!-- Distributor Details appended here -->
+            <ng-container *ngIf="isDistributor">
+                <div style="grid-column: span 2; margin-top: 20px; margin-bottom: 10px;">
+                    <hr style="border-top: 1px solid #ccc; margin-bottom: 20px;">
+                    <h4 style="color: #555; font-weight: 500;">Distributor Details</h4>
+                </div>
+                <div class="form-row" *ngFor="let field of distributorDetailsFields">
+                    <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required" class="text-danger">*</span></label>
+                    <div class="input-container">
+                        <input type="text" class="form-control" [placeholder]="field.placeholder"
+                            [(ngModel)]="userData[field.name]" [name]="field.name" [required]="field.required" #distCtrl="ngModel"
+                            [ngClass]="{'is-invalid': (userDetailsSubmitted || distCtrl.touched) && distCtrl.invalid}">
+                        <div *ngIf="(userDetailsSubmitted || distCtrl.touched) && distCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                            {{field.label}} is required.
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
 
-          <div class="panel-actions">
+            <!-- Stockist Details appended here -->
+            <ng-container *ngIf="isStockist">
+                <div style="grid-column: span 2; margin-top: 20px; margin-bottom: 10px;">
+                    <hr style="border-top: 1px solid #ccc; margin-bottom: 20px;">
+                    <h4 style="color: #555; font-weight: 500;">Stockist Details</h4>
+                </div>
+                <div class="form-row" *ngFor="let field of stockistDetailsFields">
+                    <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required" class="text-danger">*</span></label>
+                    <div class="input-container">
+                        <input type="text" class="form-control" [placeholder]="field.placeholder"
+                            [(ngModel)]="userData[field.name]" [name]="field.name" [required]="field.required" #stockCtrl="ngModel"
+                            [ngClass]="{'is-invalid': (userDetailsSubmitted || stockCtrl.touched) && stockCtrl.invalid}">
+                        <div *ngIf="(userDetailsSubmitted || stockCtrl.touched) && stockCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                            {{field.label}} is required.
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <div class="panel-actions">
             <button type="button" class="btn btn-cancel" (click)="closePanel()">Cancel</button>
             <button type="submit" class="btn btn-save" [disabled]="isSubmitting">
               {{ isSubmitting ? 'Saving…' : 'Save User Details' }}
@@ -231,15 +292,15 @@
 
           <form (ngSubmit)="saveLocations()">
 
-          <!-- ── WORLD MODE ── -->
-          <ng-container *ngIf="locationMode === 'world'">
-            <div class="form-row">
-              <p class="hint-text text-muted" style="font-size:13px; margin:0;">
-                <i class="fas fa-info-circle"></i>
-                This role has access to all locations.
-              </p>
-            </div>
-          </ng-container>
+            <!-- 🌐 WORLD MODE 🌐 -->
+            <ng-container *ngIf="locationMode === 'world'">
+              <div style="padding: 30px; display: block; width: 100%;">
+                  <h4 style="margin-bottom: 60px; color: #555; text-align: left; font-weight: normal;">Assign locations to user</h4>
+                  <div style="text-align: center; font-weight: bold; font-size: 18px; color: #555; margin-bottom: 60px;">
+                      All GEOS
+                  </div>
+              </div>
+            </ng-container>
 
           <!-- ── GEO MODE ── -->
           <ng-container *ngIf="locationMode === 'geo'">
@@ -366,55 +427,74 @@
           <p>Syncing product details...</p>
         </div>
         <div *ngIf="!isUserLoading">
-          <form (ngSubmit)="saveProducts()">
+          <ng-container *ngIf="productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'">
+            <div style="padding: 30px; display: block; width: 100%;">
+                <h4 style="margin-bottom: 60px; color: #555; text-align: left; font-weight: normal;">Assign products to user</h4>
+                <div style="text-align: center; font-weight: bold; font-size: 18px; color: #555; margin-bottom: 60px;">
+                    {{ productType === 'NO_PRODUCTS' ? 'No Need of Assigning Products' : 'All Products Assigned' }}
+                </div>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="productType !== 'NO_PRODUCTS' && productType !== 'ALL_PRODUCTS'">
+            <form (ngSubmit)="saveProducts()">
 
           <!-- Categories -->
-          <div class="form-row">
-            <div class="form-group full-width">
-              <label>Assign Categories</label>
-              <div class="checkbox-list" *ngIf="categories.length; else noCats">
-                <div class="checkbox-item" *ngFor="let c of categories">
-                  <input type="checkbox" [id]="'cat_' + c"
-                    [checked]="selCategories.includes(c)"
-                    (change)="onCategoryCheck($event, c)">
-                  <label [for]="'cat_' + c">{{ c }}</label>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label>Assign Categories <span class="req">*</span></label>
+                <div class="checkbox-list" *ngIf="categories.length; else noCats" [ngClass]="{'border-danger': productsSubmitted && categories.length > 0 && selCategories.length === 0}" style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
+                  <div class="checkbox-item" *ngFor="let c of categories">
+                    <input type="checkbox" [id]="'cat_' + c"
+                      [checked]="selCategories.includes(c)"
+                      (change)="onCategoryCheck($event, c)">
+                    <label [for]="'cat_' + c" class="ms-2" style="margin-bottom: 0;">{{ c }}</label>
+                  </div>
                 </div>
-              </div>
-              <ng-template #noCats>
+                <div *ngIf="productsSubmitted && categories.length > 0 && selCategories.length === 0" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                  Assign Categories is required.
+                </div>
+                <ng-template #noCats>
                 <p class="hint-text">No categories available.</p>
               </ng-template>
             </div>
           </div>
 
           <!-- Groups -->
-          <div class="form-row" *ngIf="groupOptions.length">
-            <div class="form-group full-width">
-              <label>Assign Groups</label>
-              <div class="checkbox-list">
-                <div class="checkbox-item" *ngFor="let g of groupOptions">
-                  <input type="checkbox" [id]="'grp_' + g.groupName"
-                    [checked]="selGroups.includes(g.groupName)"
-                    (change)="onGroupCheck($event, g.groupName)">
-                  <label [for]="'grp_' + g.groupName">{{ g.groupName }}</label>
+            <div class="form-row" *ngIf="groupOptions.length">
+              <div class="form-group full-width">
+                <label>Assign Groups <span class="req">*</span></label>
+                <div class="checkbox-list" [ngClass]="{'border-danger': productsSubmitted && groupOptions.length > 0 && selGroups.length === 0}" style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
+                  <div class="checkbox-item" *ngFor="let g of groupOptions">
+                    <input type="checkbox" [id]="'grp_' + g.groupName"
+                      [checked]="selGroups.includes(g.groupName)"
+                      (change)="onGroupCheck($event, g.groupName)">
+                    <label [for]="'grp_' + g.groupName" class="ms-2" style="margin-bottom: 0;">{{ g.groupName }}</label>
+                  </div>
+                </div>
+                <div *ngIf="productsSubmitted && groupOptions.length > 0 && selGroups.length === 0" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                  Assign Groups is required.
                 </div>
               </div>
             </div>
-          </div>
 
           <!-- Products -->
-          <div class="form-row" *ngIf="productOptions.length">
-            <div class="form-group full-width">
-              <label>Assign Products</label>
-              <div class="checkbox-list">
-                <div class="checkbox-item" *ngFor="let p of productOptions">
-                  <input type="checkbox" [id]="'prod_' + p"
-                    [checked]="selProducts.includes(p)"
-                    (change)="onProductCheck($event, p)">
-                  <label [for]="'prod_' + p">{{ p }}</label>
+            <div class="form-row" *ngIf="productOptions.length">
+              <div class="form-group full-width">
+                <label>Assign Products <span class="req">*</span></label>
+                <div class="checkbox-list" [ngClass]="{'border-danger': productsSubmitted && productOptions.length > 0 && selProducts.length === 0}" style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
+                  <div class="checkbox-item" *ngFor="let p of productOptions">
+                    <input type="checkbox" [id]="'prod_' + p"
+                      [checked]="selProducts.includes(p)"
+                      (change)="onProductCheck($event, p)">
+                    <label [for]="'prod_' + p" class="ms-2" style="margin-bottom: 0;">{{ p }}</label>
+                  </div>
+                </div>
+                <div *ngIf="productsSubmitted && productOptions.length > 0 && selProducts.length === 0" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                  Assign Products is required.
                 </div>
               </div>
             </div>
-          </div>
 
           <div class="panel-actions">
             <button type="button" class="btn btn-cancel" (click)="closePanel()">Cancel</button>
@@ -423,12 +503,12 @@
             </button>
           </div>
 
-        </form>
+          </form>
+          </ng-container>
+          </div>
         </div>
-      </div>
-    </div><!-- /panel products -->
+      </div><!-- /panel products -->
 
 
   </div><!-- /edit-user-content -->
 </div><!-- /edit-user-wrapper -->
-

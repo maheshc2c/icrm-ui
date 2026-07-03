@@ -26,8 +26,8 @@ export class AddVisitComponent implements OnInit {
     fields: any[] = [
         { name: 'leadId', label: 'Lead', type: 'select', options: [] as any[], required: true },
         { name: 'purposeId', label: 'Purpose', type: 'select', options: [] as any[], required: true },
-        { name: 'startDate', label: 'Start Date', type: 'datetime-local', required: true },
-        { name: 'endDate', label: 'End Date', type: 'datetime-local', required: true },
+        { name: 'startDate', label: 'Start Date', type: 'date', required: true },
+        { name: 'endDate', label: 'End Date', type: 'date', required: true },
         { name: 'remarks1', label: 'Remarks 1', type: 'textarea' },
         { name: 'remarks2', label: 'Remarks 2', type: 'textarea' },
         { name: 'remarks3', label: 'Remarks 3', type: 'textarea' }

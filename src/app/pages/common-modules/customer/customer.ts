@@ -82,7 +82,7 @@ export class Customer {
       const hasSearch = Object.values(this.searchFilters).some(v => v && String(v).trim().length > 0);
 
       const apiCall = hasSearch
-        ? this.adminservice.searchCustomersPaged(
+        ? this.adminservice.searchCustomers(
             this.searchFilters.customerName || null,
             this.searchFilters.customerCategoryName || null,
             this.searchFilters.subCategoryName || null,

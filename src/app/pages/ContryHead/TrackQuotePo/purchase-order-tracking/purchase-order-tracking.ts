@@ -36,7 +36,6 @@ export class PurchaseOrderTracking implements OnInit {
   allRows: PurchaseOrderTrackingModel[] = [];
 
   columns = [
-    { header: 'S.No', field: 'sno' },
     { header: 'PO ID', field: 'poId' },
     { header: 'Distributor', field: 'distributor' },
     { header: 'Product Details', field: 'productDetails' },

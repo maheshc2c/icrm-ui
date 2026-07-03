@@ -217,3 +217,28 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  padding: 24px 48px;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn-cancel {
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+  background: #f0f0f0;
+}
+

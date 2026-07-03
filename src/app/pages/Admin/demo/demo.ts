@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import { Adminservice } from '../../../service/adminservice';
+import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-demo',
@@ -19,7 +21,9 @@ export class Demo implements OnInit {
 
   constructor(
     private adminservice: Adminservice,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService,
+    private confirmDialogService: ConfirmDialogService
   ) {}
 
   headerTitle = 'Manage Demo Product';
@@ -45,10 +49,17 @@ export class Demo implements OnInit {
     this.loadDemo();
   }
 
+  onRefresh(): void {
+    this.loadDemo();
+  }
+
   // ================= LOAD DATA =================
   private loadDemo(): void {
     this.adminservice.getDemo().subscribe({
       next: (data: any[]) => {
+
+        // Sort descending by ID to show latest first
+        data.sort((a: any, b: any) => (b.demoProductDetailId ?? 0) - (a.demoProductDetailId ?? 0));
 
         this.fullRows = data;
 
@@ -91,7 +102,6 @@ export class Demo implements OnInit {
     //actiavte and deactivate
   //actiavte and deactivate
 onDelete(row: any) {
- 
   const detailId = row?.demoProductDetailId;
  
   if (!detailId) {
@@ -99,26 +109,32 @@ onDelete(row: any) {
   }
  
   const status = Number(row?.demoProductDetailStatus);
- 
   const isActive = status === 1;
+  const actionText = isActive ? 'deactivate' : 'activate';
+  const confirmMsg = `Are you sure you want to ${actionText} this demo product?`;
  
-  const apiCall = isActive
-    ? this.adminservice.deactivateDemo(detailId)
-    : this.adminservice.activateDemo(detailId);
- 
-  apiCall.subscribe({
-    next: () => {
- 
-      row.demoProductDetailStatus = isActive ? 2 : 1;
- 
-      this.rows = [...this.rows];
-      this.fullRows = [...this.fullRows];
- 
-    },
- 
-    error: (err) => {
-      console.error('Status update failed', err);
-      alert('Failed to update status');
+  this.confirmDialogService.confirm({
+    title: 'Confirm',
+    message: confirmMsg,
+    confirmText: isActive ? 'Deactivate' : 'Activate'
+  }).then((confirmed: boolean) => {
+    if (confirmed) {
+      const apiCall = isActive
+        ? this.adminservice.deactivateDemo(detailId)
+        : this.adminservice.activateDemo(detailId);
+     
+      apiCall.subscribe({
+        next: () => {
+          row.demoProductDetailStatus = isActive ? 2 : 1;
+          this.rows = [...this.rows];
+          this.fullRows = [...this.fullRows];
+          this.toastService.success(`Demo product ${actionText}d successfully`);
+        },
+        error: (err) => {
+          console.error('Status update failed', err);
+          this.toastService.error(`Failed to ${actionText} demo product`);
+        }
+      });
     }
   });
 }
@@ -228,6 +244,13 @@ onSearch(filters: any): void {
 
   this.adminservice.searchDemo(filters).subscribe({
     next: (results: any[]) => {
+
+      // Sort descending by ID to show latest first
+      results.sort((a: any, b: any) => {
+        const matchA = this.fullRows.find(f => f.demoProductDetailSerialNumber === a.serialNo);
+        const matchB = this.fullRows.find(f => f.demoProductDetailSerialNumber === b.serialNo);
+        return (matchB?.demoProductDetailId ?? 0) - (matchA?.demoProductDetailId ?? 0);
+      });
 
       this.rows = results.map((c: any, index: number) => {
 

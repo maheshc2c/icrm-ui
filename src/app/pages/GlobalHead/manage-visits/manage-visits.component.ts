@@ -9,6 +9,8 @@ import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import { GlobalHeadService } from '../../../service/GlobalHeadService';
+import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
     selector: 'app-manage-visits',
@@ -25,6 +27,7 @@ export class ManageVisitsComponent implements OnInit {
     ];
 
     columns = [
+        { header: 'Lead ID', field: 'leadId' },
         { header: 'Customer Name', field: 'customerName' },
         { header: 'Purpose', field: 'purposeName' },
         { header: 'Start Date', field: 'startDate' },
@@ -42,7 +45,9 @@ export class ManageVisitsComponent implements OnInit {
 
     constructor(
         private globalHeadService: GlobalHeadService,
-        private router: Router
+        private router: Router,
+        private toastService: ToastService,
+        private confirmService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -100,5 +105,33 @@ export class ManageVisitsComponent implements OnInit {
 //     }
 
 //     this.router.navigate(['/globalhead/edit-visit', id]);
-// }
+    onDelete(row: any) {
+        const id = row?.visitId;
+        if (!id) return;
+
+        const status = Number(row?.status);
+        const isActive = status === 1;
+
+        this.confirmService.confirm({
+            title: 'Confirm',
+            message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this visit?`,
+            confirmText: isActive ? 'Deactivate' : 'Activate'
+        }).then((confirmed) => {
+            if (!confirmed) return;
+
+            const updatedVisit = { ...row, status: isActive ? 2 : 1 };
+            this.globalHeadService.updateVisit(id, updatedVisit).subscribe({
+                next: () => {
+                    row.status = isActive ? 2 : 1;
+                    row.statusLabel = isActive ? 'Inactive' : 'Active';
+                    this.rows = [...this.rows]; // trigger change detection if needed
+                    this.toastService.success(`Visit ${isActive ? 'deactivated' : 'activated'} successfully`);
+                },
+                error: (err) => {
+                    console.error('Failed to update visit status:', err);
+                    this.toastService.error('Failed to update visit status');
+                }
+            });
+        });
+    }
 }

@@ -40,7 +40,7 @@ export class EditProduct implements OnInit {
  
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admin' },
-    { label: 'Product', route: '/admin/product' },
+    { label: 'Product', route: '/product' },
     { label: 'Edit' }
   ];
  
@@ -54,14 +54,14 @@ export class EditProduct implements OnInit {
     { name: 'productType', label: 'Product Type', placeholder: 'Select Product Type', type: 'select', required: true, options: [] }, // Dynamic
     {
       name: 'productTarget', label: 'Target', type: 'radio', required: false, options: [
-        { label: 'Yes', value: 1 },
-        { label: 'No', value: 0 }
+        { label: 'Yes', value: '1' },
+        { label: 'No', value: '0' }
       ]
     },
     {
       name: 'productAvailability', label: 'Availability', type: 'radio', required: false, options: [
-        { label: 'Active', value: 1 },
-        { label: 'Inactive', value: 0 }
+        { label: 'Active', value: '1' },
+        { label: 'Inactive', value: '0' }
       ]
     },
     { name: 'productMrp', label: 'MRP', placeholder: 'MRP', type: 'number', required: true }, // *
@@ -139,7 +139,9 @@ export class EditProduct implements OnInit {
             productSubSystem: product.subCategory?.subcategoryName,
             productType: product.productType?.typeName,
             productTechnicalSpecifications: product.productFeatures || '',
-            productScopeOfSupply: product.productScope || ''
+            productScopeOfSupply: product.productScope || '',
+            productTarget: product.productTarget != null ? String(product.productTarget) : null,
+            productAvailability: product.productAvailability != null ? String(product.productAvailability) : null
           };
  
           // Trigger segment loading if category is present
@@ -192,19 +194,26 @@ export class EditProduct implements OnInit {
  
   updateProduct(formData: any): void {
  
+    // Look up IDs from the names selected in the dropdowns
+    const selectedGroup = this.segments.find(s => s.groupName === formData.productSegment);
+    const selectedType = this.productTypes.find(t => t.typeName === formData.productType);
+    const selectedSubSys = this.subSystems.find(s => s.subcategoryName === formData.productSubSystem);
+
     const payload: any = {
       ...formData,
       productId: this.productId,
       modifiedBy: localStorage.getItem('userId') || '1',
-      // Ensure mapping is correct
-      productSecondaryName: formData.productCode, // Map productCode back to backend's productSecondaryName
-      groupName: formData.productSegment, // Segment -> Group
-      categoryName: formData.productCategory,
-      subCategoryName: formData.productSubSystem,
-      typeName: formData.productType,
-      productFeatures: formData.productTechnicalSpecifications, // Map form fields to backend names
+      
+      groupId: selectedGroup ? selectedGroup.groupId : null,
+      productTypeId: selectedType ? selectedType.productTypeId : null,
+      subCategoryId: selectedSubSys ? selectedSubSys.subCategoryId : null,
+
+      productSecondaryName: formData.productCode,
+      productFeatures: formData.productTechnicalSpecifications,
       productScope: formData.productScopeOfSupply,
-      // productStatus: 1 // Preserve or update status as needed
+      
+      productTarget: formData.productTarget != null ? Number(formData.productTarget) : null,
+      productAvailability: formData.productAvailability != null ? Number(formData.productAvailability) : null
     };
  
     console.log('Update Payload:', payload);
@@ -212,7 +221,7 @@ export class EditProduct implements OnInit {
     this.productService.updateProduct(this.productId, payload).subscribe({
       next: (res) => {
         this.toastService.success('Product updated successfully');
-        this.router.navigate(['/admin/product']);
+        this.router.navigate(['/product']);
       },
       error: (err) => {
         console.error('Update failed:', err);
@@ -223,7 +232,7 @@ export class EditProduct implements OnInit {
  
   cancelEdit(): void {
  
-    this.router.navigate(['/admin/product']);
+    this.router.navigate(['/product']);
   }
  
 }

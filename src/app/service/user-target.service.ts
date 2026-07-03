@@ -39,7 +39,7 @@ export class UserTargetService {
         return this.http.put<any>(`${this.apiUrl}/toggle-user-status/${userId}`, {}, { headers: this.getAuthHeaders() });
     }
 
-    // GET /admin/search-userTarget - Search users for target assignment
+    // POST /user/search - Search users
     searchTarget(
         username?: string,
         roleName?: string,
@@ -47,14 +47,14 @@ export class UserTargetService {
         phoneNumber?: string,
         name?: string
     ): Observable<any[]> {
-        let params = new HttpParams();
-        if (username) params = params.set('username', username);
-        if (roleName) params = params.set('roleName', roleName);
-        if (email) params = params.set('email', email);
-        if (phoneNumber) params = params.set('phoneNumber', phoneNumber);
-        if (name) params = params.set('name', name);
-
-        return this.http.get<any[]>(`${this.apiUrl}/search-userTarget`, { headers: this.getAuthHeaders(), params });
+        const body = {
+            username: username || null,
+            roleName: roleName || null,
+            email: email || null,
+            phoneNumber: phoneNumber || null,
+            name: name || null
+        };
+        return this.http.post<any[]>('http://localhost:8080/user/search', body, { headers: this.getAuthHeaders() });
     }
 
     // GET /admin/user-products/{userId} — get product names assigned to user

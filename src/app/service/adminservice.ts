@@ -202,46 +202,8 @@ activateCustomer(id: number) {
   }
 
 
-  getCustomersPaged(
-    customerName: string | null,
-    customerCategoryName: string | null,
-    subCategoryName: string | null,
-    cityName: string | null,
-    pageNumber: number = 0,
-    pageSize: number = 10,
-    sortBy: string = 'customerId',
-    sortOrder: string = 'desc'
-  ): Observable<any> {
-    const payload = {
-      customerName: customerName || null,
-      customerCategoryName: customerCategoryName || null,
-      subCategoryName: subCategoryName || null,
-      cityName: cityName || null,
-      pagination: {
-        pageNumber: pageNumber,
-        pageSize: pageSize,
-        sortBy: sortBy,
-        sortOrder: sortOrder
-      }
-    };
 
-    return this.http.post<any>(
-      `${this.baseUrl}/customer/search`,
-      payload,
-      { headers: this.getAuthHeaders() }
-    );
-  }
-  searchCustomer(name: string) {
-    return this.http.get<CustomerModel[]>(
-      `${this.baseUrl}/customer/search`,
-      {
-        headers: this.getAuthHeaders(),
-        params: { name: name } 
-      }
-    );
-  }
-
-  searchCustomersPaged(
+  searchCustomers(
     customerName: string | null,
     customerCategoryName: string | null,
     subCategoryName: string | null,
@@ -665,22 +627,7 @@ activateDemo(id: number) {
     );
   }
 
-  //product
-  deactivateProduct(id: number) {
-  return this.http.put(
-    `${this.baseUrl}/admin/deactivate-product/${id}`,
-    {},
-    { headers: this.getAuthHeaders() }
-  );
-}
-
-activateProduct(id: number) {
-  return this.http.put(
-    `${this.baseUrl}/admin/activate-product/${id}`,
-    {},
-    { headers: this.getAuthHeaders() }
-  );
-}
+  //product methods migrated to productservice.ts
 
   //Demo Dropdowns
 

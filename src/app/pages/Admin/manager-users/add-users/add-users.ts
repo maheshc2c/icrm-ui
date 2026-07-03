@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Header } from "../../../../layout/header/header";
 import { Sidebar } from "../../../../layout/sidebar/sidebar";
 import { Pageheader } from "../../../../shared/pageheader/pageheader";
 import { Breadcrumb } from "../../../../models/breadcrumb";
 import { Userservice } from "../../../../service/userservice";
+import { ToastService } from "../../../../service/toast.service";
+import { Companyservice } from "../../../../service/companyservice";
 
 @Component({
   selector: 'app-add-users',
@@ -21,6 +24,8 @@ export class AddUsersComponent implements OnInit {
 
   constructor(
     private userService: Userservice,
+    private companyService: Companyservice,
+    private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -29,7 +34,7 @@ export class AddUsersComponent implements OnInit {
   headerTitle = 'Add New Users';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Manage Users', route: '/admin/manage-users' },
+    { label: 'Manage Users', route: '/users' },
     { label: 'Add Users' }
   ];
 
@@ -41,22 +46,11 @@ export class AddUsersComponent implements OnInit {
   /* ================= MULTI-STEP STATE ================= */
   currentStep: number = 1;
   selectedRole: string = '';
-  roles: string[] = ['USER', 'ADMIN', 'HELPER', 'POLICE'];
+  roles: string[] = [];
 
-  /* ===== ROLE-BASED LOCATION RULES (matched to backend createUser logic) ===== */
-  private readonly WORLD_LEVEL_ROLES = [
-    'admin', 'adminmarketing', 'globalhead', 'stockist',
-    'customerinteractioncenter'
-  ];
-  private readonly GEO_LEVEL_ROLES = ['salesdirector'];
-
-  /** 'world' | 'geo' | 'cascade' */
-  get locationMode(): 'world' | 'geo' | 'cascade' {
-    const r = this.selectedRole.toLowerCase().replace(/\s+/g, '');
-    if (this.WORLD_LEVEL_ROLES.includes(r)) return 'world';
-    if (this.GEO_LEVEL_ROLES.includes(r)) return 'geo';
-    return 'cascade';
-  }
+  /* ===== DYNAMIC CONFIGURATION ===== */
+  locationMode: 'world' | 'geo' | 'cascade' = 'cascade';
+  productType: string = '';
 
   /* ================= CASCADE STATE: LOCATION ================= */
   // World level (for world-level roles)
@@ -83,12 +77,15 @@ export class AddUsersComponent implements OnInit {
   /* ================= CASCADE STATE: PRODUCTS ================= */
   allGroups: any[] = [];
   groupOptions: any[] = [];
+  groupedGroups: { category: string; groups: any[] }[] = [];
   productOptions: string[] = [];
+  groupedProducts: { group: string; products: string[] }[] = [];
 
   selCategories: string[] = [];
   selGroups: string[] = [];
   selProducts: string[] = [];
   categories: string[] = [];
+  step4Submitted: boolean = false;
 
   /* ================= ON INIT ================= */
   ngOnInit(): void {
@@ -110,9 +107,10 @@ export class AddUsersComponent implements OnInit {
       branches: this.userService.getBranches(),
       categories: this.userService.getCategories(),
       worlds: this.userService.getWorlds(),
-      allGroups: this.userService.getAllGroups()
+      allGroups: this.userService.getAllGroups(),
+      companies: this.userService.getCompanies().pipe(catchError(() => of([])))
     }).subscribe({
-      next: ({ roles, branches, categories, worlds, allGroups }) => {
+      next: ({ roles, branches, categories, worlds, allGroups, companies }) => {
         this.roles = roles.filter((r: string) => r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
         this.categories = categories;
         
@@ -138,6 +136,12 @@ export class AddUsersComponent implements OnInit {
         const branchField = this.userDetailsFields.find(f => f.name === 'branchName') as any;
         if (branchField) branchField.options = branches;
 
+        // Inject companies into companyName select field
+        const companyField = this.userDetailsFields.find(f => f.name === 'companyName') as any;
+        if (companyField) {
+          companyField.options = Array.isArray(companies) ? companies : [];
+        }
+
         // Load top-level geos (levelId=2) on startup
         this.userService.getLocationsByLevel(2).subscribe({
           next: (locs: any[]) => this.geoOptions = locs,
@@ -157,7 +161,7 @@ export class AddUsersComponent implements OnInit {
     this.headerTitle = 'Edit Users';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
-      { label: 'Manage Users', route: '/admin/manage-users' },
+      { label: 'Manage Users', route: '/users' },
       { label: 'Edit Users' }
     ];
   }
@@ -177,6 +181,7 @@ export class AddUsersComponent implements OnInit {
     { name: 'phoneNumber', label: 'Mobile', placeholder: 'Mobile Number', type: 'phone', required: true, options: [] },
     { name: 'alternateNumber', label: 'Alternate Number', placeholder: 'Mobile Number', type: 'phone', required: false, options: [] },
     { name: 'branchName', label: 'Branch', placeholder: 'Select Branch', type: 'select', required: true, options: [] },
+    { name: 'companyName', label: 'Company', placeholder: 'Select Company', type: 'select', required: true, options: [] },
     { name: 'address1', label: 'Address Line1', placeholder: '', type: 'textarea', required: false, options: [] },
     { name: 'address2', label: 'Address Line2', placeholder: '', type: 'textarea', required: false, options: [] },
     { name: 'city', label: 'City', placeholder: 'City', type: 'text', required: true, options: [] }
@@ -202,33 +207,64 @@ export class AddUsersComponent implements OnInit {
     return this.selectedRole?.toLowerCase() === 'distributor';
   }
 
+  stockistDetailsFields = [
+    { name: 'stockistName', label: 'Stockist Name', placeholder: 'Stockist Name', type: 'text', required: true },
+    { name: 'panNumber', label: 'PAN Number', placeholder: 'PAN Number', type: 'text', required: false },
+    { name: 'tinNumber', label: 'TIN Number', placeholder: 'TIN Number', type: 'text', required: false },
+    { name: 'tanNumber', label: 'TAN Number', placeholder: 'TAN Number', type: 'text', required: false },
+    { name: 'serviceTaxNumber', label: 'Service Tax Number', placeholder: 'Service Tax Number', type: 'text', required: false },
+    { name: 'salesTaxNumber', label: 'Sales Tax Number', placeholder: 'Sales Tax Number', type: 'text', required: false },
+    { name: 'exciseNumber', label: 'Excise Number', placeholder: 'Excise Number', type: 'text', required: false },
+    { name: 'bankName', label: 'Bank', placeholder: 'Bank Name', type: 'text', required: false },
+    { name: 'branch', label: 'Bank Branch', placeholder: 'Bank Branch', type: 'text', required: false },
+    { name: 'accountHolderName', label: 'Account Name', placeholder: 'Account Name', type: 'text', required: false },
+    { name: 'accountNumber', label: 'Bank Account Number', placeholder: 'Account Number', type: 'text', required: false },
+    { name: 'ifscCode', label: 'IFSC', placeholder: 'IFSC', type: 'text', required: false }
+  ];
+
+  get isStockist(): boolean {
+    return this.selectedRole?.toLowerCase() === 'stockist';
+  }
+
   /* ================= SAVE & NAVIGATION ================= */
 
-  handleStepSubmit(data: any): void {
-    // Merge data from current step
-    this.formInitialData = { ...this.formInitialData, ...data };
-
-    // Validation for Product Details (Step 4)
-    if (this.currentStep === 4) {
-      if (this.selCategories.length > 0) {
-        if (this.selGroups.length === 0) {
-          alert('Please select at least one Product Group for the chosen Categories.');
-          return;
-        }
-        if (this.selProducts.length === 0) {
-          alert('Please select at least one Product for the chosen Groups.');
-          return;
-        }
-      }
+  handleFormError(form?: any): void {
+    if (form && form.form) {
+      form.form.markAllAsTouched();
     }
+    setTimeout(() => {
+      const firstError = document.querySelector('.is-invalid') as HTMLElement;
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstError.focus();
+      }
+    }, 0);
+  }
 
-    const maxStep = this.isDistributor ? 5 : 4;
+  onFormSubmit(data: any): void {
+    if (data) {
+      this.formInitialData = { ...this.formInitialData, ...data };
+    }
+    // Final submission from any step where Submit is clicked
+    this.saveUser(this.formInitialData);
+  }
 
+  goToNextStep(data?: any): void {
+    if (data) {
+      this.formInitialData = { ...this.formInitialData, ...data };
+    }
+    const maxStep = 4;
     if (this.currentStep < maxStep) {
       this.currentStep++;
+    }
+  }
+
+  handleStepSubmit(data?: any): void {
+    const maxStep = 4;
+    if (this.currentStep < maxStep) {
+      this.goToNextStep(data);
     } else {
-      // Final submission
-      this.saveUser(this.formInitialData);
+      this.onFormSubmit(data);
     }
   }
 
@@ -241,24 +277,70 @@ export class AddUsersComponent implements OnInit {
   }
 
   saveUser(data: any): void {
-    const payload = { ...data, status: 1 };
+    const payload = {
+      roleName: data.roleName || this.selectedRole,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      username: data.username,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      alternateNumber: data.alternateNumber,
+      branchName: data.branchName,
+      companyName: data.companyName,
+      address1: data.address1,
+      address2: data.address2,
+      city: data.city,
+      status: 1,
+      // Distributor fields (will be undefined if not entered, which is fine)
+      distributorName: data.distributorName,
+      panNumber: data.panNumber,
+      tinNumber: data.tinNumber,
+      tanNumber: data.tanNumber,
+      serviceTaxNumber: data.serviceTaxNumber,
+      salesTaxNumber: data.salesTaxNumber,
+      exciseNumber: data.exciseNumber,
+      bankName: data.bankName,
+      branch: data.branch,
+      accountHolderName: data.accountHolderName,
+      accountNumber: data.accountNumber,
+      ifscCode: data.ifscCode,
+      
+      // Location Details
+      worldNames: this.locationMode === 'world' && this.selWorld ? [this.selWorld] : [],
+      geoNames: this.selGeo ? [this.selGeo] : [],
+      countryNames: this.locationMode === 'cascade' && this.selCountry ? [this.selCountry] : [],
+      regionNames: this.locationMode === 'cascade' && this.selRegion ? [this.selRegion] : [],
+      stateNames: this.locationMode === 'cascade' ? this.selStates : [],
+      districtNames: this.locationMode === 'cascade' ? this.selDistricts : [],
+      cityNames: this.locationMode === 'cascade' ? this.selCities : [],
+
+      // Product Details
+      categoryNames: this.selCategories,
+      groupNames: this.selGroups,
+      productNames: this.selProducts
+    };
 
     if (this.isEditMode) {
       this.userService.updateUser(this.userId, payload).subscribe({
-        next: () => this.router.navigate(['/admin/manage-users']),
+        next: () => {
+          this.toastService.success('User updated successfully');
+          this.router.navigate(['/users']);
+        },
         error: (err: any) => {
           console.error('Update failed', err);
-          const msg = err.error || 'Failed to update Users';
-          alert(msg);
+          const msg = err.error?.message || err.error || 'Failed to update Users';
+          this.toastService.error(msg);
         }
       });
     } else {
       this.userService.createUserAdmin(payload).subscribe({
-        next: () => this.router.navigate(['/admin/manage-users']),
+        next: () => {
+          this.toastService.success('User created successfully');
+          this.router.navigate(['/users']);
+        },
         error: (err: any) => {
           console.error('Create failed', err);
-          const msg = err.error?.message || err.error || 'Failed to create user. Please check your input and try again.';
-          alert(msg);
+          this.toastService.error('Failed to create user. Please check your input and try again.');
         }
       });
     }
@@ -266,19 +348,43 @@ export class AddUsersComponent implements OnInit {
 
   /* ================= CANCEL ================= */
   onCancel(): void {
-    this.router.navigate(['/admin/manage-users']);
+    this.router.navigate(['/users']);
   }
 
   /* ================= STEP NAVIGATION ================= */
   onNextStep(): void {
     if (!this.selectedRole) {
-      alert('Please select a role');
+      this.toastService.warning('Please select a role');
       return;
     }
 
-    // Pre-populate the role in form data
-    this.formInitialData = { ...this.formInitialData, roleName: this.selectedRole };
-    this.currentStep = 2;
+    this.userService.getRoleConfiguration(this.selectedRole).subscribe({
+      next: (config) => {
+        const locType = config?.locationType?.toUpperCase() || '';
+        
+        if (locType === 'ALL_GEOS') {
+          this.locationMode = 'world';
+        } else if (locType === 'SELECT_GEO') {
+          this.locationMode = 'geo';
+        } else {
+          this.locationMode = 'cascade';
+        }
+
+        this.productType = config?.productType || '';
+
+        // Pre-populate the role in form data
+        this.formInitialData = { ...this.formInitialData, roleName: this.selectedRole };
+        this.currentStep = 2;
+      },
+      error: (err) => {
+        console.error('Failed to fetch role configuration', err);
+        this.toastService.error('Failed to fetch role configuration');
+        // Fallback to cascade if error
+        this.locationMode = 'cascade';
+        this.formInitialData = { ...this.formInitialData, roleName: this.selectedRole };
+        this.currentStep = 2;
+      }
+    });
   }
 
   onBackToRoleSelection(): void {
@@ -406,12 +512,20 @@ export class AddUsersComponent implements OnInit {
     this.formInitialData.categoryNames = this.selCategories;
     
     this.groupOptions = []; this.selGroups = []; this.formInitialData.groupNames = [];
+    this.groupedGroups = [];
     this.productOptions = []; this.selProducts = []; this.formInitialData.productNames = [];
 
     if (this.selCategories.length) {
       this.groupOptions = this.allGroups.filter(g =>
         this.selCategories.includes(g.category?.categoryName)
       );
+
+      this.selCategories.forEach(cat => {
+        const catGroups = this.groupOptions.filter(g => g.category?.categoryName === cat);
+        if (catGroups.length > 0) {
+          this.groupedGroups.push({ category: cat, groups: catGroups });
+        }
+      });
     }
   }
 
@@ -425,12 +539,20 @@ export class AddUsersComponent implements OnInit {
     this.formInitialData.groupNames = this.selGroups;
 
     this.productOptions = []; this.selProducts = []; this.formInitialData.productNames = [];
+    this.groupedProducts = [];
 
     const selectedGroupObjs = this.groupOptions.filter(g => this.selGroups.includes(g.groupName));
     if (selectedGroupObjs.length) {
       forkJoin(selectedGroupObjs.map(g => this.userService.getProductsByGroupId(g.groupId)))
         .subscribe((results: any[][]) => {
           this.productOptions = Array.from(new Set(results.flat()));
+          
+          this.groupedProducts = selectedGroupObjs.map((g, index) => {
+            return {
+              group: g.groupName,
+              products: results[index]
+            };
+          }).filter(g => g.products && g.products.length > 0);
         });
     }
   }

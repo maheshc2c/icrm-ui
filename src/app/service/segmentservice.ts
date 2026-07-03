@@ -9,6 +9,7 @@ import { Segment, SegmentDto, Competitor } from '../models/segment';
 })
 export class SegmentService {
   private baseUrl = 'http://localhost:8080/admin';
+  private productUrl = 'http://localhost:8080/product';
  
   constructor(
     private http: HttpClient,
@@ -27,7 +28,7 @@ export class SegmentService {
  
     getSegments(): Observable<Segment[]> {
     return this.http.get<any>(
-      `${this.baseUrl}/view-group`,
+      `${this.productUrl}/group?name=`,
       { headers: this.getAuthHeaders() }
     ).pipe(
       map(res => {
@@ -40,19 +41,16 @@ export class SegmentService {
   }
  
   getSegmentById(id: number): Observable<Segment> {
-    return this.getSegments().pipe(
-      map(segments => {
-        const seg = segments.find(s => s.groupId === id);
-        if (!seg) throw new Error('Segment not found');
-        return seg;
-      })
+    return this.http.get<Segment>(
+      `${this.productUrl}/group/${id}`,
+      { headers: this.getAuthHeaders() }
     );
   }
  
  
   createSegment(payload: SegmentDto): Observable<Segment> {
     return this.http.post<Segment>(
-      `${this.baseUrl}/create-group`,
+      `${this.productUrl}/group`,
       payload,
       { headers: this.getAuthHeaders() }
     );
@@ -60,24 +58,22 @@ export class SegmentService {
  
   updateSegment(groupId: number, payload: SegmentDto): Observable<Segment> {
     return this.http.put<Segment>(
-      `${this.baseUrl}/update-group/${groupId}`,
+      `${this.productUrl}/group/${groupId}`,
       payload,
       { headers: this.getAuthHeaders() }
     );
   }
 
   deactivateSegment(id: number) {
-    return this.http.put(
-      `${this.baseUrl}/deactivate-group/${id}`,
-      {},
+    return this.http.delete(
+      `${this.productUrl}/group/${id}`,
       { headers: this.getAuthHeaders() }
     );
   }
 
   activateSegment(id: number) {
-    return this.http.put(
-      `${this.baseUrl}/activate-group/${id}`,
-      {},
+    return this.http.delete(
+      `${this.productUrl}/group/${id}`,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -87,12 +83,20 @@ export class SegmentService {
     groupName?: string;
     groupDescription?: string;
   }): Observable<Segment[]> {
-    return this.http.get<Segment[]>(
-      `${this.baseUrl}/search-group`,
+    return this.http.post<any>(
+      `${this.productUrl}/group-search`,
       {
-        headers: this.getAuthHeaders(),
-        params
-      }
+        pagination: { pageNumber: 0, pageSize: 1000, sortBy: "groupId", sortOrder: "DESC" }
+        // Depending on backend support we can map params here
+      },
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => {
+        if (Array.isArray(res)) return res;
+        if (res && Array.isArray(res.content)) return res.content;
+        if (res && Array.isArray(res.data)) return res.data;
+        return [];
+      })
     );
   }
  
@@ -105,17 +109,18 @@ export class SegmentService {
     );
   }
   // Fetch existing categories for dropdown (prevent 403 errors)
-  getCategories(): Observable<string[]> {
-    return this.http.get<string[]>(
-      `${this.baseUrl}/categories-list-admin`,
+  getCategories(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.productUrl}/category`,
       { headers: this.getAuthHeaders() }
     );
   }
  
   // Fetch existing competitors for dropdown
   getCompetitors(): Observable<Competitor[]> {
-    return this.http.get<any>(
-      `${this.baseUrl}/get-competitors?size=1000`,
+    return this.http.post<any>(
+      `${this.productUrl}/competitor-search`,
+      { pagination: { pageNumber: 0, pageSize: 1000, sortBy: "competitorName", sortOrder: "ASC" } },
       { headers: this.getAuthHeaders() }
     ).pipe(
       map(res => {
