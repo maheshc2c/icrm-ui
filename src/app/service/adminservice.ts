@@ -593,25 +593,51 @@ activateDemo(id: number) {
   //     }
   //   );
   // }
-  // ================= SEARCH DEMO =================
-  searchDemo(filters: any) {
-    const params: any = {};
+    // ================= SEARCH DEMO PAGINATED =================
+    searchDemoPaginated(filters: any, page: number = 0, size: number = 10) {
+      const body = {
+        category: filters.categoryName || null,
+        segment: filters.groupName || null,
+        product: filters.productName || null,
+        location: filters.location || null,
+        serialNumber: filters.serialNo || null,
+        region: filters.regionName || null,
+        pagination: {
+          pageNumber: page,
+          pageSize: size,
+          sortBy: "demoProductDetailId",
+          sortOrder: "DESC"
+        }
+      };
 
-    Object.keys(filters).forEach(key => {
-      const val = filters[key];
-      if (val && val.trim() !== '') {
-        params[key] = val.trim();
-      }
-    });
+      return this.http.post<any>(
+        `${this.baseUrl}/product/demo-search`,
+        body,
+        {
+          headers: this.getAuthHeaders()
+        }
+      );
+    }
 
-    return this.http.get<any[]>(
-      `${this.baseUrl}/admin/demo-view/search`,
-      {
-        headers: this.getAuthHeaders(),
-        params
-      }
-    );
-  }
+    // ================= SEARCH DEMO =================
+    searchDemo(filters: any) {
+      const params: any = {};
+  
+      Object.keys(filters).forEach(key => {
+        const val = filters[key];
+        if (val && val.trim() !== '') {
+          params[key] = val.trim();
+        }
+      });
+  
+      return this.http.get<any[]>(
+        `${this.baseUrl}/admin/demo-view/search`,
+        {
+          headers: this.getAuthHeaders(),
+          params
+        }
+      );
+    }
 
 
 
@@ -636,6 +662,14 @@ activateDemo(id: number) {
       `${this.baseUrl}/admin/demo-categories-dropdown`,
       { headers: this.getAuthHeaders() }
     );
+  }
+
+  getAllCategoriesForSearch(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/product/category?name=`, { headers: this.getAuthHeaders() });
+  }
+
+  getAllGroupsForSearch(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/product/group?name=`, { headers: this.getAuthHeaders() });
   }
 
   getSegmentDropdown(categoryId: number): Observable<any[]> {

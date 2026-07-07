@@ -139,6 +139,12 @@ export class ManageUsersComponent implements OnInit {
         this.loadUsers();
     }
 
+    onPageSizeChange(size: number) {
+        this.pageSize = size;
+        this.currentPage = 1;
+        this.loadUsers();
+    }
+
     loadRoles() {
         this.userService.getRoles().subscribe({
             next: (roles: string[]) => {

@@ -47,6 +47,29 @@ export class Demo implements OnInit {
 
   ngOnInit(): void {
     this.loadDemo();
+    this.loadDropdowns();
+  }
+
+  loadDropdowns(): void {
+    this.adminservice.getAllCategoriesForSearch().subscribe({
+      next: (data: any[]) => {
+        const field = this.searchFields.find(f => f.key === 'categoryName');
+        if (field) {
+          field.options = data.map(c => ({ label: c.categoryName, value: c.categoryName }));
+        }
+      },
+      error: (err) => console.error('Failed to load categories dropdown', err)
+    });
+
+    this.adminservice.getAllGroupsForSearch().subscribe({
+      next: (data: any[]) => {
+        const field = this.searchFields.find(f => f.key === 'groupName');
+        if (field) {
+          field.options = data.map(g => ({ label: g.groupName, value: g.groupName }));
+        }
+      },
+      error: (err) => console.error('Failed to load groups dropdown', err)
+    });
   }
 
   onRefresh(): void {
@@ -165,8 +188,8 @@ onDelete(row: any) {
 
   // ================= SEARCH FIELDS =================
   searchFields: SearchFieldConfig[] = [
-    { key: 'categoryName', label: 'Category', type: 'text', placeholder: 'Category' },
-    { key: 'groupName', label: 'Segment', type: 'text', placeholder: 'Segment' },
+    { key: 'categoryName', label: 'Category', type: 'select', placeholder: 'Category', options: [] },
+    { key: 'groupName', label: 'Segment', type: 'select', placeholder: 'Segment', options: [] },
     { key: 'productName', label: 'Product', type: 'select', placeholder: 'Product', options: [] },
     { key: 'location', label: 'Location', type: 'text', placeholder: 'Location' },
     { key: 'serialNo', label: 'Serial Number', type: 'text', placeholder: 'Serial Number' },
@@ -235,61 +258,76 @@ onDelete(row: any) {
 //   });
 // }
 
+currentPage = 1;
+totalPages = 1;
+totalItems: number | null = null;
+pageSize = 10;
+currentFilters: any = null;
+
+onPageChange(pageIndex: number) {
+  this.currentPage = pageIndex;
+  if (this.currentFilters && Object.values(this.currentFilters).some(v => v)) {
+    this.executeSearch(this.currentFilters);
+  } else {
+    this.loadDemo();
+  }
+}
+
+onPageSizeChange(size: number) {
+  this.pageSize = size;
+  this.currentPage = 1;
+  if (this.currentFilters && Object.values(this.currentFilters).some(v => v)) {
+    this.executeSearch(this.currentFilters);
+  } else {
+    this.loadDemo();
+  }
+}
+
 onSearch(filters: any): void {
+  this.currentFilters = filters;
+  this.currentPage = 1;
 
   if (!filters || Object.values(filters).every(v => !v)) {
+    this.totalItems = null; // revert to client-side pagination for default loadDemo
     this.loadDemo();
     return;
   }
 
-  this.adminservice.searchDemo(filters).subscribe({
-    next: (results: any[]) => {
+  this.executeSearch(filters);
+}
 
-      // Sort descending by ID to show latest first
-      results.sort((a: any, b: any) => {
-        const matchA = this.fullRows.find(f => f.demoProductDetailSerialNumber === a.serialNo);
-        const matchB = this.fullRows.find(f => f.demoProductDetailSerialNumber === b.serialNo);
-        return (matchB?.demoProductDetailId ?? 0) - (matchA?.demoProductDetailId ?? 0);
-      });
+executeSearch(filters: any): void {
+  this.adminservice.searchDemoPaginated(filters, this.currentPage - 1, this.pageSize).subscribe({
+    next: (response: any) => {
+      let results: any[] = [];
+      if (response && response.content) {
+        results = response.content;
+        this.totalPages = response.totalPages || 1;
+        this.totalItems = response.totalElements || 0;
+      } else {
+        results = response;
+      }
 
       this.rows = results.map((c: any, index: number) => {
-
-        const match = this.fullRows.find(f =>
-          f.demoProductDetailSerialNumber === c.serialNo
-        );
-
         return {
-          sno: index + 1,
-
-          demoProductDetailId:
-            match?.demoProductDetailId ?? null,
-
-          demoProductDetailStatus:
-            match?.demoProductDetailStatus ?? 1,
-
-          productName:
-            c.productName ?? '-',
-
-          demoProductDetailSerialNumber:
-            c.serialNo ?? '-',
-
-          demoProductDetailLocation:
-            c.location ?? '-',
-
-          cityName:
-            match?.cityName ?? '-',
-
-          branchName:
-            match?.branchName ?? '-',
-
-          regionName:
-            c.regionName ?? '-'
+          sno: ((this.currentPage - 1) * this.pageSize) + index + 1,
+          demoProductDetailId: c.demoProductDetailId ?? null,
+          demoProductDetailStatus: c.demoProductDetailStatus ?? 1,
+          productName: c.productName ?? '-',
+          demoProductDetailSerialNumber: c.demoProductDetailSerialNumber ?? c.serialNo ?? '-',
+          demoProductDetailLocation: c.demoProductDetailLocation ?? c.location ?? '-',
+          cityName: c.cityName ?? '-',
+          branchName: c.branchName ?? '-',
+          regionName: c.regionName ?? '-'
         };
       });
-
     },
     error: (err) => {
       console.error('Search failed', err);
+      this.toastService.error('Search failed');
+      this.rows = [];
+      this.totalItems = 0;
+      this.totalPages = 1;
     }
   });
 }
