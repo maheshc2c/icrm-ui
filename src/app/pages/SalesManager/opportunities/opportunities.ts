@@ -421,30 +421,27 @@ export class OpportunitiesComponent implements OnInit {
       return null;
     };
 
-    // Map frontend oppModel to backend OpportunityDto
     const payload = {
-      oppLeadId: toNullIfEmpty(this.oppModel.leadId),
-      productId: toNullIfEmpty(this.oppModel.productId),
-      productName: getOptionLabel('productId', this.oppModel.productId),
-      productCategoryId: toNullIfEmpty(this.oppModel.productCategoryId),
-      categoryName: getOptionLabel('productCategoryId', this.oppModel.productCategoryId),
-      productGroupId: toNullIfEmpty(this.oppModel.productGroupId),
-      groupName: getOptionLabel('productGroupId', this.oppModel.productGroupId),
-      oppRequiredQuantity: toNullIfEmpty(this.oppModel.quantity),
-      oppFundSourceId: toNullIfEmpty(this.oppModel.fundSourceId),
-      fundSourceName: getOptionLabel('fundSourceId', this.oppModel.fundSourceId),
-      oppExpectedOrderConclusion: toNullIfEmpty(this.oppModel.expectedOrderConclusion),
-      oppExpectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
-      oppDecisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1),
-      oppDecisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2),
-      oppDecisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3),
-      oppDecisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4),
-      oppDecisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5),
-      oppRelationshipId: toNullIfEmpty(this.oppModel.relationshipId),
-      relationshipName: getOptionLabel('relationshipId', this.oppModel.relationshipId),
-      oppStatus: toNullIfEmpty(this.oppModel.status),
-      oppName: getOptionLabel('status', this.oppModel.status),
-      oppRemarks1: this.oppModel.competitors || null
+      leadId: toNullIfEmpty(this.oppModel.leadId) ? Number(toNullIfEmpty(this.oppModel.leadId)) : null,
+      productId: toNullIfEmpty(this.oppModel.productId) ? Number(toNullIfEmpty(this.oppModel.productId)) : null,
+      status: toNullIfEmpty(this.oppModel.status) ? Number(toNullIfEmpty(this.oppModel.status)) : null,
+      requiredQuantity: toNullIfEmpty(this.oppModel.quantity) ? Number(toNullIfEmpty(this.oppModel.quantity)) : null,
+      fundSourceId: toNullIfEmpty(this.oppModel.fundSourceId) ? Number(toNullIfEmpty(this.oppModel.fundSourceId)) : null,
+      fundingStatus: null,
+      expectedOrderConclusion: toNullIfEmpty(this.oppModel.expectedOrderConclusion),
+      expectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
+      decisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1) ? Number(toNullIfEmpty(this.oppModel.decisionMaker1)) : null,
+      decisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2) ? Number(toNullIfEmpty(this.oppModel.decisionMaker2)) : null,
+      decisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3) ? Number(toNullIfEmpty(this.oppModel.decisionMaker3)) : null,
+      decisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4) ? Number(toNullIfEmpty(this.oppModel.decisionMaker4)) : null,
+      decisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5) ? Number(toNullIfEmpty(this.oppModel.decisionMaker5)) : null,
+      relationshipId: toNullIfEmpty(this.oppModel.relationshipId) ? Number(toNullIfEmpty(this.oppModel.relationshipId)) : null,
+      demoRequirement: false,
+      technicallyCleared: false,
+      stageId: null,
+      competitorIds: [],
+      remarks1: this.oppModel.competitors || null,
+      remarks2: null
     };
 
     if (this.isEditMode && this.editOppId) {

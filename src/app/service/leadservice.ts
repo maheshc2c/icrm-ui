@@ -157,11 +157,16 @@ export class Leadservice {
     });
   }
 
-  /* ================= CREATE LEAD ================= */
-  createLead(lead: LeadPayload): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/salesengineer/assign-lead`, lead, {
+  /* ================= LEAD CREATION ================= */
+  createLead(lead: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/leads`, lead, {
       headers: this.getAuthHeaders()
     });
+  }
+
+  /* ================= SAVE QUOTE ================= */
+  saveQuote(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/leads/create/quote`, payload, { headers: this.getAuthHeaders() });
   }
 
   /* ================= GET OPPORTUNITIES BY LEAD ID ================= */
@@ -173,7 +178,8 @@ export class Leadservice {
 
   /* ================= CREATE OPPORTUNITY ================= */
   createOpportunity(leadId: number, opportunityDto: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/salesengineer/leadOopCreate/${leadId}`, opportunityDto, {
+    opportunityDto.leadId = leadId;
+    return this.http.post<any>(`${this.baseUrl}/leads/create/opportunity`, opportunityDto, {
       headers: this.getAuthHeaders()
     });
   }
@@ -258,6 +264,13 @@ export class Leadservice {
     });
   }
 
+  /* ================= GET DEALERS DROPDOWN ================= */
+  getDealers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/leads/dealers`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   /* ================= GET REGIONS DROPDOWN ================= */
   getRegions(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=4`, {
@@ -268,6 +281,25 @@ export class Leadservice {
   /* ================= GET SALES USERS DROPDOWN ================= */
   getSalesUsers(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/salesengineer/sales-users/dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= QUOTE DROPDOWNS & LIST ================= */
+  getQuotesByLead(leadId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/quotes-view?leadId=${leadId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getBillingOptions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/billing`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getCompanyOptions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/company`, {
       headers: this.getAuthHeaders()
     });
   }

@@ -51,6 +51,7 @@ export class AddleadComponent implements OnInit {
   selectedCustomer: any = null;
   showInstallationBaseDetailsModal = false;
   installationBaseDetails: any[] = [];
+  showQuoteSuccessMessage = false;
   
   // Validation errors
   errors: { [key: string]: string } = {};
@@ -95,6 +96,18 @@ export class AddleadComponent implements OnInit {
   showAddQuoteModal = false;
   showRevisionHistoryModal = false;
   showQuoteRevisionModal = false;
+
+  /* ================= QUOTE MODAL FORM ================= */
+  quoteForm: any = {
+    opportunityId: '',
+    billingInfoId: '',
+    dealerCommission: '',
+    companyId: ''
+  };
+  quoteOpportunities: any[] = [];
+  quoteBillingOptions: any[] = [];
+  quoteCompanyOptions: any[] = [];
+  quoteDealerOptions: any[] = [];
 
   /* ================= CONTRACT NOTE DATA TABLE ================= */
   contractNoteColumns = [
@@ -181,7 +194,7 @@ export class AddleadComponent implements OnInit {
 
   leadForm: any = {
     source: '',
-    // campaign: '', // Commented out
+    campaign: '',
     customer: '' as string | number,
     rapportWithCustomer: '',
     contact1: '' as string | number,
@@ -204,13 +217,13 @@ export class AddleadComponent implements OnInit {
       required: true,
       options: []
     },
-    /* {
+    {
       name: 'campaign',
       label: 'Campaign',
       type: 'select',
       required: true,
       options: []
-    }, */
+    },
     {
       name: 'customer',
       label: 'Customer',
@@ -333,6 +346,13 @@ export class AddleadComponent implements OnInit {
         
         // Also check if readOnly query parameter is present
         this.isReadOnly = this.route.snapshot.queryParams['readOnly'] === 'true';
+
+        this.route.queryParams.subscribe(q => {
+          if (q['success'] === 'true') {
+            this.showQuoteSuccessMessage = true;
+            this.activeTab = 'Quote';
+          }
+        });
         
         // Update breadcrumbs for edit/view mode
         if (this.isReadOnly) {
@@ -351,6 +371,7 @@ export class AddleadComponent implements OnInit {
 
         // Load existing lead details immediately
         this.loadLeadData(this.leadId);
+        this.loadQuotes();
       }
     });
 
@@ -381,7 +402,7 @@ export class AddleadComponent implements OnInit {
     
     // 1. Source of Lead
     this.leadservice.getSources().subscribe({
-      next: (data) => this.setFieldOptions('source', data, 'sourceName'),
+      next: (data) => this.setFieldOptions('source', data, 'sourceName', 'sourceId'),
       error: (err) => console.error('Failed to load lead sources:', err)
     });
 
@@ -397,19 +418,19 @@ export class AddleadComponent implements OnInit {
 
     // 3. Rapport (Relationship)
     this.leadservice.getRelationships().subscribe({
-      next: (data) => this.setFieldOptions('rapportWithCustomer', data, 'relationshipName'),
+      next: (data) => this.setFieldOptions('rapportWithCustomer', data, 'relationshipName', 'relationshipId'),
       error: (err) => console.error('Failed to load rapport:', err)
     });
 
     // 4. Site Readiness
     this.leadservice.getSiteReadiness().subscribe({
-      next: (data) => this.setFieldOptions('siteReadiness', data, 'siteReadinessName'),
+      next: (data) => this.setFieldOptions('siteReadiness', data, 'siteReadinessName', 'siteReadinessID'),
       error: (err) => console.error('Failed to load site readiness:', err)
     });
 
     // 5. Distributors
     this.leadservice.getDistributors().subscribe({
-      next: (data) => this.setFieldOptions('distributor', data, 'distributorName'),
+      next: (data) => this.setFieldOptions('distributor', data, 'distributorName', 'userId'),
       error: (err) => console.error('Failed to load distributors:', err)
     });
 
@@ -434,7 +455,7 @@ export class AddleadComponent implements OnInit {
 
     // 7. Campaigns (Silent load for background default)
     this.leadservice.getCampaigns().subscribe({
-      next: (data) => this.setFieldOptions('campaign', data, 'campaignName'),
+      next: (data) => this.setFieldOptions('campaign', data, 'campaignName', 'campaignId'),
       error: (err) => console.warn('Failed to load campaigns:', err)
     });
   }
@@ -457,6 +478,7 @@ export class AddleadComponent implements OnInit {
 
         this.leadForm = {
           source: data.sourceName || '',
+          campaign: data.campaignId || '',
           customer: data.customerId || '',
           rapportWithCustomer: data.relationshipName || '',
           contact1: data.contactId || '',
@@ -763,26 +785,31 @@ export class AddleadComponent implements OnInit {
       return customer ? customer.label : '';
     };
 
-    const payload: LeadPayload = {
-      customerId: Number(formData.customer),
-      contactId: Number(formData.contact1),
-      contact2Id: formData.contact2 ? Number(formData.contact2) : null,
-      customerName: getCustomerName(formData.customer),
-      contactFirstName: getContactFirstName(formData.contact1),
-      sourceName: getLabel('source', formData.source),
-      campaignName: getLabel('campaign', formData.campaign),
-      siteReadinessName: getLabel('siteReadiness', formData.siteReadiness),
-      distributorName: getLabel('distributor', formData.distributor),
-      relationshipName: getLabel('rapportWithCustomer', formData.rapportWithCustomer),
-      username: this.getUsernameFromToken(),
-      leadPurchasePotential: Number(formData.purchasePotentialRs) || 0,
-      leadVisitRequirement: formData.visitRequirement === 'Yes' ? 1 : 0,
-      leadResourceRequirement: formData.resourceRequirement === 'Yes' ? 1 : 0,
-      leadCmdLine1: formData.commentLine1 || '',
-      leadCmdLine2: formData.commentLine2 || '',
-      leadCmdLine3: formData.purchasePotential || '',
-      leadStatus: 1,
-      leadId: this.leadId || undefined
+    const toNullIfEmpty = (val: any) => (val === '' || val === null || val === undefined) ? null : val;
+    const extractId = (val: any) => {
+      if (!val || val === '0' || val === 0) return null;
+      if (typeof val === 'object') return val.campaignId || val.contactId || val.id || val.value || val.contact_id || val.sourceId || val.locationId || val.categoryId || null;
+      return val;
+    };
+
+    const payload: any = {
+      sourceId: toNullIfEmpty(formData.source) ? Number(extractId(formData.source)) : null,
+      customerId: toNullIfEmpty(formData.customer) ? Number(extractId(formData.customer)) : null,
+      relationshipId: toNullIfEmpty(formData.rapportWithCustomer) ? Number(extractId(formData.rapportWithCustomer)) : null,
+      contactId: toNullIfEmpty(formData.contact1) ? Number(extractId(formData.contact1)) : null,
+      contact2Id: toNullIfEmpty(formData.contact2) ? Number(extractId(formData.contact2)) : null,
+      purchasePotential: formData.purchasePotentialRs ? Number(formData.purchasePotentialRs) : 0,
+      siteReadinessId: toNullIfEmpty(formData.siteReadiness) ? Number(extractId(formData.siteReadiness)) : null,
+      siteLocationId: toNullIfEmpty(formData.siteLocation) ? Number(extractId(formData.siteLocation)) : null,
+      visitRequirement: formData.visitRequirement === 'Yes',
+      resourceRequirement: formData.resourceRequirement === 'Yes',
+      distributorId: toNullIfEmpty(formData.distributor) ? Number(extractId(formData.distributor)) : null,
+      campaignId: toNullIfEmpty(formData.campaign) ? Number(extractId(formData.campaign)) : null,
+      remarks1: formData.commentLine1 || '',
+      remarks2: formData.commentLine2 || '',
+      assignToOthers: false,
+      assignUserId: null,
+      locationId: null
     };
 
     console.log('📦 FINAL PAYLOAD:', payload);
@@ -1061,37 +1088,26 @@ export class AddleadComponent implements OnInit {
     const toNullIfEmpty = (val: any) => (val === '' || val === null || val === undefined) ? null : val;
 
     const payload = {
-      productCategoryId: this.oppModel.productCategoryId,
-      productGroupId: this.oppModel.productGroupId,
-      productId: this.oppModel.productId,
-      oppRequiredQuantity: this.oppModel.quantity,
-      oppFundSourceId: toNullIfEmpty(this.oppModel.fundSourceId),
-      oppRelationshipId: toNullIfEmpty(this.oppModel.relationshipId),
-      oppExpectedOrderConclusion: this.oppModel.expectedOrderConclusion,
-      oppStatus: toNullIfEmpty(this.oppModel.status),
-      oppExpectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
-      
-      oppDecisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1),
-      decisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1),
-      contact1: toNullIfEmpty(this.oppModel.decisionMaker1),
-      
-      oppDecisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2),
-      decisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2),
-      contact2: toNullIfEmpty(this.oppModel.decisionMaker2),
-      
-      oppDecisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3),
-      decisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3),
-      contact3: toNullIfEmpty(this.oppModel.decisionMaker3),
-      
-      oppDecisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4),
-      decisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4),
-      contact4: toNullIfEmpty(this.oppModel.decisionMaker4),
-      
-      oppDecisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5),
-      decisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5),
-      contact5: toNullIfEmpty(this.oppModel.decisionMaker5),
-      
-      oppRemarks1: this.oppModel.competitors || null
+      leadId: this.leadId,
+      productId: this.oppModel.productId ? Number(this.oppModel.productId) : null,
+      status: toNullIfEmpty(this.oppModel.status) ? Number(toNullIfEmpty(this.oppModel.status)) : null,
+      requiredQuantity: this.oppModel.quantity ? Number(this.oppModel.quantity) : null,
+      fundSourceId: toNullIfEmpty(this.oppModel.fundSourceId) ? Number(toNullIfEmpty(this.oppModel.fundSourceId)) : null,
+      fundingStatus: null,
+      expectedOrderConclusion: this.oppModel.expectedOrderConclusion,
+      expectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
+      decisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1) ? Number(toNullIfEmpty(this.oppModel.decisionMaker1)) : null,
+      decisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2) ? Number(toNullIfEmpty(this.oppModel.decisionMaker2)) : null,
+      decisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3) ? Number(toNullIfEmpty(this.oppModel.decisionMaker3)) : null,
+      decisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4) ? Number(toNullIfEmpty(this.oppModel.decisionMaker4)) : null,
+      decisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5) ? Number(toNullIfEmpty(this.oppModel.decisionMaker5)) : null,
+      relationshipId: toNullIfEmpty(this.oppModel.relationshipId) ? Number(toNullIfEmpty(this.oppModel.relationshipId)) : null,
+      demoRequirement: false,
+      technicallyCleared: false,
+      stageId: null,
+      competitorIds: [],
+      remarks1: this.oppModel.competitors || null,
+      remarks2: null
     };
 
     console.log("?? SENDING OPPORTUNITY PAYLOAD TO BACKEND:", payload);
@@ -1273,6 +1289,79 @@ export class AddleadComponent implements OnInit {
   }
 
   onQuoteRevisionAdd(row: any) {
-    this.router.navigate(['/quoteRevision', this.leadId || '5']);
+    const id = row.quoteId || row.id || this.leadId || '31';
+    this.router.navigate(['/quoteRevision', id]);
+  }
+
+  /* ================= QUOTE METHODS ================= */
+  loadQuotes(): void {
+    if (this.leadId) {
+      this.leadservice.getQuotesByLead(this.leadId).subscribe({
+        next: (data) => {
+          this.quotes = data || [];
+        },
+        error: (err) => console.error('Failed to load quotes:', err)
+      });
+    }
+  }
+
+  openAddQuoteModal(): void {
+    this.showAddQuoteModal = true;
+    this.quoteForm = { opportunityId: '', billingInfoId: '', dealerCommission: '', companyId: '', dealerId: '' };
+    
+    if (this.leadId) {
+      this.leadservice.getOpportunitiesByLeadId(this.leadId).subscribe({
+        next: (data) => this.quoteOpportunities = data || [],
+        error: (err) => console.error('Failed to load opportunities for quote:', err)
+      });
+
+      this.leadservice.getBillingOptions().subscribe({
+        next: (data) => {
+          this.quoteBillingOptions = data || [];
+        },
+        error: (err) => console.error('Failed to load billing options:', err)
+      });
+
+      this.leadservice.getCompanyOptions().subscribe({
+        next: (data) => {
+          this.quoteCompanyOptions = data ? data.map((c: any) => ({ id: c.companyId, name: c.companyName })) : [];
+        },
+        error: (err) => console.error('Failed to load company options:', err)
+      });
+
+      this.leadservice.getDealers().subscribe({
+        next: (data) => {
+          this.quoteDealerOptions = data || [];
+        },
+        error: (err) => console.error('Failed to load dealer options:', err)
+      });
+    }
+  }
+
+  submitQuote(): void {
+    if (!this.quoteForm.opportunityId || !this.quoteForm.billingInfoId || !this.quoteForm.companyId) {
+      this.toastService.error('Please fill required fields (Opportunity, Billing Name, Billing Through)');
+      return;
+    }
+    
+    const payload = {
+      opportunityId: Number(this.quoteForm.opportunityId),
+      billingInfoId: Number(this.quoteForm.billingInfoId),
+      dealerCommission: this.quoteForm.dealerCommission ? Number(this.quoteForm.dealerCommission) : 0,
+      dealerId: Number(this.quoteForm.dealerId),
+      companyId: Number(this.quoteForm.companyId)
+    };
+
+    this.leadservice.saveQuote(payload).subscribe({
+      next: (res) => {
+        this.toastService.success('Quote saved successfully!');
+        this.showAddQuoteModal = false;
+        this.loadQuotes();
+      },
+      error: (err) => {
+        console.error('Failed to save quote:', err);
+        this.toastService.error('Failed to save quote');
+      }
+    });
   }
 }

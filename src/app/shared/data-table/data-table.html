@@ -169,9 +169,7 @@
                             </button>
                           }
 
-                       
-                        @if (showDelete && showDeleteButton) {
-                          @if (showStatusToggle && getRowStatus(row) !== undefined) {
+                          @if (showAssign) {
                             <button
                               class="btn btn-sm btn-primary assign-btn"
                               (click)="assign(row)"
@@ -187,6 +185,15 @@
                               (click)="upload(row)"
                               title="Upload Target">
                               <i class="fas fa-upload"></i>
+                            </button>
+                          }
+
+                          @if (showEdit && showEditButton) {
+                            <button
+                              class="btn btn-sm btn-warning edit-btn"
+                              (click)="edit(row)"
+                              title="Edit">
+                              <i class="fas fa-edit"></i>
                             </button>
                           }
 

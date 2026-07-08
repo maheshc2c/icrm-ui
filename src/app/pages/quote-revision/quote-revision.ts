@@ -7,12 +7,11 @@ import { Pageheader } from '../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../models/breadcrumb';
 import { Sidebar } from '../../layout/sidebar/sidebar';
 import { Header } from '../../layout/header/header';
-import { DataTable } from '../../shared/data-table/data-table';
 
 @Component({
   selector: 'app-quote-revision',
   standalone: true,
-  imports: [CommonModule, FormsModule, Pageheader, Sidebar, Header, DataTable],
+  imports: [CommonModule, FormsModule, Pageheader, Sidebar, Header],
   templateUrl: './quote-revision.html'
 })
 export class QuoteRevisionComponent implements OnInit {
@@ -44,6 +43,12 @@ export class QuoteRevisionComponent implements OnInit {
     }
   ];
 
+  showFreeSupply: boolean = true;
+  freeSupplyItems: any[] = [
+    { product: '', qty: '' },
+    { product: '', qty: '' }
+  ];
+
   constructor(
     private router: Router,
     private route: ActivatedRoute
@@ -67,5 +72,17 @@ export class QuoteRevisionComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/salesmanager/leads/edit', 5]);
+  }
+
+  addFreeSupplyItem() {
+    this.freeSupplyItems.push({ product: '', qty: '' });
+  }
+
+  removeFreeSupplyItem(index: number) {
+    this.freeSupplyItems.splice(index, 1);
+  }
+
+  onSubmit() {
+    this.router.navigate(['/salesmanager/leads/edit', 17], { queryParams: { success: 'true' } });
   }
 }

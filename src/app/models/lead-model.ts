@@ -22,6 +22,7 @@ export interface LeadPayload {
   contactFirstName: string;
   sourceName: string;
   campaignName?: string;
+  campaignId?: number;
   siteReadinessName: string;
   distributorName: string;
   relationshipName: string;
