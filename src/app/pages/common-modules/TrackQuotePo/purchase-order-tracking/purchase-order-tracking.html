@@ -7,7 +7,7 @@
 </app-pageheader>
 
 <app-data-table
-  title="Quote Tracking"
+  title="Purchase Order Tracking"
   [columns]="columns"
   [rows]="filteredRows"
   [showAdd]="false"
@@ -15,9 +15,13 @@
   [showImport]="false"
   [showReset]="true"
   [showPagination]="true"
+  [totalElements]="totalElements"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage"
+  [totalPages]="totalPages"
   [showStatusToggle]="false"
   [showActions]="false"
-  [trackByField]="'quoteId'"
+  [trackByField]="'poId'"
   (searchChange)="onSearchChange($event)"
   (add)="onAdd()"
   (editRow)="onEdit($event)"

@@ -89,7 +89,7 @@
                               {{ row[col.field] }}%
                             </div>
                           </div>
-                        } @else if (col.field === 'status') {
+                        } @else if (col.field === 'status' && row.leadStatus !== undefined) {
                           <div class="status-badge-container">
                             <span class="status-badge" [class.active]="row.leadStatus >= 1" [class.inactive]="row.leadStatus < 1">Lead</span>
                             <span class="status-badge" [class.active]="row.leadStatus >= 2" [class.inactive]="row.leadStatus < 2">Approved</span>

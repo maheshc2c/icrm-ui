@@ -32,7 +32,11 @@ export class QuoteTracking implements OnInit {
   };
 
   rows: QuoteTrackingModel[] = [];
-  allRows: QuoteTrackingModel[] = [];
+
+  currentPage = 1;
+  pageSize = 10;
+  totalElements = 0;
+  totalPages = 0;
 
   columns = [
     { header: 'Quote ID', field: 'quoteId' },
@@ -60,10 +64,20 @@ export class QuoteTracking implements OnInit {
 
   loadQuotes(): void {
     console.log('[QuoteTracking] loadQuotes called. Fetching list...');
-    this.countryHeadService.getQuoteList().subscribe({
-      next: (data) => {
-        console.log('[QuoteTracking] Successfully loaded quotes data:', data);
-        this.allRows = data.map(q => {
+    this.countryHeadService.getQuoteListPaginated(
+      this.currentPage - 1,
+      this.pageSize,
+      this.searchModel.quoteId || undefined,
+      this.searchModel.customerName || undefined,
+      this.searchModel.opportunityDetails || undefined
+    ).subscribe({
+      next: (res: any) => {
+        console.log('[QuoteTracking] Successfully loaded quotes data:', res);
+        const data = res.content || [];
+        this.totalElements = res.totalElements || 0;
+        this.totalPages = res.totalPages || 0;
+
+        this.rows = data.map((q: any) => {
           return {
             ...q,
             finalApprover: q.approver ? String(q.approver) : '',
@@ -71,7 +85,6 @@ export class QuoteTracking implements OnInit {
             status: this.mapStatus(q.status)
           };
         });
-        this.rows = [...this.allRows];
         console.log('[QuoteTracking] Mapped rows:', this.rows);
       },
       error: (err) => {
@@ -98,8 +111,8 @@ export class QuoteTracking implements OnInit {
   private mapStatus(status: any): string {
     if (status === null || status === undefined || status === '') return '';
     switch (Number(status)) {
-      case 1: return 'Pending Approval';
-      case 2: return 'Approved';
+      case 1: return 'Pending';
+      case 2: return 'Quote Approved';
       case 3: return 'Rejected';
       case 4: return 'Converted to Contract Note';
       case 5: return 'Previous Quote';
@@ -108,20 +121,7 @@ export class QuoteTracking implements OnInit {
   }
 
   get filteredRows(): QuoteTrackingModel[] {
-    const quoteId = this.searchModel.quoteId?.trim().toLowerCase();
-    const customerName = this.searchModel.customerName?.trim().toLowerCase();
-    const opportunityDetails = this.searchModel.opportunityDetails?.trim().toLowerCase();
-
-    return this.rows.filter(row => {
-      const rowQuoteId = row.quoteId ? String(row.quoteId).toLowerCase() : '';
-      const rowCustomer = row.customer ? row.customer.toLowerCase() : '';
-      const rowOppDetails = row.opportunityDetails ? row.opportunityDetails.toLowerCase() : '';
-
-      const matchesQuoteId = !quoteId || rowQuoteId.includes(quoteId);
-      const matchesCustomer = !customerName || rowCustomer.includes(customerName);
-      const matchesOpportunity = !opportunityDetails || rowOppDetails.includes(opportunityDetails);
-      return matchesQuoteId && matchesCustomer && matchesOpportunity;
-    });
+    return this.rows;
   }
 
   onSearchChange(event: { quoteId: string; customerName: string; opportunityDetails: string; }): void {
@@ -130,6 +130,8 @@ export class QuoteTracking implements OnInit {
       customerName: event.customerName,
       opportunityDetails: event.opportunityDetails
     };
+    this.currentPage = 1;
+    this.loadQuotes();
   }
 
   onAdd(): void {
@@ -145,11 +147,14 @@ export class QuoteTracking implements OnInit {
   }
 
   onPageChange(event: number): void {
-    // Handle page change logic
+    this.currentPage = event;
+    this.loadQuotes();
   }
 
   onPageSizeChange(event: number): void {
-    // Handle page size change logic
+    this.pageSize = event;
+    this.currentPage = 1;
+    this.loadQuotes();
   }
 
   onReset(): void {
@@ -158,5 +163,7 @@ export class QuoteTracking implements OnInit {
       customerName: '',
       opportunityDetails: ''
     };
+    this.currentPage = 1;
+    this.loadQuotes();
   }
 }

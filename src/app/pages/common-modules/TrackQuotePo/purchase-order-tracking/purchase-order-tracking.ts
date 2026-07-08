@@ -33,7 +33,11 @@ export class PurchaseOrderTracking implements OnInit {
   };
 
   rows: PurchaseOrderTrackingModel[] = [];
-  allRows: PurchaseOrderTrackingModel[] = [];
+
+  currentPage = 1;
+  pageSize = 10;
+  totalElements = 0;
+  totalPages = 0;
 
   columns = [
     { header: 'PO ID', field: 'poId' },
@@ -68,13 +72,25 @@ export class PurchaseOrderTracking implements OnInit {
 
   loadQuotes(): void {
     console.log('[PurchaseOrderTracking] loadQuotes called. Fetching list...');
-    this.countryHeadService.getPOTrackingList().subscribe({
-      next: (data: any[]) => {
-        console.log('[PurchaseOrderTracking] Successfully loaded data:', data);
-        this.allRows = data.map((q: any, i: number) => {
+    this.countryHeadService.getPOTrackingListPaginated(
+      this.currentPage - 1,
+      this.pageSize,
+      this.searchModel.poId ? Number(this.searchModel.poId) : undefined,
+      this.searchModel.poStatus ? Number(this.searchModel.poStatus) : undefined,
+      this.searchModel.distributorName || undefined,
+      this.searchModel.productDetails || undefined
+    ).subscribe({
+      next: (res: any) => {
+        console.log('[PurchaseOrderTracking] Successfully loaded data:', res);
+        const data = res.content || [];
+        this.totalElements = res.totalElements || 0;
+        this.totalPages = res.totalPages || 0;
+
+        this.rows = data.map((q: any, i: number) => {
+          const globalSno = (this.currentPage - 1) * this.pageSize + i + 1;
           return {
             ...q,
-            sno: i + 1,
+            sno: globalSno,
             discount: q.discount !== null && q.discount !== undefined ? q.discount + '%' : '0%',
             documents: q.poDocuments ? String(q.poDocuments) : '',
             finalApprover: q.finalApprover ? String(q.finalApprover) : '',
@@ -82,7 +98,6 @@ export class PurchaseOrderTracking implements OnInit {
             status: this.mapStatus(q.status)
           };
         });
-        this.rows = [...this.allRows];
         console.log('[PurchaseOrderTracking] Mapped rows:', this.rows);
       },
       error: (err) => {
@@ -118,24 +133,7 @@ export class PurchaseOrderTracking implements OnInit {
   }
 
   get filteredRows(): any[] {
-    const poId = this.searchModel.poId?.trim().toLowerCase();
-    const distributorName = this.searchModel.distributorName?.trim().toLowerCase();
-    const productDetails = this.searchModel.productDetails?.trim().toLowerCase();
-    const poStatus = this.searchModel.poStatus?.trim().toLowerCase();
-
-    return this.rows.filter(row => {
-      const rowPoId = row.poId ? String(row.poId).toLowerCase() : '';
-      const rowDistributor = row.distributor ? row.distributor.toLowerCase() : '';
-      const rowProduct = row.productDetails ? row.productDetails.toLowerCase() : '';
-      const rowStatus = row.status ? String(row.status).toLowerCase() : '';
-
-      const matchesPoId = !poId || rowPoId.includes(poId);
-      const matchesDistributor = !distributorName || rowDistributor.includes(distributorName);
-      const matchesProduct = !productDetails || rowProduct.includes(productDetails);
-      const matchesStatus = !poStatus || rowStatus.includes(poStatus);
-
-      return matchesPoId && matchesDistributor && matchesProduct && matchesStatus;
-    });
+    return this.rows;
   }
 
   onSearchChange(event: { poId?: string; distributorName?: string; productDetails?: string; poStatus?: string }): void {
@@ -145,6 +143,8 @@ export class PurchaseOrderTracking implements OnInit {
       productDetails: event.productDetails || '',
       poStatus: event.poStatus || ''
     };
+    this.currentPage = 1;
+    this.loadQuotes();
   }
 
   onAdd(): void {
@@ -160,11 +160,14 @@ export class PurchaseOrderTracking implements OnInit {
   }
 
   onPageChange(event: number): void {
-    // Handle page change logic
+    this.currentPage = event;
+    this.loadQuotes();
   }
 
   onPageSizeChange(event: number): void {
-    // Handle page size change logic
+    this.pageSize = event;
+    this.currentPage = 1;
+    this.loadQuotes();
   }
 
   onReset(): void {
@@ -174,5 +177,7 @@ export class PurchaseOrderTracking implements OnInit {
       productDetails: '',
       poStatus: ''
     };
+    this.currentPage = 1;
+    this.loadQuotes();
   }
 }

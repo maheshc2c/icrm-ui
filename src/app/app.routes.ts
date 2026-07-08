@@ -742,37 +742,37 @@ export const routes: Routes = [
       },
       {
         path: 'country-head/dashboard/track-quotes',
-        loadComponent: () => import('./pages/ContryHead/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },
       {
         path: 'country-head/track-quotes',
-        loadComponent: () => import('./pages/ContryHead/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },
       {
         path: 'country-head/dashboard/track-po',
-        loadComponent: () => import('./pages/ContryHead/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },
       {
         path: 'country-head/track-po',
-        loadComponent: () => import('./pages/ContryHead/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },
       {
         path: 'country-head/dashboard/track-purchase-order',
-        loadComponent: () => import('./pages/ContryHead/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },
       {
         path: 'country-head/track-purchase-order',
-        loadComponent: () => import('./pages/ContryHead/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },

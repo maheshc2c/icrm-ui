@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { AuthService } from './auth-service';
 import { QuoteTrackingModel } from '../models/quote-tracking.model';
 import { PurchaseOrderTrackingModel } from '../models/purchase-order-tracking.model';
@@ -10,6 +10,8 @@ import { PurchaseOrderTrackingModel } from '../models/purchase-order-tracking.mo
 })
 export class CountryHeadService {
   private baseUrl = 'http://localhost:8080/CountryHead';
+
+  private commonUrl = 'http://localhost:8080/track-quote-po';
 
   constructor(
     private http: HttpClient,
@@ -26,36 +28,123 @@ export class CountryHeadService {
       : new HttpHeaders({ 'Content-Type': 'application/json' });
   }
 
-  getQuoteList(): Observable<QuoteTrackingModel[]> {
-    return this.http.get<QuoteTrackingModel[]>(`${this.baseUrl}/Track-quotes-view`, {
+  getQuoteListPaginated(
+    page: number,
+    size: number,
+    quoteId?: string,
+    customerName?: string,
+    opportunityDetails?: string,
+    search?: string
+  ): Observable<any> {
+    const requestBody = {
+      quoteId: quoteId || null,
+      customerName: customerName || null,
+      opportunityDetails: opportunityDetails || null,
+      search: search || null,
+      pagination: {
+        pageNumber: page,
+        pageSize: size,
+        sortBy: 'quoteId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.commonUrl}/view-quotes`, requestBody, {
       headers: this.getAuthHeaders()
     });
+  }
+
+  getPOTrackingListPaginated(
+    page: number,
+    size: number,
+    poId?: number,
+    status?: number,
+    distributor?: string,
+    product?: string
+  ): Observable<any> {
+    const requestBody = {
+      poId: poId || null,
+      status: status !== undefined && status !== null ? status : null,
+      distributor: distributor || null,
+      product: product || null,
+      pagination: {
+        pageNumber: page,
+        pageSize: size,
+        sortBy: 'purchaseOrderId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.commonUrl}/view-pos`, requestBody, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getQuoteList(): Observable<QuoteTrackingModel[]> {
+    const requestBody = {
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: 'quoteId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.commonUrl}/view-quotes`, requestBody, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => res.content || [])
+    );
   }
 
   getPOTrackingList(): Observable<PurchaseOrderTrackingModel[]> {
-    return this.http.get<PurchaseOrderTrackingModel[]>(`${this.baseUrl}/purchase-orders-tracking-view`, {
+    const requestBody = {
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: 'purchaseOrderId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.commonUrl}/view-pos`, requestBody, {
       headers: this.getAuthHeaders()
-    });
+    }).pipe(
+      map(res => res.content || [])
+    );
   }
 
   searchQuotes(search: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/Track-quotes-search-quoteID-customer-opp`, {
-      headers: this.getAuthHeaders(),
-      params: new HttpParams().set('search', search)
-    });
+    const requestBody = {
+      search: search || null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: 'quoteId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.commonUrl}/view-quotes`, requestBody, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => res.content || [])
+    );
   }
 
   searchPO(poId?: number, status?: number, distributor?: string, product?: string): Observable<PurchaseOrderTrackingModel[]> {
-    let httpParams = new HttpParams();
-    if (poId !== undefined && poId !== null) httpParams = httpParams.set('poId', poId.toString());
-    if (status !== undefined && status !== null) httpParams = httpParams.set('status', status.toString());
-    if (distributor) httpParams = httpParams.set('distributor', distributor);
-    if (product) httpParams = httpParams.set('product', product);
-
-    return this.http.get<PurchaseOrderTrackingModel[]>(`${this.baseUrl}/purchase-orders/search`, {
-      headers: this.getAuthHeaders(),
-      params: httpParams
-    });
+    const requestBody = {
+      poId: poId || null,
+      status: status !== undefined && status !== null ? status : null,
+      distributor: distributor || null,
+      product: product || null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: 'purchaseOrderId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.commonUrl}/view-pos`, requestBody, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => res.content || [])
+    );
   }
 
   getQuoteTrackingList(params?: { quoteId?: string; customerName?: string; opportunityDetails?: string }): Observable<any> {
