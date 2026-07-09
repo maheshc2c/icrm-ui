@@ -9,10 +9,11 @@
     <input
       *ngIf="field.type !== 'select' && field.type !== 'native-select'"
       class="form-control"
+      [name]="field.key"
       [type]="field.type || 'text'"
       [placeholder]="field.placeholder"
-      [(ngModel)]="values[field.key]"
-      (input)="onInput(field.key)" />
+      [value]="values[field.key] || ''"
+      (input)="onTextInput(field.key, $event)" />
 
     <!-- 🔹 NATIVE DROPDOWN -->
     <select *ngIf="field.type === 'native-select'" 
