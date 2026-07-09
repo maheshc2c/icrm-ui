@@ -51,25 +51,25 @@ export class Demo implements OnInit {
   }
 
   loadDropdowns(): void {
-    this.adminservice.getAllCategoriesForSearch().subscribe({
-      next: (data: any[]) => {
-        const field = this.searchFields.find(f => f.key === 'categoryName');
-        if (field) {
-          field.options = data.map(c => ({ label: c.categoryName, value: c.categoryName }));
-        }
-      },
-      error: (err) => console.error('Failed to load categories dropdown', err)
-    });
+      this.adminservice.getAllCategoriesForSearch().subscribe({
+        next: (data: any[]) => {
+          const field = this.searchFields.find(f => f.key === 'categoryId');
+          if (field) {
+            field.options = data.map(c => ({ label: c.categoryName, value: c.categoryId }));
+          }
+        },
+        error: (err) => console.error('Failed to load categories dropdown', err)
+      });
 
-    this.adminservice.getAllGroupsForSearch().subscribe({
-      next: (data: any[]) => {
-        const field = this.searchFields.find(f => f.key === 'groupName');
-        if (field) {
-          field.options = data.map(g => ({ label: g.groupName, value: g.groupName }));
-        }
-      },
-      error: (err) => console.error('Failed to load groups dropdown', err)
-    });
+      this.adminservice.getAllGroupsForSearch().subscribe({
+        next: (data: any[]) => {
+          const field = this.searchFields.find(f => f.key === 'segmentId');
+          if (field) {
+            field.options = data.map(g => ({ label: g.groupName, value: g.groupId }));
+          }
+        },
+        error: (err) => console.error('Failed to load groups dropdown', err)
+      });
   }
 
   onRefresh(): void {
@@ -82,41 +82,34 @@ export class Demo implements OnInit {
       next: (data: any[]) => {
 
         // Sort descending by ID to show latest first
-        data.sort((a: any, b: any) => (b.demoProductDetailId ?? 0) - (a.demoProductDetailId ?? 0));
+        data.sort((a: any, b: any) => (b.demoId ?? 0) - (a.demoId ?? 0));
 
         this.fullRows = data;
 
         this.rows = data.map((c: any, index: number) => ({
   sno: index + 1,
-  demoProductDetailId: c.demoProductDetailId,
-  demoProductDetailStatus: c.demoProductDetailStatus,
+  demoProductDetailId: c.demoId,
+  demoProductDetailStatus: 1,
  
 
-  productName: c.productName ?? '-',
+  productName: c.product ?? '-',
 
-  // ✅ FIXED
   demoProductDetailSerialNumber:
-    c.demoProductDetailSerialNumber ??
-    c.serialNo ??
-    c.serialNumber ??       // 🔥 ADD THIS
-  c.demoSerialNumber ??   // 🔥 ADD THIS
-  c.productSerialNumber ??// 🔥 ADD THIS
+    c.serialNumber ??       
     '-',
 
-  // ✅ FIXED
   demoProductDetailLocation:
-    c.demoProductDetailLocation ??
     c.location ??
     '-',
 
-  cityName: c.cityName ?? '-',
-  regionName: c.regionName ?? c.region ?? '-',
-  branchName: c.branchName ?? '-'
+  cityName: c.city ?? '-',
+  regionName: c.region ?? '-',
+  branchName: c.branch ?? '-'
 }));
 
         // dropdown population
-        this.buildDropdownOptions(data, 'productName', (d: any) => d.productName);
-        this.buildDropdownOptions(data, 'regionName', (d: any) => d.regionName);
+        this.buildDropdownOptions(data, 'productId', (d: any) => ({ label: d.product, value: d.productId }));
+        this.buildDropdownOptions(data, 'regionId', (d: any) => ({ label: d.region, value: d.regionId }));
       }
     });
   }
@@ -166,34 +159,35 @@ onDelete(row: any) {
   private buildDropdownOptions(
     data: any[],
     key: string,
-    extractor: (item: any) => string
+    extractor: (item: any) => { label: string, value: number }
   ): void {
-
-    const unique = new Set<string>();
+    const map = new Map<number, string>();
 
     data.forEach((item: any) => {
-      const value = extractor(item);
-      if (value) unique.add(value);
+      const extracted = extractor(item);
+      if (extracted.label && extracted.value) {
+        map.set(extracted.value, extracted.label);
+      }
     });
 
     const field = this.searchFields.find(f => f.key === key);
 
     if (field) {
-      field.options = Array.from(unique).map(v => ({
-        label: v,
-        value: v
+      field.options = Array.from(map.entries()).map(([val, lbl]) => ({
+        label: lbl,
+        value: val
       }));
     }
   }
 
   // ================= SEARCH FIELDS =================
   searchFields: SearchFieldConfig[] = [
-    { key: 'categoryName', label: 'Category', type: 'select', placeholder: 'Category', options: [] },
-    { key: 'groupName', label: 'Segment', type: 'select', placeholder: 'Segment', options: [] },
-    { key: 'productName', label: 'Product', type: 'select', placeholder: 'Product', options: [] },
+    { key: 'categoryId', label: 'Category', type: 'select', placeholder: 'Category', options: [] },
+    { key: 'segmentId', label: 'Segment', type: 'select', placeholder: 'Segment', options: [] },
+    { key: 'productId', label: 'Product', type: 'select', placeholder: 'Product', options: [] },
     { key: 'location', label: 'Location', type: 'text', placeholder: 'Location' },
-    { key: 'serialNo', label: 'Serial Number', type: 'text', placeholder: 'Serial Number' },
-    { key: 'regionName', label: 'Region', type: 'select', placeholder: 'Region', options: [] }
+    { key: 'serialNumber', label: 'Serial Number', type: 'text', placeholder: 'Serial Number' },
+    { key: 'regionId', label: 'Region', type: 'select', placeholder: 'Region', options: [] }
   ];
 
   // ================= SEARCH =================
@@ -300,25 +294,29 @@ executeSearch(filters: any): void {
   this.adminservice.searchDemoPaginated(filters, this.currentPage - 1, this.pageSize).subscribe({
     next: (response: any) => {
       let results: any[] = [];
-      if (response && response.content) {
-        results = response.content;
-        this.totalPages = response.totalPages || 1;
-        this.totalItems = response.totalElements || 0;
+      const actualData = response.data || response;
+      
+      if (actualData && actualData.content) {
+        results = actualData.content;
+        this.totalPages = response.totalPages || actualData.totalPages || 1;
+        this.totalItems = response.totalElements || actualData.totalElements || 0;
+      } else if (Array.isArray(actualData)) {
+        results = actualData;
       } else {
-        results = response;
+        results = [];
       }
 
       this.rows = results.map((c: any, index: number) => {
         return {
           sno: ((this.currentPage - 1) * this.pageSize) + index + 1,
-          demoProductDetailId: c.demoProductDetailId ?? null,
-          demoProductDetailStatus: c.demoProductDetailStatus ?? 1,
-          productName: c.productName ?? '-',
-          demoProductDetailSerialNumber: c.demoProductDetailSerialNumber ?? c.serialNo ?? '-',
-          demoProductDetailLocation: c.demoProductDetailLocation ?? c.location ?? '-',
-          cityName: c.cityName ?? '-',
-          branchName: c.branchName ?? '-',
-          regionName: c.regionName ?? '-'
+          demoProductDetailId: c.demoId ?? null,
+          demoProductDetailStatus: 1,
+          productName: c.product ?? '-',
+          demoProductDetailSerialNumber: c.serialNumber ?? '-',
+          demoProductDetailLocation: c.location ?? '-',
+          cityName: c.city ?? '-',
+          branchName: c.branch ?? '-',
+          regionName: c.region ?? '-'
         };
       });
     },
@@ -347,13 +345,24 @@ executeSearch(filters: any): void {
 
   // ================= DOWNLOAD =================
   onImport(): void {
+    const filters = this.currentFilters || {};
+    
+    const body = {
+      categoryId: filters.categoryId || null,
+      segmentId: filters.segmentId || null,
+      productId: filters.productId || null,
+      location: filters.location || null,
+      serialNumber: filters.serialNumber || null,
+      regionId: filters.regionId || null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000000,
+        sortBy: "demoId",
+        sortOrder: "DESC"
+      }
+    };
 
-    if (!this.fullRows.length) {
-      alert('No data available');
-      return;
-    }
-
-    this.adminservice.downloadDemo(this.fullRows).subscribe(blob => {
+    this.adminservice.downloadDemo(body).subscribe(blob => {
 
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
