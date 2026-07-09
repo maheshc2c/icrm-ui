@@ -110,23 +110,4 @@ export class CustomerInteractionCenterService {
     );
   }
 
-  getDistributors(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/SalesEngineer/distributors/dropdown`, { headers: this.getAuthHeaders() });
-  }
-
-  getSiteReadiness(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/SalesEngineer/site-readiness/dropdown`, { headers: this.getAuthHeaders() });
-  }
-
-  getLeadById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/SalesEngineer/salesmanager/lead/${id}`, { headers: this.getAuthHeaders() });
-  }
-
-  getInstalledBase(customerId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/adminMarketing/installedBase/${customerId}`, { headers: this.getAuthHeaders() });
-  }
-
-  editLead(lead: any): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/SalesEngineer/lead/update/${lead.leadId}`, lead, { headers: this.getAuthHeaders() });
-  }
 }

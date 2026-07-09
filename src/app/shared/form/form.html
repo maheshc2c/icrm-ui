@@ -58,21 +58,11 @@
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
                 [name]="field.name"
                 [id]="'form-field-' + field.name">
-
- 
-                  <ul class="options-list">
-                    <li class="option-item" (click)="selectSearchableOption(field, {label: field.placeholder || 'Select', value: null})">
-                      -- {{ field.placeholder || 'Select' }} --
-                    </li>
-                    <li class="option-item"
-                        *ngFor="let opt of (field._filtered || field.options)"
-                        (click)="selectSearchableOption(field, opt)">
-                      {{ opt.label }}
-                    </li>
-                    <li class="no-results" *ngIf="(field._filtered || field.options)?.length === 0">No results found</li>
-                  </ul>
-                </div>
-              </div>
+                <option [ngValue]="null">-- {{ field.placeholder || 'Select' }} --</option>
+                <option *ngFor="let opt of (field._filtered || field.options)" [value]="opt.value">
+                  {{ opt.label }}
+                </option>
+              </select>
 
  
               <select *ngIf="field.type === 'select-dynamic'"

@@ -318,7 +318,4 @@ export class Form implements OnChanges {
     this.cancelForm.emit();
   }
 
-  onFieldInput(fieldName: string) {
-    this.revalidateField(fieldName);
-  }
 }

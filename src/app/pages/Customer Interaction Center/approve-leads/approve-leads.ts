@@ -74,9 +74,6 @@ export class ApproveLeads implements OnInit {
     }
   ];
 
-  onDropdownSearch(event: any) {
-    // handled by dynamicLoad
-  }
 
   /* TABLE DATA */
   rows: any[] = [];
