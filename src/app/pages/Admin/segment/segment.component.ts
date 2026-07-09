@@ -148,12 +148,12 @@ export class SegmentComponent implements OnInit {
  
 onImport() {
  
-  if (!this.fullRows || this.fullRows.length === 0) {
+  if (!this.rows || this.rows.length === 0) {
     alert('No data available');
     return;
   }
  
-  this.adminservice.downloadGroup(this.fullRows).subscribe({
+  this.adminservice.downloadGroup(this.rows).subscribe({
     next: (blob: Blob) => {
  
       const url = window.URL.createObjectURL(blob);

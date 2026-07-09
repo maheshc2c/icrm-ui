@@ -66,6 +66,14 @@ export class Userservice {
     );
   }
 
+  downloadUsers(searchDTO: any): Observable<Blob> {
+    return this.http.post(
+      `${this.baseUrl}/user/download`,
+      searchDTO,
+      { headers: this.getAuthHeaders(), responseType: 'blob' }
+    );
+  }
+
   activateUser(userId: number): Observable<any> {
     return this.http.put<any>(
       `${this.baseUrl}/user/activate/${userId}`,

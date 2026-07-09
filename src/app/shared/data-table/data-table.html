@@ -169,8 +169,16 @@
                             </button>
                           }
 
-                       
-                          @if (showStatusToggle && getRowStatus(row) !== undefined) {
+                          @if (showEdit && showEditButton) {
+                            <button
+                              class="btn btn-sm btn-warning edit-btn"
+                              (click)="edit(row)"
+                              title="Edit">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                          }
+
+                          @if (showAssign) {
                             <button
                               class="btn btn-sm btn-primary assign-btn"
                               (click)="assign(row)"

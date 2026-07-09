@@ -183,8 +183,8 @@ onImport() {
 
   this.adminservice.downloadSpecialityExcel(
     keyword,
-    this.currentPage - 1,
-    this.pageSize,
+    0,
+    1000000,
     'specialityId',
   'DESC'
   ).subscribe({
