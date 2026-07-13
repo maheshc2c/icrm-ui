@@ -85,7 +85,7 @@ export class OpenLeads implements OnInit {
   loadLeads(): void {
     this.leadService.getOpenLeads(this.currentPage - 1, this.pageSize).subscribe({
       next: (data: any) => {
-        const leadsData = data.content || [];
+        const leadsData = data.content || (Array.isArray(data) ? data : []);
         this.totalElements = data.totalElements || leadsData.length;
         
         this.rows = leadsData.map((item: any) => ({
