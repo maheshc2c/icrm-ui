@@ -164,7 +164,7 @@ export class AddleadComponent implements OnInit {
     { name: 'relationshipId', label: 'Relationship with Decision Maker', type: 'select', options: [], required: true },
     // Row 7
     { name: 'expectedInvoicingDate', label: 'Expected Invoice Date', type: 'date' },
-    { name: 'status', label: 'Opportunity stages', type: 'select', options: [], required: true },
+    { name: 'status', label: 'Status', type: 'select', options: [], required: true },
     // Row 8
     { name: 'competitors', label: 'Competitors', type: 'text' }
   ];
@@ -477,20 +477,20 @@ export class AddleadComponent implements OnInit {
         }
 
         this.leadForm = {
-          source: data.sourceName || '',
-          campaign: data.campaignId || '',
-          customer: data.customerId || '',
-          rapportWithCustomer: data.relationshipName || '',
-          contact1: data.contactId || '',
-          contact2: data.contact2Id || '',
-          purchasePotentialRs: data.leadPurchasePotential ? data.leadPurchasePotential.toString() : '',
+          source: data.sourceId ? data.sourceId.toString() : '',
+          campaign: data.campaignId ? data.campaignId.toString() : '',
+          customer: data.customerId ? data.customerId.toString() : '',
+          rapportWithCustomer: data.relationshipId ? data.relationshipId.toString() : '',
+          contact1: data.contactId ? data.contactId.toString() : '',
+          contact2: data.contact2Id ? data.contact2Id.toString() : '',
+          purchasePotentialRs: data.purchasePotential ? data.purchasePotential.toString() : (data.leadPurchasePotential ? data.leadPurchasePotential.toString() : ''),
           purchasePotential: data.leadCmdLine3 || '',
-          siteReadiness: data.siteReadinessName || '',
-          visitRequirement: data.leadVisitRequirement === 1 ? 'Yes' : 'No',
-          resourceRequirement: data.leadResourceRequirement === 1 ? 'Yes' : 'No',
-          distributor: data.distributorName || '',
-          commentLine1: data.leadCmdLine1 || '',
-          commentLine2: data.leadCmdLine2 || ''
+          siteReadiness: data.siteReadinessId ? data.siteReadinessId.toString() : '',
+          visitRequirement: data.visitRequirement === true ? 'Yes' : (data.leadVisitRequirement === 1 ? 'Yes' : 'No'),
+          resourceRequirement: data.resourceRequirement === true ? 'Yes' : (data.leadResourceRequirement === 1 ? 'Yes' : 'No'),
+          distributor: data.distributorId ? data.distributorId.toString() : '',
+          commentLine1: data.remarks1 || data.leadCmdLine1 || '',
+          commentLine2: data.remarks2 || data.leadCmdLine2 || ''
         };
         
         // Filter contacts specifically for this loaded customer if contact data is already fetched
@@ -520,7 +520,10 @@ export class AddleadComponent implements OnInit {
       ...data.map((item: any) => {
         if (typeof item === 'string') return { label: item, value: item };
         const label = item[labelKey] || item.name || 'Unknown';
-        const value = (valueKey && item[valueKey]) || item.id || label;
+        let value = (valueKey && item[valueKey]) || item.id || label;
+        if (value !== null && value !== undefined) {
+           value = value.toString();
+        }
         return { label, value };
       })
     ];
@@ -880,23 +883,35 @@ export class AddleadComponent implements OnInit {
         this.isEditOppMode = true;
         this.editOppId = oppId;
         
-        // Map the full API data back to oppModel
-        const extractId = (val: any) => {
-          if (!val || val === '0' || val === 0) return '';
-          if (typeof val === 'object') return val.contactId || val.id || val.value || val.contact_id || '';
-          return val;
-        };
+          // Map the full API data back to oppModel
+          const extractId = (val: any) => {
+            if (!val || val === '0' || val === 0) return '';
+            if (typeof val === 'object') return val.contactId || val.id || val.value || val.contact_id || val.fundSourceID || val.fundSourceId || val.relationshipId || val.categoryId || val.groupId || val.productId || val.oppStatusId || val.stageId || '';
+            return val;
+          };
+
+          const formatDate = (dateVal: any) => {
+            if (!dateVal) return '';
+            if (typeof dateVal === 'string') return dateVal;
+            if (Array.isArray(dateVal) && dateVal.length >= 3) {
+              const pad = (n: number) => n < 10 ? '0'+n : n;
+              return `${dateVal[0]}-${pad(dateVal[1])}-${pad(dateVal[2])}`;
+            }
+            try { return new Date(dateVal).toISOString().split('T')[0]; } catch(e) { return ''; }
+          };
+
+        const oppProd = fullOpp.opportunityProducts && fullOpp.opportunityProducts.length > 0 ? fullOpp.opportunityProducts[0].product : null;
 
         this.oppModel = {
-          productCategoryId: extractId(fullOpp.productCategoryId || fullOpp.ProductCategoryId || fullOpp.categoryId || fullOpp.CategoryId),
-          productGroupId: extractId(fullOpp.productGroupId || fullOpp.ProductGroupId || fullOpp.groupId || fullOpp.GroupId),
-          productId: extractId(fullOpp.productId || fullOpp.ProductId),
-          quantity: fullOpp.oppRequiredQuantity || fullOpp.OppRequiredQuantity || fullOpp.qty || fullOpp.quantity || null,
-          fundSourceId: extractId(fullOpp.oppFundSourceId || fullOpp.OppFundSourceId || fullOpp.fundSourceId || fullOpp.FundSourceId),
-          relationshipId: extractId(fullOpp.oppRelationshipId || fullOpp.OppRelationshipId || fullOpp.relationshipId || fullOpp.RelationshipId),
-          expectedOrderConclusion: fullOpp.oppExpectedOrderConclusion ? new Date(fullOpp.oppExpectedOrderConclusion).toISOString().split('T')[0] : '',
-          status: extractId(fullOpp.oppStatus || fullOpp.OppStatus || fullOpp.status || fullOpp.Status),
-          expectedInvoicingDate: fullOpp.oppExpectedInvoicingDate ? new Date(fullOpp.oppExpectedInvoicingDate).toISOString().split('T')[0] : '',
+          productCategoryId: extractId(fullOpp.productCategoryId || fullOpp.ProductCategoryId || fullOpp.categoryId || fullOpp.CategoryId || (oppProd && oppProd.group ? oppProd.group.productCategoryId : null)),
+          productGroupId: extractId(fullOpp.productGroupId || fullOpp.ProductGroupId || fullOpp.groupId || fullOpp.GroupId || (oppProd && oppProd.group ? oppProd.group.groupId : null)),
+          productId: extractId(fullOpp.productId || fullOpp.ProductId || (oppProd ? oppProd.productId || oppProd : null)),
+          quantity: fullOpp.requiredQuantity || fullOpp.oppRequiredQuantity || fullOpp.OppRequiredQuantity || fullOpp.qty || fullOpp.quantity || null,
+          fundSourceId: extractId(fullOpp.fundSource || fullOpp.oppFundSourceId || fullOpp.OppFundSourceId || fullOpp.fundSourceId || fullOpp.FundSourceId),
+          relationshipId: extractId(fullOpp.relationship || fullOpp.oppRelationshipId || fullOpp.OppRelationshipId || fullOpp.relationshipId || fullOpp.RelationshipId),
+          expectedOrderConclusion: formatDate(fullOpp.expectedOrderConclusion || fullOpp.oppExpectedOrderConclusion),
+          status: extractId(fullOpp.status || fullOpp.oppStatus || fullOpp.OppStatus || fullOpp.Status),
+          expectedInvoicingDate: formatDate(fullOpp.expectedInvoicingDate || fullOpp.oppExpectedInvoicingDate),
           decisionMaker1: extractId(fullOpp.oppDecisionMaker1 || fullOpp.oppDecisionMaker1Id || fullOpp.decisionMaker1Id || fullOpp.DecisionMaker1Id || fullOpp.OppDecisionMaker1 || fullOpp.decisionMaker1 || fullOpp.DecisionMaker1 || fullOpp.contact1),
           decisionMaker2: extractId(fullOpp.oppDecisionMaker2 || fullOpp.oppDecisionMaker2Id || fullOpp.decisionMaker2Id || fullOpp.DecisionMaker2Id || fullOpp.OppDecisionMaker2 || fullOpp.decisionMaker2 || fullOpp.DecisionMaker2 || fullOpp.contact2),
           decisionMaker3: extractId(fullOpp.oppDecisionMaker3 || fullOpp.oppDecisionMaker3Id || fullOpp.decisionMaker3Id || fullOpp.DecisionMaker3Id || fullOpp.OppDecisionMaker3 || fullOpp.decisionMaker3 || fullOpp.DecisionMaker3 || fullOpp.contact3),
@@ -1305,13 +1320,42 @@ export class AddleadComponent implements OnInit {
     }
   }
 
+  onDownloadQuote(quoteId: string | number): void {
+    this.leadservice.downloadQuotePdf(quoteId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Quote_${quoteId}.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Failed to download quote PDF:', err)
+    });
+  }
+
+  onViewQuote(quoteId: string | number): void {
+    this.leadservice.downloadQuotePdf(quoteId).subscribe({
+      next: (blob) => {
+        const fileURL = URL.createObjectURL(blob);
+        window.open(fileURL, '_blank');
+      },
+      error: (err) => console.error('Failed to view quote PDF:', err)
+    });
+  }
+
   openAddQuoteModal(): void {
     this.showAddQuoteModal = true;
     this.quoteForm = { opportunityId: '', billingInfoId: '', dealerCommission: '', companyId: '', dealerId: '' };
     
     if (this.leadId) {
+      console.log('openAddQuoteModal: fetching opportunities for leadId:', this.leadId);
       this.leadservice.getOpportunitiesByLeadId(this.leadId).subscribe({
-        next: (data) => this.quoteOpportunities = data || [],
+        next: (data) => {
+          console.log('openAddQuoteModal: fetched opportunities:', data);
+          this.quoteOpportunities = data || [];
+          this.cdr.detectChanges();
+        },
         error: (err) => console.error('Failed to load opportunities for quote:', err)
       });
 
@@ -1345,7 +1389,7 @@ export class AddleadComponent implements OnInit {
     }
     
     const payload = {
-      opportunityId: Number(this.quoteForm.opportunityId),
+      opportunityIds: [Number(this.quoteForm.opportunityId)],
       billingInfoId: Number(this.quoteForm.billingInfoId),
       dealerCommission: this.quoteForm.dealerCommission ? Number(this.quoteForm.dealerCommission) : 0,
       dealerId: Number(this.quoteForm.dealerId),

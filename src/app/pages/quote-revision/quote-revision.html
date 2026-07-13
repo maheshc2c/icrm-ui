@@ -32,84 +32,84 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let product of quotes" style="border-bottom: 1px solid #dee2e6;">
-              <td style="padding: 12px; text-align: center; border-left: 1px solid #dee2e6;">
-                <input type="checkbox" checked style="cursor: pointer;">
-              </td>
-              <td style="padding: 12px; color: #495057; border-left: 1px solid #dee2e6; font-weight: 500;">
-                <i class="fa-solid fa-circle-check" style="color: #28a745; margin-right: 6px;"></i>{{ product.productName }}
-              </td>
-              <td style="padding: 0; border-left: 1px solid #dee2e6;">
-                <input type="text" [(ngModel)]="product.description" style="width: 100%; height: 100%; padding: 12px; border: none; outline: none; background: transparent; font-size: 13px; color: #495057;">
-              </td>
-              <td style="padding: 12px; text-align: center; color: #495057; border-left: 1px solid #dee2e6; font-weight: 500;">
-                {{ product.editableQuantity }}
-              </td>
-              <td style="padding: 12px; text-align: center; color: #495057; border-left: 1px solid #dee2e6; font-weight: 500;">
-                {{ product.mrp | number:'1.2-2' }}
-              </td>
-              <td style="padding: 8px 12px; border-left: 1px solid #dee2e6; vertical-align: middle;">
-                <div style="display: flex; border: 1px solid #ced4da; border-radius: 2px; overflow: hidden; background: #fff;">
-                  <select [(ngModel)]="product.discountType" style="padding: 6px 8px; border: none; border-right: 1px solid #ced4da; background: transparent; outline: none; font-size: 12px; color: #495057; cursor: pointer; width: 70px;">
-                    <option value="in %">In %</option>
-                    <option value="Flat">Flat</option>
-                  </select>
-                  <input type="number" [(ngModel)]="product.editableDiscount" style="width: 100%; padding: 6px 8px; border: none; background: transparent; outline: none; font-size: 12px; color: #495057;">
-                </div>
-              </td>
-              <td style="padding: 12px; text-align: center; color: #495057; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6; font-weight: 500;">
-                {{ product.discountedValue }}
-              </td>
-            </tr>
-            <tr style="border-bottom: 1px solid #dee2e6; background-color: #fff;">
-               <td style="padding: 12px; border-left: 1px solid #dee2e6;"></td>
-               <td style="padding: 12px; border-left: 1px solid #dee2e6; font-weight: 500; vertical-align: top;">
-                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #495057;">
-                   <input type="checkbox" [(ngModel)]="showFreeSupply" style="cursor: pointer;"> Free Supply Items
-                 </label>
-               </td>
-               <td colspan="5" style="padding: 12px; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;">
-                 
-                 <!-- Nested Table for Free Supply Items -->
-                 <table *ngIf="showFreeSupply" style="width: 100%; max-width: 650px; border-collapse: collapse; text-align: left; font-size: 13px; border: 1px solid #dee2e6;">
-                   <thead style="background-color: #7fa6c8; color: white;">
-                     <tr>
-                       <th style="padding: 10px 15px; font-weight: 500; border-right: 1px solid white;">Free Supply Item/s</th>
-                       <th style="padding: 10px 15px; font-weight: 500; border-right: 1px solid white; width: 120px;">Qty</th>
-                       <th style="padding: 10px 15px; width: 80px;"></th>
-                     </tr>
-                   </thead>
-                   <tbody>
-                     <tr *ngFor="let item of freeSupplyItems; let i = index" style="background-color: #fff; border-bottom: 1px solid #dee2e6;">
-                       <td style="padding: 10px; border-right: 1px solid #dee2e6;">
-                         <select [(ngModel)]="item.product" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
-                           <option value="">Select Product</option>
-                           <option value="Parking E2E ()">Parking E2E ()</option>
-                           <option value="4545 ( SAP Support.. )">4545 ( SAP Support.. )</option>
-                           <option value="101 ( Defense )">101 ( Defense )</option>
-                         </select>
-                       </td>
-                       <td style="padding: 10px; border-right: 1px solid #dee2e6;">
-                         <input type="text" [(ngModel)]="item.qty" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
-                       </td>
-                       <td style="padding: 10px; text-align: center;">
-                         <button (click)="removeFreeSupplyItem(i)" style="background: #e74c3c; color: white; border: none; width: 30px; height: 26px; border-radius: 4px; display: inline-flex; justify-content: center; align-items: center; cursor: pointer;">
-                           <i class="fas fa-times" style="font-size: 12px;"></i>
-                         </button>
-                       </td>
-                     </tr>
-                     <tr style="background-color: #f8f9fa;">
-                       <td colspan="3" style="padding: 10px;">
-                         <button (click)="addFreeSupplyItem()" style="background: #4285f4; color: white; border: none; width: 30px; height: 26px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; cursor: pointer;">
-                           <i class="fas fa-plus" style="font-size: 12px;"></i>
-                         </button>
-                       </td>
-                     </tr>
-                   </tbody>
-                 </table>
-
-               </td>
-            </tr>
+            <ng-container *ngFor="let product of quotes">
+              <tr style="border-bottom: 1px solid #dee2e6;">
+                <td style="padding: 12px; text-align: center; border-left: 1px solid #dee2e6;">
+                  <input type="checkbox" [(ngModel)]="product.selected" style="cursor: pointer;">
+                </td>
+                <td style="padding: 12px; color: #495057; border-left: 1px solid #dee2e6; font-weight: 500;">
+                  <i class="fa-solid fa-circle-check" style="color: #28a745; margin-right: 6px;"></i>{{ product.productName }}
+                </td>
+                <td style="padding: 0; border-left: 1px solid #dee2e6;">
+                  <input type="text" [(ngModel)]="product.description" style="width: 100%; height: 100%; padding: 12px; border: none; outline: none; background: transparent; font-size: 13px; color: #495057;">
+                </td>
+                <td style="padding: 12px; text-align: center; color: #495057; border-left: 1px solid #dee2e6; font-weight: 500;">
+                  {{ product.editableQuantity }}
+                </td>
+                <td style="padding: 12px; text-align: center; color: #495057; border-left: 1px solid #dee2e6; font-weight: 500;">
+                  {{ product.mrp | number:'1.2-2' }}
+                </td>
+                <td style="padding: 8px 12px; border-left: 1px solid #dee2e6; vertical-align: middle;">
+                  <div style="display: flex; border: 1px solid #ced4da; border-radius: 2px; overflow: hidden; background: #fff;">
+                    <select [(ngModel)]="product.discountType" style="padding: 6px 8px; border: none; border-right: 1px solid #ced4da; background: transparent; outline: none; font-size: 12px; color: #495057; cursor: pointer; width: 70px;">
+                      <option value="in %">In %</option>
+                      <option value="Flat">Flat</option>
+                    </select>
+                    <input type="number" [(ngModel)]="product.editableDiscount" style="width: 100%; padding: 6px 8px; border: none; background: transparent; outline: none; font-size: 12px; color: #495057;">
+                  </div>
+                </td>
+                <td style="padding: 12px; text-align: center; color: #495057; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6; font-weight: 500;">
+                  {{ calculateDiscountedValue(product) | number:'1.2-2' }}
+                </td>
+              </tr>
+              <tr *ngIf="product.selected" style="border-bottom: 1px solid #dee2e6; background-color: #fff;">
+                 <td style="padding: 12px; border-left: 1px solid #dee2e6;"></td>
+                 <td style="padding: 12px; border-left: 1px solid #dee2e6; font-weight: 500; vertical-align: top;">
+                   <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #495057;">
+                     <input type="checkbox" [(ngModel)]="product.showFreeSupply" style="cursor: pointer;"> Free Supply Items
+                   </label>
+                 </td>
+                 <td colspan="5" style="padding: 12px; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;">
+                   
+                   <!-- Nested Table for Free Supply Items -->
+                   <table *ngIf="product.showFreeSupply" style="width: 100%; max-width: 650px; border-collapse: collapse; text-align: left; font-size: 13px; border: 1px solid #dee2e6;">
+                     <thead style="background-color: #7fa6c8; color: white;">
+                       <tr>
+                         <th style="padding: 10px 15px; font-weight: 500; border-right: 1px solid white;">Free Supply Item/s</th>
+                         <th style="padding: 10px 15px; font-weight: 500; border-right: 1px solid white; width: 120px;">Qty</th>
+                         <th style="padding: 10px 15px; width: 80px;"></th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       <tr *ngFor="let item of product.freeSupplyItems; let i = index" style="background-color: #fff; border-bottom: 1px solid #dee2e6;">
+                         <td style="padding: 10px; border-right: 1px solid #dee2e6;">
+                            <select [(ngModel)]="item.product" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
+                              <option value="">Select Product</option>
+                              <option *ngFor="let prod of productOptions" [ngValue]="prod.id">{{ prod.name }}</option>
+                            </select>
+                         </td>
+                         <td style="padding: 10px; border-right: 1px solid #dee2e6;">
+                           <input type="text" [(ngModel)]="item.qty" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
+                         </td>
+                         <td style="padding: 10px; text-align: center;">
+                           <button (click)="removeFreeSupplyItem(product, i)" style="background: #e74c3c; color: white; border: none; width: 30px; height: 26px; border-radius: 4px; display: inline-flex; justify-content: center; align-items: center; cursor: pointer;">
+                             <i class="fas fa-times" style="font-size: 12px;"></i>
+                           </button>
+                         </td>
+                       </tr>
+                       <tr style="background-color: #f8f9fa;">
+                         <td colspan="3" style="padding: 10px;">
+                           <button (click)="addFreeSupplyItem(product)" style="background: #4285f4; color: white; border: none; width: 30px; height: 26px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; cursor: pointer;">
+                             <i class="fas fa-plus" style="font-size: 12px;"></i>
+                           </button>
+                         </td>
+                       </tr>
+                     </tbody>
+                   </table>
+  
+                 </td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </div>
@@ -122,8 +122,8 @@
             Billing <span style="color: #dc3545;">*</span>
           </div>
           <div style="flex: 1;">
-            <select style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
-              <option>Company</option>
+            <select name="billingInfoId" [(ngModel)]="quoteForm.billingInfoId" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
+              <option *ngFor="let b of billingOptions" [ngValue]="b.id">{{ b.name }}</option>
             </select>
           </div>
         </div>
@@ -133,8 +133,8 @@
             Warranty <span style="color: #dc3545;">*</span>
           </div>
           <div style="flex: 1;">
-            <select style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
-              <option>12 Months</option>
+            <select [(ngModel)]="quoteForm.warranty" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
+              <option *ngFor="let w of warrantyOptions" [ngValue]="w">{{ w }} Months</option>
             </select>
           </div>
         </div>
@@ -144,10 +144,11 @@
             Advance <span style="color: #dc3545;">*</span>
           </div>
           <div style="flex: 1; display: flex; gap: 10px;">
-            <select style="width: 120px; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
-              <option>in %</option>
+            <select [(ngModel)]="quoteForm.advanceType" style="width: 120px; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
+              <option [ngValue]="1">in %</option>
+              <option [ngValue]="2">in Rs</option>
             </select>
-            <input type="text" value="100.00" style="flex: 1; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
+            <input type="number" [(ngModel)]="quoteForm.advance" style="flex: 1; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
           </div>
         </div>
 
@@ -156,7 +157,7 @@
             Dealer Commission (%) <span style="color: #dc3545;">*</span>
           </div>
           <div style="flex: 1;">
-            <input type="text" placeholder="Dealer Commission (%)" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
+            <input type="number" [(ngModel)]="quoteForm.dealerCommission" placeholder="Dealer Commission (%)" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
           </div>
         </div>
 
@@ -165,8 +166,8 @@
             Billing Through
           </div>
           <div style="flex: 1;">
-            <select style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
-              <option>Parkeze Technologies</option>
+            <select [(ngModel)]="quoteForm.dealerId" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
+              <option *ngFor="let d of dealerOptions" [ngValue]="d.id">{{ d.name }}</option>
             </select>
           </div>
         </div>

@@ -186,14 +186,14 @@ export class Leadservice {
 
   /* ================= GET OPPORTUNITY BY ID ================= */
   getOpportunityById(oppId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/salesengineer/opportunity/${oppId}`, {
+    return this.http.get<any>(`${this.baseUrl}/leads/opportunity/${oppId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= UPDATE OPPORTUNITY ================= */
   updateOpportunity(oppId: number, opportunityDto: any): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/salesengineer/update-opportunity/${oppId}`, opportunityDto, {
+    return this.http.put<any>(`${this.baseUrl}/leads/update-opportunity/${oppId}`, opportunityDto, {
       headers: this.getAuthHeaders()
     });
   }
@@ -301,6 +301,13 @@ export class Leadservice {
   getCompanyOptions(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/salesengineer/company`, {
       headers: this.getAuthHeaders()
+    });
+  }
+
+  downloadQuotePdf(quoteId: string | number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/leads/quotes/${quoteId}/pdf`, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
     });
   }
 }

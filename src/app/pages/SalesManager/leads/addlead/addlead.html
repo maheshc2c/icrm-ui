@@ -371,23 +371,23 @@
                   <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.currentStage }}</td>
                   <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.quoteStatus }}</td>
                   <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.finalApprover }}</td>
-                  <td style="padding: 12px; border: 1px solid #dee2e6;">
-                    <div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">
+                      <div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
 
-                      <button class="btn btn-sm btn-primary view-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionInfo(row)" title="View Revision">
-                        <i class="fa-solid fa-info"></i>
-                      </button>
-                      <button class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
+                        <button class="btn btn-sm btn-primary view-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionInfo(row)" title="View Revision">
+                          <i class="fa-solid fa-info"></i>
+                        </button>
+                        <button class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
                         <i class="fa-solid fa-plus"></i>
                       </button>
                     </div>
                   </td>
                   <td style="padding: 12px; border: 1px solid #dee2e6;">
                     <div style="display: flex; justify-content: center; gap: 8px;">
-                      <button class="btn btn-sm btn-primary" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="Document">
+                      <button class="btn btn-sm btn-primary" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="View Document" (click)="onViewQuote(row.quoteId)">
                         <i class="fas fa-file-alt"></i>
                       </button>
-                      <button class="btn btn-sm btn-info" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="Download Quote">
+                      <button class="btn btn-sm btn-info" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="Download Quote" (click)="onDownloadQuote(row.quoteId)">
                         <i class="fas fa-cloud-download-alt"></i>
                       </button>
                     </div>

@@ -16,24 +16,40 @@ export interface LeadSummary {
 export interface LeadPayload {
   leadId?: number;
   customerId: number;
+  customerName?: string;
   contactId: number;
+  contactFirstName?: string;
   contact2Id?: number | null;
-  customerName: string;
-  contactFirstName: string;
-  sourceName: string;
-  campaignName?: string;
+  
+  sourceId?: number;
+  sourceName?: string;
   campaignId?: number;
-  siteReadinessName: string;
-  distributorName: string;
-  relationshipName: string;
-  username: string;
-  leadPurchasePotential: number;
-  leadVisitRequirement: number;
-  leadResourceRequirement: number;
-  leadCmdLine1: string;
+  campaignName?: string;
+  siteReadinessId?: number;
+  siteReadinessName?: string;
+  distributorId?: number;
+  distributorName?: string;
+  relationshipId?: number;
+  relationshipName?: string;
+  
+  username?: string;
+  
+  // Old fields used in some places
+  leadPurchasePotential?: number;
+  leadVisitRequirement?: number;
+  leadResourceRequirement?: number;
+  leadCmdLine1?: string;
   leadCmdLine2?: string;
   leadCmdLine3?: string;
-  leadStatus: number;
+  
+  // New fields from LeadDetailsDTO
+  purchasePotential?: number;
+  visitRequirement?: boolean;
+  resourceRequirement?: boolean;
+  remarks1?: string;
+  remarks2?: string;
+  
+  leadStatus?: number;
   leadCreatedTime?: string;
   leadModifiedTime?: string;
 }
