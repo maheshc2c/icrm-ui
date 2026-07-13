@@ -86,20 +86,28 @@ export class UserTargetService {
         return this.http.get<any[]>(`${this.apiUrl}/view-product`, { headers: this.getAuthHeaders() });
     }
 
-    // POST /admin/upload-userTarget/{id} — upload CSV file
+    // POST /product/upload-userTarget/{id} — upload CSV file
     uploadUserTargetFile(userId: string, formData: FormData): Observable<any> {
         const token = this.auth.getToken();
         let headers = new HttpHeaders();
         if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-        return this.http.post<any>(`${this.apiUrl}/upload-userTarget/${userId}`, formData, { headers });
+        return this.http.post<any>(`http://localhost:8080/product/upload-userTarget/${userId}`, formData, { headers });
     }
 
-    // POST /admin/download-userTarget — download XLS template
-    downloadUserTargetTemplate(userId: string): Observable<Blob> {
+    // POST /product/download-userTarget — download CSV template
+    downloadUserTargetTemplate(userId: string, financialYearName: string): Observable<Blob> {
         const token = this.auth.getToken();
         let headers = new HttpHeaders();
         if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-        return this.http.post(`${this.apiUrl}/download-userTarget`, { userId }, { headers, responseType: 'blob' });
+        return this.http.post(`http://localhost:8080/product/download-userTarget`, { userId, financialYearName }, { headers, responseType: 'blob' });
+    }
+
+    // GET /product/download-empty-userTarget — download empty CSV template
+    downloadEmptyTargetTemplate(): Observable<Blob> {
+        const token = this.auth.getToken();
+        let headers = new HttpHeaders();
+        if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+        return this.http.get(`http://localhost:8080/product/download-empty-userTarget`, { headers, responseType: 'blob' });
     }
 
     // DELETE /admin/delete-user/{userId} — Delete a user
