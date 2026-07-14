@@ -64,7 +64,8 @@ export class AddVisitComponent implements OnInit {
 
     loadVisitData() {
         this.globalHeadService.getVisitById(this.visitId).subscribe({
-            next: (visit: any) => {
+            next: (response: any) => {
+                const visit = response.data ? response.data : response;
                 this.formInitialData = visit;
             },
             error: (err) => console.error('Failed to load visit data', err)
