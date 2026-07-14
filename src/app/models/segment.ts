@@ -26,8 +26,10 @@ export interface SegmentCategory {
 }
  
 export interface SegmentDto {
-  categoryName: string;
+  categoryId?: number;
+  categoryName?: string;
   groupName: string;
+  description?: string;
   groupDescription?: string;
   competitorNames?: string[];
   groupRank?: number;

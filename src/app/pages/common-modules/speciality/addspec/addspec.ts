@@ -101,16 +101,16 @@ export class Addspec {
 }
 
   /* ================= SAVE ================= */
- saveSpeciality(data: Partial<SpecialityModel>): void {
+  saveSpeciality(data: Partial<SpecialityModel>): void {
 
   const payload: any = {
-    specialityName: data.specialityName?.trim(),
-    specialityStatus: 1
+    name: data.specialityName?.trim(),
+    status: 1
   };
 
   if (this.isEditMode) {
 
-    payload.specialityId = this.specialityId;
+    payload.id = this.specialityId;
 
     this.adminService.updateSpeciality(payload).subscribe({
       next: () => {

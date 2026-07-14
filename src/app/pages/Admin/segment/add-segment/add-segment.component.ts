@@ -50,7 +50,7 @@ export class AddSegment implements OnInit {
     // 1. Fetch Categories
     this.segmentService.getCategories().subscribe({
       next: (data) => {
-        this.businessCategories = data.map(cat => ({ label: cat, value: cat }));
+        this.businessCategories = data.map(cat => ({ label: cat.categoryName, value: cat.categoryId }));
         this.updateFormFields(); // Refresh fields with new data
       },
       error: (err) => console.error('Failed to load categories', err)
@@ -80,7 +80,7 @@ export class AddSegment implements OnInit {
     this.headerTitle = 'Add New Segment';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admin' },
-      { label: 'Segment', route: '/admin/segment' },
+      { label: 'Segment', route: '/segment' },
       { label: 'Add Segment' }
     ];
   }
@@ -111,9 +111,9 @@ export class AddSegment implements OnInit {
  
     // Map form data to DTO matching backend GroupDto structure
     const payload: SegmentDto = {
-      categoryName: data.businessCategory,
+      categoryId: data.businessCategory,
       groupName: data.segmentName,
-      groupDescription: data.segmentDescription || '',
+      description: data.segmentDescription || '',
       competitorNames: selectedCompetitors.length > 0 ? selectedCompetitors : undefined,
       groupStatus: 1
     };
@@ -124,14 +124,14 @@ export class AddSegment implements OnInit {
       next: () => {
         console.log('Segment created successfully');
         this.toastService.success('Segment created successfully');
-        this.router.navigate(['/admin/segment']);
+        this.router.navigate(['/segment']);
       },
       error: (err) => {
         console.error('Failed to create segment:', err);
         this.toastService.error('Failed to create segment');
         if (err.status === 401 || err.status === 403) {
           console.error('Authentication failed. Please login again.');
-          this.router.navigate(['/admin/segment']);
+          this.router.navigate(['/segment']);
         }
       }
     });
@@ -139,6 +139,6 @@ export class AddSegment implements OnInit {
  
   /* ================= CANCEL ================= */
   onCancel(): void {
-    this.router.navigate(['/admin/segment']);
+    this.router.navigate(['/segment']);
   }
 }

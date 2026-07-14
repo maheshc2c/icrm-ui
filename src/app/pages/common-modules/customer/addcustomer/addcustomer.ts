@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { map } from 'rxjs/operators';
 import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
@@ -75,7 +76,12 @@ export class Addcustomer implements OnInit {
       type: 'select',
       required: true,
       options: [],
-      searchable: true
+      searchable: true,
+      dynamicLoad: (search: string) => {
+        return this.adminService.getLocationCityDropdown(search).pipe(
+          map((cities: any[]) => (cities || []).map(c => ({ label: c.name, value: c.name })))
+        );
+      }
     },
  
     { name: 'customerAddress1', label: 'Address Line 1', type: 'text', required: true },
@@ -224,23 +230,7 @@ export class Addcustomer implements OnInit {
         }
       }
     } else if (event.name === 'locations') {
-      const keyword = event.value || '';
-      // Only search if user typed at least 2 chars, or if it's empty (to reload all/defaults)
-      if (keyword.length >= 2 || keyword.length === 0) {
-        this.adminService.getLocationCityDropdown(keyword).subscribe({
-          next: (cities: any[]) => {
-            const cityOptions = (cities || []).map(c => ({
-              label: c.name,
-              value: c.name
-            }));
-            const cityField = this.customerFields.find(f => f.name === 'locations');
-            if (cityField) {
-              cityField.options = cityOptions;
-            }
-          },
-          error: (err: any) => console.error('Failed to search cities:', err)
-        });
-      }
+      // dynamicLoad handles the search now!
     }
   }
  

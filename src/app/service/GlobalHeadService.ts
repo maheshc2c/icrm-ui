@@ -99,7 +99,7 @@ export class GlobalHeadService {
  
     // Visits
     createVisit(visitDto: Visit): Observable<any> {
-        return this.http.post(`${this.baseUrl}/create-visit`, visitDto, { headers: this.getAuthHeaders() });
+        return this.http.post(`http://localhost:8080/demo-visit/create`, visitDto, { headers: this.getAuthHeaders() });
     }
  
     getAllVisits(): Observable<Visit[]> {
@@ -107,11 +107,38 @@ export class GlobalHeadService {
     }
  
     getVisitById(id: number): Observable<Visit> {
-        return this.http.get<Visit>(`${this.baseUrl}/visit/${id}`, { headers: this.getAuthHeaders() });
+        return this.http.get<Visit>(`http://localhost:8080/demo-visit/${id}`, { headers: this.getAuthHeaders() });
     }
  
     updateVisit(id: number, visitDto: Visit): Observable<any> {
-        return this.http.put(`${this.baseUrl}/update/${id}`, visitDto, { headers: this.getAuthHeaders() });
+        return this.http.put(`http://localhost:8080/demo-visit/update/${id}`, visitDto, { headers: this.getAuthHeaders() });
+    }
+
+    toggleVisitStatus(id: number): Observable<any> {
+        return this.http.put(`http://localhost:8080/demo-visit/toggle-status/${id}`, {}, { headers: this.getAuthHeaders() });
+    }
+
+    downloadDemoVisits(requestPayload: any): Observable<Blob> {
+        return this.http.post(`http://localhost:8080/demo-visit/download-excel`, requestPayload, {
+            headers: this.getAuthHeaders(),
+            responseType: 'blob'
+        });
+    }
+
+    searchPlanDemoVisits(requestPayload: any): Observable<any> {
+        return this.http.post(`http://localhost:8080/demo-visit/search`, requestPayload, { headers: this.getAuthHeaders() });
+    }
+
+    getCustomersForDemoVisit(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8080/demo-visit/customers`, { headers: this.getAuthHeaders() });
+    }
+
+    getLeadsForDemoVisit(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8080/demo-visit/leads`, { headers: this.getAuthHeaders() });
+    }
+
+    getPurposesForDemoVisit(): Observable<any[]> {
+        return this.http.get<any[]>(`http://localhost:8080/demo-visit/purposes`, { headers: this.getAuthHeaders() });
     }
  
     // Leads

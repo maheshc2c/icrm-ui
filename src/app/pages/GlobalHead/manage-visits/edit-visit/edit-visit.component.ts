@@ -8,6 +8,7 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { GlobalHeadService } from '../../../../service/GlobalHeadService';
+import { ToastService } from '../../../../service/toast.service';
 
 
 @Component({
@@ -37,7 +38,8 @@ export class EditVisitComponent implements OnInit {
     constructor(
         private globalHeadService: GlobalHeadService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private toastService: ToastService
     ) { }
 
     ngOnInit(): void {
@@ -70,7 +72,7 @@ export class EditVisitComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Failed to load visit data:', err);
-                alert('Failed to load visit data. Please try again.');
+                this.toastService.error('Failed to load visit data. Please try again.');
                 this.router.navigate(['/globalhead/manage-visits']);
             }
         });
@@ -96,7 +98,7 @@ export class EditVisitComponent implements OnInit {
         // Dynamic: Only proceed if we have authentication
         if (!token) {
             console.error('No authentication token found. Please login first.');
-            alert('Please login to access this form.');
+            this.toastService.error('Please login to access this form.');
             // this.router.navigate(['/login']);
             return;
         }
@@ -104,7 +106,7 @@ export class EditVisitComponent implements OnInit {
         console.log('Loading dynamic data from APIs...');
         
         // Load Leads dynamically
-        this.globalHeadService.getLeads().subscribe({
+        this.globalHeadService.getLeadsForDemoVisit().subscribe({
             next: (leads: any[]) => {
                 console.log('Leads data received:', leads);
                 console.log('Leads array length:', leads?.length);
@@ -128,7 +130,7 @@ export class EditVisitComponent implements OnInit {
                 if (leadField) {
                     leadField.options = leads.map(l => ({
                         value: l.leadId,
-                        label: l.displayName || `Lead-${l.leadId}` + (l.campaignName ? ` | ${l.campaignName}` : '')
+                        label: l.customerName || `Lead-${l.leadId}`
                     }));
                     console.log('Lead dropdown populated with', leadField.options.length, 'options');
                     
@@ -140,17 +142,17 @@ export class EditVisitComponent implements OnInit {
                 console.error('Failed to load leads:', err);
                 
                 if (err.status === 401) {
-                    alert('Session expired. Please login again.');
+                    this.toastService.error('Session expired. Please login again.');
                     // this.router.navigate(['/login']);
                     return;
                 }
                 
-                alert('Failed to load leads. Please try again later.');
+                this.toastService.error('Failed to load leads. Please try again later.');
             }
         });
 
         // Load Purposes dynamically
-        this.globalHeadService.getVisitPurposes().subscribe({
+        this.globalHeadService.getPurposesForDemoVisit().subscribe({
             next: (purposes: any[]) => {
                 console.log('Purposes data received:', purposes);
                 
@@ -175,12 +177,12 @@ export class EditVisitComponent implements OnInit {
                 console.error('Failed to load purposes:', err);
                 
                 if (err.status === 401) {
-                    alert('Session expired. Please login again.');
+                    this.toastService.error('Session expired. Please login again.');
                     // this.router.navigate(['/login']);
                     return;
                 }
                 
-                alert('Failed to load visit purposes. Please try again later.');
+                this.toastService.error('Failed to load visit purposes. Please try again later.');
             }
         });
     }
@@ -194,15 +196,13 @@ export class EditVisitComponent implements OnInit {
         // Create payload matching backend expectations
         const payload: any = {
             leadId: data.leadId,
-            purposeName: this.getPurposeNameById(data.purposeId), // Send purposeName instead of purposeId
+            purposeId: data.purposeId,
             startDate: data.startDate ? new Date(data.startDate).toISOString() : '',
             endDate: data.endDate ? new Date(data.endDate).toISOString() : '',
-            status: 1, // Hardcoded status as requested
+            status: data.status != null ? data.status : 1, // Keep original status if exists
             remarks1: data.remarks1 || '',
             remarks2: data.remarks2 || '',
-            remarks3: data.remarks3 || '',
-            modifiedBy: 1, // TODO: Get actual user ID from token
-            modifiedTime: new Date().toISOString()
+            remarks3: data.remarks3 || ''
         };
 
         console.log('Updating visit with payload:', payload);
@@ -210,12 +210,12 @@ export class EditVisitComponent implements OnInit {
         this.globalHeadService.updateVisit(this.visitId, payload).subscribe({
             next: (response) => {
                 console.log('Visit updated successfully:', response);
-                alert('Visit updated successfully!');
+                this.toastService.success('Visit updated successfully!');
                 this.router.navigate(['/globalhead/manage-visits']);
             },
             error: (err) => {
                 console.error('Failed to update visit:', err);
-                alert('Failed to update visit: ' + (err.error?.message || err.message));
+                this.toastService.error('Failed to update visit: ' + (err.error?.message || err.message));
             }
         });
     }

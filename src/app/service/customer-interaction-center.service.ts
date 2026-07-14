@@ -109,4 +109,5 @@ export class CustomerInteractionCenterService {
       { headers: this.getAuthHeaders() }
     );
   }
+
 }

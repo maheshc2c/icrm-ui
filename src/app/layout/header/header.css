@@ -69,11 +69,13 @@
 }
 
 .app-name {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 600;
-  color: #2c3e50;
+  font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #111111;
   margin: 0;
   letter-spacing: -0.5px;
+  text-transform: uppercase;
 }
 
 .user-info {

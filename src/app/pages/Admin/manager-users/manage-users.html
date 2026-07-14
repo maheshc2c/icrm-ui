@@ -10,5 +10,5 @@
   (editRow)="onEdit($event)" (deleteRow)="onDelete($event)" (viewRow)="onView($event)" (download)="onDownload()"
   (reset)="onReset()"
   [showPagination]="true" [currentPage]="currentPage" [totalPages]="totalPages" [totalItems]="totalItems" [pageSize]="pageSize"
-  (pageChange)="onPageChange($event)">
+  (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)">
 </app-data-table>
