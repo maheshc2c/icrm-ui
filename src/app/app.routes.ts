@@ -635,6 +635,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
+
       {
         path: 'salesmanager/closed-leads',
         component: ClosedLeadsComponent,

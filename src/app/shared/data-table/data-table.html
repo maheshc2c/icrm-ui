@@ -169,13 +169,26 @@
                             </button>
                           }
 
-                          @if (showEdit && showEditButton) {
-                            <button
-                              class="btn btn-sm btn-warning edit-btn"
-                              (click)="edit(row)"
-                              title="Edit">
-                              <i class="fas fa-edit"></i>
-                            </button>
+                          @if (showDelete && showDeleteButton) {
+                            @if (showStatusToggle && getRowStatus(row) !== undefined) {
+                              <button
+                                class="btn btn-sm"
+                                [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
+                                (click)="delete(row)"
+                                [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
+                                <i
+                                  class="fas"
+                                  [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
+                                </i>
+                              </button>
+                            } @else {
+                              <button
+                                class="btn btn-sm delete-btn"
+                                (click)="delete(row)"
+                                title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                              </button>
+                            }
                           }
 
                           @if (showAssign) {
@@ -197,26 +210,13 @@
                             </button>
                           }
 
-                          @if (showDelete && showDeleteButton) {
-                            @if (showStatusToggle && getRowStatus(row) !== undefined) {
-                              <button
-                                class="btn btn-sm"
-                                [ngClass]="getRowStatus(row) === 1 ? 'deactivate-btn' : 'activate-btn'"
-                                (click)="delete(row)"
-                                [title]="getRowStatus(row) === 1 ? 'Deactivate' : 'Activate'">
-                                <i
-                                  class="fas"
-                                  [ngClass]="getRowStatus(row) === 1 ? 'fa-trash-alt' : 'fa-check-circle'">
-                                </i>
-                              </button>
-                            } @else {
-                              <button
-                                class="btn btn-sm delete-btn"
-                                (click)="delete(row)"
-                                title="Delete">
-                                <i class="fas fa-trash-alt"></i>
-                              </button>
-                            }
+                          @if (showEdit && showEditButton) {
+                            <button
+                              class="btn btn-sm btn-warning edit-btn"
+                              (click)="edit(row)"
+                              title="Edit">
+                              <i class="fas fa-edit"></i>
+                            </button>
                           }
                         </div>
                       </td>
