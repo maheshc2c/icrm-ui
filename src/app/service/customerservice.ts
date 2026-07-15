@@ -43,6 +43,12 @@ export class Customerservice {
     });
   }
 
+  getCustomersDropdown(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/customer/dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   updateCustomer(id: number, payload: any): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/update-customer/${id}`, payload, {
       headers: this.getAuthHeaders()

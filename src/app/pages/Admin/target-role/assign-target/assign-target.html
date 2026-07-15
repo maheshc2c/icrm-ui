@@ -9,12 +9,13 @@
         <div class="card-top-bar">
             <h2 class="card-title">
                 Product Targets For {{ selectedYear }} Financial Year
+                <span *ngIf="isPastYear" class="text-danger" style="font-size: 13px; margin-left: 10px; font-weight: normal;">(Past years are read-only)</span>
             </h2>
             <div class="top-bar-actions">
-                <select class="year-select form-select" [(ngModel)]="selectedYear">
+                <select class="year-select form-select" [(ngModel)]="selectedYear" name="selectedYear" (change)="onLoadTargets()">
                     <option *ngFor="let yr of financialYears" [value]="yr">{{ yr }}</option>
                 </select>
-                <button class="btn btn-primary submit-btn" (click)="onSubmit()" [disabled]="isSubmitting">
+                <button class="btn btn-success submit-btn" (click)="onSaveTargets()" [disabled]="isSubmitting || isLoading || isPastYear">
                     {{ isSubmitting ? 'Submitting...' : 'Submit' }}
                 </button>
             </div>
@@ -23,62 +24,102 @@
         <!-- Target Matrix Table -->
         <div class="table-responsive">
             <table class="target-table">
-                <thead>
-                    <tr>
-                        <th class="col-sno">S.NO</th>
-                        <th class="col-product">Product</th>
-                        <th *ngFor="let month of months" class="col-month">
-                            <div class="month-header-label">{{ month }}</div>
-                            <input type="checkbox" class="month-header-checkbox"
-                                [(ngModel)]="headerCheckboxMatrix[month]"
-                                [name]="'hdr_chk_' + month"
-                                (change)="onHeaderCheckboxChange(month)">
+                  <thead>
+                      <tr>
+                          <th class="col-checkbox" style="width: 40px; text-align: center;">
+                              <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleAll()" [disabled]="isPastYear">
+                          </th>
+                          <th class="col-sno">S.NO</th>
+                          <th class="col-product">Product</th>
+                                                <th class="col-month">
+                            <div class="month-header-label">Apr</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalAprSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">May</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalMaySelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Jun</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalJunSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Jul</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalJulSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Aug</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalAugSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Sep</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalSepSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Oct</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalOctSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Nov</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalNovSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Dec</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalDecSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Jan</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalJanSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Feb</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalFebSelected" [disabled]="isPastYear">
+                        </th>
+                        <th class="col-month">
+                            <div class="month-header-label">Mar</div>
+                            <input type="checkbox" class="month-header-checkbox" [(ngModel)]="globalMarSelected" [disabled]="isPastYear">
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr *ngIf="products.length === 0">
-                        <td [colSpan]="months.length + 2" class="no-records">No Records</td>
-                    </tr>
-                    <tr *ngFor="let product of products; let i = index">
-                        <td class="col-sno">{{ i + 1 }}</td>
+                  <tbody>
+                      <tr *ngIf="targetDTOs.length === 0">
+                          <td [colSpan]="15" class="no-records">No Records</td>
+                      </tr>
+                      <tr *ngFor="let dto of targetDTOs; let i = index" [class.row-selected]="dto.selected">
+                          <td class="col-checkbox" style="text-align: center;">
+                              <input type="checkbox" [(ngModel)]="dto.selected" (change)="checkIfAllSelected()" [disabled]="isPastYear">
+                          </td>
+                          <td class="col-sno">{{ i + 1 }}</td>
                         <td class="col-product">
                             <div class="product-cell-layout">
                                 <div class="product-details">
-                                    <div class="product-title">{{ product.productName }}</div>
-                                    <div class="product-subtitle">{{ product.productId }}</div>
+                                    <div class="product-title">{{ dto.productName }}</div>
+                                    <div class="product-subtitle">{{ dto.productId }}</div>
                                 </div>
-                                <input type="checkbox" class="product-checkbox"
-                                    [(ngModel)]="rowCheckboxMatrix[product.productId]"
-                                    [name]="'row_chk_' + product.productId"
-                                    (change)="onRowCheckboxChange(product.productId)">
                             </div>
                         </td>
-                        <td *ngFor="let month of months" class="col-month-input">
-                            <div class="month-input-container">
-                                <ng-container *ngIf="targetMatrix[product.productId][month] > 0; else textInputCell">
-                                    <span class="dynamic-qty">{{ targetMatrix[product.productId][month] }}</span>
-                                </ng-container>
-                                <ng-template #textInputCell>
-                                    <input type="text" 
-                                        class="qty-text-input" 
-                                        placeholder=""
-                                        [(ngModel)]="quantityMatrix[product.productId][month]"
-                                        [name]="'qty_' + product.productId + '_' + month"
-                                        (input)="validateQuantity(product.productId, month, $event)">
-                                    <div *ngIf="validationErrors[product.productId]?.[month]" class="qty-error-message">
-                                        {{ validationErrors[product.productId][month] }}
-                                    </div>
-                                </ng-template>
-                            </div>
-                        </td>
+                                                                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.aprTarget" [name]="'apr_' + i" [disabled]="!globalAprSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.mayTarget" [name]="'may_' + i" [disabled]="!globalMaySelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.junTarget" [name]="'jun_' + i" [disabled]="!globalJunSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.julTarget" [name]="'jul_' + i" [disabled]="!globalJulSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.augTarget" [name]="'aug_' + i" [disabled]="!globalAugSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.sepTarget" [name]="'sep_' + i" [disabled]="!globalSepSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.octTarget" [name]="'oct_' + i" [disabled]="!globalOctSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.novTarget" [name]="'nov_' + i" [disabled]="!globalNovSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.decTarget" [name]="'dec_' + i" [disabled]="!globalDecSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.janTarget" [name]="'jan_' + i" [disabled]="!globalJanSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.febTarget" [name]="'feb_' + i" [disabled]="!globalFebSelected || isPastYear"></td>
+                        <td class="col-month-input"><input type="number" min="0" class="qty-text-input" (ngModelChange)="onQuantityChange(dto)" [(ngModel)]="dto.marTarget" [name]="'mar_' + i" [disabled]="!globalMarSelected || isPastYear"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
         <!-- Bottom Actions -->
-        <div class="card-bottom-bar">
+        <div class="card-bottom-bar" *ngIf="targetDTOs.length > 0">
+            <button class="btn btn-success" (click)="onSaveTargets()" [disabled]="isSubmitting || isPastYear">
+                {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+            </button>
             <button class="btn btn-outline-secondary" (click)="onCancel()">Cancel</button>
         </div>
 

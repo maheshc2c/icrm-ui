@@ -148,7 +148,7 @@ export class AddcontactComponent implements OnInit {
   loadCustomers(): void {
     console.log('Loading customers for dropdown...');
     // Use search with empty params to get all customers
-    this.customerService.searchCustomers({}).subscribe({
+    this.customerService.getCustomersDropdown().subscribe({
       next: (response: any) => {
         const customers = Array.isArray(response) ? response : (response.data || []);
         const customerField = this.contactFields.find(f => f.name === 'customer');

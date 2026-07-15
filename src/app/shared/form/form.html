@@ -51,61 +51,18 @@
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)">
               </textarea>
 
-              <!-- STATIC DROPDOWN (SEARCHABLE / NON-SEARCHABLE) -->
-              <ng-container *ngIf="field.type === 'select'">
-                <!-- NON-SEARCHABLE (STANDARD SELECT) -->
-                <select *ngIf="!field.searchable"
-                  class="company-text-input"
-                  [(ngModel)]="formData[field.name]"
-                  (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
-                  [name]="field.name"
-                  [id]="'form-field-' + field.name">
-                  <option [ngValue]="null">-- {{ field.placeholder || 'Select' }} --</option>
-                  <option *ngFor="let opt of field.options" [value]="opt.value">
-                    {{ opt.label }}
-                  </option>
-                </select>
-
-                <!-- SEARCHABLE CUSTOM SINGLE-SELECT -->
-                <div *ngIf="field.searchable" class="custom-dropdown-container" [id]="'form-field-' + field.name">
-                  <div class="dropdown-trigger" 
-                       [class.active]="field._open"
-                       (click)="field._open = !field._open; $event.stopPropagation()">
-                    <span class="trigger-text" style="font-weight: normal; font-size: 14px;">
-                      {{ getSelectedLabel(field) || (field.placeholder || '-- Select --') }}
-                    </span>
-                    <i class="fas fa-chevron-down arrow-icon"></i>
-                  </div>
-
-                  <!-- DROPDOWN PANEL -->
-                  <div class="dropdown-panel" *ngIf="field._open" (click)="$event.stopPropagation()">
-                    <div class="search-box-wrapper" style="padding: 10px;">
-                      <input type="text" 
-                        class="dropdown-search-input" 
-                        [placeholder]="'Search...'"
-                        #searchBoxSelect
-                        (input)="onSearchInput(field, searchBoxSelect.value)">
-                    </div>
-
-                    <ul class="options-list" style="padding: 6px 0; list-style: none;">
-                      <li class="option-item" 
-                          style="padding: 8px 12px; cursor: pointer; font-size: 13px;"
-                          (click)="selectSearchableOption(field, {label: field.placeholder || 'Select', value: null})">
-                        -- {{ field.placeholder || 'Select' }} --
-                      </li>
-                      <li class="option-item" 
-                          *ngFor="let opt of (field._filtered || field.options)"
-                          style="padding: 8px 12px; cursor: pointer; font-size: 13px;"
-                          (click)="selectSearchableOption(field, opt)">
-                        {{ opt.label }}
-                      </li>
-                      <li class="no-results" *ngIf="(field._filtered || field.options)?.length === 0" style="padding: 10px 15px; text-align: center; color: #999; font-size: 13px;">
-                        No results found
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </ng-container>
+              <!-- STATIC DROPDOWN -->
+              <select *ngIf="field.type === 'select'"
+                class="company-text-input"
+                [(ngModel)]="formData[field.name]"
+                (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
+                [name]="field.name"
+                [id]="'form-field-' + field.name">
+                <option [ngValue]="null">-- {{ field.placeholder || 'Select' }} --</option>
+                <option *ngFor="let opt of (field._filtered || field.options)" [value]="opt.value">
+                  {{ opt.label }}
+                </option>
+              </select>
 
  
               <select *ngIf="field.type === 'select-dynamic'"

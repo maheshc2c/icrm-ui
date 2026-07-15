@@ -6,6 +6,15 @@
 </app-pageheader>
 
 <!-- Tabs Navigation -->
+<div *ngIf="showQuoteSuccessMessage" style="margin-left: 287px; margin-right: 30px; margin-top: 24px; margin-bottom: -10px; background-color: #dffeef; color: #155724; border: 1px solid #c3e6cb; padding: 15px 20px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+  <div style="display: flex; align-items: center;">
+    <div style="background-color: #63c054; color: white; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+      <i class="fas fa-check" style="font-size: 16px;"></i>
+    </div>
+    <span style="font-size: 14px; color: #495057;"><strong>Success!</strong> New revision to Quote has been Added successfully!!</span>
+  </div>
+  <button (click)="showQuoteSuccessMessage = false" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #adb5bd; outline: none;">&times;</button>
+</div>
 <div *ngIf="isEditMode" class="form-wrapper-tabs" style="margin-left: 287px; padding: 24px 30px 0 30px; display: flex; justify-content: flex-start;">
   <div style="width: 100%; display: flex; align-items: flex-end;">
     <div *ngFor="let tab of tabs" 
@@ -330,31 +339,69 @@
         <div style="font-size: 14px; color: #475569; font-weight: 500;">
           Customer: {{ originalLeadData?.customerName || 'N/A' }}
         </div>
-        <button (click)="showAddQuoteModal = true" style="background: #2196f3; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <button (click)="openAddQuoteModal()" style="background: #2196f3; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
           <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Quote
         </button>
       </div>
 
       <!-- Quote Table -->
-      <app-data-table
-        [noMargin]="true"
-        style="display: block; width: 100%;"
-        [columns]="quoteColumns"
-        [rows]="quotes"
-        [showImport]="false"
-        [showDownload]="false"
-        [showAdd]="false"
-        [showReset]="false"
-        [showSearch]="false"
-        [showPagination]="false"
-        [showEdit]="false"
-        [showView]="false"
-        [showDelete]="false"
-        [showQuoteDoc]="true"
-        [showQuoteCloud]="true"
-        (quoteRevisionInfo)="onQuoteRevisionInfo($event)"
-        (quoteRevisionAdd)="onQuoteRevisionAdd($event)">
-      </app-data-table>
+      <div style="margin-bottom: 30px; overflow-x: auto;">
+        <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #dee2e6;">
+          <thead style="background-color: #5b9bd5; color: white; font-weight: 500;">
+            <tr>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">S.NO</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">QUOTE ID</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">OPPORTUNITY DETAILS</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">DISCOUNT</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">CURRENT STAGE</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">STATUS</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">FINAL APPROVER</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">REVISIONS</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (quotes && quotes.length > 0) {
+              @for (row of quotes; track row.quoteId; let i = $index) {
+                <tr>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ i + 1 }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.quoteId }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.opportunityDetails }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.discount }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.currentStage }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.quoteStatus }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.finalApprover }}</td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">
+                      <div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+
+                        <button class="btn btn-sm btn-primary view-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionInfo(row)" title="View Revision">
+                          <i class="fa-solid fa-info"></i>
+                        </button>
+                        <button class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">
+                    <div style="display: flex; justify-content: center; gap: 8px;">
+                      <button class="btn btn-sm btn-primary" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="View Document" (click)="onViewQuote(row.quoteId)">
+                        <i class="fas fa-file-alt"></i>
+                      </button>
+                      <button class="btn btn-sm btn-info" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="Download Quote" (click)="onDownloadQuote(row.quoteId)">
+                        <i class="fas fa-cloud-download-alt"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="9" style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">No records available.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
 
   </div>
 </div>
@@ -790,6 +837,7 @@
         <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6;">
           <thead style="background-color: #5b9bd5; color: white;">
             <tr>
+              <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center; width: 40px;"></th>
               <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">Product Name</th>
               <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">Description</th>
               <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">MRP</th>
@@ -797,12 +845,23 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td style="padding: 8px; border: 1px solid #dee2e6;">101</td>
-              <td style="padding: 8px; border: 1px solid #dee2e6;">Defense</td>
-              <td style="padding: 8px; border: 1px solid #dee2e6;">400</td>
-              <td style="padding: 8px; border: 1px solid #dee2e6;">1</td>
-            </tr>
+            @if (quoteOpportunities.length > 0) {
+              @for (opp of quoteOpportunities; track opp.id) {
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">
+                    <input type="checkbox" name="selectedOpportunity" [checked]="quoteForm.opportunityId === opp.id" (change)="$event.target.checked ? quoteForm.opportunityId = opp.id : quoteForm.opportunityId = null">
+                  </td>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">{{ opp.productAndCategory }}</td>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">{{ opp.category }}</td>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">-</td>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">{{ opp.qty }}</td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="5" style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">Opportunities not Found.</td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
@@ -810,31 +869,48 @@
       <!-- Billing Name Row -->
       <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Billing Name<span style="color: red;">*</span></div>
       <div>
-        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
-          <option>Company</option>
+        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.billingInfoId" [disabled]="!quoteForm.opportunityId">
+          <option value="">Select Billing Name</option>
+          @for (billing of quoteBillingOptions; track billing.billing_info_id) {
+            <option [value]="billing.billing_info_id">{{ billing.billingName }}</option>
+          }
         </select>
       </div>
 
       <!-- Dealer Commission Row -->
       <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Dealer Commission (%)</div>
       <div>
-        <input type="text" class="form-control" placeholder="Dealer Commission (%)" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
+        <input type="number" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.dealerCommission" [disabled]="!quoteForm.opportunityId">
+      </div>
+
+      <!-- Dealer Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Dealer <span style="color: red;">*</span></div>
+      <div>
+        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.dealerId" [disabled]="!quoteForm.opportunityId">
+          <option value="">Select Dealer</option>
+          @for (dealer of quoteDealerOptions; track dealer.id) {
+            <option [value]="dealer.id">{{ dealer.name }}</option>
+          }
+        </select>
       </div>
 
       <!-- Billing Through Row -->
       <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Billing Through <span style="color: red;">*</span></div>
       <div>
-        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;">
-          <option>Select Billing Through</option>
+        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.companyId" [disabled]="!quoteForm.opportunityId">
+          <option value="">Select Dealer</option>
+          @for (company of quoteCompanyOptions; track company.id) {
+            <option [value]="company.id">{{ company.name }}</option>
+          }
         </select>
       </div>
     </div>
 
     <!-- Actions -->
-    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 30px;">
-      <button (click)="showAddQuoteModal = false" style="background: white; border: 1px solid #ccc; padding: 8px 16px; border-radius: 4px; font-size: 13px; cursor: pointer;">Cancel</button>
-      <button style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center;">
-        <i class="fas fa-check" style="margin-right: 6px;"></i> Submit
+    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; border-top: 1px solid #eee; padding-top: 16px;">
+      <button class="btn btn-light btn-sm" style="border: 1px solid #ccc; border-radius: 4px; padding: 6px 16px;" (click)="showAddQuoteModal = false">Cancel</button>
+      <button class="btn btn-primary btn-sm" style="background-color: #3b82f6; border: none; border-radius: 4px; padding: 6px 16px; color: white;" (click)="submitQuote()" [disabled]="!quoteForm.opportunityId">
+        <i class="fas fa-check"></i> Submit
       </button>
     </div>
   </div>
@@ -938,4 +1014,6 @@
     </div>
   </div>
 </app-modal>
+
+
 

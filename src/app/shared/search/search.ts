@@ -48,6 +48,11 @@ export class Search implements OnInit, OnChanges {
     // No longer caching options since they can be mutated dynamically by the parent!
   }
   
+  onTextInput(key: string, event: any) {
+    this.values[key] = event.target.value;
+    this.onInput(key);
+  }
+
   onInput(changedKey?: string) {
     this.searchChange.emit(this.values);
     if (changedKey) {

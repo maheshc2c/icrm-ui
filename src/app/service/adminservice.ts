@@ -514,25 +514,37 @@ getFinancialYearCalendar(fyId: number) {
   // }
 
   // ================= View Demo =================
-  getDemo(): Observable<DemoProductModel[]> {
-    return this.http.get<DemoProductModel[]>(
-      `${this.baseUrl}/admin/demo/view-table`, // ✅ FIXED
+  getDemo(): Observable<any[]> {
+    const body = {
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: "demoId",
+        sortOrder: "DESC"
+      }
+    };
+    return this.http.post<any>(
+      `${this.baseUrl}/product/demo-search`,
+      body,
       { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => {
+        const data = res.data || res;
+        return data.content || data;
+      })
     );
   }
 
    deactivateDemo(id: number) {
-  return this.http.put<DemoProductDetailModel>(
-    `${this.baseUrl}/admin/demo/deactivate/${id}`,
-    {},
+  return this.http.delete<any>(
+    `${this.baseUrl}/product/demo/${id}`,
     { headers: this.getAuthHeaders() }
   );
 }
  
 activateDemo(id: number) {
-  return this.http.put<DemoProductDetailModel>(
-    `${this.baseUrl}/admin/demo/activate/${id}`,
-    {},
+  return this.http.delete<any>(
+    `${this.baseUrl}/product/demo/${id}`,
     { headers: this.getAuthHeaders() }
   );
 }
@@ -557,7 +569,7 @@ activateDemo(id: number) {
 
   createDemo(data: any) {
     return this.http.post(
-      `${this.baseUrl}/admin/create-Demo`,
+      `${this.baseUrl}/product/demo`,
       data,
       { headers: this.getAuthHeaders() }
     );
@@ -567,10 +579,10 @@ activateDemo(id: number) {
 
   updateDemo(
     id: number,
-    data: Partial<DemoProductDetailModel>
+    data: any
   ) {
     return this.http.put(
-      `${this.baseUrl}/admin/demo/update/${id}`,
+      `${this.baseUrl}/product/demo/${id}`,
       data,
       { headers: this.getAuthHeaders() }
     );
@@ -593,33 +605,58 @@ activateDemo(id: number) {
   //     }
   //   );
   // }
-  // ================= SEARCH DEMO =================
-  searchDemo(filters: any) {
-    const params: any = {};
+    searchDemoPaginated(filters: any, page: number = 0, size: number = 10) {
+      const body = {
+        categoryId: filters.categoryId || null,
+        segmentId: filters.segmentId || null,
+        productId: filters.productId || null,
+        location: filters.location || null,
+        serialNumber: filters.serialNumber || null,
+        regionId: filters.regionId || null,
+        pagination: {
+          pageNumber: page,
+          pageSize: size,
+          sortBy: "demoId",
+          sortOrder: "DESC"
+        }
+      };
 
-    Object.keys(filters).forEach(key => {
-      const val = filters[key];
-      if (val && val.trim() !== '') {
-        params[key] = val.trim();
-      }
-    });
+      return this.http.post<any>(
+        `${this.baseUrl}/product/demo-search`,
+        body,
+        {
+          headers: this.getAuthHeaders()
+        }
+      );
+    }
 
-    return this.http.get<any[]>(
-      `${this.baseUrl}/admin/demo-view/search`,
-      {
-        headers: this.getAuthHeaders(),
-        params
-      }
-    );
-  }
+    // ================= SEARCH DEMO =================
+    searchDemo(filters: any) {
+      const params: any = {};
+  
+      Object.keys(filters).forEach(key => {
+        const val = filters[key];
+        if (val && val.trim() !== '') {
+          params[key] = val.trim();
+        }
+      });
+  
+      return this.http.get<any[]>(
+        `${this.baseUrl}/admin/demo-view/search`,
+        {
+          headers: this.getAuthHeaders(),
+          params
+        }
+      );
+    }
 
 
 
   //download demo
-  downloadDemo(data: any[]): Observable<Blob> {
+  downloadDemo(searchDto: any): Observable<Blob> {
     return this.http.post(
-      `${this.baseUrl}/admin/demo-excel`,
-      data,    // ✅ send actual table data
+      `${this.baseUrl}/product/demo/download`,
+      searchDto,
       {
         headers: this.getAuthHeaders(),
         responseType: 'blob'
@@ -633,44 +670,52 @@ activateDemo(id: number) {
 
   getProductCategoriesDropdown(): Observable<any[]> {
     return this.http.get<any[]>(
-      `${this.baseUrl}/admin/demo-categories-dropdown`,
+      `${this.baseUrl}/product/demo/categories`,
       { headers: this.getAuthHeaders() }
-    );
+    ).pipe(map((res: any) => res.data || res));
+  }
+
+  getAllCategoriesForSearch(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/product/category?name=`, { headers: this.getAuthHeaders() });
+  }
+
+  getAllGroupsForSearch(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/product/group?name=`, { headers: this.getAuthHeaders() });
   }
 
   getSegmentDropdown(categoryId: number): Observable<any[]> {
     return this.http.get<any[]>(
-      `${this.baseUrl}/admin/demo-groups-dropdown/${categoryId}`,
+      `${this.baseUrl}/product/demo/segments/${categoryId}`,
       { headers: this.getAuthHeaders() }
-    );
+    ).pipe(map((res: any) => res.data || res));
   }
 
   getProductDropdown(groupId: number): Observable<any[]> {
     return this.http.get<any[]>(
-      `${this.baseUrl}/admin/demo-products-dropdown/${groupId}`,
+      `${this.baseUrl}/product/demo/products/${groupId}`,
       { headers: this.getAuthHeaders() }
-    );
+    ).pipe(map((res: any) => res.data || res));
   }
 
   getRegionDropdown(): Observable<any[]> {
     return this.http.get<any[]>(
-      `${this.baseUrl}/admin/demo-regions-dropdown`,
+      `${this.baseUrl}/product/demo/regions`,
       { headers: this.getAuthHeaders() }
-    );
+    ).pipe(map((res: any) => res.data || res));
   }
 
   getBranchDropdown(regionId: number): Observable<any[]> {
     return this.http.get<any[]>(
-      `${this.baseUrl}/admin/demo-branches-dropdown/${regionId}`,
+      `${this.baseUrl}/product/demo/branches/${regionId}`,
       { headers: this.getAuthHeaders() }
-    );
+    ).pipe(map((res: any) => res.data || res));
   }
 
-  getCityDropdown(regionId: number): Observable<any[]> {
+  getCityDropdown(branchId: number): Observable<any[]> {
     return this.http.get<any[]>(
-      `${this.baseUrl}/admin/demo-cities-dropdown/${regionId}`,
+      `${this.baseUrl}/product/demo/cities/${branchId}`,
       { headers: this.getAuthHeaders() }
-    );
+    ).pipe(map((res: any) => res.data || res));
   }
 
   // ================= GET ALL Contact =================

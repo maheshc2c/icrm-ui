@@ -179,6 +179,7 @@
             <th class="table-header-column">Current Stage</th>
             <th class="table-header-column">Status</th>
             <th class="table-header-column">Final Approver</th>
+            <th class="table-header-column center-text">Revisions</th>
             <th class="table-header-column center-text">Actions</th>
           </tr>
         </thead>
@@ -190,6 +191,10 @@
             <td class="table-cell-data">{{ quote.currentStage }}</td>
             <td class="table-cell-data">{{ quote.status }}</td>
             <td class="table-cell-data">{{ quote.finalApprover }}</td>
+            <td class="table-cell-data center-text">
+              <button class="action-icon-button info-btn" style="background: #4285f4; color: white; border: none; padding: 4px 8px; border-radius: 4px; margin-right: 4px;" (click)="showInfo(quote.quoteId)">i</button>
+              <button class="action-icon-button add-btn" style="background: #4285f4; color: white; border: none; padding: 4px 8px; border-radius: 4px;" (click)="addRevision(quote.quoteId)">+</button>
+            </td>
             <td class="table-cell-data center-text">
               <button class="action-icon-button revision-btn" title="Revisions" (click)="openRevisions(quote.revisionKey)">📋</button>
             </td>

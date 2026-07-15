@@ -6,23 +6,15 @@
 [breadcrumbs]="headerBreadcrumbs"
 ></app-pageheader>
 
-<app-data-table
-[columns]="columns"
-[rows]="rows"
-[showImport]="true"
-[showAdd]="true"
-[showRefresh]="true"
-[showStatusToggle]="true"
-[searchFields]="searchFields"
-(add)="onAdd()"
-(download)="onImport()"
-(editRow)="onEdit($event)"
-(search)="onSearch($event)"
-(refresh)="onRefresh()"
-(deleteRow)="onDelete($event)"
-[statusField]="'demoProductDetailStatus'"
-[trackByField]="'demoProductDetailId'"
->
+<app-data-table title="Manage Demo Product" [columns]="columns" [rows]="rows" [showSearch]="true" [showImport]="false"
+  [showAdd]="true" [showEdit]="true" [showDelete]="true" [showAssign]="false" [showUpload]="false"
+  [showDownload]="true" [searchFields]="searchFields" [showRefresh]="true" [showStatusToggle]="true"
+  (add)="onAdd()" (editRow)="onEdit($event)" (deleteRow)="onDelete($event)" (searchChange)="onSearch($event)"
+  (download)="onImport()" (refresh)="onRefresh()"
+  [statusField]="'demoProductDetailStatus'" [trackByField]="'demoProductDetailId'"
+  [showPagination]="true" [currentPage]="currentPage" [totalPages]="totalPages" 
+  [totalItems]="totalItems" [pageSize]="pageSize"
+  (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)">
 </app-data-table>
 
 <!-- (search)="onSearch($event)" -->

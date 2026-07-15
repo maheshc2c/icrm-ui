@@ -139,6 +139,12 @@ export class ManageUsersComponent implements OnInit {
         this.loadUsers();
     }
 
+    onPageSizeChange(size: number) {
+        this.pageSize = size;
+        this.currentPage = 1;
+        this.loadUsers();
+    }
+
     loadRoles() {
         this.userService.getRoles().subscribe({
             next: (roles: string[]) => {
@@ -239,32 +245,36 @@ export class ManageUsersComponent implements OnInit {
 
     onDownload(): void {
         if (!this.rows || this.rows.length === 0) {
-            alert('No data available to download');
+            this.toastService.error('No data available to download');
             return;
         }
 
-        const excelData = this.rows.map((row, index) => ({
-            'S.NO': index + 1,
-            'Name': row.name,
-            'Role': row.role,
-            'Employee ID': row.employeeId,
-            'Email': row.email,
-            'Mobile': row.mobile,
-            'Status': row.status
-        }));
-
-        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(excelData);
-        const workbook: XLSX.WorkBook = {
-            Sheets: { 'Users': worksheet },
-            SheetNames: ['Users']
+        const searchPayload = {
+            ...this.currentSearchValues,
+            pagination: {
+                pageNumber: 0,
+                pageSize: 1000000,
+                sortBy: "createdTime",
+                sortOrder: "DESC"
+            }
         };
 
-        const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const data: Blob = new Blob([excelBuffer], {
-            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+        this.userService.downloadUsers(searchPayload).subscribe({
+            next: (blob: Blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `users_export_${new Date().getTime()}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            },
+            error: (err: any) => {
+                console.error("Failed to download users:", err);
+                this.toastService.error("Failed to download users.");
+            }
         });
-
-        saveAs(data, `users_export_${new Date().getTime()}.xlsx`);
     }
 
     onView(row: any) {
