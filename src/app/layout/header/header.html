@@ -26,6 +26,7 @@
       }
 
       <!-- Switch Role Dropdown -->
+      @if (originalRole === 'SUPER ADMIN' || originalRole === 'SUPERADMIN') {
       <div class="dropdown">
         <button class="nav-btn" type="button" (click)="onSwitchRoleClick()">
           <i class="fas fa-random"></i>
@@ -35,19 +36,22 @@
 
         @if (showDropdown) {
         <div class="dropdown-menu show">
-          <a class="dropdown-item" routerLink="/admindashboard" routerLinkActive="active"> <i class="fas fa-user-cog"></i> Admin</a>
-          <a href="#" class="dropdown-item"><i class="fas fa-bullhorn"></i> Admin Marketing</a>
-          <a href="#" class="dropdown-item"><i class="fas fa-user-shield"></i> Super Admin</a>
-          <a href="#" class="dropdown-item"><i class="fas fa-flag-usa"></i> Country Head</a>
-          <a href="#" class="dropdown-item"><i class="fas fa-comments"></i> Customer Interaction</a>
-          <a href="#" class="dropdown-item"><i class="fas fa-globe-americas"></i> Global Head</a>
-          <a href="#" class="dropdown-item"><i class="fas fa-user-tie"></i> National Sales Manager</a>
-          <a href="#" class="dropdown-item"><i class="fas fa-truck-moving"></i> OTR</a>
-          <a href="#" class="dropdown-item"><i class="fas fa-sitemap"></i> Regional Branch Head</a>
-          <a href="#" class="dropdown-item"><i class="fas fa-map-marked-alt"></i> Regional Sales Manager</a>
+          <a class="dropdown-item" (click)="switchRole('ADMIN', '/admindashboard')" style="cursor:pointer"> <i class="fas fa-user-cog"></i> Admin</a>
+          <a class="dropdown-item" (click)="switchRole('ADMIN MARKETING', '/adminmarketingdashboard')" style="cursor:pointer"><i class="fas fa-bullhorn"></i> Admin Marketing</a>
+          <a class="dropdown-item" (click)="switchRole('SUPER ADMIN', '/superadmindashboard')" style="cursor:pointer"><i class="fas fa-user-shield"></i> Super Admin</a>
+          <a class="dropdown-item" (click)="switchRole('Country Head', '/country-head')" style="cursor:pointer"><i class="fas fa-flag-usa"></i> Country Head</a>
+          <a class="dropdown-item" (click)="switchRole('Customer Interaction Center', '/Approve-Leads')" style="cursor:pointer"><i class="fas fa-comments"></i> Customer Interaction</a>
+          <a class="dropdown-item" (click)="switchRole('Global Head', '/globalhead-dashboard')" style="cursor:pointer"><i class="fas fa-globe-americas"></i> Global Head</a>
+          <a class="dropdown-item" (click)="switchRole('National Sales Manager', '/national-sales-manager-dashboard')" style="cursor:pointer"><i class="fas fa-user-tie"></i> National Sales Manager</a>
+          <a class="dropdown-item" (click)="switchRole('OTR', '/Cnotedownload')" style="cursor:pointer"><i class="fas fa-truck-moving"></i> OTR</a>
+          <a class="dropdown-item" (click)="switchRole('Regional Branch Head', '/regional-branch-head-dashboard')" style="cursor:pointer"><i class="fas fa-sitemap"></i> Regional Branch Head</a>
+          <a class="dropdown-item" (click)="switchRole('Regional Sales Manager', '/regional-sales-manager-dashboard')" style="cursor:pointer"><i class="fas fa-map-marked-alt"></i> Regional Sales Manager</a>
+          <a class="dropdown-item" (click)="switchRole('Sales Director', '/sddashboard')" style="cursor:pointer"><i class="fas fa-chart-line"></i> Sales Director</a>
+          <a class="dropdown-item" (click)="switchRole('Sales Manager', '/sales-manager-dashboard')" style="cursor:pointer"><i class="fas fa-users"></i> Sales Manager</a>
         </div>
         }
       </div>
+      }
 
       <!-- Settings Dropdown -->
       <div class="dropdown">
