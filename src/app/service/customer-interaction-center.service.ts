@@ -183,7 +183,7 @@ export class CustomerInteractionCenterService {
 
   downloadContractNotePdf(cnoteId: number): Observable<Blob> {
     return this.http.get(
-      `${this.baseUrl}/CustomerInteractionCenter/so-entries/download/${cnoteId}`,
+      `${this.baseUrl}/contractnote/download/${cnoteId}`,
       { headers: this.getAuthHeaders(), responseType: 'blob' }
     );
   }

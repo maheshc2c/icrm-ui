@@ -171,7 +171,8 @@ export class SoEntryOpen implements OnInit {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `contract_note_${row.cnoteId}.pdf`;
+        const today = new Date().toISOString().substring(0, 10);
+        a.download = `contract_note_${row.cnoteId}_${today}.pdf`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
