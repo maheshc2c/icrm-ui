@@ -7,6 +7,7 @@ import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { UserTargetService } from '../../../../service/user-target.service';
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
     standalone: true,
@@ -33,18 +34,44 @@ export class UploadTargetComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private userTargetService: UserTargetService
+        private userTargetService: UserTargetService,
+        private toastService: ToastService
     ) { }
+
+    generateFinancialYears(): string[] {
+        const years = [];
+        const startYear = 2017;
+        for (let year = startYear; year <= 2040; year++) {
+            const nextYearStr = (year + 1).toString().substring(2);
+            years.push(`${year}-${nextYearStr}`);
+        }
+        return years;
+    }
+
+    getFinancialYearId(yearString: string): number {
+        const yearMatch = yearString ? yearString.match(/^\d{4}/) : null;
+        return yearMatch ? parseInt(yearMatch[0], 10) : 0;
+    }
+
+    get isPastYear(): boolean {
+        if (!this.selectedYear) return false;
+        const yearId = this.getFinancialYearId(this.selectedYear);
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth(); // 0-11 (0 = Jan, 3 = Apr)
+        const currentFinancialYear = currentMonth < 3 ? currentYear - 1 : currentYear;
+        return yearId < currentFinancialYear;
+    }
 
     ngOnInit(): void {
         this.employeeId = this.route.snapshot.paramMap.get('id') ?? '';
-        this.userTargetService.getFinancialYears().subscribe({
-            next: (years) => {
-                this.financialYears = years;
-                this.selectedYear = years[0] ?? '2025 - 2026';
-            },
-            error: err => console.error('Failed to load years', err)
-        });
+        
+        this.financialYears = this.generateFinancialYears();
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth();
+        const currentFinancialYear = currentMonth < 3 ? currentYear - 1 : currentYear;
+        const defaultYear = `${currentFinancialYear}-${(currentFinancialYear + 1).toString().substring(2)}`;
+        
+        this.selectedYear = this.financialYears.includes(defaultYear) ? defaultYear : this.financialYears[0];
     }
 
     onFileChange(event: Event): void {
@@ -54,47 +81,70 @@ export class UploadTargetComponent implements OnInit {
         }
     }
 
-    onDownloadTemplate(): void {
-        // Download the XLS template for user product targets
-        this.userTargetService.downloadUserTargetTemplate(this.employeeId).subscribe({
+    onDownloadEmptyTemplate(): void {
+        this.userTargetService.downloadEmptyTargetTemplate().subscribe({
             next: (blob: Blob) => {
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `UserProductTargets_${this.employeeId}.xlsx`;
+                a.download = `Empty_Target_Template.csv`;
                 a.click();
                 window.URL.revokeObjectURL(url);
             },
             error: err => {
                 console.error('Download failed', err);
-                alert('Download failed. Please try again.');
+                this.toastService.error('Download failed. Please try again.');
+            }
+        });
+    }
+
+    onDownloadTemplate(): void {
+        // Download the CSV template for user product targets
+        this.userTargetService.downloadUserTargetTemplate(this.employeeId, this.selectedYear).subscribe({
+            next: (blob: Blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `UserProductTargets_${this.employeeId}.csv`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: err => {
+                console.error('Download failed', err);
+                this.toastService.error('Download failed. Please try again.');
             }
         });
     }
 
     onSubmit(): void {
+        if (this.isPastYear) {
+            this.toastService.error('You cannot upload targets for a past financial year. You can only upload for current and future years.');
+            return;
+        }
         if (!this.selectedFile) {
-            alert('Please select a CSV file to upload.');
+            this.toastService.error('Please select a CSV file to upload.');
             return;
         }
         const ext = this.selectedFile.name.split('.').pop()?.toLowerCase();
         if (ext !== 'csv') {
-            alert('Only CSV files are allowed.');
+            this.toastService.error('Only CSV files are allowed.');
             return;
         }
 
         this.isSubmitting = true;
         const formData = new FormData();
         formData.append('file', this.selectedFile);
+        formData.append('financialYearName', this.selectedYear);
 
         this.userTargetService.uploadUserTargetFile(this.employeeId, formData).subscribe({
             next: () => {
-                alert('File uploaded successfully!');
+                this.toastService.success('File uploaded successfully!');
                 this.router.navigate(['/admin/user-target']);
             },
             error: (err: any) => {
                 console.error('Upload failed', err);
-                alert('Upload failed. Please check the file format.');
+                const backendMsg = err.error?.message || 'Upload failed. Please check the file format or ensure all products exist.';
+                this.toastService.error(backendMsg);
                 this.isSubmitting = false;
             }
         });
