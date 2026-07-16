@@ -416,12 +416,12 @@ constructor() {
         {
           label: 'Home',
           icon: 'fas fa-home',
-          route: '/country-head/dashboard'
+          route: '/country-head'
         },
         {
           label: 'Dashboards',
           icon: 'fas fa-tachometer-alt',
-          route: '/country-head/dashboard',
+          route: '/country-head',
           children: [
             { label: 'Leads Dashboard', icon: 'fas fa-tachometer-alt', route: '/country-head/dashboard/leads-dashboard' },
             { label: 'Opportunity Dashboard', icon: 'fas fa-chart-bar', route: '/country-head/dashboard/opportunity-dashboard' }
