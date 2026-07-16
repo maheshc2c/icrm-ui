@@ -44,7 +44,7 @@ export class SegmentComponent implements OnInit {
  
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admin' },
-    { label: 'Segment', route: '/admin/segment' }
+    { label: 'Segment', route: '/segment' }
   ];
  
   columns = [
@@ -148,12 +148,12 @@ export class SegmentComponent implements OnInit {
  
 onImport() {
  
-  if (!this.fullRows || this.fullRows.length === 0) {
+  if (!this.rows || this.rows.length === 0) {
     alert('No data available');
     return;
   }
  
-  this.adminservice.downloadGroup(this.fullRows).subscribe({
+  this.adminservice.downloadGroup(this.rows).subscribe({
     next: (blob: Blob) => {
  
       const url = window.URL.createObjectURL(blob);
@@ -172,12 +172,12 @@ onImport() {
  
  
   onAdd(): void {
-    this.router.navigate(['/admin/add-segment']);
+    this.router.navigate(['/segment/add']);
   }
  
   onEdit(row: any): void {
     console.log('Edit received in Segment:', row);
-    this.router.navigate(['/admin/segment/edit', row.groupId]);
+    this.router.navigate(['/segment/edit', row.groupId]);
   }
  
   onDelete(row: any) {

@@ -11,6 +11,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 import { ToastService } from '../../../service/toast.service';
+import { Userservice } from '../../../service/userservice';
 
 @Component({
     standalone: true,
@@ -23,7 +24,8 @@ import { ToastService } from '../../../service/toast.service';
         DataTable
     ],
     templateUrl: './manage-users.html',
-    styleUrl: './manage-users.css'
+    styleUrl: './manage-users.css',
+    providers: [Userservice]
 })
 export class ManageUsersComponent implements OnInit {
 
@@ -62,6 +64,7 @@ export class ManageUsersComponent implements OnInit {
 
     constructor(
         private userTargetService: UserTargetService,
+        private userService: Userservice,
         private router: Router,
         private route: ActivatedRoute,
         private confirmService: ConfirmDialogService,
@@ -73,7 +76,17 @@ export class ManageUsersComponent implements OnInit {
     }
 
     loadUsers() {
-        this.userTargetService.viewUserTarget(this.currentPage - 1, this.pageSize).subscribe({
+        const searchPayload = {
+            ...this.currentSearchValues,
+            pagination: {
+                pageNumber: this.currentPage - 1,
+                pageSize: this.pageSize,
+                sortBy: "createdTime",
+                sortOrder: "DESC"
+            }
+        };
+
+        this.userService.searchUser(searchPayload).subscribe({
             next: (response: any) => {
                 console.log("Manager Users API Response:", response);
 
@@ -88,18 +101,25 @@ export class ManageUsersComponent implements OnInit {
                     this.totalItems = null;
                 }
 
-                this.rows = users.map((c: any, index: number) => ({
-                    serialNumber: c.serialNumber ?? (index + 1),
-                    userId: c.userId ?? c.id ?? c.serialNumber ?? null,
-                    name: c.firstName && c.lastName
-                        ? `${c.firstName} ${c.lastName}`
-                        : (c.firstName ?? c.username ?? ''),
-                    role: c.roleName ?? c.role?.roleName ?? '',
-                    employeeId: c.username ?? '',
-                    email: c.email ?? '',
-                    mobile: c.phoneNumber ?? '',
-                    status: c.status
-                }));
+                this.rows = users.map((c: any, index: number) => {
+                    const roleLower = (c.roleName ?? c.role?.roleName ?? '').toLowerCase();
+                    const isAllGeosRole = ['stockist', 'global head', 'admin marketing', 'customer interaction center'].includes(roleLower);
+
+                    return {
+                        serialNumber: c.serialNumber ?? (index + 1),
+                        userId: c.userId ?? c.id ?? c.serialNumber ?? null,
+                        name: c.firstName && c.lastName
+                            ? `${c.firstName} ${c.lastName}`
+                            : (c.firstName ?? c.username ?? ''),
+                        role: c.roleName ?? c.role?.roleName ?? '',
+                        employeeId: c.username ?? '',
+                        email: c.email ?? '',
+                        mobile: c.phoneNumber ?? '',
+                        status: c.status,
+                        locationDetails: isAllGeosRole ? 'All GEOS' : (c.locationNames?.length ? c.locationNames.join(', ') : 'N/A'),
+                        productDetails: isAllGeosRole ? 'No Products Assigned' : (c.productNames?.length ? c.productNames.join(', ') : 'N/A')
+                    };
+                });
 
                 // Load roles after users are loaded
                 this.loadRoles();
@@ -119,16 +139,26 @@ export class ManageUsersComponent implements OnInit {
         this.loadUsers();
     }
 
-    loadRoles() {
-        // Extract unique roles from the current users data
-        const uniqueRoles = [...new Set(this.rows.map(user => user.role).filter(role => role))];
-        this.availableRoles = uniqueRoles.map(role => ({
-            value: role,
-            label: role
-        }));
+    onPageSizeChange(size: number) {
+        this.pageSize = size;
+        this.currentPage = 1;
+        this.loadUsers();
+    }
 
-        // Update search fields with the fetched roles
-        this.updateSearchFieldsWithRoles();
+    loadRoles() {
+        this.userService.getRoles().subscribe({
+            next: (roles: string[]) => {
+                const uniqueRoles = roles.filter((r: string) => r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
+                this.availableRoles = uniqueRoles.map((role: string) => ({
+                    value: role,
+                    label: role
+                }));
+                this.updateSearchFieldsWithRoles();
+            },
+            error: (err: any) => {
+                console.error("Failed to load roles for search:", err);
+            }
+        });
     }
 
     updateSearchFieldsWithRoles() {
@@ -147,40 +177,19 @@ export class ManageUsersComponent implements OnInit {
 
     onSearchFromChild(searchValues: any) {
         console.log("Search values from child:", searchValues);
-        this.currentSearchValues = searchValues || {};
-
-        // Extract values from search object
-        const role = this.currentSearchValues.role || undefined;
-        const name = this.currentSearchValues.name || undefined;
-        const email = this.currentSearchValues.email || undefined;
-        const phoneNumber = this.currentSearchValues.mobile || undefined;
-        const username = this.currentSearchValues.employeeId || undefined;
-        const status = this.currentSearchValues.status || undefined;
-
-        // Call the search API with all parameters
-        this.userTargetService.searchTarget(username, role, email, phoneNumber, name).subscribe({
-            next: (users: any[]) => {
-                this.totalItems = null;
-                this.rows = users.map((c: any, index: number) => ({
-                    serialNumber: c.serialNumber ?? (index + 1),
-                    userId: c.userId ?? c.id ?? c.serialNumber ?? null,
-                    name: c.firstName && c.lastName
-                        ? `${c.firstName} ${c.lastName}`
-                        : (c.firstName ?? c.username ?? ''),
-                    role: c.roleName ?? c.role?.roleName ?? '',
-                    employeeId: c.username ?? '',
-                    email: c.email ?? '',
-                    mobile: c.phoneNumber ?? '',
-                    status: c.status
-                }));
-            },
-            error: (err: any) => {
-                console.error("Search failed:", err);
-                if (err.status === 400 && err.error === 'No matching records found') {
-                    this.rows = [];
-                }
-            }
-        });
+        // UserSearchDTO keys mapping
+        this.currentSearchValues = {
+            roleName: searchValues?.role || undefined,
+            userName: searchValues?.name || undefined,
+            employeeId: searchValues?.employeeId || undefined,
+            email: searchValues?.email || undefined,
+            mobile: searchValues?.mobile || undefined,
+            // status is not in backend UserSearchDTO, so we might need to ignore or handle differently,
+            // but the backend searches with whatever fields are provided.
+        };
+        
+        this.currentPage = 1;
+        this.loadUsers();
     }
 
     onReset(): void {
@@ -190,13 +199,13 @@ export class ManageUsersComponent implements OnInit {
 
     onAdd() {
         console.log("Add new user clicked");
-        this.router.navigate(['/admin/add-users']);
+        this.router.navigate(['/users/add']);
     }
 
     onEdit(row: any) {
         console.log('Edit clicked for user:', row);
         // Navigate to edit user page with user ID
-        this.router.navigate(['/admin/edit-user', row.userId]);
+        this.router.navigate(['/users/edit', row.userId]);
     }
 
     onDelete(row: any) {
@@ -216,15 +225,19 @@ export class ManageUsersComponent implements OnInit {
         }).then((confirmed) => {
             if (!confirmed) return;
 
-            this.userTargetService.toggleUserStatus(row.userId).subscribe({
+            const request = isActive 
+                ? this.userService.deactivateUser(row.userId)
+                : this.userService.activateUser(row.userId);
+
+            request.subscribe({
                 next: (response: any) => {
                     row.status = isActive ? 0 : 1;
                     this.rows = [...this.rows];
-                    this.toastService.success(`User ${isActive ? 'deactivated' : 'activated'} successfully`);
+                    this.toastService.success(`User successfully ${isActive ? 'deactivated' : 'activated'}.`);
                 },
                 error: (err: any) => {
-                    console.error('Failed to change user status:', err);
-                    this.toastService.error('Failed to change user status. Please try again.');
+                    console.error("Failed to update status:", err);
+                    this.toastService.error("Failed to update user status.");
                 }
             });
         });
@@ -232,32 +245,36 @@ export class ManageUsersComponent implements OnInit {
 
     onDownload(): void {
         if (!this.rows || this.rows.length === 0) {
-            alert('No data available to download');
+            this.toastService.error('No data available to download');
             return;
         }
 
-        const excelData = this.rows.map((row, index) => ({
-            'S.NO': index + 1,
-            'Name': row.name,
-            'Role': row.role,
-            'Employee ID': row.employeeId,
-            'Email': row.email,
-            'Mobile': row.mobile,
-            'Status': row.status
-        }));
-
-        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(excelData);
-        const workbook: XLSX.WorkBook = {
-            Sheets: { 'Users': worksheet },
-            SheetNames: ['Users']
+        const searchPayload = {
+            ...this.currentSearchValues,
+            pagination: {
+                pageNumber: 0,
+                pageSize: 1000000,
+                sortBy: "createdTime",
+                sortOrder: "DESC"
+            }
         };
 
-        const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const data: Blob = new Blob([excelBuffer], {
-            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+        this.userService.downloadUsers(searchPayload).subscribe({
+            next: (blob: Blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `users_export_${new Date().getTime()}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            },
+            error: (err: any) => {
+                console.error("Failed to download users:", err);
+                this.toastService.error("Failed to download users.");
+            }
         });
-
-        saveAs(data, `users_export_${new Date().getTime()}.xlsx`);
     }
 
     onView(row: any) {
@@ -266,6 +283,6 @@ export class ManageUsersComponent implements OnInit {
             alert('Cannot view user: User ID not found.');
             return;
         }
-        this.router.navigate(['/admin/view-user', row.userId]);
+        this.router.navigate(['/users/view', row.userId]);
     }
 }

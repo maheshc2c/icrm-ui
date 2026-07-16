@@ -9,6 +9,7 @@ import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Adminservice } from '../../../../service/adminservice';
 import { ProductService } from '../../../../service/productservice';
 import { DemoProductModel } from '../../../../models/demo-product-model';
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
   selector: 'app-add',
@@ -23,7 +24,8 @@ export class Add implements OnInit {
     private adminService: Adminservice,
     private productService: ProductService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService: ToastService
   ) {}
 
   isEditMode = false;
@@ -160,36 +162,36 @@ demoFields: any[] = [
 // }
 private loadDemoById(id: number) {
   this.adminService.getDemo().subscribe({
-    next: (data: any[]) => {
-      const demo = data.find(d => d.demoProductDetailId == id);
-
-      if (!demo) {
-        alert('Demo product not found');
+      next: (data: any[]) => {
+        const demo = data.find(d => d.demoId == id);
+  
+        if (!demo) {
+        this.toastService.error('Demo product not found');
         this.router.navigate(['/admin/demo']);
         return;
       }
 
-      // Assign non-dropdown values first
-      this.formInitialData = {
-        demoProductDetailSerialNumber: demo.demoProductDetailSerialNumber,
-        demoProductDetailLocation: demo.demoProductDetailLocation
-      };
+        // Assign non-dropdown values first
+        this.formInitialData = {
+          demoProductDetailSerialNumber: demo.serialNumber,
+          demoProductDetailLocation: demo.location
+        };
 
       // Load all edit dropdowns and resolve correct IDs by matching names
       this.loadEditDropdowns(demo);
     },
     error: () => {
-      alert('Failed to load demo');
+      this.toastService.error('Failed to load demo');
       this.router.navigate(['/admin/demo']);
     }
   });
 }
 
 private loadEditDropdowns(demo: any) {
-  // 1. CATEGORY → GROUP → PRODUCT (Resolved via ProductService matching productName)
-  this.productService.getProducts().subscribe({
-    next: (products) => {
-      const matchedProduct = products.find(p => p.productName === demo.productName);
+    // 1. CATEGORY -> GROUP -> PRODUCT (Resolved via ProductService matching product)
+    this.productService.getProducts().subscribe({
+      next: (products) => {
+        const matchedProduct = products.find(p => p.productName === demo.product);
 
       if (matchedProduct) {
         const categoryId = matchedProduct.group.category.categoryId;
@@ -204,12 +206,12 @@ private loadEditDropdowns(demo: any) {
           // Load Segments/Groups options
           this.adminService.getSegmentDropdown(categoryId).subscribe(groupRes => {
             this.groups = groupRes;
-            this.setOptions('groupId', groupRes, 'groupId', 'groupName');
+            this.setOptions('groupId', groupRes, 'id', 'name');
 
             // Load Products options
             this.adminService.getProductDropdown(groupId).subscribe(prodRes => {
               this.products = prodRes;
-              this.setOptions('productId', prodRes, 'productId', 'productName');
+              this.setOptions('productId', prodRes, 'id', 'name');
 
               // Set the resolved IDs into form initial data once all options are loaded
               this.formInitialData = {
@@ -234,11 +236,11 @@ private loadEditDropdowns(demo: any) {
   // 2. REGION → BRANCH / CITY
   this.adminService.getRegionDropdown().subscribe(regRes => {
     this.regions = regRes;
-    this.setOptions('regionId', regRes, 'locationId', 'locationName');
+    this.setOptions('regionId', regRes, 'id', 'name');
 
-    const matchedRegion = regRes.find(r => r.locationName === (demo.regionName || demo.region));
+    const matchedRegion = regRes.find(r => r.name === demo.region);
     if (matchedRegion) {
-      const regionId = matchedRegion.locationId;
+      const regionId = matchedRegion.id;
       this.formInitialData = {
         ...this.formInitialData,
         regionId: regionId
@@ -246,26 +248,26 @@ private loadEditDropdowns(demo: any) {
 
       this.adminService.getBranchDropdown(regionId).subscribe(branchRes => {
         this.branches = branchRes;
-        this.setOptions('branchId', branchRes, 'branchId', 'branchName');
-
-        const matchedBranch = branchRes.find(b => b.branchName === demo.branchName);
+        this.setOptions('branchId', branchRes, 'id', 'name');
+        
+        const matchedBranch = branchRes.find(b => b.name === (demo.branchName || demo.branch));
         if (matchedBranch) {
           this.formInitialData = {
             ...this.formInitialData,
-            branchId: matchedBranch.branchId
+            branchId: matchedBranch.id
           };
         }
       });
 
       this.adminService.getCityDropdown(regionId).subscribe(cityRes => {
         this.cities = cityRes;
-        this.setOptions('cityId', cityRes, 'locationId', 'locationName');
+        this.setOptions('cityId', cityRes, 'id', 'name');
 
-        const matchedCity = cityRes.find(c => c.locationName === demo.cityName);
+        const matchedCity = cityRes.find(c => c.name === (demo.cityName || demo.city));
         if (matchedCity) {
           this.formInitialData = {
             ...this.formInitialData,
-            cityId: matchedCity.locationId
+            cityId: matchedCity.id
           };
         }
       });
@@ -329,7 +331,7 @@ private loadEditDropdowns(demo: any) {
 
   this.adminService.getSegmentDropdown(categoryId).subscribe(res => {
     this.groups = res;
-    this.setOptions('groupId', res, 'groupId', 'groupName');
+    this.setOptions('groupId', res, 'id', 'name');
   });
 }
 
@@ -353,7 +355,7 @@ private loadEditDropdowns(demo: any) {
 
   this.adminService.getProductDropdown(groupId).subscribe(res => {
     this.products = res;
-    this.setOptions('productId', res, 'productId', 'productName');
+    this.setOptions('productId', res, 'id', 'name');
   });
 }
 
@@ -361,7 +363,7 @@ private loadEditDropdowns(demo: any) {
   loadRegions(): void {
     this.adminService.getRegionDropdown().subscribe(res => {
       this.regions = res;
-      this.setOptions('regionId', res, 'locationId', 'locationName');
+      this.setOptions('regionId', res, 'id', 'name');
     });
   }
 
@@ -391,12 +393,12 @@ onRegionChange(regionId: number): void {
 
   this.adminService.getBranchDropdown(regionId).subscribe(res => {
     this.branches = res;
-    this.setOptions('branchId', res, 'branchId', 'branchName');
+    this.setOptions('branchId', res, 'id', 'name');
   });
 
   this.adminService.getCityDropdown(regionId).subscribe(res => {
     this.cities = res;
-    this.setOptions('cityId', res, 'locationId', 'locationName');
+    this.setOptions('cityId', res, 'id', 'name');
   });
 }
 
@@ -465,27 +467,27 @@ onRegionChange(regionId: number): void {
 saveDemo(formData: any): void {
 
   const category = this.categories.find(c => c.categoryId == formData.categoryId);
-  const group = this.groups.find(g => g.groupId == formData.groupId);
-  const product = this.products.find(p => p.productId == formData.productId);
-  const region = this.regions.find(r => r.locationId == formData.regionId);
-  const branch = this.branches.find(b => b.branchId == formData.branchId);
-  const city = this.cities.find(c => c.locationId == formData.cityId);
+  const group = this.groups.find(g => g.id == formData.groupId);
+  const product = this.products.find(p => p.id == formData.productId);
+  const region = this.regions.find(r => r.id == formData.regionId);
+  const branch = this.branches.find(b => b.id == formData.branchId);
+  const city = this.cities.find(c => c.id == formData.cityId);
 
   if (!category || !group || !product || !region || !branch || !city) {
-    alert('Dropdown data missing');
+    this.toastService.error('Dropdown data missing');
     return;
   }
 
   const payload = {
-    categoryName: category.categoryName,
-    groupName: group.groupName,
-    productName: product.productName,
-    regionName: region.locationName,
-    branchName: branch.branchName,
-    cityName: city.locationName,
-    demoProductDetailSerialNumber: formData.demoProductDetailSerialNumber,
-    demoProductDetailLocation: formData.demoProductDetailLocation,
-    demoProductDetailStatus: 1
+    categoryId: category.categoryId,
+    segmentId: group.id,
+    productId: product.id,
+    regionId: region.id,
+    branchId: branch.id,
+    cityId: city.id,
+    serialNumber: formData.demoProductDetailSerialNumber,
+    location: formData.demoProductDetailLocation,
+    status: 1
   };
 
   if (this.isEditMode) {
@@ -495,15 +497,21 @@ saveDemo(formData: any): void {
 
 
     this.adminService.updateDemo(id, payload).subscribe({
-      next: () => this.router.navigate(['/admin/demo']),
-      error: () => alert('Failed to update demo')
+      next: () => {
+        this.toastService.success('Demo updated successfully');
+        this.router.navigate(['/admin/demo']);
+      },
+      error: (err: any) => this.toastService.error(err.error?.message || 'Failed to update demo')
     });
 
   } else {
 
     this.adminService.createDemo(payload).subscribe({
-      next: () => this.router.navigate(['/admin/demo']),
-      error: () => alert('Failed to create demo')
+      next: () => {
+        this.toastService.success('Demo created successfully');
+        this.router.navigate(['/admin/demo']);
+      },
+      error: (err: any) => this.toastService.error(err.error?.message || 'Failed to create demo')
     });
   }
 }

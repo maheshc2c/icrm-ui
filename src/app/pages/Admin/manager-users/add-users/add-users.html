@@ -36,9 +36,6 @@
             <div class="tab-item" [class.active]="currentStep === 4">
                 Product Details
             </div>
-            <div class="tab-item" *ngIf="isDistributor" [class.active]="currentStep === 5">
-                Distributor Details
-            </div>
         </div>
 
         <div class="tabs-actions">
@@ -56,7 +53,7 @@
         <h3 class="section-title">User Info</h3>
 
         <div class="wizard-form-container">
-            <form (ngSubmit)="handleStepSubmit(formInitialData)">
+            <form #step2Form="ngForm" (ngSubmit)="step2Form.form.valid ? handleStepSubmit(formInitialData) : handleFormError(step2Form)">
 
                 <div class="form-row" *ngFor="let field of userDetailsFields">
                     <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required"
@@ -67,73 +64,143 @@
                         <div *ngSwitchCase="'text'" class="input-container">
                             <input [type]="field.type" class="form-control" [placeholder]="field.placeholder"
                                 [(ngModel)]="formInitialData[field.name]" [name]="field.name"
-                                [required]="field.required">
+                                [required]="field.required" #fieldCtrl="ngModel"
+                                [ngClass]="{'is-invalid': (step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid}">
+                            <div *ngIf="(step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
                         </div>
                         <div *ngSwitchCase="'email'" class="input-container">
                             <input [type]="field.type" class="form-control" [placeholder]="field.placeholder"
                                 [(ngModel)]="formInitialData[field.name]" [name]="field.name"
-                                [required]="field.required">
+                                [required]="field.required" #fieldCtrl="ngModel"
+                                [ngClass]="{'is-invalid': (step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid}">
+                            <div *ngIf="(step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
                         </div>
 
                         <!-- Phone / Mobile Input -->
-                        <div *ngSwitchCase="'phone'" class="input-container phone-input-group">
-                            <select class="form-select phone-code" [(ngModel)]="formInitialData[field.name + 'Code']"
-                                [name]="field.name + 'Code'">
-                                <option value="91">91</option>
-                            </select>
-                            <input type="text" class="form-control" [placeholder]="field.placeholder"
-                                [(ngModel)]="formInitialData[field.name]" [name]="field.name"
-                                [required]="field.required">
+                        <div *ngSwitchCase="'phone'" class="input-container">
+                            <div class="phone-input-group" style="display: flex;">
+                                <select class="form-select phone-code" [(ngModel)]="formInitialData[field.name + 'Code']"
+                                    [name]="field.name + 'Code'" style="width: 80px; border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: 0;">
+                                    <option value="91">91</option>
+                                </select>
+                                <input type="text" class="form-control" [placeholder]="field.placeholder"
+                                    [(ngModel)]="formInitialData[field.name]" [name]="field.name"
+                                    [required]="field.required" #fieldCtrl="ngModel"
+                                    [ngClass]="{'is-invalid': (step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid}" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                            </div>
+                            <div *ngIf="(step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
                         </div>
 
                         <!-- Select / Dropdown -->
                         <div *ngSwitchCase="'select'" class="input-container">
                             <select class="form-select" [(ngModel)]="formInitialData[field.name]" [name]="field.name"
-                                [required]="field.required" [attr.multiple]="$any(field).multiple ? true : null">
+                                [required]="field.required" [attr.multiple]="$any(field).multiple ? true : null" #fieldCtrl="ngModel"
+                                [ngClass]="{'is-invalid': (step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid}">
                                 <option value="" disabled selected>{{field.placeholder}}</option>
                                 <option *ngFor="let opt of field.options" [value]="opt">{{opt}}</option>
                             </select>
+                            <div *ngIf="(step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
                         </div>
 
                         <!-- Textarea -->
                         <div *ngSwitchCase="'textarea'" class="input-container">
                             <textarea class="form-control" rows="2" [(ngModel)]="formInitialData[field.name]"
-                                [name]="field.name" [required]="field.required"></textarea>
+                                [name]="field.name" [required]="field.required" #fieldCtrl="ngModel"
+                                [ngClass]="{'is-invalid': (step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid}"></textarea>
+                            <div *ngIf="(step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
                         </div>
 
                         <!-- Default -->
                         <div *ngSwitchDefault class="input-container">
                             <input type="text" class="form-control" [placeholder]="field.placeholder"
                                 [(ngModel)]="formInitialData[field.name]" [name]="field.name"
-                                [required]="field.required">
+                                [required]="field.required" #fieldCtrl="ngModel"
+                                [ngClass]="{'is-invalid': (step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid}">
+                            <div *ngIf="(step2Form.submitted || fieldCtrl.touched) && fieldCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
                         </div>
                     </ng-container>
                 </div>
 
+                <!-- Distributor Details appended here -->
+                <ng-container *ngIf="isDistributor">
+                    <div style="grid-column: span 2; margin-top: 20px; margin-bottom: 10px;">
+                        <hr style="border-top: 1px solid #ccc; margin-bottom: 20px;">
+                        <h4 style="color: #555; font-weight: 500;">Distributor Details</h4>
+                    </div>
+                    <div class="form-row" *ngFor="let field of distributorDetailsFields">
+                        <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required" class="text-danger">*</span></label>
+                        <div class="input-container">
+                            <input type="text" class="form-control" [placeholder]="field.placeholder"
+                                [(ngModel)]="formInitialData[field.name]" [name]="field.name" [required]="field.required" #distCtrl="ngModel"
+                                [ngClass]="{'is-invalid': (step2Form.submitted || distCtrl.touched) && distCtrl.invalid}">
+                            <div *ngIf="(step2Form.submitted || distCtrl.touched) && distCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- Stockist Details appended here -->
+                <ng-container *ngIf="isStockist">
+                    <div style="grid-column: span 2; margin-top: 20px; margin-bottom: 10px;">
+                        <hr style="border-top: 1px solid #ccc; margin-bottom: 20px;">
+                        <h4 style="color: #555; font-weight: 500;">Stockist Details</h4>
+                    </div>
+                    <div class="form-row" *ngFor="let field of stockistDetailsFields">
+                        <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required" class="text-danger">*</span></label>
+                        <div class="input-container">
+                            <input type="text" class="form-control" [placeholder]="field.placeholder"
+                                [(ngModel)]="formInitialData[field.name]" [name]="field.name" [required]="field.required" #stockCtrl="ngModel"
+                                [ngClass]="{'is-invalid': (step2Form.submitted || stockCtrl.touched) && stockCtrl.invalid}">
+                            <div *ngIf="(step2Form.submitted || stockCtrl.touched) && stockCtrl.invalid" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                                {{field.label}} is required.
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
                 <div class="form-actions mt-4">
-                    <button type="button" class="btn btn-outline-secondary btn-rounded"
-                        (click)="handleStepCancel()">Cancel</button>
-                    <button type="submit" class="btn btn-primary btn-rounded ms-3">Submit</button>
-                </div>
+                      <button type="button" class="btn btn-outline-secondary btn-rounded"
+                          (click)="handleStepCancel()">Cancel</button>
+
+                      <button *ngIf="locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS')"
+                              type="button" 
+                              class="btn btn-primary btn-rounded ms-3"
+                              (click)="step2Form.form.valid ? onFormSubmit(formInitialData) : handleFormError(step2Form)">
+                          Submit
+                      </button>
+
+                      <button *ngIf="!(locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'))"
+                              type="submit" class="btn btn-primary btn-rounded ms-3">Next Step</button>
+                  </div>
             </form>
         </div>
     </div>
 
     <!-- Step 3: Location Details (Cascading) -->
     <div *ngIf="currentStep === 3" class="wizard-form-body">
-        <h3 class="section-title">Location Details</h3>
+        <h3 class="section-title" *ngIf="locationMode !== 'world'">Location Details</h3>
         <div class="wizard-form-container">
             <form (ngSubmit)="handleStepSubmit({})">
 
                 <!-- === WORLD-LEVEL ROLES: Admin Marketing / Global Head / Stockist / CIC === -->
                 <ng-container *ngIf="locationMode === 'world'">
-                    <div class="form-row">
-                        <label class="form-label inline-label text-right"></label>
-                        <div class="input-container">
-                            <p class="text-muted" style="font-size:13px; margin:0;">
-                                <i class="fas fa-info-circle"></i>
-                                This role has access to all locations.
-                            </p>
+                    <div style="padding: 30px; display: block; grid-column: span 2; width: 100%;">
+                        <h4 style="margin-bottom: 60px; color: #555; text-align: left; font-weight: normal;">Assign locations to user</h4>
+                        <div style="text-align: center; font-weight: bold; font-size: 18px; color: #555; margin-bottom: 60px;">
+                            All GEOS
                         </div>
                     </div>
                 </ng-container>
@@ -253,12 +320,20 @@
                 </ng-container>
                 <!-- End cascade ng-container -->
 
-                <!-- Form Actions (shared for all modes) -->
-                <div class="form-actions mt-4">
-                    <button type="button" class="btn btn-outline-secondary btn-rounded"
-                        (click)="handleStepCancel()">Previous</button>
-                    <button type="submit" class="btn btn-primary btn-rounded ms-3">Next Step</button>
-                </div>
+                  <div class="form-actions mt-4">
+                      <button type="button" class="btn btn-outline-secondary btn-rounded"
+                          (click)="handleStepCancel()">Previous</button>
+
+                      <button *ngIf="locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS')"
+                              type="button" 
+                              class="btn btn-primary btn-rounded ms-3"
+                              (click)="onFormSubmit({})">
+                          Submit
+                      </button>
+
+                      <button *ngIf="!(locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'))"
+                              type="submit" class="btn btn-primary btn-rounded ms-3">Next Step</button>
+                  </div>
 
             </form>
         </div>
@@ -267,82 +342,88 @@
 
     <!-- Step 4: Product Details (Cascading) -->
     <div *ngIf="currentStep === 4" class="wizard-form-body">
-        <h3 class="section-title">Product Details</h3>
+        <h3 class="section-title" *ngIf="productType === 'SELECT_PRODUCTS'">Product Details</h3>
         <div class="wizard-form-container">
             <form (ngSubmit)="handleStepSubmit({})">
+                <ng-container *ngIf="productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'">
+                    <div style="padding: 30px; display: block; grid-column: span 2; width: 100%;">
+                        <h4 style="margin-bottom: 60px; color: #555; text-align: left; font-weight: normal;">Assign products to user</h4>
+                        <div style="text-align: center; font-weight: bold; font-size: 18px; color: #555; margin-bottom: 60px;">
+                            {{ productType === 'NO_PRODUCTS' ? 'No Need of Assigning Products' : 'All Products Assigned' }}
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="productType === 'SELECT_PRODUCTS'">
 
                 <!-- Categories (checkboxes) -->
                 <div class="form-row">
-                    <label class="form-label inline-label text-right">Assign Categories</label>
+                    <label class="form-label inline-label text-right">Assign Categories <span class="mandatory-star">*</span></label>
                     <div class="input-container">
-                        <div class="checkbox-list">
-                            <div class="checkbox-item" *ngFor="let c of categories">
+                        <div class="checkbox-list" [ngClass]="{'border-danger': step4Submitted && categories.length > 0 && selCategories.length === 0}" style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px;">
+                            <div class="checkbox-item" *ngFor="let c of categories" style="display: flex; align-items: center;">
                                 <input type="checkbox" [id]="'cat_' + c"
                                     [checked]="selCategories.includes(c)"
                                     (change)="onCategoryCheck($event, c)">
-                                <label [for]="'cat_' + c">{{c}}</label>
+                                <label [for]="'cat_' + c" class="ms-2" style="margin-bottom: 0;">{{c}}</label>
                             </div>
+                        </div>
+                        <div *ngIf="step4Submitted && categories.length > 0 && selCategories.length === 0" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                            Assign Categories is required.
                         </div>
                     </div>
                 </div>
 
-                <!-- Groups (checkboxes) -->
-                <div class="form-row" *ngIf="groupOptions.length">
-                    <label class="form-label inline-label text-right">Assign Groups</label>
+                <!-- Groups (checkboxes) grouped by Category -->
+                <div class="form-row" *ngIf="groupedGroups.length">
+                    <label class="form-label inline-label text-right">Assign Groups <span class="mandatory-star">*</span></label>
                     <div class="input-container">
-                        <div class="checkbox-list">
-                            <div class="checkbox-item" *ngFor="let g of groupOptions">
-                                <input type="checkbox" [id]="'grp_' + g.groupName"
-                                    [checked]="selGroups.includes(g.groupName)"
-                                    (change)="onGroupCheck($event, g.groupName)">
-                                <label [for]="'grp_' + g.groupName">{{g.groupName}}</label>
+                        <div class="grouped-checkbox-container" [ngClass]="{'border-danger': step4Submitted && groupOptions.length > 0 && selGroups.length === 0}" style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 250px; overflow-y: auto;">
+                            <div class="group-category-section mb-3" *ngFor="let groupCat of groupedGroups">
+                                <h6 class="category-heading font-weight-bold" style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; color: #555;">{{groupCat.category}}</h6>
+                                <div class="checkbox-list" style="display: flex; flex-direction: column; gap: 5px; padding-left: 10px;">
+                                    <div class="checkbox-item" *ngFor="let g of groupCat.groups" style="display: flex; align-items: center;">
+                                        <input type="checkbox" [id]="'grp_' + g.groupName"
+                                            [checked]="selGroups.includes(g.groupName)"
+                                            (change)="onGroupCheck($event, g.groupName)">
+                                        <label [for]="'grp_' + g.groupName" class="ms-2" style="margin-bottom: 0;">{{g.groupName}}</label>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <div *ngIf="step4Submitted && groupOptions.length > 0 && selGroups.length === 0" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                            Assign Groups is required.
                         </div>
                     </div>
                 </div>
 
-                <!-- Products (checkboxes) -->
-                <div class="form-row" *ngIf="productOptions.length">
-                    <label class="form-label inline-label text-right">Assign Products</label>
+                <!-- Products (checkboxes) grouped by Group -->
+                <div class="form-row" *ngIf="groupedProducts.length">
+                    <label class="form-label inline-label text-right">Assign Products <span class="mandatory-star">*</span></label>
                     <div class="input-container">
-                        <div class="checkbox-list">
-                            <div class="checkbox-item" *ngFor="let p of productOptions">
-                                <input type="checkbox" [id]="'prod_' + p"
-                                    [checked]="selProducts.includes(p)"
-                                    (change)="onProductCheck($event, p)">
-                                <label [for]="'prod_' + p">{{p}}</label>
+                        <div class="grouped-checkbox-container" [ngClass]="{'border-danger': step4Submitted && productOptions.length > 0 && selProducts.length === 0}" style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; max-height: 250px; overflow-y: auto;">
+                            <div class="group-category-section mb-3" *ngFor="let prodGroup of groupedProducts">
+                                <h6 class="category-heading font-weight-bold" style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; color: #555;">{{prodGroup.group}}</h6>
+                                <div class="checkbox-list" style="display: flex; flex-direction: column; gap: 5px; padding-left: 10px;">
+                                    <div class="checkbox-item" *ngFor="let p of prodGroup.products" style="display: flex; align-items: center;">
+                                        <input type="checkbox" [id]="'prod_' + p"
+                                            [checked]="selProducts.includes(p)"
+                                            (change)="onProductCheck($event, p)">
+                                        <label [for]="'prod_' + p" class="ms-2" style="margin-bottom: 0;">{{p}}</label>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <div *ngIf="step4Submitted && productOptions.length > 0 && selProducts.length === 0" class="text-danger mt-1" style="color: red; font-size: 0.85rem;">
+                            Assign Products is required.
                         </div>
                     </div>
                 </div>
+
+                </ng-container>
 
                 <div class="form-actions mt-4">
-                    <button type="button" class="btn btn-outline-secondary btn-rounded"
-                        (click)="handleStepCancel()">Previous</button>
-                    <button type="submit" class="btn btn-primary btn-rounded ms-3">
-                        {{ isDistributor ? 'Next Step' : 'Submit' }}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Step 5: Distributor Details Form (only shown when role = Distributor) -->
-    <div *ngIf="currentStep === 5 && isDistributor" class="wizard-form-body">
-        <h3 class="section-title">Distributor Details</h3>
-        <div class="wizard-form-container">
-            <form (ngSubmit)="handleStepSubmit(formInitialData)">
-                <div class="form-row" *ngFor="let field of distributorDetailsFields">
-                    <label class="form-label inline-label text-right">{{field.label}} <span *ngIf="field.required"
-                            class="text-danger">*</span></label>
-                    <div class="input-container">
-                        <input type="text" class="form-control" [placeholder]="field.placeholder"
-                            [(ngModel)]="formInitialData[field.name]" [name]="field.name" [required]="field.required">
-                    </div>
-                </div>
-                <div class="form-actions mt-4">
-                    <button type="button" class="btn btn-outline-secondary btn-rounded"
-                        (click)="handleStepCancel()">Previous</button>
+                    <button type="button" class="btn btn-outline-secondary btn-rounded" (click)="handleStepCancel()">Previous</button>
                     <button type="submit" class="btn btn-primary btn-rounded ms-3">Submit</button>
                 </div>
             </form>

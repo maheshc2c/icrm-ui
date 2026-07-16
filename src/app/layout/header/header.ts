@@ -1,6 +1,7 @@
 import { Component, Inject, PLATFORM_ID, OnInit, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterEvent } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-header',
@@ -12,6 +13,7 @@ import { Router, RouterEvent } from '@angular/router';
 export class Header implements OnInit {
 
   role: string | null = null;
+  originalRole: string | null = null;
   sub: string | null = null;
   userId: string | null = null;
   firstName: string | null = null;
@@ -29,7 +31,22 @@ private router: Router) {}
       this.sub = localStorage.getItem('sub');
       this.firstName = localStorage.getItem('firstName');
       this.lastName = localStorage.getItem('lastName');
+
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const decoded: any = jwtDecode(token);
+          this.originalRole = decoded.role;
+        } catch (e) {
+          console.error('Failed to decode token in header');
+        }
+      }
     }
+  }
+
+  switchRole(newRole: string, path: string): void {
+    localStorage.setItem('role', newRole);
+    window.location.href = path;
   }
 
   onSwitchRoleClick(): void {

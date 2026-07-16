@@ -74,6 +74,7 @@ export class ApproveLeads implements OnInit {
     }
   ];
 
+
   /* TABLE DATA */
   rows: any[] = [];
   allRows: any[] = [];
