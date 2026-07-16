@@ -292,6 +292,12 @@ export class Leadservice {
     });
   }
 
+  createContractNote(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/contractnote`, payload, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   getBillingOptions(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/salesengineer/billing`, {
       headers: this.getAuthHeaders()
