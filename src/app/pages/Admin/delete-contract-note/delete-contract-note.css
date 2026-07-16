@@ -1,0 +1,59 @@
+.delete-cnote-container {
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 70px);
+  margin-left: 260px; /* Sidebar offset */
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 991px) {
+  .delete-cnote-container {
+    margin-left: 0;
+    padding: 16px;
+  }
+}
+
+.search-card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
+}
+
+.search-input-group {
+  max-width: 320px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cnote-input {
+  border: none;
+  font-size: 14px;
+  padding: 10px 14px;
+  box-shadow: none !important;
+}
+
+.search-btn {
+  background-color: #007bff;
+  border: none;
+  color: #ffffff;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-btn:hover {
+  background-color: #0056b3;
+}
+
+.info-text {
+  font-size: 13px;
+  color: #495057;
+  font-family: inherit;
+}
+
+.info-text strong {
+  color: #343a40;
+}

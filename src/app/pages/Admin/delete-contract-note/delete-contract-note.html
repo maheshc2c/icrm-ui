@@ -1,0 +1,51 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="delete-cnote-container">
+  <div class="search-card card mb-4">
+    <div class="card-body py-3">
+      <div class="d-flex align-items-center flex-wrap gap-3">
+        <div class="input-group search-input-group">
+          <input 
+            type="text" 
+            placeholder="CNOTE ID" 
+            [(ngModel)]="searchCnoteId"
+            (keyup.enter)="onSearch()"
+            class="form-control cnote-input" />
+          <button class="btn btn-primary search-btn" type="button" (click)="onSearch()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+        <div class="info-text">
+          <strong>NOTE:</strong> separate multiple C Note IDs with comma(,) (Ex: 25,28,78)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-data-table
+    title="Contract Notes"
+    [columns]="columns"
+    [rows]="filteredRows"
+    [showAdd]="false"
+    [showImport]="false"
+    [showReset]="false"
+    [showPagination]="true"
+    [totalElements]="totalElements"
+    [pageSize]="pageSize"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    [showActions]="true"
+    [showEditButton]="false"
+    [showDeleteButton]="true"
+    [trackByField]="'cnoteId'"
+    (deleteRow)="onDelete($event)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)">
+  </app-data-table>
+</div>

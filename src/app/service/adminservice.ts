@@ -1151,6 +1151,23 @@ saveDiscountQuote(data: DiscountQuoteModel[]): Observable<any> {
   );
 }
 
+  searchDeleteContractNotes(ids?: string): Observable<any[]> {
+    let params = new HttpParams();
+    if (ids) {
+      params = params.set('ids', ids);
+    }
+    return this.http.get<any[]>(`${this.baseUrl}/contractnote/search-delete`, {
+      headers: this.getAuthHeaders(),
+      params: params
+    });
+  }
+
+  deleteContractNote(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/contractnote/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
 
 
 

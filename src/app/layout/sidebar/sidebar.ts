@@ -127,7 +127,7 @@ constructor() {
                     {
         label: 'Delete Contract Note',
         icon: 'fas fa-trash',
-        route: '/admindashboard'
+        route: '/admin/delete-contract-note'
       },
                   {
         label: 'Bulk Uploads',
