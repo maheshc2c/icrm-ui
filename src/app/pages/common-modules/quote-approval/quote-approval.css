@@ -1,0 +1,430 @@
+.modal-backdrop{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:99999;
+
+}
+
+.approval-popup{
+
+    width:800px;
+
+    min-height:400px;
+
+    background:#fff;
+
+    border-radius:4px;
+
+    overflow:hidden;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+
+}
+
+/* Header */
+
+.popup-header{
+
+    background:#2f8de4;
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 25px;
+
+}
+
+.popup-header h2{
+
+    margin:0;
+
+    font-size:24px;
+
+    font-weight:500;
+
+}
+
+.close-btn{
+
+    background:transparent;
+
+    border:none;
+
+    color:#fff;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+}
+
+/* Body */
+
+.popup-body{
+
+    padding:35px;
+
+    min-height:250px;
+
+}
+
+.info-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:20px;
+
+}
+
+.info-item{
+
+    width:48%;
+
+}
+
+.full-width{
+
+    width:100%;
+
+}
+
+.info-item label{
+
+    display:inline-block;
+
+    width:140px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:#444;
+
+}
+
+.info-item span{
+
+    font-size:18px;
+
+    color:#555;
+
+}
+
+.remarks-section{
+
+    margin-top:50px;
+
+}
+
+.remarks-section label{
+
+    display:block;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    margin-bottom:15px;
+
+}
+
+.required{
+
+    color:red;
+
+}
+
+.remarks-section textarea{
+
+    width:100%;
+
+    height:90px;
+
+    border:1px solid #cfcfcf;
+
+    border-radius:3px;
+
+    padding:10px;
+
+    resize:none;
+
+    font-size:18px;
+
+    font-family:'Times New Roman', Times, serif;
+
+}
+
+/* Footer */
+
+.popup-footer{
+
+    border-top:1px solid #ddd;
+
+    padding:15px 25px;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:15px;
+
+}
+
+.approve-btn{
+
+    background:#2f80ed;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 22px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+}
+
+.reject-btn{
+
+    background:#e74c3c;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 22px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+}
+
+.cancel-btn{
+
+    background:#5bc0de;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 22px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+}
+
+.approve-btn:hover{
+
+    background:#1d6fd1;
+
+}
+
+.reject-btn:hover{
+
+    background:#cf3c2d;
+
+}
+
+.cancel-btn:hover{
+
+    background:#46a7c5;
+
+}
+
+/* ============================================================
+   Margin Analysis Popup
+   ============================================================ */
+
+.margin-analysis-popup {
+    width: 900px;
+    max-width: 96vw;
+    max-height: 88vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 16px 48px rgba(33, 150, 243, 0.22), 0 4px 16px rgba(0,0,0,.18);
+    animation: ma-popup-in 0.22s cubic-bezier(.23,1,.32,1);
+}
+
+@keyframes ma-popup-in {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.margin-analysis-popup .popup-header {
+    background: linear-gradient(135deg, #1565c0 0%, #1e88e5 100%);
+    padding: 16px 28px;
+    border-radius: 10px 10px 0 0;
+}
+
+.margin-analysis-popup .popup-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+.margin-analysis-popup .popup-body {
+    padding: 24px 28px;
+}
+
+/* Product / opportunity summary table */
+.ma-table thead tr {
+    background: linear-gradient(90deg, #1e88e5 0%, #42a5f5 100%);
+    color: #fff;
+}
+
+.ma-table thead th {
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,.25);
+    text-align: center;
+}
+
+.ma-table tbody td {
+    padding: 8px 12px;
+    font-size: 13px;
+    text-align: center;
+    border: 1px solid #e3eaf3;
+}
+
+.ma-table tbody tr:hover {
+    background: #e8f4fd;
+    transition: background 0.15s;
+}
+
+/* Two-column detail tables */
+.ma-detail-table td {
+    padding: 8px 14px;
+    font-size: 13px;
+    border: 1px solid #dde6f0;
+    vertical-align: middle;
+}
+
+.ma-detail-table td:first-child {
+    background: #edf4fb;
+    font-weight: 600;
+    color: #1565c0;
+    width: 55%;
+}
+
+.ma-detail-table td:last-child {
+    text-align: right;
+    color: #333;
+}
+
+.ma-detail-table tr:hover td {
+    background: #dbeeff;
+    transition: background 0.15s;
+}
+
+/* Scrollbar inside popup */
+.margin-analysis-popup::-webkit-scrollbar {
+    width: 6px;
+}
+
+.margin-analysis-popup::-webkit-scrollbar-thumb {
+    background: #90caf9;
+    border-radius: 3px;
+}
+
+/* ===========================================
+   Approval History Popup
+   =========================================== */
+
+.approval-popup {
+    width: 950px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.approval-popup table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.approval-popup table thead th {
+    background: #2f8de4;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    border: 1px solid #d8d8d8;
+}
+
+.approval-popup table tbody td {
+    padding: 10px;
+    border: 1px solid #d8d8d8;
+    font-size: 14px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.approval-popup table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.approval-popup table tbody tr:hover {
+    background: #eef6ff;
+}
+
+.approval-popup table th:nth-child(1),
+.approval-popup table td:nth-child(1) {
+    width: 8%;
+}
+
+.approval-popup table th:nth-child(2),
+.approval-popup table td:nth-child(2) {
+    width: 15%;
+}
+
+.approval-popup table th:nth-child(3),
+.approval-popup table td:nth-child(3) {
+    width: 40%;
+    text-align: left;
+}
+
+.approval-popup table th:nth-child(4),
+.approval-popup table td:nth-child(4) {
+    width: 22%;
+    white-space: nowrap;
+}
+
+.approval-popup table th:nth-child(5),
+.approval-popup table td:nth-child(5) {
+    width: 15%;
+}
+
+.approval-popup::-webkit-scrollbar {
+    width: 6px;
+}
+
+.approval-popup::-webkit-scrollbar-thumb {
+    background: #90caf9;
+    border-radius: 4px;
+}

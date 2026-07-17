@@ -203,6 +203,7 @@ detectKey(row: any, index: number) {
 @Output() pageChange = new EventEmitter<number>();
 @Output() pageSizeChange = new EventEmitter<number>();
 
+
   @Input() pageSize = 10;
   @Input() currentPage = 1;
 @Input() totalPages = 1;
@@ -382,5 +383,17 @@ delete(row: any) {
       ?? row?.groupStatus;
   }
 
+@Input() showFeedback = false;
+
+@Output() feedbackRow = new EventEmitter<any>();
+
+feedback(row:any){
+    this.feedbackRow.emit(row);
+}
+
+
+//Approval
+@Input() showApprovalAction = false;
+@Input() showHistoryPopup = false;
 
 }

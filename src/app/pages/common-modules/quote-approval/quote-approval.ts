@@ -1,0 +1,457 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { Header } from '../../../layout/header/header';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
+import { Pageheader } from '../../../shared/pageheader/pageheader';
+import { DataTable } from '../../../shared/data-table/data-table';
+import { Adminservice } from '../../../service/adminservice';
+import { Router } from '@angular/router';
+import { Breadcrumb } from '../../../models/breadcrumb';
+import { SearchFieldConfig } from '../../../shared/search/search';
+import { QuoteApprovalService } from './quote-approval.service';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-quote-approval',
+  standalone: true,
+  imports: [CommonModule,
+    FormsModule,
+    Header,
+    Sidebar,
+    Pageheader,
+    DataTable],
+  templateUrl: './quote-approval.html',
+  styleUrl: './quote-approval.css',
+})
+export class QuoteApproval {
+
+  constructor(
+    private quoteApprovalService: QuoteApprovalService,
+    private router: Router
+  ) {}
+
+  headerTitle = 'Quote Approval';
+
+  headerBreadcrumbs: Breadcrumb[] = [
+    { label: 'Home', route: '/admindashboard' },
+    { label: 'Quote Approval', route: '/RegionalBranchHead/quotes-view' }
+  ];
+
+  // columns = [
+  //   { header: 'Customer', field: 'customer' },
+  //   { header: 'Sales Engineer', field: 'salesEngineer' },
+  //   { header: 'Quote ID', field: 'quoteId' },
+  //   { header: 'Opportunity Details', field: 'opportunityDetails' },
+  //   { header: 'Order Value', field: 'orderValue' },
+  //   { header: 'Discount %', field: 'discount' },
+  //   { header: 'Final Approver', field: 'finalApprover' }
+  // ];
+
+  columns = [
+
+  { header:'Customer', field:'customerName' },
+
+  { header:'Sales Engineer', field:'salesEngineer' },
+
+  { header:'Quote ID', field:'quoteNumber' },
+
+  { header:'Opportunity', field:'opportunityDetails' },
+
+  { header:'Order Value', field:'orderValue' },
+
+  { header:'Discount %', field:'discount' },
+
+  { header:'Current Stage', field:'currentStage' },
+
+  { header:'Final Approver', field:'finalApprover' }
+
+];
+
+loadQuotes(): void {
+
+  const payload = {
+    quoteId: '',
+    opportunityDetails: '',
+    pagination: {
+      pageNumber: this.currentPage - 1,
+      pageSize: this.pageSize,
+      sortBy: 'quoteId',
+      sortOrder: 'DESC'
+    }
+  };
+
+  this.quoteApprovalService.search(payload).subscribe({
+
+    next: (response) => {
+
+      console.log('Quote Response', response);
+
+      if (response?.status && response?.data) {
+
+        this.rows = response.data.content || [];
+        this.fullRows = [...this.rows];
+
+        this.totalElements = response.totalElements || 0;
+        this.totalPages = response.totalPages || 0;
+
+      } else {
+
+        this.rows = [];
+        this.fullRows = [];
+        this.totalElements = 0;
+        this.totalPages = 0;
+
+      }
+
+    },
+
+    error: (error) => {
+
+      console.error('Error loading quotes', error);
+
+      this.rows = [];
+      this.fullRows = [];
+      this.totalElements = 0;
+      this.totalPages = 0;
+
+    }
+
+  });
+
+}
+
+ngOnInit(): void {
+  this.loadQuotes();
+}
+
+
+
+  searchFields: SearchFieldConfig[] = [
+  {
+    key: 'quoteId',
+    label: 'Quote',
+    placeholder: 'Quote ID',
+    type: 'text'
+  },
+  {
+    key: 'opportunityDetails',
+    label: 'Opportunity',
+    placeholder: 'Opportunity Details',
+    type: 'text'
+  }
+];
+
+  rows: any[] = [];
+  fullRows: any[] = [];
+
+  
+
+
+ onSearch(searchValues: any): void {
+
+  const payload = {
+    quoteId: searchValues?.quoteId ?? '',
+    opportunityDetails: searchValues?.opportunityDetails ?? '',
+    pagination: {
+      pageNumber: 0,
+      pageSize: this.pageSize,
+      sortBy: 'quoteId',
+      sortOrder: 'DESC'
+    }
+  };
+
+  this.quoteApprovalService.search(payload).subscribe({
+
+    next: (response) => {
+
+      console.log('Search Response', response);
+
+      if (response?.status && response?.data) {
+
+        this.rows = response.data.content || [];
+        this.fullRows = [...this.rows];
+
+        this.totalElements = response.totalElements || 0;
+        this.totalPages = response.totalPages || 0;
+
+        this.currentPage = 1;
+
+      } else {
+
+        this.rows = [];
+        this.fullRows = [];
+
+      }
+
+    },
+
+    error: (error) => {
+
+      console.error(error);
+
+      this.rows = [];
+      this.fullRows = [];
+
+    }
+
+  });
+
+}
+
+
+totalElements = 0;
+totalPages = 0;
+currentPage = 1;
+pageSize = 10;
+
+onPageChange(page: number): void {
+
+  this.currentPage = page;
+  this.loadQuotes();
+
+}
+
+onPageSizeChange(size: number): void {
+
+  this.pageSize = size;
+  this.currentPage = 1;
+  this.loadQuotes();
+
+}
+
+selectedQuote: any = null;
+// selectedQuote: any = {};
+showApprovalPopup = false;
+remarks = '';
+approvalHistory: any[] = [];
+showHistoryPopup = false;
+
+showViewPopup = false;
+marginAnalysisData: any = null;
+
+
+approve(row: any): void {
+
+  const payload: any = {
+    quoteRevisionId: row.quoteRevisionId,
+    action: 'APPROVE'
+  };
+
+  switch (row.currentStage) {
+
+    case 'RBH':
+      payload.quoteRemarks1 = this.remarks;
+      break;
+
+    case 'NSM':
+      payload.quoteRemarks2 = this.remarks;
+      break;
+
+    case 'CH':
+      payload.quoteRemarks3 = this.remarks;
+      break;
+  }
+
+  this.quoteApprovalService.action(payload).subscribe({
+
+    next: () => {
+
+      this.showApprovalPopup = false;
+      this.selectedQuote = null;
+      this.remarks = '';
+      this.loadQuotes();
+
+    }
+
+  });
+
+}
+
+
+reject(row: any): void {
+
+  const payload: any = {
+    quoteRevisionId: row.quoteRevisionId,
+
+    action: 'REJECT'
+  };
+
+  switch (row.currentStage) {
+
+    case 'RBH':
+      payload.quoteRemarks1 = this.remarks;
+      break;
+
+    case 'NSM':
+      payload.quoteRemarks2 = this.remarks;
+      break;
+
+    case 'CH':
+      payload.quoteRemarks3 = this.remarks;
+      break;
+  }
+
+  this.quoteApprovalService.action(payload).subscribe({
+
+    next: () => {
+
+      this.showApprovalPopup = false;
+      this.remarks = '';
+          this.selectedQuote = null;
+      this.loadQuotes();
+
+    }
+
+  });
+
+}
+// onView(row: any): void {
+
+//   const quoteRevisionId = row.quoteRevisionId;
+
+//   if (!quoteRevisionId) {
+//     console.error('quoteRevisionId is missing from row', row);
+//     return;
+//   }
+
+//   this.quoteApprovalService.getMarginAnalysis(quoteRevisionId).subscribe({
+
+//     next: (response) => {
+
+//       console.log('Margin Analysis Response', response);
+
+//       if (response?.status && response?.data) {
+//         this.marginAnalysisData = response.data;
+//         this.showViewPopup = true;
+//       } else {
+//         console.error('Unexpected response format', response);
+//       }
+
+//     },
+
+//     error: (error) => {
+//       console.error('Error loading margin analysis', error);
+//     }
+
+//   });
+
+// }
+
+onView(row: any): void {
+
+  if (!row?.quoteRevisionId) {
+    console.error('Quote Revision Id missing');
+    return;
+  }
+
+  this.marginAnalysisData = null;
+
+  this.quoteApprovalService
+      .getMarginAnalysis(row.quoteRevisionId)
+      .subscribe({
+
+        next: (response) => {
+
+          console.log(response);
+
+          if (response.status) {
+
+            this.marginAnalysisData = response.data;
+
+            this.showViewPopup = true;
+
+          }
+
+        },
+
+        error: err => {
+
+          console.error(err);
+
+        }
+
+      });
+
+}
+
+
+onEdit(row: any): void {
+
+  this.selectedQuote = row;
+
+  if (row.canApprove) {
+
+    this.remarks = '';
+    this.showApprovalPopup = true;
+    return;
+
+  }
+
+  this.approvalHistory = [];
+
+  // RBH
+  if (row.quoteRemarks1) {
+    this.approvalHistory.push({
+      level: row.rbhName || 'RBH',
+      remarks: row.quoteRemarks1,
+      onDate: row.quoteCreatedTime,
+      status: 'Approved'
+    });
+  }
+
+  // NSM
+  if (row.quoteRemarks2) {
+    this.approvalHistory.push({
+      level: row.nsmName || 'NSM',
+      remarks: row.quoteRemarks2,
+      onDate: row.quoteCreatedTime,
+      status: 'Approved'
+    });
+  }
+
+  // CH
+  if (row.quoteRemarks3) {
+    this.approvalHistory.push({
+      level: row.chName || 'CH',
+      remarks: row.quoteRemarks3,
+      onDate: row.quoteCreatedTime,
+      status: 'Approved'
+    });
+  }
+
+  this.showHistoryPopup = true;
+}
+
+
+closeApprovalPopup(): void {
+
+  this.showApprovalPopup = false;
+
+  this.selectedQuote = null;
+
+  this.remarks = '';
+
+}
+
+closeHistoryPopup(): void {
+
+  this.showHistoryPopup = false;
+
+  this.selectedQuote = null;
+
+  this.approvalHistory = [];
+
+}
+
+closeViewPopup(): void {
+
+  this.showViewPopup = false;
+  this.marginAnalysisData = null;
+
+}
+
+
+OnReset(){
+  this.loadQuotes();
+}
+}
