@@ -42,4 +42,6 @@
 .btn-confirm.reject { background: #ea4335; color: #fff; }
 .btn-confirm.reject:hover { background: #d33828; }
 .btn-confirm.info { background: #4285f4; color: #fff; }
+.btn-confirm.delete { background: #ea4335; color: #fff; }
+.btn-confirm.delete:hover { background: #d33828; }
 .btn-confirm.info:hover { background: #3367d6; }

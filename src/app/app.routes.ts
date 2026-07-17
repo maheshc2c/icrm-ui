@@ -66,9 +66,16 @@ export const routes: Routes = [
 },
 
 //Admin Role
- {
+      {
         path: 'admindashboard',
         component: AdminDashboard,
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/delete-contract-note',
+        loadComponent: () =>
+          import('./pages/Admin/delete-contract-note/delete-contract-note').then(m => m.DeleteContractNote),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
@@ -635,6 +642,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
+
       {
         path: 'salesmanager/closed-leads',
         component: ClosedLeadsComponent,
@@ -1041,6 +1049,7 @@ export const routes: Routes = [
           data: { roles: ['ADMINMARKETING'] }
         },
   
+
 
 
       { path: '**', redirectTo: 'login' },

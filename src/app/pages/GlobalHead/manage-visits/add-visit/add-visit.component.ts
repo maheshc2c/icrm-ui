@@ -99,7 +99,7 @@ export class AddVisitComponent implements OnInit {
         console.log('Loading dynamic data from APIs...');
         
         // Load Leads dynamically
-        this.globalHeadService.getLeads().subscribe({
+        this.globalHeadService.getLeadsForDemoVisit().subscribe({
             next: (leads: any[]) => {
                 console.log('Leads data received:', leads);
                 console.log('Leads array length:', leads?.length);
@@ -123,7 +123,7 @@ export class AddVisitComponent implements OnInit {
                 if (leadField) {
                     leadField.options = leads.map(l => ({
                         value: l.leadId,
-                        label: l.displayName || `Lead-${l.leadId}` + (l.campaignName ? ` | ${l.campaignName}` : '')
+                        label: l.customerName || `Lead-${l.leadId}`
                     }));
                     console.log('Lead dropdown populated with', leadField.options.length, 'options');
                     
@@ -145,7 +145,7 @@ export class AddVisitComponent implements OnInit {
         });
 
         // Load Purposes dynamically
-        this.globalHeadService.getVisitPurposes().subscribe({
+        this.globalHeadService.getPurposesForDemoVisit().subscribe({
             next: (purposes: any[]) => {
                 console.log('Purposes data received:', purposes);
                 
@@ -188,7 +188,7 @@ export class AddVisitComponent implements OnInit {
         // Create payload matching backend expectations
         const payload: any = {
             leadId: data.leadId,
-            purposeName: this.getPurposeNameById(data.purposeId), // Send purposeName instead of purposeId
+            purposeId: data.purposeId,
             startDate: data.startDate ? new Date(data.startDate).toISOString() : '',
             endDate: data.endDate ? new Date(data.endDate).toISOString() : '',
             status: 1, // Hardcoded status as requested

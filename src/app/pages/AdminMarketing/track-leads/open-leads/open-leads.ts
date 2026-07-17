@@ -367,6 +367,15 @@ export class OpenLeads implements OnInit {
     this.uxModalData = { revisionKey: event };
   }
 
+  showInfo(quoteId: string): void {
+    console.log('Show info for quote: ', quoteId);
+    alert('Info for quote ' + quoteId);
+  }
+
+  addRevision(quoteId: string): void {
+    this.router.navigate(['/salesmanager/quote-revision', quoteId]);
+  }
+
   onQuoteAction(event: any): void {
     console.log('[OpenLeads] quote action', event);
   }
