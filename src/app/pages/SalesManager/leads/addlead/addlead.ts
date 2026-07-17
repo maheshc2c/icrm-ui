@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Header } from '../../../../layout/header/header';
@@ -26,10 +27,18 @@ interface FormField {
   placeholder?: string;
 }
 
+interface ContractNoteErrors {
+  quoteRevisionId?: string;
+  purchaseOrderNo?: string;
+  dateOfPurchaseOrder?: string;
+  institutionCode?: string;
+  billingToParty?: string;
+}
+
 @Component({
   selector: 'app-addlead',
   standalone: true,
-  imports: [CommonModule, FormsModule, Sidebar, Header, Pageheader, ModalComponent, DataTable],
+  imports: [CommonModule, FormsModule, HttpClientModule, Sidebar, Header, Pageheader, ModalComponent, DataTable],
   templateUrl: './addlead.html',
   styleUrl: './addlead.css'
 })
@@ -135,8 +144,23 @@ export class AddleadComponent implements OnInit {
     }
   ];
 
+  contractNoteCurrentPage = 1;
+  contractNotePageSize = 10;
+  contractNoteTotalElements = 0;
+  contractNoteTotalPages = 1;
+
   /* ================= CONTRACT NOTE MODAL STATE ================= */
   showAddContractNoteModal = false;
+  contractNoteFormModel: any = {
+    quoteRevisionId: '',
+    purchaseOrderNo: '',
+    dateOfPurchaseOrder: '',
+    institutionCode: '',
+    billingToParty: ''
+  };
+  contractNoteQuoteOptions: any[] = [];
+  contractNoteErrors: ContractNoteErrors = {};
+  contractNoteSubmitting = false;
 
   /* ================= OPPORTUNITY MODAL STATE ================= */
   showOppModal = false;
@@ -323,14 +347,15 @@ export class AddleadComponent implements OnInit {
   contact2SearchTerm: string = '';
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private leadservice: Leadservice,
-    private auth: AuthService,
-    private customerService: Customerservice,
-    private confirmService: ConfirmDialogService,
-    private toastService: ToastService,
-    private cdr: ChangeDetectorRef
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly leadservice: Leadservice,
+    private readonly auth: AuthService,
+    private readonly customerService: Customerservice,
+    private readonly confirmService: ConfirmDialogService,
+    private readonly toastService: ToastService,
+    private readonly http: HttpClient,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   /* ================= INIT ================= */
@@ -372,11 +397,99 @@ export class AddleadComponent implements OnInit {
         // Load existing lead details immediately
         this.loadLeadData(this.leadId);
         this.loadQuotes();
+        this.loadContractNoteDetails();
       }
     });
 
     this.loadDropdowns();
     this.loadOppDropdowns();
+  }
+
+  /* ================= CONTRACT NOTE QUOTE OPTIONS LOAD ================= */
+  loadContractNoteQuoteOptions(): void {
+    const url = 'http://localhost:8080/contractnote/quote';
+    const token = this.auth.getToken?.();
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', 'Bearer ' + token);
+    }
+
+    this.http.get<any[]>(url, { headers }).subscribe({
+      next: (data) => {
+        // Map API response to { id, label } shape used by the template
+        this.contractNoteQuoteOptions = (data || []).map(item => ({
+          id: item.quoteRevisionId ?? item.id ?? item.quoteId,
+          label: item.quoteRefId ?? item.quoteId ?? item.label ?? item.name ?? JSON.stringify(item),
+          quoteId: item.quoteId,
+          quoteRevisionId: item.quoteRevisionId,
+          quoteRefId: item.quoteRefId,
+          raw: item
+        }));
+      },
+      error: (err) => {
+        console.error('Failed to load contract note quote options:', err);
+        if (err && err.status === 403) {
+          this.toastService.error('Access denied loading Quote options. Please login or check permissions.');
+        } else {
+          this.toastService.error('Failed to load Quote options.');
+        }
+      }
+    });
+  }
+
+  loadContractNoteDetails(): void {
+    if (!this.leadId) {
+      return;
+    }
+
+    const payload = {
+      leadId: String(this.leadId),
+      pagination: {
+        pageNumber: this.contractNoteCurrentPage - 1,
+        pageSize: this.contractNotePageSize,
+        sortBy: '',
+        sortOrder: ''
+      }
+    };
+
+    this.leadservice.getContractNoteDetails(payload).subscribe({
+      next: (response: any) => {
+        const notes = response?.content ?? response?.data?.content ?? response?.data ?? response?.contractNotes ?? response;
+        const rows = Array.isArray(notes) ? notes : [];
+
+        this.contractNoteTotalElements = response?.totalElements ?? response?.data?.totalElements ?? response?.content?.totalElements ?? rows.length;
+        this.contractNoteTotalPages = Math.max(1, Math.ceil(this.contractNoteTotalElements / this.contractNotePageSize));
+
+        const mappedRows = rows.map((item: any, index: number) => ({
+          id: item.contractNoteId ?? item.id ?? item.cNoteId ?? index + 1,
+          cNoteId: item.contractNoteId ?? item.cNoteId ?? item.id ?? index + 1,
+          quoteRefId: item.quoteReferenceId ?? item.quoteRefId ?? item.quoteId ?? item.quoteReference ?? 'N/A',
+          billing: item.billing ?? item.billingToParty ?? item.billingParty ?? 'N/A',
+          discount: item.discount ?? item.discountPercentage ?? '0%',
+          poNumber: item.poNumber ?? item.poNo ?? item.purchaseOrderNo ?? 'N/A',
+          poDate: item.poDate ?? item.dateOfPurchaseOrder ?? 'N/A',
+          soNumber: item.soNumber ?? item.salesOrderNumber ?? '',
+          stage: item.stage ?? item.status ?? 'N/A'
+        }));
+
+        console.log('Contract Note Details loaded:', mappedRows);
+        this.contractNotes = mappedRows;
+      },
+      error: (err) => {
+        console.error('Failed to load contract note details:', err);
+      }
+    });
+  }
+
+  onContractNotePageChange(page: number): void {
+    this.contractNoteCurrentPage = page;
+    this.loadContractNoteDetails();
+  }
+
+  onContractNotePageSizeChange(size: number): void {
+    this.contractNotePageSize = size;
+    this.contractNoteCurrentPage = 1;
+    this.loadContractNoteDetails();
   }
 
   /* ================= GET USERNAME FROM TOKEN ================= */
@@ -854,6 +967,9 @@ export class AddleadComponent implements OnInit {
     if (tab === 'Opportunities' && this.leadId) {
       this.fetchOpportunities(this.leadId!);
     }
+    if (tab === 'Contract Note' && this.leadId) {
+      this.loadContractNoteDetails();
+    }
   }
 
   fetchOpportunities(id: number): void {
@@ -1306,6 +1422,93 @@ export class AddleadComponent implements OnInit {
   onQuoteRevisionAdd(row: any) {
     const id = row.quoteId || row.id || this.leadId || '31';
     this.router.navigate(['/quoteRevision', id]);
+  }
+
+  openAddContractNoteModal(): void {
+    this.contractNoteFormModel = {
+      quoteRevisionId: '',
+      purchaseOrderNo: '',
+      dateOfPurchaseOrder: '',
+      institutionCode: '',
+      billingToParty: ''
+    };
+    this.contractNoteErrors = {};
+    // Open modal first, then fetch quote options so the dropdown is populated when modal is used
+    this.showAddContractNoteModal = true;
+    this.loadContractNoteQuoteOptions();
+  }
+
+  closeAddContractNoteModal(): void {
+    this.showAddContractNoteModal = false;
+    this.contractNoteErrors = {};
+  }
+
+  validateContractNoteForm(): boolean {
+    this.contractNoteErrors = {};
+
+    if (!this.contractNoteFormModel.quoteRevisionId) {
+      this.contractNoteErrors['quoteRevisionId'] = 'Quote is required.';
+    }
+    if (!this.contractNoteFormModel.purchaseOrderNo?.trim()) {
+      this.contractNoteErrors['purchaseOrderNo'] = 'PO Number is required.';
+    }
+    if (!this.contractNoteFormModel.dateOfPurchaseOrder) {
+      this.contractNoteErrors['dateOfPurchaseOrder'] = 'PO Date is required.';
+    }
+    if (!this.contractNoteFormModel.institutionCode?.trim()) {
+      this.contractNoteErrors['institutionCode'] = 'Institution Code is required.';
+    }
+    if (!this.contractNoteFormModel.billingToParty?.trim()) {
+      this.contractNoteErrors['billingToParty'] = 'Billing to Party is required.';
+    }
+
+    return Object.keys(this.contractNoteErrors).length === 0;
+  }
+
+  submitContractNote(): void {
+    if (this.contractNoteSubmitting) {
+      return;
+    }
+
+    if (!this.validateContractNoteForm()) {
+      return;
+    }
+
+    const quoteRevisionId = Number(this.contractNoteFormModel.quoteRevisionId);
+    const selectedQuote = this.contractNoteQuoteOptions.find(option => option.id === quoteRevisionId);
+    const payload: any = {
+      quoteRevisionId,
+      quoteRevisionIds: [quoteRevisionId],
+      quoteId: selectedQuote?.quoteId,
+      quoteRefId: selectedQuote?.quoteRefId,
+      purchaseOrderNo: this.contractNoteFormModel.purchaseOrderNo,
+      poNumber: this.contractNoteFormModel.purchaseOrderNo,
+      dateOfPurchaseOrder: this.contractNoteFormModel.dateOfPurchaseOrder,
+      poDate: this.contractNoteFormModel.dateOfPurchaseOrder,
+      institutionCode: this.contractNoteFormModel.institutionCode,
+      billingToParty: this.contractNoteFormModel.billingToParty
+    };
+    if (this.leadId != null) {
+      payload.leadId = this.leadId;
+    }
+
+    console.log('Submitting Contract Note payload:', payload);
+    this.contractNoteSubmitting = true;
+
+    this.leadservice.createContractNote(payload).subscribe({
+      next: (response: any) => {
+        this.toastService.success('Contract note created successfully.');
+        this.closeAddContractNoteModal();
+        this.loadContractNoteDetails();
+      },
+      error: (err) => {
+        console.error('Failed to submit contract note:', err);
+        this.toastService.error('Failed to submit contract note. Please try again.');
+      },
+      complete: () => {
+        this.contractNoteSubmitting = false;
+      }
+    });
   }
 
   /* ================= QUOTE METHODS ================= */

@@ -57,7 +57,10 @@ export class EditVisitComponent implements OnInit {
 
     loadVisitData() {
         this.globalHeadService.getVisitById(this.visitId).subscribe({
-            next: (visit: any) => {
+            next: (response: any) => {
+                // Extract data if wrapped in ApiResponse
+                const visit = response.data ? response.data : response;
+                
                 console.log('Visit data loaded:', visit);
                 
                 // Convert dates to proper format for datetime-local input
