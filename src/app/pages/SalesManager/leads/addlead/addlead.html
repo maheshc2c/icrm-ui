@@ -427,10 +427,16 @@
         [showAdd]="false"
         [showReset]="false"
         [showSearch]="false"
-        [showPagination]="false"
+        [showPagination]="true"
+        [currentPage]="contractNoteCurrentPage"
+        [pageSize]="contractNotePageSize"
+        [totalPages]="contractNoteTotalPages"
+        [totalElements]="contractNoteTotalElements"
         [showEdit]="false"
         [showView]="false"
-        [showDelete]="false">
+        [showDelete]="false"
+        (pageChange)="onContractNotePageChange($event)"
+        (pageSizeChange)="onContractNotePageSizeChange($event)">
       </app-data-table>
 
   </div>

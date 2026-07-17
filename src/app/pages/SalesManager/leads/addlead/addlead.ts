@@ -144,6 +144,11 @@ export class AddleadComponent implements OnInit {
     }
   ];
 
+  contractNoteCurrentPage = 1;
+  contractNotePageSize = 10;
+  contractNoteTotalElements = 0;
+  contractNoteTotalPages = 1;
+
   /* ================= CONTRACT NOTE MODAL STATE ================= */
   showAddContractNoteModal = false;
   contractNoteFormModel: any = {
@@ -392,6 +397,7 @@ export class AddleadComponent implements OnInit {
         // Load existing lead details immediately
         this.loadLeadData(this.leadId);
         this.loadQuotes();
+        this.loadContractNoteDetails();
       }
     });
 
@@ -429,6 +435,61 @@ export class AddleadComponent implements OnInit {
         }
       }
     });
+  }
+
+  loadContractNoteDetails(): void {
+    if (!this.leadId) {
+      return;
+    }
+
+    const payload = {
+      leadId: String(this.leadId),
+      pagination: {
+        pageNumber: this.contractNoteCurrentPage - 1,
+        pageSize: this.contractNotePageSize,
+        sortBy: '',
+        sortOrder: ''
+      }
+    };
+
+    this.leadservice.getContractNoteDetails(payload).subscribe({
+      next: (response: any) => {
+        const notes = response?.content ?? response?.data?.content ?? response?.data ?? response?.contractNotes ?? response;
+        const rows = Array.isArray(notes) ? notes : [];
+
+        this.contractNoteTotalElements = response?.totalElements ?? response?.data?.totalElements ?? response?.content?.totalElements ?? rows.length;
+        this.contractNoteTotalPages = Math.max(1, Math.ceil(this.contractNoteTotalElements / this.contractNotePageSize));
+
+        const mappedRows = rows.map((item: any, index: number) => ({
+          id: item.contractNoteId ?? item.id ?? item.cNoteId ?? index + 1,
+          cNoteId: item.contractNoteId ?? item.cNoteId ?? item.id ?? index + 1,
+          quoteRefId: item.quoteReferenceId ?? item.quoteRefId ?? item.quoteId ?? item.quoteReference ?? 'N/A',
+          billing: item.billing ?? item.billingToParty ?? item.billingParty ?? 'N/A',
+          discount: item.discount ?? item.discountPercentage ?? '0%',
+          poNumber: item.poNumber ?? item.poNo ?? item.purchaseOrderNo ?? 'N/A',
+          poDate: item.poDate ?? item.dateOfPurchaseOrder ?? 'N/A',
+          soNumber: item.soNumber ?? item.salesOrderNumber ?? '',
+          stage: item.stage ?? item.status ?? 'N/A'
+        }));
+
+        console.log('Contract Note Details loaded:', mappedRows);
+        this.contractNotes = mappedRows;
+      },
+      error: (err) => {
+        console.error('Failed to load contract note details:', err);
+      }
+    });
+  }
+
+  onContractNotePageChange(page: number): void {
+    this.contractNoteCurrentPage = page;
+    this.loadContractNoteDetails();
+  }
+
+  onContractNotePageSizeChange(size: number): void {
+    this.contractNotePageSize = size;
+    this.contractNoteCurrentPage = 1;
+    this.loadContractNoteDetails();
   }
 
   /* ================= GET USERNAME FROM TOKEN ================= */
@@ -905,6 +966,9 @@ export class AddleadComponent implements OnInit {
     this.activeTab = tab;
     if (tab === 'Opportunities' && this.leadId) {
       this.fetchOpportunities(this.leadId!);
+    }
+    if (tab === 'Contract Note' && this.leadId) {
+      this.loadContractNoteDetails();
     }
   }
 
@@ -1435,21 +1499,7 @@ export class AddleadComponent implements OnInit {
       next: (response: any) => {
         this.toastService.success('Contract note created successfully.');
         this.closeAddContractNoteModal();
-
-        const selectedQuote = this.quotes.find(q => q.id === Number(this.contractNoteFormModel.quoteRevisionId));
-        const newContractNote: any = {
-          id: response?.id || this.contractNotes.length + 1,
-          cNoteId: response?.cNoteId || this.contractNotes.length + 1,
-          quoteRefId: selectedQuote?.quoteId || 'N/A',
-          billing: 'Company',
-          discount: '0%',
-          poNumber: payload.purchaseOrderNo,
-          poDate: payload.dateOfPurchaseOrder,
-          soNumber: response?.soNumber || '',
-          stage: response?.stage || 'Waiting at SO Entry'
-        };
-
-        this.contractNotes = [...this.contractNotes, newContractNote];
+        this.loadContractNoteDetails();
       },
       error: (err) => {
         console.error('Failed to submit contract note:', err);
