@@ -1152,7 +1152,7 @@ saveDiscountQuote(data: DiscountQuoteModel[]): Observable<any> {
 }
 
   searchDeleteContractNotes(requestData: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/contractnote/delete-contract`, requestData, {
+    return this.http.post<any>(`${this.baseUrl}/contractnote/search-delete`, requestData, {
       headers: this.getAuthHeaders()
     });
   }
