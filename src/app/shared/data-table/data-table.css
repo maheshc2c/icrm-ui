@@ -215,7 +215,7 @@
 .table td {
   border-bottom: 1px solid #e5e7eb;   /* row separator */
   padding: 6px 8px;
-  font-size: 1px;
+  font-size: 15px;
   vertical-align: middle;
 }
 
