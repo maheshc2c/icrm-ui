@@ -64,6 +64,7 @@ export class Login {
                 break;
 
               case 'SUPERADMIN':
+              case 'SUPER ADMIN':
                 this.router.navigateByUrl('/superadmindashboard');
                 break;
                 
@@ -79,6 +80,7 @@ export class Login {
               break;
 
               case 'ADMINMARKETING':
+              case 'ADMIN MARKETING':
                 this.router.navigateByUrl('/adminmarketingdashboard');
                 break;
 

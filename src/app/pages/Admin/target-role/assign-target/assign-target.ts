@@ -48,6 +48,16 @@ export class AssignTargetComponent implements OnInit {
 
     // This array holds the DTOs from the backend
     targetDTOs: any[] = [];
+    searchTerm: string = '';
+
+    get filteredTargetDTOs() {
+        if (!this.searchTerm) return this.targetDTOs;
+        const lowerTerm = this.searchTerm.toLowerCase();
+        return this.targetDTOs.filter(dto => 
+            (dto.productName && dto.productName.toLowerCase().includes(lowerTerm)) || 
+            (dto.productId && dto.productId.toString().includes(lowerTerm))
+        );
+    }
 
     constructor(
         private route: ActivatedRoute,
@@ -216,13 +226,11 @@ export class AssignTargetComponent implements OnInit {
     }
 
     toggleAll(): void {
-        this.targetDTOs.forEach(dto => dto.selected = this.selectAll);
+        this.filteredTargetDTOs.forEach(dto => dto.selected = this.selectAll);
     }
 
     checkIfAllSelected(): void {
-        this.selectAll = this.targetDTOs.length > 0 && this.targetDTOs.every(dto => dto.selected);
+        const filtered = this.filteredTargetDTOs;
+        this.selectAll = filtered.length > 0 && filtered.every(dto => dto.selected);
     }
 }
-
-
-
