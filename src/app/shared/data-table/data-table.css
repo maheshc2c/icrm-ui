@@ -25,34 +25,26 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  margin-top: 20px;
 }
 
 /* ================= TOOLBAR ================= */
 .datatable-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  /* ✅ auto wrap */
-  align-items: flex-end;
-  gap: 16px;
-
-  /* 🔒 LOCK TOOLBAR WIDTH TO TABLE WIDTH */
-  overflow: visible;             /* prevent dropdowns from being cut off */
-  margin-bottom: 16px;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: nowrap;
 }
 
-/* Search fields */
 .datatable-toolbar app-search {
-  flex: 1;
-  min-width: 220px;
+    flex: 0 0 auto;
 }
 
-/* Buttons */
 .datatable-toolbar app-button {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex: 0 0 auto;
-  margin-left: auto;
+    flex: 0 0 auto;
+    margin-left: 0;
+    display: flex;
+    align-items: flex-end;
 }
 
 /* ================= TABLE ================= */
@@ -84,10 +76,23 @@
   text-align: center;
 }
 
-.table {
+/* .table {
   width: 100%;
   margin: 0;
   border-collapse: separate;
+} */
+ .table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+.table th,
+.table td {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
+    vertical-align: middle;
 }
 
 /* ================= TABLE HEADER ================= */
@@ -97,7 +102,8 @@
     text-transform: uppercase;
     color: #495057 !important;
     letter-spacing: 0.05em;
-    padding: 0.75rem 1rem;
+    /* padding: 0.75rem 1rem; */
+    padding:10px 5px;
     border-bottom: 2px solid #ffd0ca;
     position: sticky;
     top: 0;
@@ -183,6 +189,7 @@
 .table td {
   border-bottom: 1px solid #e5e7eb;   /* row separator */
   padding: 6px 8px;
+  font-size: 1px;
   vertical-align: middle;
 }
 
@@ -604,7 +611,8 @@
   }
  
   .table-responsive {
-    overflow-x: auto;
+    width: 100%;
+    overflow-x: hidden;
   }
 }
 
@@ -633,6 +641,35 @@
 
 .status-badge.inactive {
   background-color: #e0e0e0;
-  color: #555;
+  color: #2c0733;
   border: 1px solid #d3d3d3;
+}
+
+
+/* No feedback yet */
+.feedback-empty {
+    background: #f5efff;
+    color: #8b5cf6;
+    border: 1px solid #e5d9ff;
+}
+
+.feedback-filled {
+    background: #caa1f7;
+    color: #6d28d9;
+    border: 1px solid #c4b5fd;
+}
+
+.feedback-filled:hover {
+    background: #d8b4fe;
+}
+
+.approval-stage {
+    color: #1976d2;
+    cursor: pointer;
+    font-weight: 600;
+
+}
+
+.approval-stage:hover {
+    color: #0d47a1;
 }
