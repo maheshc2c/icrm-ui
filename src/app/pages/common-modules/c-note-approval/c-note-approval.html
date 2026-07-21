@@ -1,0 +1,26 @@
+<app-header></app-header>
+
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [columns]="columns"
+  [rows]="rows"
+  [showAdd]="false"
+  [showDownload]="false"
+ [showEdit]="false"
+[showApprove]="true"
+(approveRow)="approveContractNote($event)"
+[showReject]="true"
+(rejectRow)="rejectContractNote($event)"
+  [showDelete]="false"
+    [showReset]="true"
+  (reset)="onReset()"
+  [searchFields]="searchFields"
+  (search)="onSearch($event)"
+  (editRow)="onEdit($event)">
+</app-data-table>

@@ -72,6 +72,7 @@ loadQuotes(): void {
   const payload = {
     quoteId: '',
     opportunityDetails: '',
+    regionId: this.selectedRegion,
     pagination: {
       pageNumber: this.currentPage - 1,
       pageSize: this.pageSize,
@@ -121,25 +122,99 @@ loadQuotes(): void {
 }
 
 ngOnInit(): void {
+
+  this.loggedInRole = localStorage.getItem('role') || '';
+
+  this.showRegionFilter =
+      this.loggedInRole === 'National Sales Manager' ||
+      this.loggedInRole === 'Country Head';
+
+  this.updateSearchFields();
+
+  if (this.showRegionFilter) {
+    this.loadRegions();
+  }
+
   this.loadQuotes();
 }
 
 
+loadRegions(): void {
 
-  searchFields: SearchFieldConfig[] = [
-  {
-    key: 'quoteId',
-    label: 'Quote',
-    placeholder: 'Quote ID',
-    type: 'text'
-  },
-  {
-    key: 'opportunityDetails',
-    label: 'Opportunity',
-    placeholder: 'Opportunity Details',
-    type: 'text'
+  this.quoteApprovalService.getRegions().subscribe({
+
+    next: (res: any) => {
+
+      console.log('Regions', res);
+
+      if (Array.isArray(res)) {
+
+        this.regionOptions = res.map((item: any) => ({
+
+          label: item.locationName,
+          value: item.locationId
+
+        }));
+
+      } else if (res?.status) {
+
+        this.regionOptions = (res.data || []).map((item: any) => ({
+
+          label: item.locationName,
+          value: item.locationId
+
+        }));
+
+      }
+
+      this.updateSearchFields();
+
+    },
+
+    error: err => console.error(err)
+
+  });
+
+}
+
+
+
+  searchFields: SearchFieldConfig[] = [];
+private updateSearchFields(): void {
+
+  this.searchFields = [
+
+    {
+      key: 'quoteId',
+      label: 'Quote',
+      placeholder: 'Quote ID',
+      type: 'text'
+    },
+
+    {
+      key: 'opportunityDetails',
+      label: 'Opportunity',
+      placeholder: 'Opportunity Details',
+      type: 'text'
+    }
+
+  ];
+
+  if (this.showRegionFilter) {
+
+    this.searchFields.push({
+
+      key: 'regionId',
+      label: 'Region',
+      placeholder: 'Select Region',
+      type: 'select',
+      options: [...this.regionOptions]
+
+    });
+
   }
-];
+
+}
 
   rows: any[] = [];
   fullRows: any[] = [];
@@ -152,6 +227,7 @@ ngOnInit(): void {
   const payload = {
     quoteId: searchValues?.quoteId ?? '',
     opportunityDetails: searchValues?.opportunityDetails ?? '',
+     regionId: searchValues?.regionId ?? null,
     pagination: {
       pageNumber: 0,
       pageSize: this.pageSize,
@@ -452,6 +528,16 @@ closeViewPopup(): void {
 
 
 OnReset(){
+    this.selectedRegion = null;
   this.loadQuotes();
 }
+
+
+regionOptions: any[] = [];
+selectedRegion: number | null = null;
+
+loggedInRole = '';
+showRegionFilter = false;
+
+
 }

@@ -296,7 +296,6 @@
   transform: translateY(0);
 }
 
-
  
 /* ================= INPUTS ================= */
 .company-text-input,
@@ -508,4 +507,8 @@
   width: 100% !important;
   padding: 0 !important;
   min-height: auto !important;
+}
+
+.is-invalid {
+  border-color: #ef4444 !important;
 }

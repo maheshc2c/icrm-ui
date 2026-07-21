@@ -24,27 +24,27 @@
         <div class="info-grid">
           <div class="info-item">
             <label>First Name</label>
-            <span class="value">{{ userData.firstName || 'N/A' }}</span>
+            <span class="value">{{ userData.firstName || '' }}</span>
           </div>
           <div class="info-item">
             <label>Last Name</label>
-            <span class="value">{{ userData.lastName || 'N/A' }}</span>
+            <span class="value">{{ userData.lastName || '' }}</span>
           </div>
           <div class="info-item">
             <label>Employee ID</label>
-            <span class="value">{{ userData.username || 'N/A' }}</span>
+            <span class="value">{{ userData.username || '' }}</span>
           </div>
           <div class="info-item">
             <label>Email Address</label>
-            <span class="value">{{ userData.email || 'N/A' }}</span>
+            <span class="value">{{ userData.email || '' }}</span>
           </div>
           <div class="info-item">
             <label>Mobile Number</label>
-            <span class="value">{{ userData.phoneNumber || 'N/A' }}</span>
+            <span class="value">{{ userData.phoneNumber || '' }}</span>
           </div>
           <div class="info-item">
             <label>Alternate Mobile</label>
-            <span class="value">{{ userData.alternateNumber || 'N/A' }}</span>
+            <span class="value">{{ userData.alternateNumber || '' }}</span>
           </div>
         </div>
       </div>
@@ -57,32 +57,145 @@
         <div class="info-grid">
           <div class="info-item">
             <label>Role</label>
-            <span class="value role-highlight">{{ userData.roleName || 'N/A' }}</span>
+            <span class="value role-highlight">{{ userData.role?.roleName || userData.roleName || '' }}</span>
           </div>
           <div class="info-item">
             <label>Branch</label>
-            <span class="value">{{ userData.branchName || 'N/A' }}</span>
+            <span class="value">{{ userData.branch?.branchName || userData.branchName || '' }}</span>
           </div>
           <div class="info-item">
             <label>City</label>
-            <span class="value">{{ userData.city || 'N/A' }}</span>
+            <span class="value">{{ userData.city || '' }}</span>
           </div>
           <div class="info-item">
             <label>State</label>
-            <span class="value">{{ userData.state || 'N/A' }}</span>
+            <span class="value">{{ userData.state || '' }}</span>
           </div>
         </div>
 
         <!-- Address details -->
         <div class="full-width-item">
           <label>Address Line 1</label>
-          <span class="value block-text">{{ userData.address1 || 'N/A' }}</span>
+          <span class="value block-text">{{ userData.address1 || '' }}</span>
         </div>
         <div class="full-width-item">
           <label>Address Line 2</label>
-          <span class="value block-text">{{ userData.address2 || 'N/A' }}</span>
+          <span class="value block-text">{{ userData.address2 || '' }}</span>
         </div>
       </div>
+
+      <!-- Module 3: Distributor Details -->
+      <ng-container *ngIf="isDistributor">
+        <div class="grid-section">
+          <div class="section-title">
+            Distributor Details
+          </div>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Distributor Name</label>
+              <span class="value">{{ userData.distributorName || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>PAN Number</label>
+              <span class="value">{{ userData.panNumber || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>TIN Number</label>
+              <span class="value">{{ userData.tinNumber || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>TAN Number</label>
+              <span class="value">{{ userData.tanNumber || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Service Tax Number</label>
+              <span class="value">{{ userData.serviceTaxNumber || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Drug License Number</label>
+              <span class="value">{{ userData.drugLicenseNumber || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Stockist Key</label>
+              <span class="value">{{ userData.stockistKey || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Distributor Expiry Date</label>
+              <span class="value">{{ userData.distributorExpiryDate || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Account Holder Name</label>
+              <span class="value">{{ userData.accountHolderName || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Account Number</label>
+              <span class="value">{{ userData.accountNumber || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Bank Name</label>
+              <span class="value">{{ userData.bankName || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>IFSC Code</label>
+              <span class="value">{{ userData.ifscCode || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>As On Date</label>
+              <span class="value">{{ userData.asOnDate || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Pest License</label>
+              <span class="value">{{ userData.pestLicense || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Seed License</label>
+              <span class="value">{{ userData.seedLicense || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Fertilizer License</label>
+              <span class="value">{{ userData.fertilizerLicense || '' }}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Module 4: Stockist Details -->
+      <ng-container *ngIf="isStockist">
+        <div class="grid-section">
+          <div class="section-title">
+            Stockist Details
+          </div>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Stockist Name</label>
+              <span class="value">{{ userData.stockistName || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Department</label>
+              <span class="value">{{ userData.department || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Designation</label>
+              <span class="value">{{ userData.designation || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Head Quarter</label>
+              <span class="value">{{ userData.headQuarter || '' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Stockist Mail ID</label>
+              <span class="value">{{ userData.stockistMailId || '' }}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn-cancel" (click)="goBack()">Cancel</button>
+    </div>
 
   </div>
 

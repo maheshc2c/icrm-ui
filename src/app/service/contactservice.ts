@@ -7,7 +7,7 @@ import { AuthService } from './auth-service';
   providedIn: 'root'
 })
 export class Contactservice {
-  private baseUrl = 'http://localhost:8080/SalesEngineer';
+  private baseUrl = 'http://localhost:8080/salesengineer';
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 

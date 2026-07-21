@@ -70,4 +70,15 @@ getMarginAnalysis(quoteRevisionId: number) {
 
 }
 
+getRegions() {
+
+  return this.http.get<any>(
+    `${this.baseUrl}/quoteApproval/regions`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+
+}
+
 }

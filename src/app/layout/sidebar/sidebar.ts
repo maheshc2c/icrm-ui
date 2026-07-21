@@ -59,7 +59,7 @@ constructor() {
         label: 'Manage User',
         // icon: 'fas fa-users',
         icon: 'fas fa-users-cog',
-        route: '/admin/manage-users',
+        route: '/users',
         // children: [
         //   { label: 'Admin Users', icon: 'fas fa-user', route: '/admin-users' },
         //   { label: 'Create User', icon: 'fas fa-user-plus', route: '/create-user' }
@@ -71,10 +71,10 @@ constructor() {
         route: '/openleads',
         children: [
           { label: 'Category', icon: 'fas fa-tags', route: '/admin/category' },
-          { label: 'Segment', icon: 'fas fa-layer-group', route: '/admin/segment' },
+          { label: 'Segment', icon: 'fas fa-layer-group', route: '/segment' },
           { label: 'Competitor', icon: 'fas fa-user-secret', route: '/competitor' },
           { label: 'Sub System', icon: 'fas fa-sitemap', route: '/sub-system' },
-          { label: 'Product', icon: 'fas fa-box', route: '/create-user' },
+          { label: 'Product', icon: 'fas fa-box', route: '/product' },
           { label: 'Demo', icon: 'fas fa-flask', route: '/admin-users' },
           { label: 'Financial Year', icon: 'fas fa-calendar-days', route: '/financial-yr' },
           { label: 'User Product Target', icon: 'fas fa-bullseye', route: '/admin-users' },
@@ -671,6 +671,7 @@ constructor() {
           icon: 'fas fa-check-circle',
           route: `/approvals`,
           children: [
+            { label: 'CNote Approval', icon: 'fas fa-file-signature', route: `/c-note` },
             { label: 'Quote Approval', icon: 'fas fa-file-signature', route: `/quotes-view` },
             { label: 'Purchase Order Approval', icon: 'fas fa-file-contract', route: `/purchase-order-approval` }
           ]
@@ -937,3 +938,4 @@ constructor() {
   }
 
 }}
+

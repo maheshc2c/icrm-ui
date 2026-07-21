@@ -40,14 +40,11 @@ export class OpportunitiesComponent implements OnInit {
     { key: 'oppId', label: 'Opp ID', type: 'text', placeholder: 'Opp ID' },
     { key: 'customer', label: 'Customer', type: 'select', placeholder: 'Select Customer', options: [] },
     { key: 'productCategory', label: 'Product Category', type: 'select', placeholder: 'Select Product Category', options: [] },
-    { key: 'stage', label: 'Stage', type: 'select', placeholder: 'Select Stage', options: [
-      { value: 1, label: 'Qualification' },
-      { value: 2, label: 'Proposal' },
-      { value: 3, label: 'Negotiation' }
-    ]},
+    { key: 'stage', label: 'Stage', type: 'select', placeholder: 'Select Stage', options: [] },
     { key: 'category', label: 'Category', type: 'select', placeholder: 'Select Category', options: [
-      { value: 'New Business', label: 'New Business' },
-      { value: 'Existing', label: 'Existing' }
+      { value: 1, label: 'Hot' },
+      { value: 2, label: 'Warm' },
+      { value: 3, label: 'Cold' }
     ]},
     { key: 'region', label: 'Region', type: 'select', placeholder: 'Select Region', options: [] },
     { key: 'sourceOfLead', label: 'Source of Lead', type: 'select', placeholder: 'Select Source of Lead', options: [] },
@@ -141,10 +138,11 @@ export class OpportunitiesComponent implements OnInit {
 
   loadDropdownData(): void {
     // Load leads for dropdown
-    this.leadService.getOpenLeads().subscribe(data => {
+    this.leadService.getOpenLeads().subscribe((data: any) => {
       const leadField = this.oppFields.find(f => f.name === 'leadId');
       if (leadField) {
-        leadField.options = data.map(l => ({ label: l.customerName, value: l.leadId }));
+        const leadsArray = data.content || data || [];
+        leadField.options = leadsArray.map((l: any) => ({ label: l.customerName, value: l.leadId }));
       }
     });
 
@@ -278,6 +276,14 @@ export class OpportunitiesComponent implements OnInit {
         field.options = data.map(s => ({ value: s.sourceId, label: s.sourceName }));
       }
     });
+
+    // 5. Load Stages from backend
+    this.leadService.getStages().subscribe(data => {
+      const field = this.searchFields.find(f => f.key === 'stage');
+      if (field && data) {
+        field.options = data.map(s => ({ value: s.stageId, label: s.stageName }));
+      }
+    });
   }
 
   onSearchChange(filters: any): void {
@@ -288,10 +294,11 @@ export class OpportunitiesComponent implements OnInit {
     const backendParams: any = {};
 
     if (this.currentFilters.searchBy) backendParams.text = this.currentFilters.searchBy;
-    if (this.currentFilters.oppId) backendParams.text = this.currentFilters.oppId; 
+    if (this.currentFilters.oppId) backendParams.opportunityId = this.currentFilters.oppId; 
     if (this.currentFilters.customer) backendParams.customerId = this.currentFilters.customer;
     if (this.currentFilters.productCategory) backendParams.productCategory = this.currentFilters.productCategory;
     if (this.currentFilters.stage) backendParams.stage = this.currentFilters.stage;
+    if (this.currentFilters.category) backendParams.category = this.currentFilters.category;
     if (this.currentFilters.sourceOfLead) backendParams.leadSource = this.currentFilters.sourceOfLead;
     if (this.currentFilters.region) backendParams.region = this.currentFilters.region;
     if (this.currentFilters.oppCreatedStartDate) backendParams.startDate = this.currentFilters.oppCreatedStartDate;
@@ -299,18 +306,21 @@ export class OpportunitiesComponent implements OnInit {
     if (this.currentFilters.orderConclusionStartDate) backendParams.startOrder = this.currentFilters.orderConclusionStartDate;
     if (this.currentFilters.orderConclusionEndDate) backendParams.endOrder = this.currentFilters.orderConclusionEndDate;
 
-    this.leadService.searchOpportunitiesTable(backendParams).subscribe({
+    this.leadService.searchOpportunitiesTable(backendParams, this.currentPage - 1, this.pageSize).subscribe({
       next: (data) => {
-        this.filteredOpportunities = data.map(opp => ({
+        const opps = data.content || data;
+        this.filteredOpportunities = opps.map((opp: any) => ({
           ...opp,
           product: opp.productAndCategory,
           lifeTime: opp.lifeTimeDays,
           value: opp.value || (opp.qty ? opp.qty * 125000 : 0)
         }));
+        this.totalElements = data.totalElements !== undefined ? data.totalElements : opps.length;
       },
       error: (err) => {
         console.error('Search failed:', err);
         this.filteredOpportunities = [];
+        this.totalElements = 0;
       }
     });
   }
@@ -411,30 +421,27 @@ export class OpportunitiesComponent implements OnInit {
       return null;
     };
 
-    // Map frontend oppModel to backend OpportunityDto
     const payload = {
-      oppLeadId: toNullIfEmpty(this.oppModel.leadId),
-      productId: toNullIfEmpty(this.oppModel.productId),
-      productName: getOptionLabel('productId', this.oppModel.productId),
-      productCategoryId: toNullIfEmpty(this.oppModel.productCategoryId),
-      categoryName: getOptionLabel('productCategoryId', this.oppModel.productCategoryId),
-      productGroupId: toNullIfEmpty(this.oppModel.productGroupId),
-      groupName: getOptionLabel('productGroupId', this.oppModel.productGroupId),
-      oppRequiredQuantity: toNullIfEmpty(this.oppModel.quantity),
-      oppFundSourceId: toNullIfEmpty(this.oppModel.fundSourceId),
-      fundSourceName: getOptionLabel('fundSourceId', this.oppModel.fundSourceId),
-      oppExpectedOrderConclusion: toNullIfEmpty(this.oppModel.expectedOrderConclusion),
-      oppExpectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
-      oppDecisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1),
-      oppDecisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2),
-      oppDecisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3),
-      oppDecisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4),
-      oppDecisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5),
-      oppRelationshipId: toNullIfEmpty(this.oppModel.relationshipId),
-      relationshipName: getOptionLabel('relationshipId', this.oppModel.relationshipId),
-      oppStatus: toNullIfEmpty(this.oppModel.status),
-      oppName: getOptionLabel('status', this.oppModel.status),
-      oppRemarks1: this.oppModel.competitors || null
+      leadId: toNullIfEmpty(this.oppModel.leadId) ? Number(toNullIfEmpty(this.oppModel.leadId)) : null,
+      productId: toNullIfEmpty(this.oppModel.productId) ? Number(toNullIfEmpty(this.oppModel.productId)) : null,
+      status: toNullIfEmpty(this.oppModel.status) ? Number(toNullIfEmpty(this.oppModel.status)) : null,
+      requiredQuantity: toNullIfEmpty(this.oppModel.quantity) ? Number(toNullIfEmpty(this.oppModel.quantity)) : null,
+      fundSourceId: toNullIfEmpty(this.oppModel.fundSourceId) ? Number(toNullIfEmpty(this.oppModel.fundSourceId)) : null,
+      fundingStatus: null,
+      expectedOrderConclusion: toNullIfEmpty(this.oppModel.expectedOrderConclusion),
+      expectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
+      decisionMaker1: toNullIfEmpty(this.oppModel.decisionMaker1) ? Number(toNullIfEmpty(this.oppModel.decisionMaker1)) : null,
+      decisionMaker2: toNullIfEmpty(this.oppModel.decisionMaker2) ? Number(toNullIfEmpty(this.oppModel.decisionMaker2)) : null,
+      decisionMaker3: toNullIfEmpty(this.oppModel.decisionMaker3) ? Number(toNullIfEmpty(this.oppModel.decisionMaker3)) : null,
+      decisionMaker4: toNullIfEmpty(this.oppModel.decisionMaker4) ? Number(toNullIfEmpty(this.oppModel.decisionMaker4)) : null,
+      decisionMaker5: toNullIfEmpty(this.oppModel.decisionMaker5) ? Number(toNullIfEmpty(this.oppModel.decisionMaker5)) : null,
+      relationshipId: toNullIfEmpty(this.oppModel.relationshipId) ? Number(toNullIfEmpty(this.oppModel.relationshipId)) : null,
+      demoRequirement: false,
+      technicallyCleared: false,
+      stageId: null,
+      competitorIds: [],
+      remarks1: this.oppModel.competitors || null,
+      remarks2: null
     };
 
     if (this.isEditMode && this.editOppId) {
@@ -475,43 +482,57 @@ export class OpportunitiesComponent implements OnInit {
     // Fetch opportunity details
     this.leadService.getOpportunityById(row.id).subscribe({
       next: (data) => {
-        // Pre-fill model
-        this.oppModel.leadId = data.oppLeadId || '';
-        this.oppModel.productCategoryId = data.productCategoryId || '';
-        this.oppModel.productGroupId = data.productGroupId || '';
-        this.oppModel.productId = data.productId || '';
-        this.oppModel.quantity = data.oppRequiredQuantity || null;
-        this.oppModel.fundSourceId = data.oppFundSourceId || '';
-        
-        // Dates format
-        const formatDate = (dateArr: number[]) => {
-           if (!dateArr || dateArr.length < 3) return '';
-           const pad = (n: number) => n < 10 ? '0'+n : n;
-           return `${dateArr[0]}-${pad(dateArr[1])}-${pad(dateArr[2])}`;
-        };
-        this.oppModel.expectedOrderConclusion = typeof data.oppExpectedOrderConclusion === 'string' ? data.oppExpectedOrderConclusion : (Array.isArray(data.oppExpectedOrderConclusion) ? formatDate(data.oppExpectedOrderConclusion) : '');
-        this.oppModel.expectedInvoicingDate = typeof data.oppExpectedInvoicingDate === 'string' ? data.oppExpectedInvoicingDate : (Array.isArray(data.oppExpectedInvoicingDate) ? formatDate(data.oppExpectedInvoicingDate) : '');
-        
-        this.oppModel.decisionMaker1 = data.oppDecisionMaker1 || '';
-        this.oppModel.decisionMaker2 = data.oppDecisionMaker2 || '';
-        this.oppModel.decisionMaker3 = data.oppDecisionMaker3 || '';
-        this.oppModel.decisionMaker4 = data.oppDecisionMaker4 || '';
-        this.oppModel.decisionMaker5 = data.oppDecisionMaker5 || '';
-        this.oppModel.relationshipId = data.oppRelationshipId || '';
-        this.oppModel.status = data.oppStatus || '';
-        this.oppModel.competitors = data.oppRemarks1 || '';
+          const extractId = (val: any) => {
+            if (!val || val === '0' || val === 0) return '';
+            if (typeof val === 'object') return val.contactId || val.id || val.value || val.contact_id || val.fundSourceID || val.fundSourceId || val.relationshipId || val.categoryId || val.groupId || val.productId || val.oppStatusId || val.stageId || '';
+            return val;
+          };
+
+          const oppProd = data.opportunityProducts && data.opportunityProducts.length > 0 ? data.opportunityProducts[0].product : null;
+
+          const formatDate = (dateVal: any) => {
+            if (!dateVal) return '';
+            if (typeof dateVal === 'string') return dateVal;
+            if (Array.isArray(dateVal) && dateVal.length >= 3) {
+              const pad = (n: number) => n < 10 ? '0'+n : n;
+              return `${dateVal[0]}-${pad(dateVal[1])}-${pad(dateVal[2])}`;
+            }
+            try { return new Date(dateVal).toISOString().split('T')[0]; } catch(e) { return ''; }
+          };
+
+
+
+          // Pre-fill model
+          this.oppModel.leadId = extractId(data.lead || data.oppLeadId || '');
+          this.oppModel.productCategoryId = extractId(data.productCategoryId || data.ProductCategoryId || data.categoryId || data.CategoryId || (oppProd && oppProd.group ? oppProd.group.productCategoryId : null));
+          this.oppModel.productGroupId = extractId(data.productGroupId || data.ProductGroupId || data.groupId || data.GroupId || (oppProd && oppProd.group ? oppProd.group.groupId : null));
+          this.oppModel.productId = extractId(data.productId || data.ProductId || (oppProd ? oppProd.productId || oppProd : null));
+          this.oppModel.quantity = data.requiredQuantity || data.oppRequiredQuantity || data.OppRequiredQuantity || data.qty || data.quantity || null;
+          this.oppModel.fundSourceId = extractId(data.fundSource || data.oppFundSourceId || data.OppFundSourceId || data.fundSourceId || data.FundSourceId);
+          
+          this.oppModel.expectedOrderConclusion = formatDate(data.expectedOrderConclusion || data.oppExpectedOrderConclusion);
+          this.oppModel.expectedInvoicingDate = formatDate(data.expectedInvoicingDate || data.oppExpectedInvoicingDate);
+          
+          this.oppModel.decisionMaker1 = extractId(data.oppDecisionMaker1 || data.oppDecisionMaker1Id || data.decisionMaker1Id || data.DecisionMaker1Id || data.OppDecisionMaker1 || data.decisionMaker1 || data.DecisionMaker1 || data.contact1);
+          this.oppModel.decisionMaker2 = extractId(data.oppDecisionMaker2 || data.oppDecisionMaker2Id || data.decisionMaker2Id || data.DecisionMaker2Id || data.OppDecisionMaker2 || data.decisionMaker2 || data.DecisionMaker2 || data.contact2);
+          this.oppModel.decisionMaker3 = extractId(data.oppDecisionMaker3 || data.oppDecisionMaker3Id || data.decisionMaker3Id || data.DecisionMaker3Id || data.OppDecisionMaker3 || data.decisionMaker3 || data.DecisionMaker3 || data.contact3);
+          this.oppModel.decisionMaker4 = extractId(data.oppDecisionMaker4 || data.oppDecisionMaker4Id || data.decisionMaker4Id || data.DecisionMaker4Id || data.OppDecisionMaker4 || data.decisionMaker4 || data.DecisionMaker4 || data.contact4);
+          this.oppModel.decisionMaker5 = extractId(data.oppDecisionMaker5 || data.oppDecisionMaker5Id || data.decisionMaker5Id || data.DecisionMaker5Id || data.OppDecisionMaker5 || data.decisionMaker5 || data.DecisionMaker5 || data.contact5);
+          this.oppModel.relationshipId = extractId(data.relationship || data.oppRelationshipId || data.OppRelationshipId || data.relationshipId || data.RelationshipId);
+          this.oppModel.status = extractId(data.status || data.oppStatus || data.OppStatus || data.Status);
+          this.oppModel.competitors = data.oppRemarks1 || data.OppRemarks1 || data.competitors || data.Competitors || data.remarks1 || '';
 
         // Load segments and products for the selected category/group
-        if (data.productCategoryId) {
-          this.leadService.getSegmentsByCategory(data.productCategoryId).subscribe(segData => {
+        if (this.oppModel.productCategoryId) {
+          this.leadService.getSegmentsByCategory(this.oppModel.productCategoryId).subscribe(segData => {
             const field = this.oppFields.find(f => f.name === 'productGroupId');
             if (field && segData) {
               field.options = segData.map((s:any) => ({ label: s.groupName || s.GroupName, value: s.groupId || s.GroupId }));
             }
           });
         }
-        if (data.productGroupId) {
-          this.leadService.getProductsBySegment(data.productGroupId).subscribe(prodData => {
+        if (this.oppModel.productGroupId) {
+          this.leadService.getProductsBySegment(this.oppModel.productGroupId).subscribe(prodData => {
             const field = this.oppFields.find(f => f.name === 'productId');
             if (field && prodData) {
               field.options = prodData.map((p:any) => ({ label: p.productName || p.ProductName || 'Unnamed Product', value: p.productId || p.ProductId }));

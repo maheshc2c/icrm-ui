@@ -50,6 +50,7 @@ export class AddProduct implements OnInit {
     // Lead categories
     this.productService.getCategoriesFull().subscribe({
       next: (data) => {
+        this.categories = data;
         this.updateFieldOptions('productCategory', data.map(c => ({
           label: c.categoryName,
           value: c.categoryName
@@ -61,6 +62,7 @@ export class AddProduct implements OnInit {
     // Load Product Types
     this.productService.getProductTypesFull().subscribe({
       next: (data) => {
+        this.productTypes = data;
         this.updateFieldOptions('productType', data.map(t => ({
           label: t.typeName,
           value: t.typeName
@@ -72,6 +74,7 @@ export class AddProduct implements OnInit {
     // Load Sub Systems (SubCategories)
     this.productService.getSubCategoriesFull().subscribe({
       next: (data) => {
+        this.subSystems = data;
         this.updateFieldOptions('productSubSystem', data.map(s => ({
           label: s.subcategoryName,
           value: s.subcategoryName
@@ -88,7 +91,7 @@ export class AddProduct implements OnInit {
     this.headerTitle = 'Add New Product';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admin' },
-      { label: 'Product', route: '/admin/product' },
+      { label: 'Product', route: '/product' },
       { label: 'Add Product' }
     ];
   }
@@ -104,14 +107,14 @@ export class AddProduct implements OnInit {
     { name: 'productType', label: 'Product Type', placeholder: 'Select Product Type', type: 'select', required: true, options: [] }, // Dynamic
     {
       name: 'productTarget', label: 'Target', type: 'radio', required: false, options: [
-        { label: 'Yes', value: 1 },
-        { label: 'No', value: 0 }
+        { label: 'Yes', value: '1' },
+        { label: 'No', value: '0' }
       ]
     },
     {
       name: 'productAvailability', label: 'Availability', type: 'radio', required: false, options: [
-        { label: 'Active', value: 1 },
-        { label: 'Inactive', value: 0 }
+        { label: 'Active', value: '1' },
+        { label: 'Inactive', value: '0' }
       ]
     },
     { name: 'productMrp', label: 'MRP', placeholder: 'MRP', type: 'number', required: true }, // *
@@ -162,23 +165,29 @@ export class AddProduct implements OnInit {
  
   /* ================= SAVE ================= */
   saveProduct(data: any): void {
+    // Look up IDs from the names selected in the dropdowns
+    const selectedGroup = this.segments.find(s => s.groupName === data.productSegment);
+    const selectedType = this.productTypes.find(t => t.typeName === data.productType);
+    const selectedSubSys = this.subSystems.find(s => s.subcategoryName === data.productSubSystem);
+
     const payload = {
       ...data,
-      // Ensure mapping is correct
-      productSecondaryName: data.productCode, // Map productCode back to backend's productSecondaryName
-      groupName: data.productSegment, // Segment -> Group
-      categoryName: data.productCategory,
-      subCategoryName: data.productSubSystem,
-      typeName: data.productType,
-      productFeatures: data.productTechnicalSpecifications, // Map form fields to backend names
+      groupId: selectedGroup ? selectedGroup.groupId : null,
+      productTypeId: selectedType ? selectedType.productTypeId : null,
+      subCategoryId: selectedSubSys ? selectedSubSys.subCategoryId : null,
+      
+      productSecondaryName: data.productCode,
+      productFeatures: data.productTechnicalSpecifications,
       productScope: data.productScopeOfSupply,
-      productStatus: 1 // Always active record
+      productStatus: 1,
+      productTarget: data.productTarget != null ? Number(data.productTarget) : null,
+      productAvailability: data.productAvailability != null ? Number(data.productAvailability) : null
     };
  
     this.productService.createProduct(payload).subscribe({
       next: () => {
         this.toastService.success('Product Created Successfully!');
-        this.router.navigate(['/admin/product']);
+        this.router.navigate(['/product']);
       },
       error: err => {
         console.error('Create failed', err);
@@ -189,6 +198,6 @@ export class AddProduct implements OnInit {
  
   /* ================= CANCEL ================= */
   onCancel(): void {
-    this.router.navigate(['/admin/product']);
+    this.router.navigate(['/product']);
   }
 }

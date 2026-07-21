@@ -50,6 +50,10 @@ export class OpenLeads implements OnInit {
 
   originalLeads: LeadSummary[] = [];
   rows: any[] = [];
+  
+  currentPage = 1;
+  pageSize = 10;
+  totalElements: number = 0;
 
   constructor(
     private router: Router,
@@ -60,7 +64,6 @@ export class OpenLeads implements OnInit {
     this.loadLeads();
     this.loadCustomers();
   }
-
 
   loadCustomers(): void {
     this.leadService.getCustomers().subscribe({
@@ -80,9 +83,12 @@ export class OpenLeads implements OnInit {
   }
 
   loadLeads(): void {
-    this.leadService.getOpenLeads().subscribe({
-      next: (data: LeadSummary[]) => {
-        this.rows = data.map(item => ({
+    this.leadService.getOpenLeads(this.currentPage - 1, this.pageSize).subscribe({
+      next: (data: any) => {
+        const leadsData = data.content || (Array.isArray(data) ? data : []);
+        this.totalElements = data.totalElements || leadsData.length;
+        
+        this.rows = leadsData.map((item: any) => ({
           leadId: item.leadId,
           customer: item.customerName,
           contactPerson: item.contactFirstName,
@@ -94,12 +100,23 @@ export class OpenLeads implements OnInit {
           hasQuote: item.hasQuote,
           hasCNote: item.hasCNote
         }));
-        this.originalLeads = data;
+        this.originalLeads = leadsData;
       },
       error: (err) => {
         console.error('Error loading leads:', err);
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadLeads();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1; // Reset to page 1 on size change
+    this.loadLeads();
   }
 
   onSearch(filters: any): void {

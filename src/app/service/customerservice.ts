@@ -7,7 +7,7 @@ import { AuthService } from './auth-service';
   providedIn: 'root'
 })
 export class Customerservice {
-  private baseUrl = 'http://localhost:8080/SalesEngineer';
+  private baseUrl = 'http://localhost:8080/salesengineer';
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -39,6 +39,12 @@ export class Customerservice {
 
   searchCustomers(params: any): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/view-customer`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getCustomersDropdown(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/customer/dropdown`, {
       headers: this.getAuthHeaders()
     });
   }

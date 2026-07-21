@@ -40,6 +40,13 @@ export const routes: Routes = [
     }
   ]
 },
+{
+  path: 'quoteRevision/:id',
+  loadComponent: () =>
+    import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
+  canActivate: [authGuard],
+  data: { roles: ['SUPERADMIN', 'SUPER ADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+},
 
 {
   path: 'superadmin/company',
@@ -66,28 +73,28 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/manage-users',
+        path: 'users',
         loadComponent: () =>
           import('./pages/Admin/manager-users/manage-users').then(m => m.ManageUsersComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/add-users',
+        path: 'users/add',
         loadComponent: () =>
           import('./pages/Admin/manager-users/add-users/add-users').then(m => m.AddUsersComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/edit-user/:id',
+        path: 'users/edit/:id',
         loadComponent: () =>
           import('./pages/Admin/manager-users/edit-users/edit-users').then(m => m.EditUsersComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/view-user/:id',
+        path: 'users/view/:id',
         loadComponent: () =>
           import('./pages/Admin/manager-users/view-user/view-user').then(m => m.ViewUserComponent),
         canActivate: [authGuard],
@@ -269,21 +276,27 @@ export const routes: Routes = [
     import('./pages/Admin/territory/territory').then(m => m.Territory)
 },
 //segment
-{
-        path: 'admin/segment',
-        loadComponent: () =>
-          import('./pages/Admin/segment/segment.component').then(m => m.SegmentComponent)
-      },
-      {
-        path: 'admin/add-segment',
-        loadComponent: () =>
-          import('./pages/Admin/segment/add-segment/add-segment.component').then(m => m.AddSegment)
-      },
-      {
-        path: 'admin/segment/edit/:id',
-        loadComponent: () =>
-          import('./pages/Admin/segment/edit-segment/edit-segment.component').then(m => m.EditSegment)
-      },
+        {
+          path: 'segment',
+          loadComponent: () =>
+            import('./pages/Admin/segment/segment.component').then(m => m.SegmentComponent),
+          canActivate: [authGuard],
+          data: { roles: ['ADMIN'] }
+        },
+        {
+          path: 'segment/add',
+          loadComponent: () =>
+            import('./pages/Admin/segment/add-segment/add-segment.component').then(m => m.AddSegment),
+          canActivate: [authGuard],
+          data: { roles: ['ADMIN'] }
+        },
+        {
+          path: 'segment/edit/:id',
+          loadComponent: () =>
+            import('./pages/Admin/segment/edit-segment/edit-segment.component').then(m => m.EditSegment),
+          canActivate: [authGuard],
+          data: { roles: ['ADMIN'] }
+        },
 
 
 //discount 
@@ -383,22 +396,27 @@ export const routes: Routes = [
     import('./pages/Admin/region/addregion/addregion').then(m => m.Addregion),
 },
 
-{
-    path: 'admin/product',
-    loadComponent: () =>
+  {
+    path: 'product',
+      loadComponent: () =>
       import('./pages/Admin/product/product').then(m => m.Product),
-     
-  },
-  {
-    path: 'admin/add-product',
-    loadComponent: () =>
-      import('./pages/Admin/product/add-product/add-product.component').then(m => m.AddProduct)
-  },
-  {
-    path: 'admin/product/edit/:id',
-    loadComponent: () =>
-      import('./pages/Admin/product/edit-product/edit-product.component').then(m => m.EditProduct)
-  },
+      canActivate: [authGuard],
+      data: { roles: ['ADMIN'] }
+    },
+    {
+    path: 'product/add',
+      loadComponent: () =>
+      import('./pages/Admin/product/add-product/add-product.component').then(m => m.AddProduct),
+      canActivate: [authGuard],
+      data: { roles: ['ADMIN'] }
+    },
+    {
+    path: 'product/edit/:id',
+      loadComponent: () =>
+      import('./pages/Admin/product/edit-product/edit-product.component').then(m => m.EditProduct),
+      canActivate: [authGuard],
+      data: { roles: ['ADMIN'] }
+    },
 
   
 
@@ -617,6 +635,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
+
       {
         path: 'salesmanager/closed-leads',
         component: ClosedLeadsComponent,
@@ -759,7 +778,7 @@ export const routes: Routes = [
       },
       {
         path: 'c-note',
-        loadComponent: () => import('./pages/Regional-Branch-Head/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
+        loadComponent: () => import('./pages/common-modules/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
       },
       {
         path: 'PO-Approval',
@@ -779,7 +798,7 @@ export const routes: Routes = [
         path: 'superadmindashboard',
         component: SuperadminDashboard,
         canActivate: [authGuard],
-        data: { roles: ['SUPERADMIN'] }
+        data: { roles: ['SUPERADMIN', 'SUPER ADMIN'] }
       },
         
 
@@ -805,7 +824,7 @@ export const routes: Routes = [
         path: 'openleads',
         component: OpenLeads,
         canActivate: [authGuard],
-        data: { roles: ['SUPERADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['SUPERADMIN', 'SUPER ADMIN', 'SUPER ADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
 
 
@@ -815,104 +834,105 @@ export const routes: Routes = [
         path: 'adminmarketingdashboard',
         component: AdminmarketingDashboard,
         canActivate: [authGuard],
-        data: { roles: ['ADMINMARKETING'] }
+        data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
       },
 
       {
           path: 'adminmarketing/compaign',
           loadComponent: () => import('./pages/AdminMarketing/compaign/compaign').then(m => m.ManageCompaign),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/compaign/add',
           loadComponent: () => import('./pages/AdminMarketing/compaign/addcompaign/addcompaign').then(m => m.AddCompaign),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/compaign/edit/:id',
           loadComponent: () => import('./pages/AdminMarketing/compaign/addcompaign/addcompaign').then(m => m.AddCompaign),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
   
         {
           path: 'adminmarketing/managedacument',
           loadComponent: () => import('./pages/AdminMarketing/managedacument/managedacument').then(m => m.UploadDocument),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/managedacument/add',
           loadComponent: () => import('./pages/AdminMarketing/managedacument/adddocument/adddocument').then(m => m.AddDocument),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/managedacument/edit/:id',
           loadComponent: () => import('./pages/AdminMarketing/managedacument/adddocument/adddocument').then(m => m.AddDocument),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
   
         {
           path: 'adminmarketing/assing-leads',
           loadComponent: () => import('./pages/AdminMarketing/assing-leads/assing-leads').then(m => m.AssignLeads),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/track-leads',
           loadComponent: () => import('./pages/AdminMarketing/track-leads/track-leads').then(m => m.TrackLeads),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/track-leads/open-leads',
           loadComponent: () => import('./pages/AdminMarketing/track-leads/open-leads/open-leads').then(m => m.OpenLeads),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
   
         {
           path: 'adminmarketing/customer',
           loadComponent: () => import('./pages/common-modules/customer/customer').then(m => m.Customer),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/customer/add',
           loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/customer/edit/:id',
           loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
   
         {
           path: 'adminmarketing/contact',
           loadComponent: () => import('./pages/AdminMarketing/contact/contact').then(m => m.Contact),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/contact/add',
           loadComponent: () => import('./pages/AdminMarketing/contact/addcontact/addcontact').then(m => m.Addcontact),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/contact/edit/:id',
           loadComponent: () => import('./pages/AdminMarketing/contact/addcontact/addcontact').then(m => m.Addcontact),
           canActivate: [authGuard],
-          data: { roles: ['ADMINMARKETING'] }
+          data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
   
+
 
 
       { path: '**', redirectTo: 'login' },

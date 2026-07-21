@@ -39,7 +39,7 @@ export class EditSegment implements OnInit {
   headerTitle = 'Edit Segment';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admin' },
-    { label: 'Segment', route: '/admin/segment' },
+    { label: 'Segment', route: '/segment' },
     { label: 'Edit' }
   ];
  
@@ -54,7 +54,7 @@ export class EditSegment implements OnInit {
     // 1. Fetch Categories
     this.segmentService.getCategories().subscribe({
       next: (data) => {
-        this.categories = data.map(cat => ({ label: cat, value: cat }));
+        this.categories = data.map(cat => ({ label: cat.categoryName, value: cat.categoryId }));
         // 2. Fetch Competitors (for options)
         this.segmentService.getCompetitors().subscribe({
           next: (comps) => {
@@ -76,7 +76,7 @@ export class EditSegment implements OnInit {
  
   private buildForm(): void {
     this.segmentFields = [
-      { name: 'categoryName', label: 'Business Category', type: 'select', required: true, options: this.categories },
+      { name: 'categoryId', label: 'Business Category', type: 'select', required: true, options: this.categories },
       { name: 'groupName', label: 'Segment Name', type: 'text', required: true },
       { name: 'groupDescription', label: 'Description', type: 'textarea', required: false },
       // Competitors Field Added
@@ -100,7 +100,7 @@ export class EditSegment implements OnInit {
         }
  
         this.initialData = {
-          categoryName: segment.category?.categoryName || '',
+          categoryId: segment.productCategoryId || segment.category?.categoryId || '',
           groupName: segment.groupName,
           groupDescription: segment.groupDescription,
           groupStatus: segment.groupStatus,
@@ -128,9 +128,9 @@ export class EditSegment implements OnInit {
     }
  
     const payload: SegmentDto = {
-      categoryName: formData.categoryName,
+      categoryId: formData.categoryId,
       groupName: formData.groupName,
-      groupDescription: formData.groupDescription,
+      description: formData.groupDescription,
       groupStatus: Number(this.initialData.groupStatus || 1), // Preserve hidden status
       competitorNames: selectedCompetitors
     };
@@ -141,7 +141,7 @@ export class EditSegment implements OnInit {
       next: () => {
         console.log('Segment updated successfully');
         this.toastService.success('Segment updated successfully');
-        this.router.navigate(['/admin/segment']);
+        this.router.navigate(['/segment']);
       },
       error: (err) => {
         console.error('Failed to update segment:', err);
@@ -154,6 +154,6 @@ export class EditSegment implements OnInit {
   }
  
   onCancel(): void {
-    this.router.navigate(['/admin/segment']);
+    this.router.navigate(['/segment']);
   }
 }

@@ -75,20 +75,21 @@
 
 .btn-submit {
   padding: 11px 32px;
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); /* Purple Gradient */
+  background: #2196f3; /* Theme Blue */
   border: none;
   border-radius: 8px;
   color: white;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(33, 150, 243, 0.2);
   transition: all 0.2s;
 }
 
 .btn-submit:hover {
+  background: #1e88e5; /* Slightly darker blue on hover */
   transform: translateY(-1px);
-  box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 10px 15px -3px rgba(33, 150, 243, 0.3);
 }
 
 .btn-submit:active {

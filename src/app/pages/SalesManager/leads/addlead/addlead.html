@@ -6,6 +6,15 @@
 </app-pageheader>
 
 <!-- Tabs Navigation -->
+<div *ngIf="showQuoteSuccessMessage" style="margin-left: 287px; margin-right: 30px; margin-top: 24px; margin-bottom: -10px; background-color: #dffeef; color: #155724; border: 1px solid #c3e6cb; padding: 15px 20px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+  <div style="display: flex; align-items: center;">
+    <div style="background-color: #63c054; color: white; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+      <i class="fas fa-check" style="font-size: 16px;"></i>
+    </div>
+    <span style="font-size: 14px; color: #495057;"><strong>Success!</strong> New revision to Quote has been Added successfully!!</span>
+  </div>
+  <button (click)="showQuoteSuccessMessage = false" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #adb5bd; outline: none;">&times;</button>
+</div>
 <div *ngIf="isEditMode" class="form-wrapper-tabs" style="margin-left: 287px; padding: 24px 30px 0 30px; display: flex; justify-content: flex-start;">
   <div style="width: 100%; display: flex; align-items: flex-end;">
     <div *ngFor="let tab of tabs" 
@@ -321,14 +330,116 @@
   </div>
 </div>
 
-<div class="container-fluid py-5 text-center bg-white rounded shadow-sm mx-3 my-3" style="width: auto;" *ngIf="activeTab === 'Quote'">
-  <h4 class="text-muted">Quote</h4>
-  <p>No quotes generated for this lead yet.</p>
+<!-- Quote Tab -->
+<div *ngIf="activeTab === 'Quote'" style="position: relative; z-index: 5;">
+  <div class="form-wrapper" style="padding-top: 24px; min-height: 400px; margin-bottom: 60px; flex-direction: column;">
+      
+      <!-- Customer Info & Add Quote Button -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; width: 100%;">
+        <div style="font-size: 14px; color: #475569; font-weight: 500;">
+          Customer: {{ originalLeadData?.customerName || 'N/A' }}
+        </div>
+        <button (click)="openAddQuoteModal()" style="background: #2196f3; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+          <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Quote
+        </button>
+      </div>
+
+      <!-- Quote Table -->
+      <div style="margin-bottom: 30px; overflow-x: auto;">
+        <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #dee2e6;">
+          <thead style="background-color: #5b9bd5; color: white; font-weight: 500;">
+            <tr>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">S.NO</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">QUOTE ID</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">OPPORTUNITY DETAILS</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">DISCOUNT</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">CURRENT STAGE</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">STATUS</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">FINAL APPROVER</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">REVISIONS</th>
+              <th style="padding: 12px; border: 1px solid #dee2e6;">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (quotes && quotes.length > 0) {
+              @for (row of quotes; track row.quoteId; let i = $index) {
+                <tr>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ i + 1 }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.quoteId }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.opportunityDetails }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.discount }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.currentStage }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.quoteStatus }}</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.finalApprover }}</td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">
+                      <div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+
+                        <button class="btn btn-sm btn-primary view-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionInfo(row)" title="View Revision">
+                          <i class="fa-solid fa-info"></i>
+                        </button>
+                        <button class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">
+                    <div style="display: flex; justify-content: center; gap: 8px;">
+                      <button class="btn btn-sm btn-primary" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="View Document" (click)="onViewQuote(row.quoteId)">
+                        <i class="fas fa-file-alt"></i>
+                      </button>
+                      <button class="btn btn-sm btn-info" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="Download Quote" (click)="onDownloadQuote(row.quoteId)">
+                        <i class="fas fa-cloud-download-alt"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="9" style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">No records available.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+  </div>
 </div>
 
-<div class="container-fluid py-5 text-center bg-white rounded shadow-sm mx-3 my-3" style="width: auto;" *ngIf="activeTab === 'Contract Note'">
-  <h4 class="text-muted">Contract Note</h4>
-  <p>No contract notes available for this lead yet.</p>
+<div *ngIf="activeTab === 'Contract Note'" style="position: relative; z-index: 5;">
+  <div class="form-wrapper" style="padding-top: 24px; min-height: 400px; margin-bottom: 60px; flex-direction: column;">
+      
+      <!-- Add Contract Note Button -->
+      <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 16px; width: 100%;">
+        <button (click)="openAddContractNoteModal()" style="background: #2196f3; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+          <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Contract Note
+        </button>
+      </div>
+
+      <!-- Contract Note Table -->
+      <app-data-table
+        [noMargin]="true"
+        style="display: block; width: 100%;"
+        [columns]="contractNoteColumns"
+        [rows]="contractNotes"
+        [showImport]="false"
+        [showDownload]="false"
+        [showAdd]="false"
+        [showReset]="false"
+        [showSearch]="false"
+        [showPagination]="true"
+        [currentPage]="contractNoteCurrentPage"
+        [pageSize]="contractNotePageSize"
+        [totalPages]="contractNoteTotalPages"
+        [totalElements]="contractNoteTotalElements"
+        [showEdit]="false"
+        [showView]="false"
+        [showDelete]="false"
+        (pageChange)="onContractNotePageChange($event)"
+        (pageSizeChange)="onContractNotePageSizeChange($event)">
+      </app-data-table>
+
+  </div>
 </div>
 
 <!-- Details Modal -->
@@ -636,7 +747,8 @@
               (ngModelChange)="onOppFieldChange({name: field.name, value: $event})"
               [required]="field.required"
               [class.is-invalid]="oppErrors[field.name]"
-              style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;"
+              [style.border-color]="oppErrors[field.name] ? '#ef4444' : '#cbd5e1'"
+              style="padding: 8px; border: 1px solid; border-radius: 4px; font-size: 13px;"
             >
               <option value="">-- Select --</option>
               <option *ngFor="let option of field.options" [value]="option.value">
@@ -647,10 +759,12 @@
             <!-- CUSTOM SEARCHABLE DROPDOWN -->
             <div *ngIf="field.isSearchable" class="custom-dropdown-container" style="position: relative; width: 100%;">
               <div class="dropdown-trigger" 
+                   [id]="field.name"
                    [class.active]="openOppDropdown === field.name"
                    [class.is-invalid]="oppErrors[field.name]"
+                   [style.border-color]="oppErrors[field.name] ? '#ef4444' : '#cbd5e1'"
                    (click)="toggleOppDropdown(field.name, $event)"
-                   style="height: 35px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; background: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s;">
+                   style="height: 35px; padding: 6px 10px; border: 1px solid; border-radius: 4px; font-size: 13px; background: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s;">
                 <span class="selected-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333;">
                   {{ getOppSelectedLabel(field) }}
                 </span>
@@ -691,9 +805,11 @@
               [id]="field.name"
               [name]="field.name"
               [(ngModel)]="oppModel[field.name]"
+              (ngModelChange)="onOppFieldChange({name: field.name, value: $event})"
               [required]="field.required"
               [class.is-invalid]="oppErrors[field.name]"
-              style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;"
+              [style.border-color]="oppErrors[field.name] ? '#ef4444' : '#cbd5e1'"
+              style="padding: 8px; border: 1px solid; border-radius: 4px; font-size: 13px;"
             />
           </ng-container>
 
@@ -715,3 +831,212 @@
     </form>
   </div>
 </app-modal>
+
+<!-- Add Quote Modal -->
+<app-modal [show]="showAddQuoteModal" [title]="'Add Quote'" size="lg" (closeDialog)="showAddQuoteModal = false">
+  <div style="padding: 20px; font-family: 'Inter', sans-serif;">
+    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: start; margin-bottom: 16px;">
+      
+      <!-- Opportunity Table Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Opportunity <span style="color: red;">*</span></div>
+      <div>
+        <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6;">
+          <thead style="background-color: #5b9bd5; color: white;">
+            <tr>
+              <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center; width: 40px;"></th>
+              <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">Product Name</th>
+              <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">Description</th>
+              <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">MRP</th>
+              <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (quoteOpportunities.length > 0) {
+              @for (opp of quoteOpportunities; track opp.id) {
+                <tr>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">
+                    <input type="checkbox" name="selectedOpportunity" [checked]="quoteForm.opportunityId === opp.id" (change)="$event.target.checked ? quoteForm.opportunityId = opp.id : quoteForm.opportunityId = null">
+                  </td>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">{{ opp.productAndCategory }}</td>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">{{ opp.category }}</td>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">-</td>
+                  <td style="padding: 8px; border: 1px solid #dee2e6;">{{ opp.qty }}</td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="5" style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">Opportunities not Found.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Billing Name Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Billing Name<span style="color: red;">*</span></div>
+      <div>
+        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.billingInfoId" [disabled]="!quoteForm.opportunityId">
+          <option value="">Select Billing Name</option>
+          @for (billing of quoteBillingOptions; track billing.billing_info_id) {
+            <option [value]="billing.billing_info_id">{{ billing.billingName }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Dealer Commission Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Dealer Commission (%)</div>
+      <div>
+        <input type="number" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.dealerCommission" [disabled]="!quoteForm.opportunityId">
+      </div>
+
+      <!-- Dealer Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Dealer <span style="color: red;">*</span></div>
+      <div>
+        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.dealerId" [disabled]="!quoteForm.opportunityId">
+          <option value="">Select Dealer</option>
+          @for (dealer of quoteDealerOptions; track dealer.id) {
+            <option [value]="dealer.id">{{ dealer.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Billing Through Row -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Billing Through <span style="color: red;">*</span></div>
+      <div>
+        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.companyId" [disabled]="!quoteForm.opportunityId">
+          <option value="">Select Dealer</option>
+          @for (company of quoteCompanyOptions; track company.id) {
+            <option [value]="company.id">{{ company.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; border-top: 1px solid #eee; padding-top: 16px;">
+      <button class="btn btn-light btn-sm" style="border: 1px solid #ccc; border-radius: 4px; padding: 6px 16px;" (click)="showAddQuoteModal = false">Cancel</button>
+      <button class="btn btn-primary btn-sm" style="background-color: #3b82f6; border: none; border-radius: 4px; padding: 6px 16px; color: white;" (click)="submitQuote()" [disabled]="!quoteForm.opportunityId">
+        <i class="fas fa-check"></i> Submit
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- Quote Revision History Modal -->
+<app-modal [show]="showRevisionHistoryModal" [title]="'Quote Revision History'" size="lg" (closeDialog)="showRevisionHistoryModal = false">
+  <div style="padding: 20px; font-family: 'Inter', sans-serif;">
+    <div style="display: grid; grid-template-columns: 200px 1fr; gap: 10px; font-size: 13px; color: #64748b; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto; padding-right: 50px;">
+      <div style="text-align: right;">Quote ID:</div>
+      <div style="color: #334155;">KAR-26-S</div>
+      
+      <div style="text-align: right;">Opportunities:</div>
+      <div style="color: #334155;">101 - Defense (Qty -1)</div>
+      
+      <div style="text-align: right;">Revisions:</div>
+      <div></div>
+    </div>
+    
+    <div style="max-width: 750px; margin-left: auto; margin-right: auto;">
+      <table class="table table-bordered" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6;">
+        <thead style="background-color: #6da5d8; color: white;">
+          <tr>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Revision</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Billing</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Discount</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Total Price (Rs)</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">1</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">Company</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">0%</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">400</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">MRP Quote</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">2</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">Company</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">1%</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">396</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">Current Quote</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Actions -->
+    <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+      <button (click)="showRevisionHistoryModal = false" style="background: #4b89f8; color: white; border: none; padding: 8px 24px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">Ok</button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- Add Contract Note Modal -->
+<app-modal [show]="showAddContractNoteModal" [title]="'Add Contract Note'" size="lg" (closeDialog)="closeAddContractNoteModal()">
+  <div style="padding: 20px; font-family: 'Inter', sans-serif;">
+    <div style="display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: center; margin-bottom: 16px;">
+      
+      <!-- Quote -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Quote <span style="color: red;">*</span></div>
+      <div>
+        <select class="form-select" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff; height: 35px; color: #555;"
+                [(ngModel)]="contractNoteFormModel.quoteRevisionId"
+                name="quoteRevisionId">
+          <option value="">-- Select --</option>
+          <option *ngFor="let option of contractNoteQuoteOptions" [value]="option.id">{{ option.label }}</option>
+        </select>
+        <div *ngIf="contractNoteErrors['quoteRevisionId']" style="color: #ef4444; font-size: 11px; margin-top: 4px;">{{ contractNoteErrors['quoteRevisionId'] }}</div>
+      </div>
+
+      <!-- PO Number -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">PO Number <span style="color: red;">*</span></div>
+      <div>
+        <input type="text" class="form-control" placeholder="Po Number" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; height: 35px; color: #555;"
+               [(ngModel)]="contractNoteFormModel.purchaseOrderNo"
+               name="purchaseOrderNo">
+        <div *ngIf="contractNoteErrors['purchaseOrderNo']" style="color: #ef4444; font-size: 11px; margin-top: 4px;">{{ contractNoteErrors['purchaseOrderNo'] }}</div>
+      </div>
+
+      <!-- PO Date -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">PO Date <span style="color: red;">*</span></div>
+      <div>
+        <input type="date" class="form-control" placeholder="YYYY-MM-DD" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; height: 35px; color: #555;"
+               [(ngModel)]="contractNoteFormModel.dateOfPurchaseOrder"
+               name="dateOfPurchaseOrder">
+        <div *ngIf="contractNoteErrors['dateOfPurchaseOrder']" style="color: #ef4444; font-size: 11px; margin-top: 4px;">{{ contractNoteErrors['dateOfPurchaseOrder'] }}</div>
+      </div>
+
+      <!-- Institution Code -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Institution Code <span style="color: red;">*</span></div>
+      <div>
+        <input type="text" class="form-control" placeholder="Institution Code" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; height: 35px; color: #555;"
+               [(ngModel)]="contractNoteFormModel.institutionCode"
+               name="institutionCode">
+        <div *ngIf="contractNoteErrors['institutionCode']" style="color: #ef4444; font-size: 11px; margin-top: 4px;">{{ contractNoteErrors['institutionCode'] }}</div>
+      </div>
+
+      <!-- Billing to Party -->
+      <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Billing to Party <span style="color: red;">*</span></div>
+      <div>
+        <input type="text" class="form-control" placeholder="Billing to Party" style="width: 100%; padding: 8px; font-size: 13px; border: 1px solid #ccc; border-radius: 4px; height: 35px; color: #555;"
+               [(ngModel)]="contractNoteFormModel.billingToParty"
+               name="billingToParty">
+        <div *ngIf="contractNoteErrors['billingToParty']" style="color: #ef4444; font-size: 11px; margin-top: 4px;">{{ contractNoteErrors['billingToParty'] }}</div>
+      </div>
+
+    </div>
+    
+    <!-- Actions -->
+    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 30px;">
+      <button (click)="closeAddContractNoteModal()" style="background: white; border: 1px solid #ccc; padding: 8px 16px; border-radius: 4px; font-size: 13px; cursor: pointer;">Cancel</button>
+      <button (click)="submitContractNote()" [disabled]="contractNoteSubmitting" [style.opacity]="contractNoteSubmitting ? 0.6 : 1" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center;">
+        <i class="fas fa-check" style="margin-right: 6px;"></i> {{ contractNoteSubmitting ? 'Submitting...' : 'Submit' }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+
+

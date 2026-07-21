@@ -7,12 +7,22 @@
 
         <!-- Top Bar -->
         <div class="card-top-bar">
-            <h2 class="card-title">
-                Product Targets For {{ selectedYear }} Financial Year
+            <h2 class="card-title" style="display: flex; align-items: center; gap: 10px;">
+                Product Targets For 
+                <select class="year-select form-select" [(ngModel)]="selectedYear" name="selectedYear" style="width: auto; display: inline-block;">
+                    <option *ngFor="let yr of financialYears" [value]="yr">{{ yr }}</option>
+                </select>
+                Financial Year
+                <span *ngIf="isPastYear" class="text-danger" style="font-size: 13px; font-weight: normal;">(Past years are read-only)</span>
             </h2>
-            <button class="btn btn-download" (click)="onDownloadTemplate()">
-                <i class="fas fa-download"></i> Download User Product Targets XLS
-            </button>
+            <div class="header-buttons" style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary" style="background-color: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px;" (click)="onDownloadEmptyTemplate()">
+                    <i class="fas fa-file-download"></i> Download Template
+                </button>
+                <button class="btn btn-download" (click)="onDownloadTemplate()">
+                    <i class="fas fa-download"></i> Download User Product Targets XLS
+                </button>
+            </div>
         </div>
 
         <!-- Upload Form -->
@@ -20,14 +30,14 @@
             <div class="form-row">
                 <label class="upload-label">Upload File<span class="required">*</span></label>
                 <div class="upload-input-group">
-                    <input type="file" id="fileInput" class="file-input" accept=".csv" (change)="onFileChange($event)">
+                    <input type="file" id="fileInput" class="file-input" accept=".csv" (change)="onFileChange($event)" [disabled]="isPastYear">
                     <span class="file-hint">(allowed csv files only)</span>
                 </div>
             </div>
 
             <div class="form-actions">
                 <button class="btn btn-primary submit-btn" (click)="onSubmit()"
-                    [disabled]="isSubmitting || !selectedFile">
+                    [disabled]="isSubmitting || !selectedFile || isPastYear">
                     {{ isSubmitting ? 'Uploading...' : 'Submit' }}
                 </button>
             </div>
