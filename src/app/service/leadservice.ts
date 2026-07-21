@@ -166,7 +166,7 @@ export class Leadservice {
 
   /* ================= SAVE QUOTE ================= */
   saveQuote(payload: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/leads/create/quote`, payload, { headers: this.getAuthHeaders() });
+    return this.http.post<any>(`${this.baseUrl}/quote/create/quote`, payload, { headers: this.getAuthHeaders() });
   }
 
   /* ================= GET OPPORTUNITIES BY LEAD ID ================= */
@@ -179,21 +179,21 @@ export class Leadservice {
   /* ================= CREATE OPPORTUNITY ================= */
   createOpportunity(leadId: number, opportunityDto: any): Observable<any> {
     opportunityDto.leadId = leadId;
-    return this.http.post<any>(`${this.baseUrl}/leads/create/opportunity`, opportunityDto, {
+    return this.http.post<any>(`${this.baseUrl}/opportunity/create/opportunity`, opportunityDto, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET OPPORTUNITY BY ID ================= */
   getOpportunityById(oppId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/leads/opportunity/${oppId}`, {
+    return this.http.get<any>(`${this.baseUrl}/opportunity/opportunity/${oppId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= UPDATE OPPORTUNITY ================= */
   updateOpportunity(oppId: number, opportunityDto: any): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/leads/update-opportunity/${oppId}`, opportunityDto, {
+    return this.http.put<any>(`${this.baseUrl}/opportunity/update-opportunity/${oppId}`, opportunityDto, {
       headers: this.getAuthHeaders()
     });
   }
@@ -266,7 +266,7 @@ export class Leadservice {
 
   /* ================= GET DEALERS DROPDOWN ================= */
   getDealers(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/leads/dealers`, {
+    return this.http.get<any[]>(`${this.baseUrl}/quote/dealers`, {
       headers: this.getAuthHeaders()
     });
   }
@@ -305,7 +305,7 @@ export class Leadservice {
   }
 
   downloadQuotePdf(quoteId: string | number): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/leads/quotes/${quoteId}/pdf`, {
+    return this.http.get(`${this.baseUrl}/quote/quotes/${quoteId}/pdf`, {
       headers: this.getAuthHeaders(),
       responseType: 'blob'
     });
