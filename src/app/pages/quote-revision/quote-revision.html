@@ -47,13 +47,13 @@
                   {{ product.editableQuantity }}
                 </td>
                 <td style="padding: 12px; text-align: center; color: #495057; border-left: 1px solid #dee2e6; font-weight: 500;">
-                  {{ product.mrp | number:'1.2-2' }}
+                  {{ (product.mrp * product.editableQuantity) | number:'1.2-2' }}
                 </td>
                 <td style="padding: 8px 12px; border-left: 1px solid #dee2e6; vertical-align: middle;">
                   <div style="display: flex; border: 1px solid #ced4da; border-radius: 2px; overflow: hidden; background: #fff;">
                     <select [(ngModel)]="product.discountType" style="padding: 6px 8px; border: none; border-right: 1px solid #ced4da; background: transparent; outline: none; font-size: 12px; color: #495057; cursor: pointer; width: 70px;">
-                      <option value="in %">In %</option>
-                      <option value="Flat">Flat</option>
+                      <option value="In %">In %</option>
+                      <option value="In Rs">In Rs</option>
                     </select>
                     <input type="number" [(ngModel)]="product.editableDiscount" style="width: 100%; padding: 6px 8px; border: none; background: transparent; outline: none; font-size: 12px; color: #495057;">
                   </div>
