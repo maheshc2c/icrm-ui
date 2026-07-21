@@ -62,7 +62,7 @@ export class CustomerInteractionCenterService {
 
   getLeadById(leadId: number): Observable<any> {
     return this.http.get<any>(
-      `${this.baseUrl}/SalesEngineer/salesmanager/lead/${leadId}`,
+      `${this.baseUrl}/CustomerInteractionCenter/edit-lead/${leadId}`,
       { headers: this.getAuthHeaders() }
     );
   }

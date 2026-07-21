@@ -48,7 +48,7 @@ export class DeleteContractNote implements OnInit {
     {
       key: 'searchKeyword',
       label: 'CNOTE ID',
-      placeholder: 'NOTE: separate multiple C Note IDs with comma(,) (Ex: 25,28,78)',
+      placeholder: 'Enter C Note ID',
       type: 'text'
     }
   ];
