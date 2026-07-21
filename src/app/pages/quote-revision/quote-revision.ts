@@ -16,7 +16,8 @@ import { Header } from '../../layout/header/header';
   templateUrl: './quote-revision.html'
 })
 export class QuoteRevisionComponent implements OnInit {
-  quoteId: string = '';
+  quoteId: string = '1783402869854';
+  leadId: number | null = null;
   breadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/' },
     { label: 'Quote Details' },
@@ -70,7 +71,7 @@ export class QuoteRevisionComponent implements OnInit {
     const headers = { 'Authorization': `Bearer ${token}` };
     const quoteIdNum = parseInt(this.quoteId.replace(/\D/g, '') || '0');
 
-    this.http.get(`http://localhost:8080/leads/quote-revision-details/${quoteIdNum}`, { headers }).subscribe({
+    this.http.get(`http://localhost:8080/quote/quote-revision-details/${quoteIdNum}`, { headers }).subscribe({
       next: (res: any) => {
         if (res.status && res.data) {
           const data = res.data;
@@ -81,6 +82,7 @@ export class QuoteRevisionComponent implements OnInit {
           if (data.advance != null) this.quoteForm.advance = data.advance;
           if (data.dealerCommission != null) this.quoteForm.dealerCommission = data.dealerCommission;
           if (data.dealerId != null) this.quoteForm.dealerId = data.dealerId;
+          if (data.leadId != null) this.leadId = data.leadId;
 
           if (data.billingOptions) this.billingOptions = data.billingOptions;
           if (data.productOptions) this.productOptions = data.productOptions;
@@ -95,7 +97,7 @@ export class QuoteRevisionComponent implements OnInit {
             editableQuantity: opp.quantity || 1,
             mrp: opp.mrp || 0,
             editableDiscount: opp.currentDiscount || 0,
-            discountType: opp.discountType === 2 ? 'in %' : 'Flat',
+            discountType: opp.discountType === 2 ? 'In %' : 'In Rs',
             discountedValue: opp.discountedValue || 0,
             selected: true,
             showFreeSupply: false,
@@ -117,7 +119,7 @@ export class QuoteRevisionComponent implements OnInit {
     const baseTotal = qty * mrp;
     const discount = product.editableDiscount || 0;
     
-    if (product.discountType === 'in %') {
+    if (product.discountType === 'In %') {
       return baseTotal - (baseTotal * (discount / 100));
     } else {
       return Math.max(0, baseTotal - discount);
@@ -142,7 +144,7 @@ export class QuoteRevisionComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/salesmanager/leads/edit', 5]);
+    this.router.navigate(['/salesmanager/leads/edit', this.leadId || 5]);
   }
 
   onSubmit() {
@@ -157,7 +159,7 @@ export class QuoteRevisionComponent implements OnInit {
       balancePaymentDays: 0,
       opportunities: this.quotes.filter(q => q.selected).map(q => ({
         opportunityId: q.opportunityId,
-        discountType: q.discountType === 'in %' ? 2 : 1,
+        discountType: q.discountType === 'In %' ? 2 : 1,
         discount: q.editableDiscount,
         freeSupplyItems: q.showFreeSupply ? q.freeSupplyItems.filter((fs: any) => fs.product).map((fs: any) => ({
           productId: fs.product, // The bound ID from the select dropdown
@@ -169,9 +171,9 @@ export class QuoteRevisionComponent implements OnInit {
     const token = localStorage.getItem('token');
     const headers = { 'Authorization': `Bearer ${token}` };
 
-    this.http.post('http://localhost:8080/leads/create/quote-revision', payload, { headers }).subscribe({
+    this.http.post('http://localhost:8080/quote/create/quote-revision', payload, { headers }).subscribe({
       next: (res) => {
-        this.router.navigate(['/salesmanager/leads/edit', 17], { queryParams: { success: 'true' } });
+        this.router.navigate(['/salesmanager/leads/edit', this.leadId || 17], { queryParams: { success: 'true' } });
       },
       error: (err) => {
         console.error('Error saving quote revision:', err);

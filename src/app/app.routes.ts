@@ -490,11 +490,11 @@ export const routes: Routes = [
         data: { roles: ['Sales Director'] }
       },
 
-      {
-  path: 'salesdirector/addleads',
-  loadComponent: () =>
-    import('./pages/SalesDirector/new/new').then(m => m.New),
-},
+//       {
+//   path: 'salesdirector/addleads',
+//   loadComponent: () =>
+//     import('./pages/SalesDirector/new/new').then(m => m.New),
+// },
 
   {
   path: 'oppurtunity/open',
@@ -508,16 +508,16 @@ export const routes: Routes = [
 },
 
 
-{
-  path: 'salesdirector/addleads/addcontact',
-  loadComponent: () =>
-    import('./pages/SalesDirector/new/addcontact/addcontact').then(m => m.Addcontact),
-},
-{
-  path: 'salesdirector/addleads/addcustomer',
-  loadComponent: () =>
-    import('./pages/SalesDirector/new/addcustomer/addcustomer').then(m => m.Addcustomer),
-},
+// {
+//   path: 'salesdirector/addleads/addcontact',
+//   loadComponent: () =>
+//     import('./pages/SalesDirector/new/addcontact/addcontact').then(m => m.Addcontact),
+// },
+// {
+//   path: 'salesdirector/addleads/addcustomer',
+//   loadComponent: () =>
+//     import('./pages/SalesDirector/new/addcustomer/addcustomer').then(m => m.Addcustomer),
+// },
 
  {
   path: 'salesdirector/track-quotes',
@@ -687,7 +687,15 @@ export const routes: Routes = [
       },
       {
         path: 'planDemo',
-        loadComponent: () => import('./pages/SalesManager/plan-demo/plan-demo').then(m => m.PlanDemoComponent),
+        loadComponent: () => import('./pages/common-modules/planDemo/demo').then(m => m.Demo),
+      },
+      {
+        path: 'planDemo/Add',
+        loadComponent: () => import('./pages/common-modules/planDemo/add-plan-demo/add-plan-demo').then(m => m.AddPlanDemo),
+      },
+       {
+        path: 'planDemo/edit/:id',
+        loadComponent: () => import('./pages/common-modules/planDemo/add-plan-demo/add-plan-demo').then(m => m.AddPlanDemo),
         // canActivate: [authGuard],
         // data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',] }
       },
@@ -891,11 +899,11 @@ export const routes: Routes = [
 
       {
         path: 'quotes-view',
-        loadComponent: () => import('./pages/Regional-Branch-Head/quote-approval/quote-approval').then(m => m.QuoteApproval),
+        loadComponent: () => import('./pages/common-modules/quote-approval/quote-approval').then(m => m.QuoteApproval),
       },
       {
         path: 'c-note',
-        loadComponent: () => import('./pages/Regional-Branch-Head/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
+        loadComponent: () => import('./pages/common-modules/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
       },
       {
         path: 'PO-Approval',

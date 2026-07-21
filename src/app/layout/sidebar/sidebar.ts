@@ -381,7 +381,7 @@ constructor() {
           route: '/regional-sales-manager/plan-a-visit',
           children: [
             { label: 'Visit', icon: 'fas fa-route', route: '/regional-sales-manager-dashboard/plan-a-visit' },
-            { label: 'Demo', icon: 'fas fa-suitcase', route: '/country-head/plan-a-demo' }
+            { label: 'Demo', icon: 'fas fa-suitcase', route: '/planDemo' }
           ]
         },
  
@@ -476,7 +476,7 @@ constructor() {
           route: '/country-head/dashboard/plan-visit',
           children: [
             { label: 'Visit', icon: 'fas fa-route', route: '/country-head/dashboard/plan-visit' },
-            { label: 'Demo', icon: 'fas fa-suitcase', route: '/country-head/dashboard/plan-demo' }
+            { label: 'Demo', icon: 'fas fa-suitcase', route: '/planDemo' }
           ]
         },
         {
@@ -484,7 +484,7 @@ constructor() {
           icon: 'fas fa-check-circle',
           route: '/country-head/dashboard/approvals',
           children: [
-            { label: 'Quote Approval', icon: 'fas fa-file-signature', route: '/country-head/dashboard/quote-approval' },
+            { label: 'Quote Approval', icon: 'fas fa-file-signature', route: '/quotes-view' },
             { label: 'Purchase Order Approval', icon: 'fas fa-file-contract', route: '/country-head/dashboard/purchase-order-approval' }
           ]
         },
@@ -567,7 +567,7 @@ constructor() {
           route: '/globalhead/manage-visits',
           children: [
             { label: 'Visit', icon: 'fas fa-route', route: '/globalhead/manage-visits' },
-            { label: 'Demo', icon: 'fas fa-suitcase', route: '/globalhead-dashboard/plan-demo' }
+            { label: 'Demo', icon: 'fas fa-suitcase', route: '/planDemo' }
           ]
         },
         {
@@ -663,7 +663,7 @@ constructor() {
           route: `/plan-visit`,
           children: [
             { label: 'Visit', icon: 'fas fa-route', route: `/plan-visit` },
-            { label: 'Demo', icon: 'fas fa-suitcase', route: `/plan-demo` }
+            { label: 'Demo', icon: 'fas fa-suitcase', route: `/planDemo` }
           ]
         },
         {
@@ -671,7 +671,8 @@ constructor() {
           icon: 'fas fa-check-circle',
           route: `/approvals`,
           children: [
-            { label: 'Quote Approval', icon: 'fas fa-file-signature', route: `/quote-approval` },
+            { label: 'CNote Approval', icon: 'fas fa-file-signature', route: `/c-note` },
+            { label: 'Quote Approval', icon: 'fas fa-file-signature', route: `/quotes-view` },
             { label: 'Purchase Order Approval', icon: 'fas fa-file-contract', route: `/purchase-order-approval` }
           ]
         },

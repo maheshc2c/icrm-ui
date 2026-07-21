@@ -44,6 +44,23 @@
                 [id]="'form-field-' + field.name"
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
 
+                <!-- DATE TIME -->
+<input
+    *ngIf="field.type === 'datetime-local'"
+    type="datetime-local"
+    class="company-text-input"
+    [(ngModel)]="formData[field.name]"
+    [name]="field.name"
+    [required]="field.required"
+    [id]="'form-field-' + field.name"
+    (ngModelChange)="
+      onFieldInput(field.name);
+      fieldChange.emit({ name: field.name, value: $event });
+      field.onChange?.($event)
+    " />
+
+
+
               <!-- TEXTAREA -->
               <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder || ''"
                 [(ngModel)]="formData[field.name]" [name]="field.name"
@@ -178,6 +195,8 @@
             </div>
           </ng-container>
         </div>
+
+
 
         <!-- BUTTONS -->
         <div class="form-action-buttons">

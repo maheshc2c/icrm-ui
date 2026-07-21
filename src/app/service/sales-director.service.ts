@@ -272,16 +272,6 @@ export class SalesDirectorService {
     );
   }
 
-
-
-
-  // getCustomerDropdown() {
-  //   return this.http.get<CustomerModel | CustomerModel[]>(
-  //     `${this.baseUrl}/SalesDirector/customer/dropdown`,
-  //     { headers: this.getAuthHeaders() }
-  //   );
-  // }
-
   searchContactByNumber(number: string) {
     return this.http.get<Contactmodel[]>(
       `${this.baseUrl}/SalesDirector/search-contact-by-number`,
@@ -348,12 +338,9 @@ export class SalesDirectorService {
       { headers: this.getAuthHeaders() }
     );
   }
-  getCustomerDropdown() {
-    return this.http.get<CustomerModel | CustomerModel[]>(
-      `${this.baseUrl}/SalesDirector/customer/dropdown`,
-      { headers: this.getAuthHeaders() }
-    );
-  } getLocations(): Observable<CustomerModel[]> {
+
+  
+  getLocations(): Observable<CustomerModel[]> {
     return this.http.get<CustomerModel[]>(
       `${this.baseUrl}/SalesDirector/dropdown-speciality`,
       { headers: this.getAuthHeaders() }
@@ -366,18 +353,6 @@ export class SalesDirectorService {
 
   // ================= CUSTOMER =================
 
-  // getCustomerById(id: number) {
-  //   const token = this.auth.getToken();
-
-  //   const headers = token
-  //     ? new HttpHeaders({ Authorization: `Bearer ${token}` })
-  //     : new HttpHeaders();
-
-  //   return this.http.get<CustomerModel[]>(
-  //     `${this.baseUrl}/SalesDirector/view-Customer`,
-  //     { headers }
-  //   );
-  // }
   getCustomerById(id: number): Observable<CustomerModel> {
     return this.http.get<CustomerModel>(
       `${this.baseUrl}/SalesDirector/view-customer/${id}`,
@@ -405,26 +380,7 @@ export class SalesDirectorService {
 
 
   // ================= SEARCH CUSTOMER =================
-  // searchCustomer(name: string) {
-  //   return this.http.get<CustomerModel[]>(
-  //     `${this.baseUrl}/SalesDirector/search`,
-  //     {
-  //       headers: this.getAuthHeaders(),
-  //       params: { name: name } // ✅ MATCHES BACKEND
-  //     }
-  //   );
-  // }
-//   searchCustomer(customerName: string) {
-//   return this.http.get<CustomerModel[]>(
-//     `${this.baseUrl}/SalesDirector/search`,
-//     {
-//       headers: this.getAuthHeaders(),
-//       params: { customerName }
-//     }
-//   );
-// }
 
-// sales-director.service.ts
 searchCustomer(filters: {
   customerName?: string;
   cityName?: string;
@@ -450,17 +406,6 @@ searchCustomer(filters: {
 }
 
 
-
-
-  // ================= CREATE CUSTOMER =================
-  // createCustomer(customer: CustomerModel): Observable<CustomerModel> {
-  //   const headers = this.getAuthHeaders();
-  //   return this.http.post<CustomerModel>(
-  //     `${this.baseUrl}/SalesDirector/create-customer`,
-  //     customer,
-  //     { headers }
-  //   );
-  // }
   // ================= CREATE CUSTOMER =================
   createCustomer(customer: any): Observable<any> {
 
@@ -513,18 +458,14 @@ searchCustomer(filters: {
   }
 
   // Lead 
- 
-
- 
 
   /* ================= GET CUSTOMERS DROPDOWN ================= */
-  // getCustomers(): Observable<any[]> {
-  //   console.log('📡 Calling: /SalesDirector/customer/dropdown');
-  //   return this.http.get<any[]>(`${this.baseUrl}/SalesDirector/customer/dropdown`, {
-  //     headers: this.getAuthHeaders()
-  //   });
-  // }
-
+  getCustomers(): Observable<any[]> {
+    console.log('📡 Calling: /SalesDirector/customer/dropdown');
+    return this.http.get<any[]>(`${this.baseUrl}/SalesDirector/customer/dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
   /* ================= CREATE LEAD ================= */
   //search visit
@@ -663,14 +604,7 @@ downloadOpp(data: OpportunityTableModel[]): Observable<Blob> {
     });
   }
  
-  /* ================= GET CUSTOMERS DROPDOWN ================= */
-  getCustomers(): Observable<any[]> {
-    console.log('📡 Calling: /SalesDirector/customer/dropdown');
-    return this.http.get<any[]>(`${this.baseUrl}/SalesDirector/customer/dropdown`, {
-      headers: this.getAuthHeaders()
-    });
-  }
- 
+
   /* ================= GET CONTACT PERSONS DROPDOWN ================= */
   getContacts(): Observable<any[]> {
     console.log('📡 Calling: /SalesDirector/contacts/dropdown');
@@ -725,6 +659,151 @@ downloadOpp(data: OpportunityTableModel[]): Observable<Blob> {
       headers: this.getAuthHeaders()
     });
   }
+
+
+  //Plan A Demo (Common in 8 Roles)
+  getPlanDemo(
+  pageNumber: number = 0,
+  pageSize: number = 10
+) {
+
+  return this.http.post<any>(
+    `${this.baseUrl}/plan/demo/search`,
+    {
+      opportunityId: null,
+      customerName: null,
+      startDate: null,
+      endDate: null,
+      pagination: {
+        pageNumber,
+        pageSize,
+        sortBy: 'demoId',
+        sortOrder: 'DESC'
+      }
+    },
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
+
+searchPlanDemo(payload:any){
+
+  return this.http.post<any>(
+    `${this.baseUrl}/demo-visit/demo/search`,
+    payload,
+    {
+      headers:this.getAuthHeaders()
+    }
+  );
+
+}
+getDemoById(demoId: number) {
+
+  return this.http.get<any>(
+    `${this.baseUrl}/demo-visit/demo/${demoId}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+
+}
+
+
+downloadPlanDemo(payload:any){
+
+  return this.http.post(
+    `${this.baseUrl}/demo-visit/demo/download`,
+    payload,
+    {
+      headers:this.getAuthHeaders(),
+      responseType:'blob'
+    }
+  );
+
+}
+
+getLeadDropdown() {
+
+    return this.http.get<any>(
+        `${this.baseUrl}/demo-visit/lead/dropdown`,
+        {
+            headers: this.getAuthHeaders()
+        }
+    );
+
+}
+
+getOpportunityDropdown(leadId: number) {
+
+    return this.http.get<any>(
+        `${this.baseUrl}/demo-visit/opportunity/dropdown?leadId=${leadId}`,
+        {
+            headers: this.getAuthHeaders()
+        }
+    );
+
+}
+
+getDemoMachineDropdown(productId: number) {
+
+    return this.http.get<any>(
+        `${this.baseUrl}/demo-visit/demo-machine/dropdown?productId=${productId}`,
+        {
+            headers: this.getAuthHeaders()
+        }
+    );
+}
+
+createPlanDemo(payload: any) {
+
+  return this.http.post(
+    `${this.baseUrl}/demo-visit/demo/add`,
+    payload,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+
+}
+
+updatePlanDemo(id: number, payload: any) {
+
+  return this.http.put(
+    `${this.baseUrl}/demo-visit/demo/${id}`,
+    payload,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+
+}
+
+
+getCustomerDropdown(search: string = '') {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/contact/customer`,
+    {
+      headers: this.getAuthHeaders(),
+      params: {
+        name: search
+      }
+    }
+  );
+}
+
+updateDemoFeedback(payload: any) {
+
+  return this.http.put(
+    `${this.baseUrl}/demo-visit/demo/feedback`,
+    payload,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+
+}
+
 }
 
 

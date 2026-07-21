@@ -60,7 +60,6 @@ export class AddleadComponent implements OnInit {
   selectedCustomer: any = null;
   showInstallationBaseDetailsModal = false;
   installationBaseDetails: any[] = [];
-  showQuoteSuccessMessage = false;
   
   // Validation errors
   errors: { [key: string]: string } = {};
@@ -374,7 +373,7 @@ export class AddleadComponent implements OnInit {
 
         this.route.queryParams.subscribe(q => {
           if (q['success'] === 'true') {
-            this.showQuoteSuccessMessage = true;
+            this.toastService.success('Success! New revision to Quote has been Added successfully!!');
             this.activeTab = 'Quote';
           }
         });
@@ -396,6 +395,7 @@ export class AddleadComponent implements OnInit {
 
         // Load existing lead details immediately
         this.loadLeadData(this.leadId);
+        this.fetchOpportunities(this.leadId);
         this.loadQuotes();
         this.loadContractNoteDetails();
       }
@@ -963,6 +963,24 @@ export class AddleadComponent implements OnInit {
 
   /* ================= TABS & ACTIONS ================= */
   switchTab(tab: string): void {
+    if (tab === 'Opportunities' && !this.leadId) {
+      this.toastService.warning('Please save the Lead Details first before adding Opportunities.');
+      return;
+    } else if (tab === 'Opportunities' && this.originalLeadData && ((this.originalLeadData as any).leadStatus < 2 || (this.originalLeadData as any).status < 2)) {
+      this.toastService.warning('Lead is not yet approved by CIS. You cannot add Opportunities yet.');
+      return;
+    } else if (tab === 'Quote') {
+      if (!this.opportunities || this.opportunities.length === 0) {
+        this.toastService.warning('Please add at least one Opportunity before proceeding to Quote.');
+        return;
+      }
+    } else if (tab === 'Contract Note') {
+      if (!this.quotes || this.quotes.length === 0) {
+        this.toastService.warning('Please add at least one Quote before proceeding to Contract Note.');
+        return;
+      }
+    }
+
     this.activeTab = tab;
     if (tab === 'Opportunities' && this.leadId) {
       this.fetchOpportunities(this.leadId!);
@@ -1237,7 +1255,7 @@ export class AddleadComponent implements OnInit {
       technicallyCleared: false,
       stageId: null,
       competitorIds: [],
-      remarks1: this.oppModel.competitors || null,
+      remarks1: Array.isArray(this.oppModel.competitors) ? this.oppModel.competitors.map((c: any) => c.competitorName || c.name || String(c)).join(', ') : (this.oppModel.competitors || null),
       remarks2: null
     };
 
@@ -1530,7 +1548,9 @@ export class AddleadComponent implements OnInit {
         const link = document.createElement('a');
         link.href = url;
         link.download = `Quote_${quoteId}.pdf`;
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
       },
       error: (err) => console.error('Failed to download quote PDF:', err)
@@ -1538,12 +1558,26 @@ export class AddleadComponent implements OnInit {
   }
 
   onViewQuote(quoteId: string | number): void {
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write('<html><body><h3>Loading PDF...</h3></body></html>');
+    }
+    
     this.leadservice.downloadQuotePdf(quoteId).subscribe({
       next: (blob) => {
         const fileURL = URL.createObjectURL(blob);
-        window.open(fileURL, '_blank');
+        if (newWindow) {
+          newWindow.location.href = fileURL;
+        }
       },
-      error: (err) => console.error('Failed to view quote PDF:', err)
+      error: (err) => {
+        console.error('Failed to view quote PDF:', err);
+        if (newWindow) {
+          newWindow.document.open();
+          newWindow.document.write('<html><body><h3 style="color:red;">Failed to load PDF</h3></body></html>');
+          newWindow.document.close();
+        }
+      }
     });
   }
 
