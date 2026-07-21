@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Button } from './button';
+import { DeleteContractNote } from './delete-contract-note';
 
-describe('Button', () => {
-  let component: Button;
-  let fixture: ComponentFixture<Button>;
+describe('DeleteContractNote', () => {
+  let component: DeleteContractNote;
+  let fixture: ComponentFixture<DeleteContractNote>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Button]
+      imports: [DeleteContractNote]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Button);
+    fixture = TestBed.createComponent(DeleteContractNote);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,4 +21,3 @@ describe('Button', () => {
     expect(component).toBeTruthy();
   });
 });
- 

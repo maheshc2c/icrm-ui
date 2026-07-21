@@ -140,6 +140,32 @@
   color: #d32f2f;
 }
 
+/* Icon-based action buttons */
+.icon-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid #eaf5ff;
+  background: #eaf5ff;
+  color: #3c94e7;
+  transition: all 0.2s ease;
+}
+
+.icon-action-btn:hover {
+  background: #eaf5ff;
+  color: #3c94e7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(60, 148, 231, 0.16);
+}
+
+.icon-action-btn i {
+  font-size: 14px;
+}
+
 .action-buttons .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);

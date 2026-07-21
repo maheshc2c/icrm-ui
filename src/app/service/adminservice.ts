@@ -1151,11 +1151,17 @@ saveDiscountQuote(data: DiscountQuoteModel[]): Observable<any> {
   );
 }
 
+  searchDeleteContractNotes(requestData: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/contractnote/search-delete`, requestData, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
-
-
-
-
+  deleteContractNote(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/contractnote/delete/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 }
 
 

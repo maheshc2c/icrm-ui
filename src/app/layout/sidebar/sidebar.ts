@@ -127,7 +127,7 @@ constructor() {
                     {
         label: 'Delete Contract Note',
         icon: 'fas fa-trash',
-        route: '/admindashboard'
+        route: '/admin/delete-contract-note'
       },
                   {
         label: 'Bulk Uploads',
@@ -158,7 +158,7 @@ constructor() {
     );
   }
 
-   if (role === 'ADMINMARKETING') {
+   if (role === 'ADMIN MARKETING') {
       this.menuItems.push(
         {
           label: 'Home',
@@ -416,12 +416,12 @@ constructor() {
         {
           label: 'Home',
           icon: 'fas fa-home',
-          route: '/country-head/dashboard'
+          route: '/country-head'
         },
         {
           label: 'Dashboards',
           icon: 'fas fa-tachometer-alt',
-          route: '/country-head/dashboard',
+          route: '/country-head',
           children: [
             { label: 'Leads Dashboard', icon: 'fas fa-tachometer-alt', route: '/country-head/dashboard/leads-dashboard' },
             { label: 'Opportunity Dashboard', icon: 'fas fa-chart-bar', route: '/country-head/dashboard/opportunity-dashboard' }

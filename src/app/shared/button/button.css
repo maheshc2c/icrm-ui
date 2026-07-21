@@ -57,3 +57,56 @@
   border: 1px solid #eadcff;
   color: #6d28d9;
 }
+/* Submit button styling */
+.icon-actions .btn-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 20px;
+  border-radius: 12px;
+  border: none;
+  background: #f5eaff;
+  border: 1px solid #eadcff;
+  color: #6d28d9;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.icon-actions .btn-submit:hover {
+   transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
+}
+
+.icon-actions .btn-submit:active {
+  transform: translateY(0);
+}
+/* Bulk Upload button styling */
+.icon-actions .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border-radius: 12px;
+  background: #f5eaff;
+  border: 1px solid #eadcff;
+  color: #6d28d9;
+  font-weight: 500;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.1);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.icon-actions .btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
+}
+
+.icon-actions .btn-secondary i {
+  font-size: 15px;
+}

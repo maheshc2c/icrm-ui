@@ -62,7 +62,7 @@ export class CustomerInteractionCenterService {
 
   getLeadById(leadId: number): Observable<any> {
     return this.http.get<any>(
-      `${this.baseUrl}/SalesEngineer/salesmanager/lead/${leadId}`,
+      `${this.baseUrl}/CustomerInteractionCenter/edit-lead/${leadId}`,
       { headers: this.getAuthHeaders() }
     );
   }
@@ -110,4 +110,105 @@ export class CustomerInteractionCenterService {
     );
   }
 
+  getOpenSoEntries(page: number, size: number, cnoteId?: string, cnoteType?: string, customerName?: string): Observable<any> {
+    const cnoteIdNum = cnoteId ? parseInt(cnoteId) : null;
+    const typeVal = cnoteType === 'Regular' || cnoteType === '1' ? 1 : (cnoteType === 'Purchase Order' || cnoteType === '2' ? 2 : null);
+
+    const requestBody = {
+      cnoteId: cnoteIdNum,
+      cnoteType: typeVal,
+      customerName: customerName || null,
+      pagination: {
+        pageNumber: page,
+        pageSize: size,
+        sortBy: 'cnoteId',
+        sortOrder: 'desc'
+      }
+    };
+
+    return this.http.post<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/so-entries/open`,
+      requestBody,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  getClosedSoEntries(page: number, size: number, cnoteId?: string, cnoteType?: string, customerName?: string): Observable<any> {
+    const cnoteIdNum = cnoteId ? parseInt(cnoteId) : null;
+    const typeVal = cnoteType === 'Regular' || cnoteType === '1' ? 1 : (cnoteType === 'Purchase Order' || cnoteType === '2' ? 2 : null);
+
+    const requestBody = {
+      cnoteId: cnoteIdNum,
+      cnoteType: typeVal,
+      customerName: customerName || null,
+      pagination: {
+        pageNumber: page,
+        pageSize: size,
+        sortBy: 'cnoteId',
+        sortOrder: 'desc'
+      }
+    };
+
+    return this.http.post<any>(
+      `${this.baseUrl}/CustomerInteractionCenter/so-entries/closed`,
+      requestBody,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  updateSoNumbers(updates: any[]): Observable<any> {
+    return this.http.put(
+      `${this.baseUrl}/CustomerInteractionCenter/so-entries/update`,
+      updates,
+      { headers: this.getAuthHeaders(), responseType: 'text' }
+    );
+  }
+
+  bulkUploadSoEntries(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    // We override Content-Type header so the browser sets the boundary correctly for Multipart Form Data
+    const headers = this.getAuthHeaders();
+    const headersWithoutContentType = new HttpHeaders({
+      Authorization: headers.get('Authorization') || ''
+    });
+
+    return this.http.post(
+      `${this.baseUrl}/CustomerInteractionCenter/so-entries/upload`,
+      formData,
+      { headers: headersWithoutContentType, responseType: 'text' }
+    );
+  }
+
+  downloadContractNotePdf(cnoteId: number): Observable<Blob> {
+    return this.http.get(
+      `${this.baseUrl}/contractnote/download/${cnoteId}`,
+      { headers: this.getAuthHeaders(), responseType: 'blob' }
+    );
+  }
+
+  downloadSoEntriesExcel(cnoteId?: string, cnoteType?: string, customerName?: string, isOpen: boolean = true): Observable<Blob> {
+    const cnoteIdNum = cnoteId ? parseInt(cnoteId) : null;
+    const typeVal = cnoteType === 'Regular' || cnoteType === '1' ? 1 : (cnoteType === 'Purchase Order' || cnoteType === '2' ? 2 : null);
+
+    const requestBody = {
+      cnoteId: cnoteIdNum,
+      cnoteType: typeVal,
+      customerName: customerName || null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 10,
+        sortBy: 'cnoteId',
+        sortOrder: 'desc'
+      }
+    };
+
+    return this.http.post(
+      `${this.baseUrl}/CustomerInteractionCenter/so-entries/download?isOpen=${isOpen}`,
+      requestBody,
+      { headers: this.getAuthHeaders(), responseType: 'blob' }
+    );
+  }
 }
+

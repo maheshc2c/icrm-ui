@@ -74,7 +74,6 @@ export class ApproveLeads implements OnInit {
     }
   ];
 
-
   /* TABLE DATA */
   rows: any[] = [];
   allRows: any[] = [];
@@ -138,7 +137,8 @@ export class ApproveLeads implements OnInit {
               { label: 'Select Owner', value: '' },
               ...owners.map(u => {
                 const fullName = (u.firstName + ' ' + (u.lastName || '')).trim();
-                return { label: fullName, value: fullName };
+                const matchVal = `${u.firstName} (${u.username})`;
+                return { label: fullName, value: matchVal };
               })
             ];
           }

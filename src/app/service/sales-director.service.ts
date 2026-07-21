@@ -41,101 +41,155 @@ export class SalesDirectorService {
     return headers;
   }
 
+  private commonUrl = 'http://localhost:8080/track-quote-po';
+
+  getQuoteListPaginated(
+    page: number,
+    size: number,
+    quoteId?: string,
+    customerName?: string,
+    opportunityDetails?: string,
+    search?: string
+  ): Observable<any> {
+    const requestBody = {
+      quoteId: quoteId || null,
+      customerName: customerName || null,
+      opportunityDetails: opportunityDetails || null,
+      search: search || null,
+      pagination: {
+        pageNumber: page,
+        pageSize: size,
+        sortBy: 'quoteId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.commonUrl}/view-quotes`, requestBody, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getPOTrackingListPaginated(
+    page: number,
+    size: number,
+    poId?: number,
+    status?: number,
+    distributor?: string,
+    product?: string
+  ): Observable<any> {
+    const requestBody = {
+      poId: poId || null,
+      status: status !== undefined && status !== null ? status : null,
+      distributor: distributor || null,
+      product: product || null,
+      pagination: {
+        pageNumber: page,
+        pageSize: size,
+        sortBy: 'purchaseOrderId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.commonUrl}/view-pos`, requestBody, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   // ✅ GET TRACK QUOTES
   getTrackQuotes(): Observable<TrackQuoteModel[]> {
-    return this.http.get<TrackQuoteModel[]>(
-      `${this.baseUrl}/SalesDirector/Track-quotes-view`,
+    const requestBody = {
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: 'quoteId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(
+      `${this.commonUrl}/view-quotes`,
+      requestBody,
       { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => res.content || [])
     );
   }
 
   // ================= SEARCH Qoute =================
-  searchQoute(search: string) {
-    return this.http.get<TrackQuoteModel[]>(
-      `${this.baseUrl}/SalesDirector/Track-quotes-search-quoteID-customer-opp`,
-      {
-        headers: this.getAuthHeaders(),
-        params: { search } // ✅ MATCHES BACKEND
+  searchQoute(search: string): Observable<TrackQuoteModel[]> {
+    const requestBody = {
+      search: search || null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: 'quoteId',
+        sortOrder: 'desc'
       }
+    };
+    return this.http.post<any>(
+      `${this.commonUrl}/view-quotes`,
+      requestBody,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => res.content || [])
     );
   }
 
 
   // ✅ GET TRACK PO
   getTrackPo(): Observable<TrackPomodel[]> {
-    return this.http.get<TrackPomodel[]>(
-      `${this.baseUrl}/SalesDirector/purchase-orders-tracking-view`,
+    const requestBody = {
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: 'purchaseOrderId',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(
+      `${this.commonUrl}/view-pos`,
+      requestBody,
       { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => res.content || [])
     );
   }
-
-  //   searchPo(keyword: string): Observable<TrackPomodel[]> {
-  //   return this.http.get<TrackPomodel[]>(
-  //     `${this.baseUrl}/SalesDirector/purchase-orders/search`,
-  //     {
-  //       headers: this.getAuthHeaders(),
-  //       params: { keyword } // change only if backend expects another param name
-  //     }
-  //   );
-  // }
-
-  // searchPo(keyword: string): Observable<TrackPomodel[]> {
-  //   const trimmed = keyword.trim();
-  //   const isNumber = !isNaN(Number(trimmed));
-
-  //   const params: any = {};
-
-  //   if (isNumber) {
-  //     params.poId = trimmed;
-  //     params.status = trimmed;
-  //   } else {
-  //     params.distributor = trimmed;
-  //     params.product = trimmed;
-  //   }
-
-  //   return this.http.get<TrackPomodel[]>(
-  //     `${this.baseUrl}/SalesDirector/purchase-orders/search`,
-  //     {
-  //       headers: this.getAuthHeaders(),
-  //       params
-  //     }
-  //   );
-  // }
 
   searchPo(searchData: any): Observable<TrackPomodel[]> {
-    const params: any = {};
-
-    if (searchData.poId) {
-      params.poId = searchData.poId;
-    }
-
-    if (searchData.status) {
-      params.status = searchData.status;
-    }
-
-    if (searchData.distributor) {
-      params.distributor = searchData.distributor;
-    }
-
-    if (searchData.product) {
-      params.product = searchData.product;
-    }
-
-    return this.http.get<TrackPomodel[]>(
-      `${this.baseUrl}/SalesDirector/purchase-orders/search`,
-      {
-        headers: this.getAuthHeaders(),
-        params
+    const requestBody = {
+      poId: searchData.poId || null,
+      status: searchData.status !== undefined && searchData.status !== null ? searchData.status : null,
+      distributor: searchData.distributor || null,
+      product: searchData.product || null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: 'purchaseOrderId',
+        sortOrder: 'desc'
       }
+    };
+    return this.http.post<any>(
+      `${this.commonUrl}/view-pos`,
+      requestBody,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => res.content || [])
     );
   }
+
   searchPoById(keyword: string): Observable<TrackPomodel[]> {
-    return this.http.get<TrackPomodel[]>(
-      `${this.baseUrl}/SalesDirector/purchase-orders/search`,
-      {
-        headers: this.getAuthHeaders(),
-        params: { poId: keyword }
+    const requestBody = {
+      poId: keyword ? Number(keyword) : null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 1000,
+        sortBy: 'purchaseOrderId',
+        sortOrder: 'desc'
       }
+    };
+    return this.http.post<any>(
+      `${this.commonUrl}/view-pos`,
+      requestBody,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => res.content || [])
     );
   }
 

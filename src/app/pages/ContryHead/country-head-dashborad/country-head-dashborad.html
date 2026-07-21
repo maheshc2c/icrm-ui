@@ -1,13 +1,10 @@
-           
 <app-header></app-header>
 <app-sidebar></app-sidebar>
-<app-pageheader
-  [title]="headerTitle"
-  [breadcrumbs]="headerBreadcrumbs">
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
 </app-pageheader>
 
 <div class="content-area">
-  <div class="dashboard-wrapper">
+    <div class="dashboard-wrapper">
         <div class="dashboard-content">
             <!-- First Row: 3 Sections -->
             <div class="section-row">
@@ -47,21 +44,21 @@
 
                 <!-- Calendar Section -->
                 <div class="section-block">
-                    
+
                     <div class="section-header-title">
                         <i class="fa-solid fa-calendar-alt"></i>
                         <span>Calendar</span>
                     </div>
                     <div class="section-cards">
                         <a href="View Calendar.html">
-                        <div class="dashboard-card calendar-card">
-                            <div class="card-icon calendar-bg">
-                                <i class="fa-solid fa-calendar"></i>
+                            <div class="dashboard-card calendar-card">
+                                <div class="card-icon calendar-bg">
+                                    <i class="fa-solid fa-calendar"></i>
+                                </div>
+                                <div class="card-title">
+                                    <h3>Calendar</h3>
+                                </div>
                             </div>
-                            <div class="card-title">
-                                <h3>Calendar</h3>
-                            </div>
-                        </div>
                         </a>
                     </div>
                 </div>
@@ -146,13 +143,14 @@
                         <span>Marketing</span>
                     </div>
                     <div class="section-cards">
-                        <div class="dashboard-card marketing-documents-card">
+                        <div class="dashboard-card marketing-documents-card"
+                            routerLink="/country-head/marketing-document">
                             <div class="card-icon marketing-documents-bg">
                                 <i class="fa-solid fa-file"></i>
                             </div>
-                            <a href="#" class="card-title">
+                            <div class="card-title">
                                 <h3>Documents</h3>
-                            </a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Button } from './button';
+import { QuoteTracking } from './quote-tracking';
 
-describe('Button', () => {
-  let component: Button;
-  let fixture: ComponentFixture<Button>;
+describe('QuoteTracking', () => {
+  let component: QuoteTracking;
+  let fixture: ComponentFixture<QuoteTracking>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Button]
+      imports: [QuoteTracking]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Button);
+    fixture = TestBed.createComponent(QuoteTracking);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,4 +21,3 @@ describe('Button', () => {
     expect(component).toBeTruthy();
   });
 });
- 

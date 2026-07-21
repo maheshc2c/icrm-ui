@@ -66,9 +66,16 @@ export const routes: Routes = [
 },
 
 //Admin Role
- {
+      {
         path: 'admindashboard',
         component: AdminDashboard,
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/delete-contract-note',
+        loadComponent: () =>
+          import('./pages/Admin/delete-contract-note/delete-contract-note').then(m => m.DeleteContractNote),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
@@ -737,6 +744,124 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },
+      {
+        path: 'country-head/marketing-document',
+        loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/dashboard/marketing-document',
+        loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/dashboard/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/dashboard/track-po',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/track-po',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/dashboard/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+
+      // Regional Branch Head Track Quote/PO
+      {
+        path: 'regional-branch-head/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Branch Head'] }
+      },
+      {
+        path: 'regional-branch-head/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Branch Head'] }
+      },
+
+      // Regional Sales Manager Track Quote/PO
+      {
+        path: 'regional-sales-manager-dashboard/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Sales Manager'] }
+      },
+      {
+        path: 'regional-sales-manager-dashboard/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Sales Manager'] }
+      },
+
+      // Global Head Track Quote/PO
+      {
+        path: 'globalhead-dashboard/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Global Head'] }
+      },
+      {
+        path: 'globalhead-dashboard/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Global Head'] }
+      },
+
+      // Sales Engineer Track Quote/PO
+      {
+        path: 'track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'National Sales Manager'] }
+      },
+      {
+        path: 'track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'National Sales Manager'] }
+      },
+
+      // Sales Manager Track Quote/PO
+      {
+        path: 'salesmanager/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Sales Engineer'] }
+      },
+      {
+        path: 'salesmanager/track-po',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Sales Engineer'] }
+      },
 
       {
         path: 'Approve-Leads',
@@ -858,7 +983,7 @@ export const routes: Routes = [
   
         {
           path: 'adminmarketing/managedacument',
-          loadComponent: () => import('./pages/AdminMarketing/managedacument/managedacument').then(m => m.UploadDocument),
+          loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },

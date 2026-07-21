@@ -66,8 +66,12 @@ export class Form implements OnChanges {
         }
  
         // Ensure nested objects for checkboxes
-        if (field.type === 'checkbox' && !this.formData[field.name]) {
-          this.formData[field.name] = {};
+        if (field.type === 'checkbox') {
+          field._filtered = null;
+          field._open = false;
+          if (!this.formData[field.name]) {
+            this.formData[field.name] = {};
+          }
         }
       });
     }
@@ -77,6 +81,9 @@ export class Form implements OnChanges {
   hostClick() {
     this.fields.forEach(field => {
       if (field?.type === 'select' && field.searchable) {
+        field._open = false;
+      }
+      if (field?.type === 'checkbox') {
         field._open = false;
       }
     });
@@ -128,6 +135,16 @@ export class Form implements OnChanges {
     this.fieldChange.emit({ name: field.name, value });
     field.onChange?.(value);
   }
+
+  onFileChange(fieldName: string, event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.formData[fieldName] = file;
+      this.revalidateField(fieldName);
+      this.fieldChange.emit({ name: fieldName, value: file });
+    }
+  }
  
   closeDropdownDelayed(field: any): void {
     setTimeout(() => {
@@ -140,6 +157,18 @@ export class Form implements OnChanges {
     if (value === null || value === undefined || value === '') return '';
     const opt = field.options?.find((o: any) => o.value === value);
     return opt ? opt.label : value;
+  }
+
+  getMultiselectLabel(field: any): string {
+    const value = this.formData[field.name];
+    if (!value || typeof value !== 'object') return '';
+    const selectedLabels = Object.keys(value)
+      .filter(key => value[key])
+      .map(val => {
+        const opt = field.options?.find((o: any) => o.value === val);
+        return opt ? opt.label : val;
+      });
+    return selectedLabels.join(', ');
   }
  
   /* ================= CHECKBOX GROUP ================= */
@@ -317,5 +346,4 @@ export class Form implements OnChanges {
   cancel() {
     this.cancelForm.emit();
   }
-
 }

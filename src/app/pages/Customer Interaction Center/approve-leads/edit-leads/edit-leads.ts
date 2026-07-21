@@ -341,6 +341,7 @@ export class EditLeads implements OnInit {
       leadSource: this.lead.sourceName,
       leadStatus: this.lead.leadStatus,
       purchasePotential: this.lead.leadPurchasePotential || 0,
+      relationship: this.lead.relationshipName,
       siteReadiness: this.lead.siteReadinessName,
       visitRequirement: this.lead.leadVisitRequirement,
       resourceRequirement: this.lead.leadResourceRequirement,
