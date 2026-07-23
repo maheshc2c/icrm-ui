@@ -143,8 +143,8 @@ export class ManageVisitsComponent implements OnInit {
     onEdit(row: any) {
         console.log('EDIT CLICKED:', row);
         if (row.visitId) {
-            console.log('NAVIGATING TO:', '/plan-edit', row.visitId);
-            this.router.navigate(['/plan-edit', row.visitId]);
+            console.log('NAVIGATING TO:', '/plan-visit/edit', row.visitId);
+            this.router.navigate(['/plan-visit/edit', row.visitId]);
         } else {
             console.log('NO ID → redirecting to add');
             this.router.navigate(['/plan-visit/add']);

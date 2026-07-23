@@ -52,7 +52,7 @@ export class AddVisitComponent implements OnInit {
 
         this.headerBreadcrumbs = [
             { label: 'Home', route: '/globalhead-dashboard' },
-            { label: 'Plan Visits', route: '/plan-visits' },
+            { label: 'Plan Visits', route: '/plan-visit' },
             { label: this.isEditMode ? 'Edit Visit' : 'Add Visit' }
         ];
 
@@ -206,7 +206,7 @@ export class AddVisitComponent implements OnInit {
                 next: (response) => {
                     console.log('Visit updated successfully:', response);
                     this.toastService.success('Visit updated successfully');
-                    this.router.navigate(['/plan-visits']);
+                    this.router.navigate(['/plan-visit']);
                 },
                 error: (err) => {
                     console.error('Failed to update visit:', err);
@@ -218,7 +218,7 @@ export class AddVisitComponent implements OnInit {
                 next: (response) => {
                     console.log('Visit created successfully:', response);
                     this.toastService.success('Visit created successfully');
-                    this.router.navigate(['/plan-visits']);
+                    this.router.navigate(['/plan-visit']);
                 },
                 error: (err) => {
                     console.error('Failed to create visit:', err);
@@ -239,6 +239,6 @@ export class AddVisitComponent implements OnInit {
     }
 
     onCancel() {
-        this.router.navigate(['/plan-visits']);
+        this.router.navigate(['/plan-visit']);
     }
 }

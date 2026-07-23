@@ -711,16 +711,18 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/GlobalHead/manage-visits/add-visit/add-visit.component').then(m => m.AddVisitComponent),
       },
       {
-        path: 'plan-visits',
+        path: 'plan-visit',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/manage-visits.component').then(m => m.ManageVisitsComponent),
       },
       {
-        path: 'plan-edit/:id',
+        path: 'plan-visit/edit/:id',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/edit-visit/edit-visit.component').then(m => m.EditVisitComponent),
       },
-      { path: 'globalhead/manage-visits', redirectTo: 'plan-visits', pathMatch: 'full' },
+      { path: 'plan-visits', redirectTo: 'plan-visit', pathMatch: 'full' },
+      { path: 'plan-edit/:id', redirectTo: 'plan-visit/edit/:id', pathMatch: 'full' },
+      { path: 'globalhead/manage-visits', redirectTo: 'plan-visit', pathMatch: 'full' },
       { path: 'globalhead/add-visit', redirectTo: 'plan-visit/add', pathMatch: 'full' },
-      { path: 'globalhead/edit-visit/:id', redirectTo: 'plan-edit/:id', pathMatch: 'full' },
+      { path: 'globalhead/edit-visit/:id', redirectTo: 'plan-visit/edit/:id', pathMatch: 'full' },
       {
         path: 'globalhead-dashboard/plan-demo',
         loadComponent: () => import('./pages/GlobalHead/plan-demo/plan-demo.component').then(m => m.PlanDemoComponent),
