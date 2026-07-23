@@ -116,127 +116,90 @@ demoFields: any[] = [
 
 
   ngOnInit(): void {
+    this.loadCategories();
+    this.loadRegions();
 
-  this.loadCategories();
-  this.loadRegions();
+    const idParam = this.route.snapshot.paramMap.get('id');
 
-  const idParam = this.route.snapshot.paramMap.get('id');
-
-  if (idParam) {
-    this.isEditMode = true;
-    this.headerTitle = 'Edit Demo Product';
-    this.loadDemoById(Number(idParam));
-  }
-}
-
-
-//   private loadDemoById(id: number) {
-
-//   this.adminService.getDemo().subscribe({
-//     next: (data: any[]) => {
-
-//       const demo = data.find(d => d.demoProductDetailId == id);
-
-//       if (!demo) {
-//         alert('Demo product not found');
-//         this.router.navigate(['/admin/demo']);
-//         return;
-//       }
-
-//       this.formInitialData = {
-//         categoryId: demo.categoryId,
-//         groupId: demo.groupId,
-//         productId: demo.productId,
-//         regionId: demo.regionId,
-//         branchId: demo.branchId,
-//         cityId: demo.cityId,
-//         demoProductDetailSerialNumber: demo.demoProductDetailSerialNumber,
-//         demoProductDetailLocation: demo.demoProductDetailLocation
-//       };
-
-//     },
-//     error: () => {
-//       alert('Failed to load demo');
-//       this.router.navigate(['/admin/demo']);
-//     }
-//   });
-// }
-
-private loadDemoById(id: number) {
-  this.adminService.getDemoById(id).subscribe({
-    next: (demo: any) => {
-      if (!demo) {
-        this.toastService.error('Demo product not found');
-        this.router.navigate(['/demoproduct']);
-        return;
-      }
-
-      const segmentId = demo.segmentId || demo.groupId;
-
-      this.formInitialData = {
-        categoryId: demo.categoryId,
-        groupId: segmentId,
-        productId: demo.productId,
-        regionId: demo.regionId,
-        branchId: demo.branchId,
-        cityId: demo.cityId,
-        demoProductDetailSerialNumber: demo.serialNumber || demo.demoProductDetailSerialNumber,
-        demoProductDetailLocation: demo.location || demo.demoProductDetailLocation
-      };
-
-      // 1. Load Categories & Segments
-      if (demo.categoryId) {
-        this.adminService.getProductCategoriesDropdown().subscribe(catRes => {
-          this.categories = catRes;
-          this.setOptions('categoryId', catRes, 'categoryId', 'categoryName');
-        });
-
-        this.adminService.getSegmentDropdown(demo.categoryId).subscribe(groupRes => {
-          this.groups = groupRes;
-          this.setOptions('groupId', groupRes, 'id', 'name');
-        });
-      }
-
-      // 2. Load Products
-      if (segmentId) {
-        this.adminService.getProductDropdown(segmentId).subscribe(prodRes => {
-          this.products = prodRes;
-          this.setOptions('productId', prodRes, 'id', 'name');
-        });
-      }
-
-      // 3. Load Regions & Branches
-      if (demo.regionId) {
-        this.adminService.getRegionDropdown().subscribe(regRes => {
-          this.regions = regRes;
-          this.setOptions('regionId', regRes, 'id', 'name');
-        });
-
-        this.adminService.getBranchDropdown(demo.regionId).subscribe(branchRes => {
-          this.branches = branchRes;
-          this.setOptions('branchId', branchRes, 'id', 'name');
-        });
-      }
-
-      // 4. Load Cities
-      if (demo.branchId) {
-        this.adminService.getCityDropdown(demo.branchId).subscribe(cityRes => {
-          this.cities = cityRes;
-          this.setOptions('cityId', cityRes, 'id', 'name');
-        });
-      }
-    },
-    error: () => {
-      this.toastService.error('Failed to load demo');
-      this.router.navigate(['/demoproduct']);
+    if (idParam) {
+      this.isEditMode = true;
+      this.headerTitle = 'Edit Demo Product';
+      this.loadDemoById(Number(idParam));
     }
-  });
-}
+  }
 
+  private loadDemoById(id: number) {
+    this.adminService.getDemoById(id).subscribe({
+      next: (demo: any) => {
+        if (!demo) {
+          this.toastService.error('Demo product not found');
+          this.router.navigate(['/demoproduct']);
+          return;
+        }
 
+        const segmentId = demo.segmentId || demo.groupId;
 
+        this.formInitialData = {
+          categoryId: demo.categoryId,
+          groupId: segmentId,
+          productId: demo.productId,
+          regionId: demo.regionId,
+          branchId: demo.branchId,
+          cityId: demo.cityId,
+          demoProductDetailSerialNumber: demo.serialNumber || demo.demoProductDetailSerialNumber,
+          demoProductDetailLocation: demo.location || demo.demoProductDetailLocation
+        };
 
-  /* 🔥 FORM CHANGE HANDLER (CRITICAL FIX) */
+        // 1. Load Categories & Segments
+        if (demo.categoryId) {
+          this.adminService.getProductCategoriesDropdown().subscribe(catRes => {
+            this.categories = catRes;
+            this.setOptions('categoryId', catRes, 'categoryId', 'categoryName');
+          });
+
+          this.adminService.getSegmentDropdown(demo.categoryId).subscribe(groupRes => {
+            this.groups = groupRes;
+            this.setOptions('groupId', groupRes, 'id', 'name');
+          });
+        }
+
+        // 2. Load Products
+        if (segmentId) {
+          this.adminService.getProductDropdown(segmentId).subscribe(prodRes => {
+            this.products = prodRes;
+            this.setOptions('productId', prodRes, 'id', 'name');
+          });
+        }
+
+        // 3. Load Regions & Branches
+        if (demo.regionId) {
+          this.adminService.getRegionDropdown().subscribe(regRes => {
+            this.regions = regRes;
+            this.setOptions('regionId', regRes, 'id', 'name');
+          });
+
+          this.adminService.getBranchDropdown(demo.regionId).subscribe(branchRes => {
+            this.branches = branchRes;
+            this.setOptions('branchId', branchRes, 'id', 'name');
+          });
+        }
+
+        // 4. Load Cities
+        if (demo.branchId) {
+          this.adminService.getCityDropdown(demo.branchId).subscribe(cityRes => {
+            this.cities = cityRes;
+            this.setOptions('cityId', cityRes, 'id', 'name');
+          });
+        }
+      },
+      error: () => {
+        this.toastService.error('Failed to load demo');
+        this.router.navigate(['/demoproduct']);
+      }
+    });
+  }
+
+  /* 🔥 FORM CHANGE HANDLER */
   onFormValueChange(data: any): void {
     this.formInitialData = { ...data };
 
@@ -251,200 +214,9 @@ private loadDemoById(id: number) {
     if (data.regionId) {
       this.onRegionChange(data.regionId);
     }
-  }
 
-  /* ================= DROPDOWNS ================= */
-
-  isDropdownReady = false;
-
-  loadCategories() {
-  this.adminService.getProductCategoriesDropdown().subscribe(res => {
-    this.categories = res;
-    this.setOptions('categoryId', res, 'categoryId', 'categoryName');
-    this.isDropdownReady = true;
-  });
-//   if (!this.isDropdownReady) {
-//   alert('Please wait for dropdowns to load');
-//   return;
-// }
-}
-
-
-  // onCategoryChange(categoryId: number): void {
-  //   this.formInitialData.groupId = null;
-  //   this.formInitialData.productId = null;
-  //   this.clearOptions(['groupId', 'productId']);
-
-  //   this.adminService.getSegmentDropdown(categoryId).subscribe(res => {
-  //     this.groups = res;
-  //     this.setOptions('groupId', res, 'groupId', 'groupName');
-  //   });
-  // }
-  onCategoryChange(categoryId: number): void {
-
-  if (!this.isEditMode) {
-    this.formInitialData.groupId = null;
-    this.formInitialData.productId = null;
-  }
-
-  this.adminService.getSegmentDropdown(categoryId).subscribe(res => {
-    this.groups = res;
-    this.setOptions('groupId', res, 'id', 'name');
-  });
-}
-
-
-
-  // onGroupChange(groupId: number): void {
-  //   this.formInitialData.productId = null;
-  //   this.clearOptions(['productId']);
-
-  //   this.adminService.getProductDropdown(groupId).subscribe(res => {
-{
-    name: 'demoProductDetailLocation',
-    label: 'Location',
-    placeholder:'Enter Location',
-    type: 'text',
-    required: true
-  }
-];
-
-
-  ngOnInit(): void {
-
-  this.loadCategories();
-  this.loadRegions();
-
-  const idParam = this.route.snapshot.paramMap.get('id');
-
-  if (idParam) {
-    this.isEditMode = true;
-    this.headerTitle = 'Edit Demo Product';
-    this.loadDemoById(Number(idParam));
-  }
-}
-
-
-//   private loadDemoById(id: number) {
-
-//   this.adminService.getDemo().subscribe({
-//     next: (data: any[]) => {
-
-//       const demo = data.find(d => d.demoProductDetailId == id);
-
-//       if (!demo) {
-//         alert('Demo product not found');
-//         this.router.navigate(['/admin/demo']);
-//         return;
-//       }
-
-//       this.formInitialData = {
-//         categoryId: demo.categoryId,
-//         groupId: demo.groupId,
-//         productId: demo.productId,
-//         regionId: demo.regionId,
-//         branchId: demo.branchId,
-//         cityId: demo.cityId,
-//         demoProductDetailSerialNumber: demo.demoProductDetailSerialNumber,
-//         demoProductDetailLocation: demo.demoProductDetailLocation
-//       };
-
-//     },
-//     error: () => {
-//       alert('Failed to load demo');
-//       this.router.navigate(['/admin/demo']);
-//     }
-//   });
-// }
-
-private loadDemoById(id: number) {
-  this.adminService.getDemoById(id).subscribe({
-    next: (demo: any) => {
-      if (!demo) {
-        this.toastService.error('Demo product not found');
-        this.router.navigate(['/demoproduct']);
-        return;
-      }
-
-      const segmentId = demo.segmentId || demo.groupId;
-
-      this.formInitialData = {
-        categoryId: demo.categoryId,
-        groupId: segmentId,
-        productId: demo.productId,
-        regionId: demo.regionId,
-        branchId: demo.branchId,
-        cityId: demo.cityId,
-        demoProductDetailSerialNumber: demo.serialNumber || demo.demoProductDetailSerialNumber,
-        demoProductDetailLocation: demo.location || demo.demoProductDetailLocation
-      };
-
-      // 1. Load Categories & Segments
-      if (demo.categoryId) {
-        this.adminService.getProductCategoriesDropdown().subscribe(catRes => {
-          this.categories = catRes;
-          this.setOptions('categoryId', catRes, 'categoryId', 'categoryName');
-        });
-
-        this.adminService.getSegmentDropdown(demo.categoryId).subscribe(groupRes => {
-          this.groups = groupRes;
-          this.setOptions('groupId', groupRes, 'id', 'name');
-        });
-      }
-
-      // 2. Load Products
-      if (segmentId) {
-        this.adminService.getProductDropdown(segmentId).subscribe(prodRes => {
-          this.products = prodRes;
-          this.setOptions('productId', prodRes, 'id', 'name');
-        });
-      }
-
-      // 3. Load Regions & Branches
-      if (demo.regionId) {
-        this.adminService.getRegionDropdown().subscribe(regRes => {
-          this.regions = regRes;
-          this.setOptions('regionId', regRes, 'id', 'name');
-        });
-
-        this.adminService.getBranchDropdown(demo.regionId).subscribe(branchRes => {
-          this.branches = branchRes;
-          this.setOptions('branchId', branchRes, 'id', 'name');
-        });
-      }
-
-      // 4. Load Cities
-      if (demo.branchId) {
-        this.adminService.getCityDropdown(demo.branchId).subscribe(cityRes => {
-          this.cities = cityRes;
-          this.setOptions('cityId', cityRes, 'id', 'name');
-        });
-      }
-    },
-    error: () => {
-      this.toastService.error('Failed to load demo');
-      this.router.navigate(['/demoproduct']);
-    }
-  });
-}
-
-
-
-
-  /* 🔥 FORM CHANGE HANDLER (CRITICAL FIX) */
-  onFormValueChange(data: any): void {
-    this.formInitialData = { ...data };
-
-    if (data.categoryId) {
-      this.onCategoryChange(data.categoryId);
-    }
-
-    if (data.groupId) {
-      this.onGroupChange(data.groupId);
-    }
-
-    if (data.regionId) {
-      this.onRegionChange(data.regionId);
+    if (data.branchId) {
+      this.onBranchChange(data.branchId);
     }
   }
 
@@ -453,52 +225,24 @@ private loadDemoById(id: number) {
   isDropdownReady = false;
 
   loadCategories() {
-  this.adminService.getProductCategoriesDropdown().subscribe(res => {
-    this.categories = res;
-    this.setOptions('categoryId', res, 'categoryId', 'categoryName');
-    this.isDropdownReady = true;
-  });
-//   if (!this.isDropdownReady) {
-//   alert('Please wait for dropdowns to load');
-//   return;
-// }
-}
-
-
-  // onCategoryChange(categoryId: number): void {
-  //   this.formInitialData.groupId = null;
-  //   this.formInitialData.productId = null;
-  //   this.clearOptions(['groupId', 'productId']);
-
-  //   this.adminService.getSegmentDropdown(categoryId).subscribe(res => {
-  //     this.groups = res;
-  //     this.setOptions('groupId', res, 'groupId', 'groupName');
-  //   });
-  // }
-  onCategoryChange(categoryId: number): void {
-
-  if (!this.isEditMode) {
-    this.formInitialData.groupId = null;
-    this.formInitialData.productId = null;
+    this.adminService.getProductCategoriesDropdown().subscribe(res => {
+      this.categories = res;
+      this.setOptions('categoryId', res, 'categoryId', 'categoryName');
+      this.isDropdownReady = true;
+    });
   }
 
-  this.adminService.getSegmentDropdown(categoryId).subscribe(res => {
-    this.groups = res;
-    this.setOptions('groupId', res, 'id', 'name');
-  });
-}
+  onCategoryChange(categoryId: number): void {
+    if (!this.isEditMode) {
+      this.formInitialData.groupId = null;
+      this.formInitialData.productId = null;
+    }
 
-
-
-  // onGroupChange(groupId: number): void {
-  //   this.formInitialData.productId = null;
-  //   this.clearOptions(['productId']);
-
-  //   this.adminService.getProductDropdown(groupId).subscribe(res => {
-  //     this.products = res;
-  //     this.setOptions('productId', res, 'productId', 'productName');
-  //   });
-  // }
+    this.adminService.getSegmentDropdown(categoryId).subscribe(res => {
+      this.groups = res;
+      this.setOptions('groupId', res, 'id', 'name');
+    });
+  }
 
   onGroupChange(groupId: number): void {
     if (!this.isEditMode) {
@@ -527,6 +271,17 @@ private loadDemoById(id: number) {
     this.adminService.getBranchDropdown(regionId).subscribe(res => {
       this.branches = res;
       this.setOptions('branchId', res, 'id', 'name');
+    });
+  }
+
+  onBranchChange(branchId: number): void {
+    if (!this.isEditMode) {
+      this.formInitialData.cityId = null;
+    }
+
+    this.adminService.getCityDropdown(branchId).subscribe(res => {
+      this.cities = res;
+      this.setOptions('cityId', res, 'id', 'name');
     });
   }
 
