@@ -395,14 +395,10 @@ export class AddleadComponent implements OnInit {
 
         // Load existing lead details immediately
         this.loadLeadData(this.leadId);
-        this.fetchOpportunities(this.leadId);
-        this.loadQuotes();
-        this.loadContractNoteDetails();
       }
     });
 
     this.loadDropdowns();
-    this.loadOppDropdowns();
   }
 
   /* ================= CONTRACT NOTE QUOTE OPTIONS LOAD ================= */
@@ -963,12 +959,20 @@ export class AddleadComponent implements OnInit {
 
   /* ================= TABS & ACTIONS ================= */
   switchTab(tab: string): void {
-    if (tab === 'Opportunities' && !this.leadId) {
-      this.toastService.warning('Please save the Lead Details first before adding Opportunities.');
-      return;
-    } else if (tab === 'Opportunities' && this.originalLeadData && ((this.originalLeadData as any).leadStatus < 2 || (this.originalLeadData as any).status < 2)) {
-      this.toastService.warning('Lead is not yet approved by CIS. You cannot add Opportunities yet.');
-      return;
+    if (tab === 'Opportunities') {
+      if (!this.leadId) {
+        this.toastService.warning('Please save the Lead Details first before adding Opportunities.');
+        return;
+      }
+      if (!this.originalLeadData) {
+        this.toastService.warning('Lead details are still loading... Please wait a moment.');
+        return;
+      }
+      const status = (this.originalLeadData as any).leadStatus ?? (this.originalLeadData as any).status ?? 0;
+      if (status < 2) {
+        this.toastService.warning('Lead is not yet approved by CIS. You cannot add Opportunities yet.');
+        return;
+      }
     } else if (tab === 'Quote') {
       if (!this.opportunities || this.opportunities.length === 0) {
         this.toastService.warning('Please add at least one Opportunity before proceeding to Quote.');
@@ -984,6 +988,10 @@ export class AddleadComponent implements OnInit {
     this.activeTab = tab;
     if (tab === 'Opportunities' && this.leadId) {
       this.fetchOpportunities(this.leadId!);
+      this.loadOppDropdowns();
+    }
+    if (tab === 'Quote' && this.leadId) {
+      this.loadQuotes();
     }
     if (tab === 'Contract Note' && this.leadId) {
       this.loadContractNoteDetails();

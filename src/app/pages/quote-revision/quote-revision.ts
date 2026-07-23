@@ -188,8 +188,12 @@ export class QuoteRevisionComponent implements OnInit {
     const headers = { 'Authorization': `Bearer ${token}` };
 
     this.http.post('http://localhost:8080/quote/create/quote-revision', payload, { headers }).subscribe({
-      next: (res) => {
-        this.router.navigate(['/salesmanager/leads/edit', this.leadId || 17], { queryParams: { success: 'true' } });
+      next: (res: any) => {
+        if (res && res.status === false) {
+          alert('Failed to save quote revision: ' + (res.message || ''));
+        } else {
+          this.router.navigate(['/salesmanager/leads/edit', this.leadId || 17], { queryParams: { success: 'true' } });
+        }
       },
       error: (err) => {
         console.error('Error saving quote revision:', err);
