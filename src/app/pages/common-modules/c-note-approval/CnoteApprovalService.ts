@@ -4,6 +4,7 @@ import { AuthService } from "../../../service/auth-service";
 import { SearchQuoteApproval } from "../../../models/QouteApproval/search-quote-approval.model";
 import { QuoteApprovalAction } from "../../../models/QouteApproval/quote-approval-action.model";
 import { SearchContractNoteApproval } from "../../../models/SearchContractNoteApproval";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -58,5 +59,6 @@ contractNoteAction(data: any) {
   );
 
 }
+
 
 }
