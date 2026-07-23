@@ -3,7 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+ 
 /* ================= MAIN CONTENT ================= */
 .content {
   display: flex;
@@ -17,61 +17,53 @@
   overflow-y: auto;
   /* Enable scrolling if constrained by parent */
 }
-
+ 
 /* ================= SHARED WIDTH COLUMN ================= */
-
+ 
 .datatable-toolbar,
 .content-wrapper {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  margin-top: 20px;
 }
-
+ 
 /* ================= TOOLBAR ================= */
 .datatable-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  /* ✅ auto wrap */
-  align-items: flex-end;
-  gap: 16px;
-
-  /* 🔒 LOCK TOOLBAR WIDTH TO TABLE WIDTH */
-  overflow: visible;             /* prevent dropdowns from being cut off */
-  margin-bottom: 16px;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: nowrap;
 }
-
-/* Search fields */
+ 
 .datatable-toolbar app-search {
-  flex: 1;
-  min-width: 220px;
+    flex: 0 0 auto;
 }
-
-/* Buttons */
+ 
 .datatable-toolbar app-button {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex: 0 0 auto;
-  margin-left: auto;
+    flex: 0 0 auto;
+    margin-left: 0;
+    display: flex;
+    align-items: flex-end;
 }
-
+ 
 /* ================= TABLE ================= */
 .content-wrapper {
   display: block;
 }
-
+ 
 /* ================= CARD (TABLE WIDTH SOURCE) ================= */
 .card {
-  width: 100%;                 
+  width: 100%;                
   max-width: 100%;
   box-sizing: border-box;
-
+ 
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: none;
 }
-
+ 
 /* ================= TABLE BODY ================= */
 .table-responsive {
   width: 100%;
@@ -83,13 +75,33 @@
   /* align-items: center; */
   text-align: center;
 }
-
-.table {
+ 
+/* .table {
   width: 100%;
   margin: 0;
   border-collapse: separate;
+} */
+.table {
+    width: 100%;
+    table-layout: auto;
+    border-collapse: collapse;
 }
-
+/* .table th,
+.table td {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
+    vertical-align: middle;
+} */
+ 
+/* .table th,
+.table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px 10px;
+  font-size: 14px;
+  vertical-align: middle;
+} */
 /* ================= TABLE HEADER ================= */
 .soft-header thead th {
      background: #ffd0ca !important;
@@ -97,7 +109,8 @@
     text-transform: uppercase;
     color: #495057 !important;
     letter-spacing: 0.05em;
-    padding: 0.75rem 1rem;
+    /* padding: 0.75rem 1rem; */
+    padding:10px 5px;
     border-bottom: 2px solid #ffd0ca;
     position: sticky;
     top: 0;
@@ -107,66 +120,92 @@
 .action-cell {
   text-align: center;
 }
-
+ 
 .action-buttons {
   display: inline-flex;
   gap: 6px;
   align-items: center;
   justify-content: center;
 }
-
+ 
 .action-buttons .btn {
   width: 40px;
   height: 40px;
   border-radius: 12px;
   border: none;
 }
-
+ 
 /* Edit */
 .edit-btn {
   background: #f3e5f5;
   color: #7b1fa2;
 }
-
+ 
 /* Delete */
 .delete-btn {
   background: #ffebee;
   color: #d32f2f;
 }
-
+ 
+/* Icon-based action buttons */
+.icon-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid #eaf5ff;
+  background: #eaf5ff;
+  color: #3c94e7;
+  transition: all 0.2s ease;
+}
+ 
+.icon-action-btn:hover {
+  background: #eaf5ff;
+  color: #3c94e7;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(60, 148, 231, 0.16);
+}
+ 
+.icon-action-btn i {
+  font-size: 14px;
+}
+ 
 .action-buttons .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
-
+ 
 .action-buttons .btn:active {
   transform: translateY(0);
 }
-
+ 
 /* Approve */
 .approve-btn {
   background: #e8f5e9;
   color: #2e7d32;
 }
-
+ 
 .approve-btn:hover {
   background: #c8e6c9;
   color: #1b5e20;
 }
-
+ 
 /* Reject */
 .reject-btn {
   background: #ffebee;
   color: #c62828;
 }
-
+ 
 .reject-btn:hover {
   background: #ffcdd2;
   color: #b71c1c;
 }
-
+ 
 /* ================= NO RECORDS FOUND (MATCHES TABLE DESIGN) ================= */
-
+ 
 .table tbody tr.no-records-row td {
   background: #ffffff;
   /* same as card */
@@ -177,29 +216,30 @@
   padding: 10px 10px;
   text-align: center;
 }
-
+ 
 /* ================= TABLE CELL BORDERS ================= */
 .table th,
 .table td {
-  border-bottom: 1px solid #e5e7eb;   /* row separator */
-  padding: 6px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px 10px;
+  font-size: 14px;
   vertical-align: middle;
 }
-
+ 
 /* Optional: vertical lines */
 .table th:not(:last-child),
 .table td:not(:last-child) {
   border-right: 1px solid #f0f0f0;
 }
-
+ 
 /* ================= ROW HOVER ================= */
 /* .table tbody tr:hover {
   background-color: #fafafa;
 } */
-
-
+ 
+ 
 /* ================= SEARCH INPUT ================= */
-
+ 
 .datatable-toolbar .form-control {
   height: 24px;
   min-width: 220px;
@@ -213,13 +253,13 @@
   transition: all 0.2s ease;
   box-shadow: 0 2px 6px rgba(109, 40, 217, 0.06);
 }
-
+ 
 /* Placeholder color */
 .datatable-toolbar .form-control::placeholder {
   color: #c3bbd8;
   font-size: 13px;
 }
-
+ 
 /* Focus effect (same feel as your reference CSS) */
 .datatable-toolbar .form-control:focus {
   outline: none;
@@ -228,12 +268,12 @@
   box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
   background: #ffffff;
 }
-
+ 
 /* Hover effect */
 .datatable-toolbar .form-control:hover {
   border-color: #d8b4fe;
 }
-
+ 
 /* Mobile / small screens */
 @media (max-width: 768px) {
   .datatable-toolbar .form-control {
@@ -241,43 +281,43 @@
     min-width: 100%;
   }
 }
-
+ 
 .pagination-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-
+ 
   margin-top: 14px;
   padding: 12px 18px;
-
+ 
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-
+ 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
-
+ 
 .pagination-info {
   font-size: 13px;
   font-weight: 500;
   color: #4b5563;
 }
-
+ 
 .pagination-right {
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
 }
-
+ 
 .pagination-controls {
   display: flex;
   align-items: center;
   gap: 6px;
 }
-
+ 
 /* Buttons */
 .pagination-container button {
   padding: 6px 12px;
@@ -290,25 +330,25 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
+ 
 /* Hover */
 .pagination-container button:hover:not(:disabled) {
   background: #f3f4f6;
   border-color: #d1d5db;
   transform: none;
 }
-
+ 
 /* Active */
 .pagination-container button.active {
   background: #6d28d9;
   color: #ffffff;
   border-color: #6d28d9;
 }
-
+ 
 .pagination-container button.active:hover {
   background: #5b21b6;
 }
-
+ 
 /* Disabled */
 .pagination-container button:disabled {
   background: #f3f4f6;
@@ -316,7 +356,7 @@
   border-color: #e5e7eb;
   cursor: not-allowed;
 }
-
+ 
 /* Ellipsis span */
 .pagination-ellipsis {
   padding: 0 4px;
@@ -325,35 +365,35 @@
   font-weight: 500;
   user-select: none;
 }
-
+ 
 /* Select dropdown */
 .pagination-container select {
   padding: 5px 8px;
   border-radius: 6px;
   border: 1px solid #d1d5db;
-
+ 
   font-size: 13px;
   cursor: pointer;
-
+ 
   background: #fff;
   transition: 0.2s;
 }
-
+ 
 .pagination-right select:focus {
   outline: none;
   border-color: #ffd0ca;
 }
-
+ 
 /* ================= CUSTOM DROPDOWN (PAGINATION) ================= */
 .page-size-dropdown {
   width: 80px !important;
 }
-
+ 
 .custom-dropdown-container {
   position: relative;
   width: 100%;
 }
-
+ 
 .dropdown-trigger {
   width: 100%;
   height: 35px;
@@ -367,27 +407,27 @@
   cursor: pointer;
   transition: all 0.2s;
 }
-
+ 
 .dropdown-trigger.active {
   border-color: #ffd0ca;
   box-shadow: 0 0 0 2px rgba(255, 208, 202, 0.2);
 }
-
+ 
 .trigger-text {
   font-size: 14px;
   color: #333;
 }
-
+ 
 .arrow-icon {
   font-size: 12px;
   color: #666;
   transition: transform 0.2s;
 }
-
+ 
 .dropdown-trigger.active .arrow-icon {
   transform: rotate(180deg);
 }
-
+ 
 .dropdown-panel {
   position: absolute;
   bottom: 100%;
@@ -401,13 +441,13 @@
   box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1);
   margin-bottom: 2px;
 }
-
+ 
 .options-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
+ 
 .option-item {
   padding: 8px 12px;
   font-size: 13px;
@@ -415,18 +455,18 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-
+ 
 .option-item:hover {
   background: #f5f8fa;
   color: #e74c3c;
   /* Match table red theme */
 }
-
-
+ 
+ 
 /* =========================
    PROBABILITY BAR
 ========================= */
-
+ 
 .progress {
   width: 100%;
   height: 22px;
@@ -435,7 +475,7 @@
   overflow: hidden;
   position: relative;
 }
-
+ 
 .progress-bar {
   height: 100%;
   display: flex;
@@ -447,25 +487,25 @@
   transition: width 0.4s ease-in-out;
   border-radius: 5px;
 }
-
+ 
 /* Green */
 .progress-hot {
   background: linear-gradient(45deg, #5cb85c, #6ed36e);
 }
-
+ 
 /* Orange */
 .progress-warm {
   background: linear-gradient(45deg, #f0ad4e, #ffbf66);
 }
-
+ 
 /* Red */
 .progress-cold {
   background: linear-gradient(45deg, #d9534f, #ff6b6b);
 }
-
-
+ 
+ 
 /* ================= STATUS ACTION BUTTONS ================= */
-
+ 
 /* Active -> show deactivate button */
 .deactivate-btn {
   background: #ffebee !important;
@@ -473,12 +513,12 @@
   border: none;
   transition: all 0.2s ease;
 }
-
+ 
 .deactivate-btn:hover {
   background: #ffcdd2 !important;
   transform: translateY(-1px);
 }
-
+ 
 /* Deactive -> show activate button */
 .activate-btn {
   background: #e8f5e9 !important;
@@ -486,12 +526,12 @@
   border: none;
   transition: all 0.2s ease;
 }
-
+ 
 .activate-btn:hover {
   background: #c8e6c9 !important;
   transform: translateY(-1px);
 }
-
+ 
 /* Status Badge */
 .status-badge {
   padding: 5px 12px;
@@ -502,24 +542,24 @@
   min-width: 80px;
   text-align: center;
 }
-
+ 
 /* Active badge */
 .status-active {
   background: #e8f5e9;
   color: #2e7d32;
 }
-
+ 
 /* Deactive badge */
 .status-deactive {
   background: #ffebee;
   color: #d32f2f;
 }
-
-
+ 
+ 
 /* =========================================
    RESPONSIVE MEDIA QUERIES
    ========================================= */
-
+ 
 /* Tablets Landscape */
 @media (max-width: 1200px) {
  
@@ -604,35 +644,80 @@
   }
  
   .table-responsive {
-    overflow-x: auto;
+    width: 100%;
+    overflow-x: hidden;
   }
 }
+ /* ================= STATUS COLUMN ================= */
 
-/* ================= STATUS BADGES ================= */
-.status-badge-container {
-  display: flex;
-  gap: 1px;
-  flex-wrap: nowrap;
-  justify-content: center;
+.status-badge-container{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0px;
+    flex-wrap:nowrap;
+    width:max-content;
+    margin:auto;
 }
 
-.status-badge {
-  padding: 1px 3px;
-  border-radius: 2px;
-  font-size: 9.5px;
-  font-weight: 600;
-  display: inline-block;
-  letter-spacing: -0.2px;
+.status-badge{
+
+    min-width:70px;
+    height:24px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:0 10px;
+
+    border-radius:4px;
+
+    font-size:11px;
+    font-weight:600;
+
+    white-space:nowrap;
+
+    flex-shrink:0;
 }
 
-.status-badge.active {
-  background-color: #5cb85c;
-  color: #fff;
-  border: 1px solid #4cae4c;
+.status-badge.active{
+
+    background:#5cb85c;
+    color:#fff;
 }
 
-.status-badge.inactive {
-  background-color: #e0e0e0;
-  color: #555;
-  border: 1px solid #d3d3d3;
+.status-badge.inactive{
+
+    background:#ececec;
+    color:#666;
+}
+ 
+ 
+/* No feedback yet */
+.feedback-empty {
+    background: #f5efff;
+    color: #8b5cf6;
+    border: 1px solid #e5d9ff;
+}
+ 
+.feedback-filled {
+    background: #caa1f7;
+    color: #6d28d9;
+    border: 1px solid #c4b5fd;
+}
+ 
+.feedback-filled:hover {
+    background: #d8b4fe;
+}
+ 
+.approval-stage {
+    color: #1976d2;
+    cursor: pointer;
+    font-weight: 600;
+ 
+}
+ 
+.approval-stage:hover {
+    color: #0d47a1;
 }

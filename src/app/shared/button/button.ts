@@ -19,6 +19,8 @@ export class Button {
   @Input() showRefresh = false;
   @Input() showReset = false;
   @Input() showUpload = false;
+  @Input() showBulkUpload = false;
+  @Input() showSubmit = false;
 
   @Output() search = new EventEmitter<void>();
   @Output() reset = new EventEmitter<void>();
@@ -28,6 +30,8 @@ export class Button {
   @Output() add = new EventEmitter<void>();
   @Output() view = new EventEmitter<void>();
   @Output() upload = new EventEmitter<void>();
+  @Output() bulkUpload = new EventEmitter<void>();
+  @Output() submit = new EventEmitter<void>();
 
 @Output() clicked = new EventEmitter<void>();
 

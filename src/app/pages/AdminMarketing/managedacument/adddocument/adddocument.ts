@@ -52,6 +52,11 @@ export class AddDocument implements OnInit {
       { label: 'Upload Documents', route: '/adminmarketing/managedacument' },
       { label: this.isEditMode ? 'Edit Document' : 'Add Document' }
     ];
+
+    const docPathField = this.documentFields.find(f => f.name === 'campaignDocpath');
+    if (docPathField) {
+      docPathField.required = !this.isEditMode;
+    }
   }
 
   /* ================= FORM FIELDS ================= */
@@ -59,7 +64,7 @@ export class AddDocument implements OnInit {
     {
       name: 'roleName',
       label: 'Role',
-      type: 'select',
+      type: 'checkbox',
       required: true,
       options: [
         { value: 'ADMINMARKETING', label: 'Admin Marketing' },
@@ -81,33 +86,42 @@ export class AddDocument implements OnInit {
     },
     {
       name: 'campaignDocpath',
-      label: 'Document Path / File Name',
-      type: 'text',
-      placeholder: 'brochure.pdf',
+      label: 'Attachments',
+      type: 'file',
       required: true
     }
   ];
 
   /* ================= SAVE ================= */
   saveDocument(data: any): void {
+    const formData = new FormData();
+    formData.append('campaignDocName', data.campaignDocName);
+    formData.append('campaignDocdescription', data.campaignDocdescription || '');
+    formData.append('campaignDocstatus', '1');
 
-    const payload: any = {
-      campaignDocName: data.campaignDocName,
-      campaignDocdescription: data.campaignDocdescription || '',
-      campaignDocpath: data.campaignDocpath,
-      campaignDocstatus: 1,
-      roleName: data.roleName
-    };
+    let rolesString = '';
+    if (data.roleName && typeof data.roleName === 'object') {
+      rolesString = Object.keys(data.roleName)
+        .filter(key => data.roleName[key])
+        .join(',');
+    } else {
+      rolesString = data.roleName || '';
+    }
+    formData.append('roleName', rolesString);
 
-    if (this.isEditMode) {
-      payload.campaignDocumentId = this.documentId;
+    if (data.campaignDocpath instanceof File) {
+      formData.append('file', data.campaignDocpath);
     }
 
-    console.log('[AddDocument] Final payload:', payload);
+    if (this.isEditMode) {
+      formData.append('campaignDocumentId', String(this.documentId));
+    }
+
+    console.log('[AddDocument] Final FormData payload');
 
     const request$ = this.isEditMode
-      ? this.adminMarketingservice.updateDocument(this.documentId, payload)
-      : this.adminMarketingservice.createDocument(payload);
+      ? this.adminMarketingservice.updateDocument(this.documentId, formData)
+      : this.adminMarketingservice.createDocument(formData);
 
     request$.subscribe({
       next: () => {
@@ -155,11 +169,19 @@ export class AddDocument implements OnInit {
       next: (docs: any[]) => {
         const d = docs.find(x => x.campaignDocumentId === id);
         if (d) {
+          const rolesObj: any = {};
+          if (Array.isArray(d.role)) {
+            d.role.forEach((r: any) => {
+              if (r?.roleName) {
+                rolesObj[r.roleName] = true;
+              }
+            });
+          }
           this.formInitialData = {
             campaignDocName: d.campaignDocName,
             campaignDocdescription: d.campaignDocdescription,
             campaignDocpath: d.campaignDocpath,
-            roleName: d.role?.[0]?.roleName || 'ADMINMARKETING'
+            roleName: rolesObj
           };
         } else {
           this.toastService.error('Document not found');

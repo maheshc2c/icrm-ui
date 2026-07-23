@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Managedacument } from './managedacument';
+import { PurchaseOrderTracking } from './purchase-order-tracking';
 
-describe('Managedacument', () => {
-  let component: Managedacument;
-  let fixture: ComponentFixture<Managedacument>;
+describe('PurchaseOrderTracking', () => {
+  let component: PurchaseOrderTracking;
+  let fixture: ComponentFixture<PurchaseOrderTracking>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Managedacument]
+      imports: [PurchaseOrderTracking]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Managedacument);
+    fixture = TestBed.createComponent(PurchaseOrderTracking);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

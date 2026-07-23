@@ -65,7 +65,7 @@
           <div style="width: 100%;">
             <select name="relationship" [(ngModel)]="lead.relationshipName" class="form-select"
               [class.is-invalid]="errors['relationshipName']" (ngModelChange)="clearError('relationshipName')">
-              <option value="" disabled>Select an Option from Below</option>
+              <option value="">Select an Option from Below</option>
               <option value="Strongly Positive">Strongly Positive</option>
               <option value="Positive">Positive</option>
               <option value="Neutral">Neutral</option>
@@ -109,7 +109,7 @@
           <div style="width: 100%;">
             <select name="siteReadinessName" [(ngModel)]="lead.siteReadinessName" required class="form-select"
               [class.is-invalid]="errors['siteReadinessName']" (ngModelChange)="clearError('siteReadinessName')">
-              <option value="" disabled>Select Site Readiness Status</option>
+              <option value="">Select Site Readiness Status</option>
               <option *ngFor="let site of siteReadinessOptions" [value]="site.siteReadinessName">
                 {{ site.siteReadinessName }}
               </option>
@@ -178,7 +178,7 @@
           <div style="width: 100%;">
             <select name="distributorId" [(ngModel)]="lead.distributorId" required class="form-select"
               [class.is-invalid]="errors['distributorId']" (ngModelChange)="clearError('distributorId')">
-              <option [value]="null" disabled>Select Distributor</option>
+              <option value="">Select Distributor</option>
               <option *ngFor="let dist of distributors" [value]="dist.userId">
                 {{ dist.distributorName }}
               </option>
