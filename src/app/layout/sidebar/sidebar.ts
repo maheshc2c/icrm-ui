@@ -77,7 +77,7 @@ constructor() {
           { label: 'Product', icon: 'fas fa-box', route: '/product' },
           { label: 'Demo', icon: 'fas fa-flask', route: '/demoproduct' },
           { label: 'Financial Year', icon: 'fas fa-calendar-days', route: '/financial-yr' },
-          { label: 'User Product Target', icon: 'fas fa-bullseye', route: '/admin-users' },
+          { label: 'User Product Target', icon: 'fas fa-bullseye', route: '/user-target' },
         ]
       },
         {
