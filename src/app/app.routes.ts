@@ -707,19 +707,20 @@ export const routes: Routes = [
       },
 
       {
-        path: 'globalhead/add-visit',
+        path: 'plan-visit/add',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/add-visit/add-visit.component').then(m => m.AddVisitComponent),
       },
       {
-        path: 'globalhead/manage-visits',
+        path: 'plan-visits',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/manage-visits.component').then(m => m.ManageVisitsComponent),
-
       },
       {
-        path: 'globalhead/edit-visit/:id',
+        path: 'plan-edit/:id',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/edit-visit/edit-visit.component').then(m => m.EditVisitComponent),
-
       },
+      { path: 'globalhead/manage-visits', redirectTo: 'plan-visits', pathMatch: 'full' },
+      { path: 'globalhead/add-visit', redirectTo: 'plan-visit/add', pathMatch: 'full' },
+      { path: 'globalhead/edit-visit/:id', redirectTo: 'plan-edit/:id', pathMatch: 'full' },
       {
         path: 'globalhead-dashboard/plan-demo',
         loadComponent: () => import('./pages/GlobalHead/plan-demo/plan-demo.component').then(m => m.PlanDemoComponent),

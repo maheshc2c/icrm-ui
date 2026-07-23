@@ -564,9 +564,9 @@ constructor() {
         {
           label: 'Plan Visit/Demo',
           icon: 'fas fa-calendar-check',
-          route: '/globalhead/manage-visits',
+          route: '/plan-visits',
           children: [
-            { label: 'Visit', icon: 'fas fa-route', route: '/globalhead/manage-visits' },
+            { label: 'Visit', icon: 'fas fa-route', route: '/plan-visits' },
             { label: 'Demo', icon: 'fas fa-suitcase', route: '/globalhead-dashboard/plan-demo' }
           ]
         },
