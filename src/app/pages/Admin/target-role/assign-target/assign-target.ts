@@ -20,7 +20,7 @@ export class AssignTargetComponent implements OnInit {
     headerTitle = 'Assign Target';
     headerBreadcrumbs = [
         { label: 'Home', link: '/admin' },
-        { label: 'Target Role', link: '/admin/user-target' },
+        { label: 'Target Role', link: '/user-target' },
         { label: 'Assign Target', active: true }
     ];
 
@@ -202,7 +202,7 @@ export class AssignTargetComponent implements OnInit {
         this.userTargetService.saveProductTargetsForUser(Number(this.employeeId), yearId, selectedTargets).subscribe({
             next: () => {
                 this.toastService.success('Targets saved successfully!'); 
-                setTimeout(() => { this.router.navigate(['/admin/user-target']); }, 1500);
+                setTimeout(() => { this.router.navigate(['/user-target']); }, 1500);
             },
             error: (err: any) => {
                 console.error('Failed to assign targets', err);
@@ -213,7 +213,7 @@ export class AssignTargetComponent implements OnInit {
         });
     }
 
-    onCancel(): void { this.router.navigate(['/admin/user-target']); } 
+    onCancel(): void { this.router.navigate(['/user-target']); } 
 
     onQuantityChange(dto: any): void {
         // Auto-selection removed per user request

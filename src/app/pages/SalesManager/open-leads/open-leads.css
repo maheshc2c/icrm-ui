@@ -212,15 +212,15 @@ body {
     grid-template-columns: 1fr;
   }
 }
- 
+
 ::ng-deep .open-leads-table th:last-child,
 ::ng-deep .open-leads-table td:last-child{
     width:180px;
 }
- 
+
 ::ng-deep .open-leads-table th:nth-child(7),
 ::ng-deep .open-leads-table td:nth-child(7){
- 
+
     min-width:420px;
     width:420px;
 }

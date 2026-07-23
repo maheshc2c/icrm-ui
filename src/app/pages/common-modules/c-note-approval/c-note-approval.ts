@@ -9,6 +9,7 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import { FormsModule } from '@angular/forms';
 import { CNoteApprovalService } from './CnoteApprovalService';
+import { CustomerInteractionCenterService } from '../../../service/customer-interaction-center.service';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class CNoteApproval {
 
    constructor(
     private cnoteservice: CNoteApprovalService,
+    private cicService: CustomerInteractionCenterService,
     private router: Router
   ) {}
 
@@ -42,7 +44,8 @@ export class CNoteApproval {
   { header: 'Created On', field: 'createdOn' },
   { header: 'PO Number', field: 'poNumber' },
   { header: 'PO Date', field: 'poDate' },
-  { header: 'Current Stage', field: 'currentStage' }
+  { header: 'Current Stage', field: 'currentStage' },
+ { header: 'CNote Info', field: 'cNoteInfo', type: 'icon', icon: 'fas fa-cloud-download', title: 'Download' }
 ];
 
   rows: any[] = [];
@@ -93,52 +96,6 @@ ngOnInit(): void {
   this.searchContractNotes();
 }
 
-searchContractNotes() {
-
-  const payload = {
-
-    contractNoteId: this.searchModel.contractNoteId,
-
-    cnoteType: this.searchModel.cnoteType,
-
-    customerName: this.searchModel.customerName,
-
-    pagination: {
-
-      pageNumber: this.currentPage,
-
-      pageSize: this.pageSize,
-
-      sortBy: 'contractNoteId',
-
-      sortOrder: 'DESC'
-    }
-  };
-
-  this.cnoteservice.searchContractNoteApproval(payload)
-      .subscribe({
-
-        next: (res: any) => {
-
-          this.rows = res.data;
-
-          this.fullRows = res.data;
-
-          this.totalElements = res.totalElements;
-
-          this.totalPages = res.totalPages;
-
-        },
-
-        error: err => {
-
-          console.error(err);
-
-        }
-
-      });
-
-}
 
 
 
@@ -146,7 +103,7 @@ searchContractNotes() {
   onView(row: any): void {
     this.router.navigate([
       '/admin/c-note/view',
-      row.cNoteId
+      row.contractNoteId
     ]);
   }
 onEdit(row: any): void {
@@ -160,7 +117,62 @@ onEdit(row: any): void {
   console.log(this.showApprovalPopup);
 
 }
+searchContractNotes(): void {
 
+  const payload = {
+    contractNoteId: this.searchModel.contractNoteId,
+    cnoteType: this.searchModel.cnoteType,
+    customerName: this.searchModel.customerName,
+    pagination: {
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize,
+      sortBy: 'contractNoteId',
+      sortOrder: 'DESC'
+    }
+  };
+
+  console.log('Payload', payload);
+
+  this.cnoteservice.searchContractNoteApproval(payload).subscribe({
+
+    next: (response) => {
+
+      console.log('Response', response);
+
+      if (response?.status) {
+
+        // this.rows = response.data || [];
+
+        this.rows = (response.data || []).map((item: any) => ({
+  ...item,
+  cnoteId: item.contractNoteId ?? item.cnoteId
+}));
+        this.fullRows = [...this.rows];
+
+        this.totalElements = response.totalElements || 0;
+        this.totalPages = response.totalPages || 0;
+
+      } else {
+
+        this.rows = [];
+        this.fullRows = [];
+
+      }
+
+    },
+
+    error: (err) => {
+
+      console.error(err);
+
+      this.rows = [];
+      this.fullRows = [];
+
+    }
+
+  });
+
+}
 
 closePopup() {
 
@@ -197,53 +209,34 @@ approveContractNote(row: any) {
       });
 
 }
-rejectContractNote(row: any) {
+// rejectContractNote(row: any) {
 
-  const payload = {
+//   const payload = {
 
-    contractNoteId: row.contractNoteIdInternal,
+//     contractNoteId: row.contractNoteIdInternal,
 
-    action: 'REJECT',
+//     action: 'REJECT',
 
-    remarks: ''
+//     remarks: ''
 
-  };
+//   };
 
-  this.cnoteservice.contractNoteAction(payload)
-      .subscribe(() => this.searchContractNotes());
+//   this.cnoteservice.contractNoteAction(payload)
+//       .subscribe(() => this.searchContractNotes());
 
-}
+// }
 
-onSearch(search: any) {
+onSearch(searchValues: any): void {
 
-  this.searchModel = {
-  contractNoteId: search.cNoteId,
-  cnoteType: search.cnoteType,
-  customerName: search.customerName
-};
+  console.log("Search Values:", searchValues);
 
-  this.currentPage = 0;
-
-  this.searchContractNotes();
-
-}  
-
-  onReset() {
-
-  this.searchModel = {
-
-    contractNoteId: null,
-
-    cnoteType: null,
-
-    customerName: ''
-
-  };
+  this.searchModel.contractNoteId = searchValues?.contractNoteId ?? null;
+  this.searchModel.cnoteType = searchValues?.cnoteType ?? null;
+  this.searchModel.customerName = searchValues?.customerName ?? '';
 
   this.currentPage = 0;
 
   this.searchContractNotes();
-
 }
 
 showApprovalPopup = false;
@@ -251,5 +244,73 @@ showApprovalPopup = false;
 selectedContractNote: any = null;
 
 remarks = '';
+
+
+onReset(): void {
+
+  this.searchModel = {
+    contractNoteId: null,
+    cnoteType: null,
+    customerName: ''
+  };
+
+  this.currentPage = 0;
+
+  this.searchContractNotes();
+
+}
+
+
+//download
+
+onDownloadRow(row: any) {
+  if (!row.cnoteId) {
+    return;
+  }
+
+  this.cicService.downloadContractNotePdf(parseInt(row.cnoteId)).subscribe({
+    next: (blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `contract_note_${row.cnoteId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    },
+    error: err => console.error(err)
+  });
+}
+
+downloadContractNote(cnoteId: number): void {
+
+  this.cicService.downloadContractNotePdf(cnoteId).subscribe({
+
+    next: (blob: Blob) => {
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+
+      a.href = url;
+      a.download = `contract_note_${cnoteId}.pdf`;
+
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      window.URL.revokeObjectURL(url);
+    },
+
+    error: err => {
+      console.error(err);
+    }
+
+  });
+
+}
+
+
 
 }

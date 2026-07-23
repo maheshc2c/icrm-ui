@@ -144,7 +144,7 @@
 
         <div class="popup-header">
 
-            <h2>Margin Analysis Report</h2>
+            <h2>Margin Analysis Report History</h2>
 
             <button
                 class="close-btn"
@@ -164,7 +164,7 @@
 
                     <label>Quote ID</label>
 
-                    <span>{{ selectedQuote?.quoteCreatedDate }}</span>
+                    <span>{{ selectedQuote?.quoteNumber }}</span>
 
                 </div>
 
@@ -211,22 +211,21 @@
                 </thead>
 
                 <tbody>
+    <tr *ngFor="let history of approvalHistory">
+  <td>{{history.sno}}</td>
+  <td>{{history.level}}</td>
+  <td>{{history.remarks}}</td>
+  <td>{{history.onDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+  <td>{{history.status}}</td>
+</tr>
 
-                    <tr *ngFor="let r of approvalHistory; let i=index">
+    <tr *ngIf="approvalHistory.length === 0">
+        <td colspan="5" class="text-center">
+            No Approval History Found
+        </td>
+    </tr>
 
-                        <td>{{i+1}}</td>
-
-                        <td>{{r.level}}</td>
-
-                        <td>{{r.remarks}}</td>
-
-                        <td>{{r.onDate}}</td>
-
-                        <td>{{r.status}}</td>
-
-                    </tr>
-
-                </tbody>
+</tbody>
 
             </table>
 

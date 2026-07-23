@@ -280,12 +280,12 @@ export class TargetRoleComponent implements OnInit {
     onAssign(row: any) {
         console.log('Assign clicked for user:', row);
         // Use userId (serialNumber from UserViewDto) as the numeric user ID
-        this.router.navigate(['/admin/assign-target', row.userId]);
+        this.router.navigate(['/assign-target', row.userId]);
     }
 
     onUpload(row: any) {
         console.log('Upload clicked for user:', row);
         // Use userId (serialNumber from UserViewDto) as the numeric user ID
-        this.router.navigate(['/admin/upload-target', row.userId]);
+        this.router.navigate(['/upload-target', row.userId]);
     }
 }

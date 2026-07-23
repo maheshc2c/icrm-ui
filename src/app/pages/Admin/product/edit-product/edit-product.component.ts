@@ -53,13 +53,13 @@ export class EditProduct implements OnInit {
     { name: 'productDescription', label: 'Description', placeholder: 'Product Description', type: 'textarea', required: false }, // optional
     { name: 'productType', label: 'Product Type', placeholder: 'Select Product Type', type: 'select', required: true, options: [] }, // Dynamic
     {
-      name: 'productTarget', label: 'Target', type: 'radio', required: false, options: [
+      name: 'productTarget', label: 'Target', type: 'radio', required: true, options: [
         { label: 'Yes', value: '1' },
         { label: 'No', value: '0' }
       ]
     },
     {
-      name: 'productAvailability', label: 'Availability', type: 'radio', required: false, options: [
+      name: 'productAvailability', label: 'Availability', type: 'radio', required: true, options: [
         { label: 'Active', value: '1' },
         { label: 'Inactive', value: '0' }
       ]

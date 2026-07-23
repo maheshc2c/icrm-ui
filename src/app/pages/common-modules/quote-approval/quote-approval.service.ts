@@ -73,7 +73,7 @@ getMarginAnalysis(quoteRevisionId: number) {
 getRegions() {
 
   return this.http.get<any>(
-    `${this.baseUrl}/quoteApproval/regions`,
+    `${this.baseUrl}/quoteApproval/regionDropdown`,
     {
       headers: this.getAuthHeaders()
     }
@@ -81,4 +81,15 @@ getRegions() {
 
 }
 
+
+getApprovalHistory(quoteRevisionId: number) {
+
+  return this.http.get<any>(
+    `${this.baseUrl}/quoteApproval/history/${quoteRevisionId}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+
+}
 }
