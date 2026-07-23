@@ -231,23 +231,27 @@ export const routes: Routes = [
 },
 
 
-//Demo
+//Demo Product
 
 {
-  path: 'admin/demo',
+  path: 'demoproduct',
   loadComponent: () =>
     import('./pages/Admin/demo/demo').then(m => m.Demo)
 },
 {
-  path: 'admin/demo/add',
+  path: 'demoproduct/add',
   loadComponent: () =>
     import('./pages/Admin/demo/add/add').then(m => m.Add)
 },
 {
-  path: 'admin/demo/edit/:id',
+  path: 'demoproduct/edit/:id',
   loadComponent: () =>
     import('./pages/Admin/demo/add/add').then(m => m.Add)
 },
+
+{ path: 'admin/demo', redirectTo: 'demoproduct', pathMatch: 'full' },
+{ path: 'admin/demo/add', redirectTo: 'demoproduct/add', pathMatch: 'full' },
+{ path: 'admin/demo/edit/:id', redirectTo: 'demoproduct/edit/:id', pathMatch: 'full' },
 
 
 

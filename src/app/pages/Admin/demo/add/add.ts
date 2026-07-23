@@ -34,7 +34,7 @@ export class Add implements OnInit {
   headerTitle = 'Add Demo Product';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Demo', route: '/admin/demo' },
+    { label: 'Demo', route: '/demoproduct' },
     { label: 'Add Demo Product' }
   ];
 
@@ -167,7 +167,7 @@ private loadDemoById(id: number) {
   
         if (!demo) {
         this.toastService.error('Demo product not found');
-        this.router.navigate(['/admin/demo']);
+        this.router.navigate(['/demoproduct']);
         return;
       }
 
@@ -182,7 +182,7 @@ private loadDemoById(id: number) {
     },
     error: () => {
       this.toastService.error('Failed to load demo');
-      this.router.navigate(['/admin/demo']);
+      this.router.navigate(['/demoproduct']);
     }
   });
 }
@@ -499,7 +499,7 @@ saveDemo(formData: any): void {
     this.adminService.updateDemo(id, payload).subscribe({
       next: () => {
         this.toastService.success('Demo updated successfully');
-        this.router.navigate(['/admin/demo']);
+        this.router.navigate(['/demoproduct']);
       },
       error: (err: any) => this.toastService.error(err.error?.message || 'Failed to update demo')
     });
@@ -509,7 +509,7 @@ saveDemo(formData: any): void {
     this.adminService.createDemo(payload).subscribe({
       next: () => {
         this.toastService.success('Demo created successfully');
-        this.router.navigate(['/admin/demo']);
+        this.router.navigate(['/demoproduct']);
       },
       error: (err: any) => this.toastService.error(err.error?.message || 'Failed to create demo')
     });
@@ -523,6 +523,6 @@ saveDemo(formData: any): void {
 
 
   onCancel(): void {
-    this.router.navigate(['/admin/demo']);
+    this.router.navigate(['/demoproduct']);
   }
 }
