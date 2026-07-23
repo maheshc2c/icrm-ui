@@ -36,7 +36,7 @@
       <div class="card-body">
         <!-- THE TABLE -->
         <div class="table-responsive">
-          <table class="table table-bordered table-striped soft-header">
+          <table class="table table-bordered table-striped soft-header" [ngClass]="tableClass">
             <thead>
               <tr>
                 @if (showCheckboxColumn) {
