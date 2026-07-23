@@ -20,12 +20,18 @@
  
 /* ================= SHARED WIDTH COLUMN ================= */
  
-.datatable-toolbar,
-.content-wrapper {
+.datatable-toolbar {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
   margin-top: 20px;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 0px;
 }
  
 /* ================= TOOLBAR ================= */

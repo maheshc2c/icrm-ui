@@ -1,6 +1,6 @@
 <!-- MAIN -->
 <main class="content" [style.margin-left]="noMargin ? '0' : ''" [style.width]="noMargin ? '100%' : ''" [style.padding]="noMargin ? '0' : ''" [style.min-height]="noMargin ? 'auto' : ''" (click)="hostClick()">
-<div class="datatable-toolbar">
+<div class="datatable-toolbar" *ngIf="showSearch || showImport || showAdd || showReset || showRefresh || showUpload || showDownload || showBulkUpload || showSubmit">
 
   @if (showSearch) {
     <app-search

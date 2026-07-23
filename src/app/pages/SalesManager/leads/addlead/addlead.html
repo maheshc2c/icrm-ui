@@ -6,50 +6,49 @@
 </app-pageheader>
 
 
-<div *ngIf="isEditMode" class="form-wrapper-tabs" style="margin-left: 287px; padding: 24px 30px 0 30px; display: flex; justify-content: flex-start;">
-  <div style="width: 100%; display: flex; align-items: flex-end;">
-    <div *ngFor="let tab of tabs" 
-         style="padding: 10px 24px; cursor: pointer; font-size: 14px; font-weight: 500; border-top-left-radius: 6px; border-top-right-radius: 6px; border: 1px solid #dcdcdc; border-bottom: none; margin-right: 4px; position: relative; bottom: -1px; transition: all 0.2s;"
-         [style.background]="activeTab === tab ? '#fff' : '#f4f5f7'"
-         [style.color]="activeTab === tab ? '#2c3e50' : '#888'"
-         [style.z-index]="activeTab === tab ? '10' : '1'"
-         (click)="switchTab(tab)">
-      {{ tab }}
+<div class="lead-edit-card-box" style="margin-left: 287px; margin-right: 30px; margin-top: 16px; margin-bottom: 40px; background: #ffffff; border-radius: 4px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 24px;">
+
+  <!-- CHEVRON TABS BAR -->
+  <div *ngIf="isEditMode" style="margin-bottom: 12px; display: flex; justify-content: flex-start;">
+    <div class="chevron-tabs-container">
+      <div *ngFor="let tab of tabs; let isFirst = first" 
+           class="chevron-tab"
+           [class.first]="isFirst"
+           [class.active]="activeTab === tab"
+           (click)="switchTab(tab)">
+        {{ tab }}
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Main Form Content (Shown for New Leads or when 'Lead Details' tab is active) -->
-<div *ngIf="activeTab === 'Lead Details'" style="position: relative; z-index: 5;">
-  <div [style.pointer-events]="isReadOnly ? 'none' : 'auto'" [style.opacity]="isReadOnly ? '0.85' : '1'">
-    
-    <div class="form-wrapper" [style.padding-top]="isEditMode ? '0px' : '24px'">
-      <div class="company-form-container">
+  <!-- TAB 1: Lead Details -->
+  <div *ngIf="!isEditMode || activeTab === 'Lead Details'">
+    <div [style.pointer-events]="isReadOnly ? 'none' : 'auto'" [style.opacity]="isReadOnly ? '0.85' : '1'">
+      <div class="company-form-container" style="box-shadow: none; border: none; margin-bottom: 0;">
 
         <div class="form-header-block">
           <h4 class="form-title-heading">{{ isEditMode ? 'Lead Details' : 'Enter the Below Details' }}</h4>
           
           <!-- Action Buttons in Header -->
           <div style="display: flex; gap: 10px; align-items: center;">
-            <!-- Details / Drop Lead (shown in edit mode) -->
-            <button *ngIf="isEditMode" type="button" class="action-header-btn" (click)="onDetails()" style="pointer-events: auto;">
-              <i class="fa-solid fa-clock-rotate-left"></i> Details
+            <button *ngIf="isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onDetails()">
+              <i class="fa-solid fa-circle-info"></i> Details
             </button>
-            <button *ngIf="isEditMode && !isReadOnly" type="button" class="action-header-btn" style="background: #f44336; border-color: #d32f2f;" (click)="onDropLead()" onmouseover="this.style.background='#d32f2f'" onmouseout="this.style.background='#f44336'">
-              <i class="fa-solid fa-trash-can"></i> Drop Lead
+            <button *ngIf="isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onBlockVisit()">
+              <i class="fa-regular fa-calendar-minus"></i> Block Visit
             </button>
 
             <!-- Add buttons (shown in create/new mode) -->
-            <button *ngIf="!isEditMode && !isReadOnly" type="button" class="action-header-btn" (click)="onAddCustomer()">
+            <button *ngIf="!isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onAddCustomer()">
               <i class="fa-solid fa-plus"></i> Add Customer
             </button>
-            <button *ngIf="!isEditMode && !isReadOnly" type="button" class="action-header-btn" (click)="onAddContact()">
+            <button *ngIf="!isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onAddContact()">
               <i class="fa-solid fa-plus"></i> Add Contact
             </button>
           </div>
         </div>
 
-        <div class="form-body-section">
+        <div class="form-body-section" style="padding: 24px 0 0 0;">
           <form (ngSubmit)="onSubmit(leadForm)">
 
             <!-- LOOP ALL FIELDS -->
@@ -113,24 +112,22 @@
                     
                     <!-- Customer details button next to customer dropdown -->
                     <button 
-                      *ngIf="isEditMode && leadForm.customer" 
                       type="button" 
                       class="btn" 
-                      style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 0; min-width: 35px; height: 35px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background-color 0.2s; pointer-events: auto;" 
+                      style="background: #3182ce; color: white; border: none; border-radius: 4px; padding: 0; min-width: 32px; height: 32px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; pointer-events: auto;" 
                       (click)="onCustomerDetails(leadForm.customer)"
                       title="Customer Details">
-                      <i class="fa-solid fa-circle-info"></i>
+                      <i class="fa-solid fa-info"></i>
                     </button>
                     
                     <!-- Customer installation base button next to customer dropdown -->
                     <button 
-                      *ngIf="isEditMode && leadForm.customer" 
                       type="button" 
                       class="btn" 
-                      style="background: #2196f3; color: white; border: none; border-radius: 4px; padding: 0; min-width: 35px; height: 35px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background-color 0.2s; pointer-events: auto;" 
+                      style="background: #3182ce; color: white; border: none; border-radius: 4px; padding: 0; min-width: 32px; height: 32px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; pointer-events: auto;" 
                       (click)="onCustomerAction2(leadForm.customer)"
                       title="Customer Installation Base">
-                      <i class="fa-solid fa-folder-open"></i>
+                      <i class="fa-regular fa-folder-open"></i>
                     </button>
                   </div>
                 </ng-container>
@@ -272,12 +269,12 @@
             </div>
 
             <!-- ACTION BUTTONS -->
-            <div class="form-action-buttons" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
-              <button type="button" class="btn-cancel-form" (click)="onCancel()">
-                <i class="fas fa-times"></i> Cancel
+            <div class="form-action-buttons" style="display: flex; justify-content: flex-start; gap: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; margin-left: 204px;">
+              <button type="submit" class="btn" style="background: #3182ce; color: white; border: none; border-radius: 4px; padding: 7px 20px; font-size: 13.5px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fas fa-check"></i> {{ isEditMode ? 'Update' : 'Submit' }}
               </button>
-              <button type="submit" class="btn-submit-form">
-                <i class="fas fa-check"></i> Submit
+              <button type="button" class="btn" style="background: #e53e3e; color: white; border: none; border-radius: 4px; padding: 7px 20px; font-size: 13.5px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" (click)="onCancel()">
+                <i class="fas fa-times"></i> Cancel
               </button>
             </div>
 
@@ -286,151 +283,136 @@
       </div>
     </div>
   </div>
-</div>
 
-<!-- Opportunities Tab -->
-<div *ngIf="activeTab === 'Opportunities'" style="position: relative; z-index: 5;">
-  <div class="form-wrapper" style="padding-top: 24px; min-height: 400px; margin-bottom: 60px; flex-direction: column;">
-      
-      <!-- Add Opportunity Button -->
-      <div style="display: flex; justify-content: flex-end; margin-bottom: 16px; width: 100%;">
-        <button (click)="onAddOpportunity()" style="background: #2196f3; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-          <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Opportunity
-        </button>
-      </div>
+  <!-- TAB 2: Opportunities -->
+  <div *ngIf="activeTab === 'Opportunities'">
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 12px; width: 100%;">
+      <button (click)="onAddOpportunity()" style="background: #3182ce; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center;">
+        <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Opportunity
+      </button>
+    </div>
 
-      <!-- Opportunities Table -->
-      <app-data-table
-        [noMargin]="true"
-        style="display: block; width: 100%;"
-        [columns]="oppColumns"
-        [rows]="opportunities"
-        [showImport]="false"
-        [showDownload]="false"
-        [showAdd]="false"
-        [showReset]="false"
-        [showSearch]="false"
-        [showPagination]="false"
-        [showEdit]="true"
-        [showView]="false"
-        [showDelete]="false"
-        (editRow)="onEditOpp($event)"
-        (viewRow)="onViewOpp($event)">
-      </app-data-table>
-
+    <!-- Opportunities Table -->
+    <app-data-table
+      [noMargin]="true"
+      style="display: block; width: 100%;"
+      [columns]="oppColumns"
+      [rows]="opportunities"
+      [showImport]="false"
+      [showDownload]="false"
+      [showAdd]="false"
+      [showReset]="false"
+      [showSearch]="false"
+      [showPagination]="false"
+      [showEdit]="true"
+      [showView]="false"
+      [showDelete]="false"
+      (editRow)="onEditOpp($event)"
+      (viewRow)="onViewOpp($event)">
+    </app-data-table>
   </div>
-</div>
 
-<!-- Quote Tab -->
-<div *ngIf="activeTab === 'Quote'" style="position: relative; z-index: 5;">
-  <div class="form-wrapper" style="padding-top: 24px; min-height: 400px; margin-bottom: 60px; flex-direction: column;">
-      
-      <!-- Customer Info & Add Quote Button -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; width: 100%;">
-        <div style="font-size: 14px; color: #475569; font-weight: 500;">
-          Customer: {{ originalLeadData?.customerName || 'N/A' }}
-        </div>
-        <button (click)="openAddQuoteModal()" style="background: #2196f3; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-          <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Quote
-        </button>
+  <!-- TAB 3: Quote -->
+  <div *ngIf="activeTab === 'Quote'">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; width: 100%;">
+      <div style="font-size: 14px; color: #475569; font-weight: 500;">
+        Customer: {{ originalLeadData?.customerName || 'N/A' }}
       </div>
+      <button (click)="openAddQuoteModal()" style="background: #3182ce; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center;">
+        <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Quote
+      </button>
+    </div>
 
-      <!-- Quote Table -->
-      <div style="margin-bottom: 30px; overflow-x: auto;">
-        <table class="table table-bordered table-striped soft-header text-center" style="width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #dee2e6;">
-          <thead>
+    <table class="table table-bordered table-striped soft-header text-center" style="width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #dee2e6;">
+      <thead>
+        <tr>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">S.NO</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">QUOTE ID</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">OPPORTUNITY DETAILS</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">DISCOUNT</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">CURRENT STAGE</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">STATUS</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">FINAL APPROVER</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">REVISIONS</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (quotes && quotes.length > 0) {
+          @for (row of quotes; track row.quoteId; let i = $index) {
             <tr>
-              <th style="padding: 12px; border: 1px solid #dee2e6;">S.NO</th>
-              <th style="padding: 12px; border: 1px solid #dee2e6;">QUOTE ID</th>
-              <th style="padding: 12px; border: 1px solid #dee2e6;">OPPORTUNITY DETAILS</th>
-              <th style="padding: 12px; border: 1px solid #dee2e6;">DISCOUNT</th>
-              <th style="padding: 12px; border: 1px solid #dee2e6;">CURRENT STAGE</th>
-              <th style="padding: 12px; border: 1px solid #dee2e6;">STATUS</th>
-              <th style="padding: 12px; border: 1px solid #dee2e6;">FINAL APPROVER</th>
-              <th style="padding: 12px; border: 1px solid #dee2e6;">REVISIONS</th>
-              <th style="padding: 12px; border: 1px solid #dee2e6;">ACTIONS</th>
+              <td style="padding: 12px; border: 1px solid #dee2e6;">{{ i + 1 }}</td>
+              <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.quoteId }}</td>
+              <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.opportunityDetails }}</td>
+              <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.discount }}</td>
+              <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.currentStage }}</td>
+              <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.quoteStatus }}</td>
+              <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.finalApprover }}</td>
+              <td style="padding: 12px; border: 1px solid #dee2e6;">
+                <div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+                  <button class="btn btn-sm btn-primary view-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionInfo(row)" title="View Revision">
+                    <i class="fa-solid fa-info"></i>
+                  </button>
+                  <button *ngIf="(row.quoteStatus === 'Quote Approved' || row.revisionStatus === 2) && (!row.maxQuoteRevisionId || row.quoteRevisionId === row.maxQuoteRevisionId)" class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+              </td>
+              <td style="padding: 12px; border: 1px solid #dee2e6;">
+                <div *ngIf="row.quoteStatus === 'Quote Approved' || row.revisionStatus === 2" style="display: flex; justify-content: center; gap: 8px;">
+                  <button class="btn btn-sm btn-primary" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="View Document" (click)="onViewQuote(row)">
+                    <i class="fas fa-file-alt"></i>
+                  </button>
+                  <button class="btn btn-sm btn-info" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="Download Quote" (click)="onDownloadQuote(row)">
+                    <i class="fas fa-cloud-download-alt"></i>
+                  </button>
+                </div>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            @if (quotes && quotes.length > 0) {
-              @for (row of quotes; track row.quoteId; let i = $index) {
-                <tr>
-                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ i + 1 }}</td>
-                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.quoteId }}</td>
-                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.opportunityDetails }}</td>
-                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.discount }}</td>
-                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.currentStage }}</td>
-                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.quoteStatus }}</td>
-                  <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.finalApprover }}</td>
-                    <td style="padding: 12px; border: 1px solid #dee2e6;">
-                      <div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
-
-                        <button class="btn btn-sm btn-primary view-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionInfo(row)" title="View Revision">
-                          <i class="fa-solid fa-info"></i>
-                        </button>
-                        <button *ngIf="row.quoteStatus === 'Quote Approved' || row.revisionStatus === 1" class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
-                        <i class="fa-solid fa-plus"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td style="padding: 12px; border: 1px solid #dee2e6;">
-                    <div *ngIf="row.quoteStatus === 'Quote Approved' || row.revisionStatus === 1" style="display: flex; justify-content: center; gap: 8px;">
-                      <button class="btn btn-sm btn-primary" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="View Document" (click)="onViewQuote(row.quoteId)">
-                        <i class="fas fa-file-alt"></i>
-                      </button>
-                      <button class="btn btn-sm btn-info" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="Download Quote" (click)="onDownloadQuote(row.quoteId)">
-                        <i class="fas fa-cloud-download-alt"></i>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              }
-            } @else {
-              <tr>
-                <td colspan="9" style="padding: 15px; border: 1px solid #dee2e6; text-align: center;">No records available.</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
+          }
+        } @else {
+          <tr class="no-records-row">
+            <td colspan="9" class="text-center py-4" style="padding: 20px; background: #fdfdfd;">
+              <div class="no-records-box" style="padding: 6px 12px; background: #e0e0e0; border-radius: 4px; display: inline-block; font-size: 11px; font-weight: 600; color: #333;">No records available.</div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
-</div>
 
-<div *ngIf="activeTab === 'Contract Note'" style="position: relative; z-index: 5;">
-  <div class="form-wrapper" style="padding-top: 24px; min-height: 400px; margin-bottom: 60px; flex-direction: column;">
-      
-      <!-- Add Contract Note Button -->
-      <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 16px; width: 100%;">
-        <button (click)="openAddContractNoteModal()" style="background: #2196f3; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-          <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Contract Note
-        </button>
-      </div>
+  <!-- TAB 4: Contract Note -->
+  <div *ngIf="activeTab === 'Contract Note'">
+    <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 16px; width: 100%;">
+      <button (click)="openAddContractNoteModal()" style="background: #3182ce; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center;">
+        <i class="fa fa-plus-circle" style="margin-right: 6px;"></i> Add Contract Note
+      </button>
+    </div>
 
-      <!-- Contract Note Table -->
-      <app-data-table
-        [noMargin]="true"
-        style="display: block; width: 100%;"
-        [columns]="contractNoteColumns"
-        [rows]="contractNotes"
-        [showImport]="false"
-        [showDownload]="false"
-        [showAdd]="false"
-        [showReset]="false"
-        [showSearch]="false"
-        [showPagination]="true"
-        [currentPage]="contractNoteCurrentPage"
-        [pageSize]="contractNotePageSize"
-        [totalPages]="contractNoteTotalPages"
-        [totalElements]="contractNoteTotalElements"
-        [showEdit]="false"
-        [showView]="false"
-        [showDelete]="false"
-        (pageChange)="onContractNotePageChange($event)"
-        (pageSizeChange)="onContractNotePageSizeChange($event)">
-      </app-data-table>
-
+    <!-- Contract Note Table -->
+    <app-data-table
+      [noMargin]="true"
+      style="display: block; width: 100%;"
+      [columns]="contractNoteColumns"
+      [rows]="contractNotes"
+      [showImport]="false"
+      [showDownload]="false"
+      [showAdd]="false"
+      [showReset]="false"
+      [showSearch]="false"
+      [showPagination]="true"
+      [currentPage]="contractNoteCurrentPage"
+      [pageSize]="contractNotePageSize"
+      [totalPages]="contractNoteTotalPages"
+      [totalElements]="contractNoteTotalElements"
+      [showEdit]="false"
+      [showView]="false"
+      [showDelete]="false"
+      (pageChange)="onContractNotePageChange($event)"
+      (pageSizeChange)="onContractNotePageSizeChange($event)">
+    </app-data-table>
   </div>
+
 </div>
 
 <!-- Details Modal -->

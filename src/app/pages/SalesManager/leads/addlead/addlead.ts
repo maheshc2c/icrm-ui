@@ -87,18 +87,7 @@ export class AddleadComponent implements OnInit {
     { header: 'Revisions', field: 'revisions' }
   ];
 
-  quotes: any[] = [
-    {
-      id: 1,
-      quoteId: 'KAR 26 S Rev 2',
-      opportunityDetails: '101 Defense (Qty 1)',
-      discount: '1.06%',
-      currentStage: 'CH',
-      quoteStatus: 'Quote Approved',
-      finalApprover: 'CH',
-      revisions: 'Rev 2'
-    }
-  ];
+  quotes: any[] = [];
 
   /* ================= QUOTE MODAL STATE ================= */
   showAddQuoteModal = false;
@@ -393,8 +382,9 @@ export class AddleadComponent implements OnInit {
           ];
         }
 
-        // Load existing lead details immediately
+        // Load existing lead details and quotes immediately
         this.loadLeadData(this.leadId);
+        this.loadQuotes();
       }
     });
 
@@ -1434,6 +1424,10 @@ export class AddleadComponent implements OnInit {
     this.selectedCustomer = null;
   }
 
+  onBlockVisit(): void {
+    this.toastService.info('Block Visit action triggered.');
+  }
+
   formatCustomerValue(val: any): string {
     if (val === null || val === undefined || val === 0 || val === '0' || val === 'null' || val === 'NULL') {
       return '';
@@ -1549,13 +1543,33 @@ export class AddleadComponent implements OnInit {
     }
   }
 
-  onDownloadQuote(quoteId: string | number): void {
-    this.leadservice.downloadQuotePdf(quoteId).subscribe({
+  private getNumericQuoteId(quoteIdParam: any): number {
+    if (typeof quoteIdParam === 'number') return quoteIdParam;
+    if (typeof quoteIdParam === 'object' && quoteIdParam !== null) {
+      if (quoteIdParam.quoteRevisionId) return Number(quoteIdParam.quoteRevisionId);
+      if (quoteIdParam.quoteId) return this.getNumericQuoteId(quoteIdParam.quoteId);
+    }
+    if (typeof quoteIdParam === 'string') {
+      if (quoteIdParam.includes('-')) {
+        const parts = quoteIdParam.split('-');
+        if (parts.length >= 3 && !isNaN(Number(parts[2]))) {
+          return parseInt(parts[2], 10);
+        }
+        return parseInt(quoteIdParam.replace(/\D/g, '') || '0', 10);
+      }
+      return parseInt(quoteIdParam, 10) || 0;
+    }
+    return 0;
+  }
+
+  onDownloadQuote(quoteId: any): void {
+    const numId = this.getNumericQuoteId(quoteId);
+    this.leadservice.downloadQuotePdf(numId).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `Quote_${quoteId}.pdf`;
+        link.download = `Quote_${numId}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -1565,13 +1579,14 @@ export class AddleadComponent implements OnInit {
     });
   }
 
-  onViewQuote(quoteId: string | number): void {
+  onViewQuote(quoteId: any): void {
+    const numId = this.getNumericQuoteId(quoteId);
     const newWindow = window.open('', '_blank');
     if (newWindow) {
-      newWindow.document.write('<html><body><h3>Loading PDF...</h3></body></html>');
+      newWindow.document.write('<html><body style="font-family:sans-serif; padding:20px;"><h3>Loading PDF...</h3></body></html>');
     }
     
-    this.leadservice.downloadQuotePdf(quoteId).subscribe({
+    this.leadservice.downloadQuotePdf(numId).subscribe({
       next: (blob) => {
         const fileURL = URL.createObjectURL(blob);
         if (newWindow) {
@@ -1582,7 +1597,7 @@ export class AddleadComponent implements OnInit {
         console.error('Failed to view quote PDF:', err);
         if (newWindow) {
           newWindow.document.open();
-          newWindow.document.write('<html><body><h3 style="color:red;">Failed to load PDF</h3></body></html>');
+          newWindow.document.write('<html><body style="font-family:sans-serif; padding:20px;"><h3 style="color:red;">Failed to load PDF</h3><p>Could not fetch PDF from server.</p></body></html>');
           newWindow.document.close();
         }
       }
