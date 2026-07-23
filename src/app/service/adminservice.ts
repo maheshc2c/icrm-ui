@@ -535,6 +535,15 @@ getFinancialYearCalendar(fyId: number) {
     );
   }
 
+  getDemoById(id: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/product/demo/${id}`,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => res.data || res)
+    );
+  }
+
    deactivateDemo(id: number) {
   return this.http.delete<any>(
     `${this.baseUrl}/product/demo/${id}`,

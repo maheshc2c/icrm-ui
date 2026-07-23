@@ -137,17 +137,17 @@ export class ManageVisitsComponent implements OnInit {
     }
 
     onAdd() {
-        this.router.navigate(['/globalhead/add-visit']);
+        this.router.navigate(['/plan-visit/add']);
     }
 
     onEdit(row: any) {
         console.log('EDIT CLICKED:', row);
         if (row.visitId) {
-            console.log('NAVIGATING TO:', '/globalhead/edit-visit', row.visitId);
-            this.router.navigate(['/globalhead/edit-visit', row.visitId]);
+            console.log('NAVIGATING TO:', '/plan-visit/edit', row.visitId);
+            this.router.navigate(['/plan-visit/edit', row.visitId]);
         } else {
             console.log('NO ID → redirecting to add');
-            this.router.navigate(['/globalhead/add-visit']);
+            this.router.navigate(['/plan-visit/add']);
         }
     }
 

@@ -47,7 +47,7 @@ export class EditVisitComponent implements OnInit {
         
         this.headerBreadcrumbs = [
             { label: 'Home', route: '/globalhead-dashboard' },
-            { label: 'Manage Visits', route: '/globalhead/manage-visits' },
+            { label: 'Plan Visits', route: '/plan-visit' },
             { label: 'Edit Visit' }
         ];
 
@@ -76,7 +76,7 @@ export class EditVisitComponent implements OnInit {
             error: (err) => {
                 console.error('Failed to load visit data:', err);
                 this.toastService.error('Failed to load visit data. Please try again.');
-                this.router.navigate(['/globalhead/manage-visits']);
+                this.router.navigate(['/plan-visit']);
             }
         });
     }
@@ -214,7 +214,7 @@ export class EditVisitComponent implements OnInit {
             next: (response) => {
                 console.log('Visit updated successfully:', response);
                 this.toastService.success('Visit updated successfully!');
-                this.router.navigate(['/globalhead/manage-visits']);
+                this.router.navigate(['/plan-visit']);
             },
             error: (err) => {
                 console.error('Failed to update visit:', err);
@@ -234,6 +234,6 @@ export class EditVisitComponent implements OnInit {
     }
 
     onCancel() {
-        this.router.navigate(['/globalhead/manage-visits']);
+        this.router.navigate(['/plan-visit']);
     }
 }

@@ -75,9 +75,9 @@ constructor() {
           { label: 'Competitor', icon: 'fas fa-user-secret', route: '/competitor' },
           { label: 'Sub System', icon: 'fas fa-sitemap', route: '/sub-system' },
           { label: 'Product', icon: 'fas fa-box', route: '/product' },
-          { label: 'Demo', icon: 'fas fa-flask', route: '/admin-users' },
+          { label: 'Demo', icon: 'fas fa-flask', route: '/demoproduct' },
           { label: 'Financial Year', icon: 'fas fa-calendar-days', route: '/financial-yr' },
-          { label: 'User Product Target', icon: 'fas fa-bullseye', route: '/admin-users' },
+          { label: 'User Product Target', icon: 'fas fa-bullseye', route: '/user-target' },
         ]
       },
         {
@@ -564,9 +564,9 @@ constructor() {
         {
           label: 'Plan Visit/Demo',
           icon: 'fas fa-calendar-check',
-          route: '/globalhead/manage-visits',
+          route: '/plan-visit',
           children: [
-            { label: 'Visit', icon: 'fas fa-route', route: '/globalhead/manage-visits' },
+            { label: 'Visit', icon: 'fas fa-route', route: '/plan-visit' },
             { label: 'Demo', icon: 'fas fa-suitcase', route: '/planDemo' }
           ]
         },

@@ -69,7 +69,7 @@
               </textarea>
 
               <!-- STATIC DROPDOWN -->
-              <select *ngIf="field.type === 'select'"
+              <select *ngIf="field.type === 'select' && !field.searchable"
                 class="company-text-input"
                 [(ngModel)]="formData[field.name]"
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
@@ -80,6 +80,33 @@
                   {{ opt.label }}
                 </option>
               </select>
+
+              <!-- SEARCHABLE DROPDOWN -->
+              <div *ngIf="field.type === 'select' && field.searchable" class="searchable-dropdown-wrapper" (click)="$event.stopPropagation()">
+                <input type="text"
+                  class="company-text-input"
+                  [placeholder]="field.placeholder || 'Type to search...'"
+                  [value]="getSelectedLabel(field)"
+                  (focus)="onSearchFocus(field, searchInput)"
+                  (input)="onSearchInput(field, searchInput.value)"
+                  (blur)="closeDropdownDelayed(field)"
+                  #searchInput
+                  [id]="'form-field-' + field.name"
+                  autocomplete="off" />
+
+                <div class="searchable-dropdown-list" *ngIf="field._open">
+                  <div class="searchable-dropdown-item"
+                       *ngFor="let opt of (field._filtered || field.options)"
+                       (mousedown)="selectSearchableOption(field, opt)">
+                    {{ opt.label }}
+                  </div>
+                  <div class="searchable-dropdown-item no-result"
+                       *ngIf="(field._filtered || field.options)?.length === 0"
+                       style="padding: 8px 12px; font-size: 13px; color: #888; font-style: italic;">
+                    No results found
+                  </div>
+                </div>
+              </div>
 
  
               <select *ngIf="field.type === 'select-dynamic'"
