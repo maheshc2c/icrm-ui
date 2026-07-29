@@ -94,8 +94,6 @@ export class DataTable
   @Input() showSno: boolean = true;
   @Input() showActions: boolean = true;
   @Input() showCheckboxColumn: boolean = false;
-  @Input() tableClass = '';
- 
 
   /* ===== TOOLBAR EVENTS ===== */
 
