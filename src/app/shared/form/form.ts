@@ -90,6 +90,13 @@ export class Form implements OnChanges {
   }
  
   /* ================= SEARCHABLE DROPDOWN ================= */
+  onSearchFocus(field: any, inputElem: HTMLInputElement): void {
+    if (inputElem) {
+      inputElem.select();
+    }
+    this.onSearchInput(field, '');
+  }
+
   onSearchInput(field: any, keyword: string): void {
     const term = (keyword || '').toLowerCase();
     const baseOptions = field.options || [];

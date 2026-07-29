@@ -45,7 +45,7 @@ export class Addcustomer implements OnInit {
   /* ================= FORM FIELDS ================= */
   customerFields: any[] = [
     { name: 'customerName', label: 'Customer Name', type: 'text', required: true },
-    { name: 'customerName1', label: 'Customer Code', type: 'text', required: false },
+    { name: 'customerName1', label: 'Customer Code', type: 'text', required: true },
  
     {
       name: 'customerCategory',

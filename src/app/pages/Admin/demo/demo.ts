@@ -30,7 +30,7 @@ export class Demo implements OnInit {
 
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
-    { label: 'Demo', route: '/admin/demo' }
+    { label: 'Demo', route: '/demoproduct' }
   ];
 
   columns = [
@@ -334,11 +334,11 @@ executeSearch(filters: any): void {
 
   // ================= NAVIGATION =================
   onAdd(): void {
-    this.router.navigate(['/admin/demo/add']);
+    this.router.navigate(['/demoproduct/add']);
   }
 
   onEdit(row: any): void {
-    this.router.navigate(['/admin/demo/edit', row.demoProductDetailId]);
+    this.router.navigate(['/demoproduct/edit', row.demoProductDetailId]);
   }
 
  

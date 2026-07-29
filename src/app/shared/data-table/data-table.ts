@@ -16,6 +16,7 @@ export class DataTable
 {
   @ViewChild(Search) searchComponent?: Search;
 
+  @Input() tableClass = '';
   @Input() columns: any[] = [];   // column headers
   @Input() rows: any[] = [];      // data rows
   @Input() title = '';            // optional title
@@ -93,6 +94,8 @@ export class DataTable
   @Input() showSno: boolean = true;
   @Input() showActions: boolean = true;
   @Input() showCheckboxColumn: boolean = false;
+  @Input() tableClass = '';
+ 
 
   /* ===== TOOLBAR EVENTS ===== */
 

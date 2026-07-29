@@ -10,6 +10,7 @@ import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import { QuoteApprovalService } from './quote-approval.service';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../service/toast.service';
 
 @Component({
   selector: 'app-quote-approval',
@@ -27,7 +28,8 @@ export class QuoteApproval {
 
   constructor(
     private quoteApprovalService: QuoteApprovalService,
-    private router: Router
+    private router: Router,
+     private toastService: ToastService
   ) {}
 
   headerTitle = 'Quote Approval';
@@ -53,9 +55,12 @@ export class QuoteApproval {
 
   { header:'Sales Engineer', field:'salesEngineer' },
 
-  { header:'Quote ID', field:'quoteNumber' },
+  // { header:'Quote ID', field:'quoteNumber' },
 
-  { header:'Opportunity', field:'opportunityDetails' },
+    { header:'Quote ID', field:'quoteDisplay' },
+
+  // { header:'Opportunity Details', field:'opportunityDetails' },
+   { header:'Opportunity Details', field:'requiredQuantity' },
 
   { header:'Order Value', field:'orderValue' },
 
@@ -89,7 +94,11 @@ loadQuotes(): void {
 
       if (response?.status && response?.data) {
 
-        this.rows = response.data.content || [];
+        // this.rows = response.data.content || [];
+         this.rows = (response.data.content || []).map((row: any) => ({
+    ...row,
+    quoteDisplay: `${row.quoteNumber}\n\n${row.quoteCreatedDate}`
+  }));
         this.fullRows = [...this.rows];
 
         this.totalElements = response.totalElements || 0;
@@ -236,6 +245,7 @@ private updateSearchFields(): void {
     }
   };
 
+  console.log("Search Payload:", payload);
   this.quoteApprovalService.search(payload).subscribe({
 
     next: (response) => {
@@ -244,7 +254,12 @@ private updateSearchFields(): void {
 
       if (response?.status && response?.data) {
 
-        this.rows = response.data.content || [];
+        // this.rows = response.data.content || [];
+          this.rows = (response.data.content || []).map((row: any) => ({
+    ...row,
+    quoteDisplay: `${row.quoteNumber}\n\n${row.quoteCreatedDate}`
+  }));
+
         this.fullRows = [...this.rows];
 
         this.totalElements = response.totalElements || 0;
@@ -306,40 +321,78 @@ showViewPopup = false;
 marginAnalysisData: any = null;
 
 
-approve(row: any): void {
+approve(row:any):void {
 
-  const payload: any = {
-    quoteRevisionId: row.quoteRevisionId,
-    action: 'APPROVE'
-  };
+ const payload:any={
+   quoteRevisionId: row.quoteRevisionId,
+   action:'APPROVE'
+ };
 
-  switch (row.currentStage) {
 
-    case 'RBH':
-      payload.quoteRemarks1 = this.remarks;
-      break;
+ switch(row.currentStage){
 
-    case 'NSM':
-      payload.quoteRemarks2 = this.remarks;
-      break;
+ case 'RBH':
+   payload.quoteRemarks1=this.remarks;
+   break;
 
-    case 'CH':
-      payload.quoteRemarks3 = this.remarks;
-      break;
+ case 'NSM':
+   payload.quoteRemarks2=this.remarks;
+   break;
+
+ case 'CH':
+   payload.quoteRemarks3=this.remarks;
+   break;
+
+ }
+
+
+ this.quoteApprovalService.action(payload)
+ .subscribe({
+
+ next:(response)=>{
+
+
+   this.toastService.success(
+      response?.message || 'Approved successfully'
+   );
+
+
+   this.showApprovalPopup=false;
+   this.remarks='';
+
+
+   // keep row visible
+   this.refreshCurrentRow(row);
+
+
+ },
+
+
+ error:()=>{
+   this.toastService.error('Failed to approve quote.');
+ }
+
+ });
+
+}
+
+refreshCurrentRow(updatedRow:any):void {
+
+  const index = this.rows.findIndex(
+    x => x.quoteRevisionId === updatedRow.quoteRevisionId
+  );
+
+  if(index !== -1){
+
+    this.rows[index] = {
+      ...this.rows[index],
+      currentStage: updatedRow.currentStage,
+      canApprove:false
+    };
+
+    this.rows = [...this.rows];
+
   }
-
-  this.quoteApprovalService.action(payload).subscribe({
-
-    next: () => {
-
-      this.showApprovalPopup = false;
-      this.selectedQuote = null;
-      this.remarks = '';
-      this.loadQuotes();
-
-    }
-
-  });
 
 }
 
@@ -369,15 +422,24 @@ reject(row: any): void {
 
   this.quoteApprovalService.action(payload).subscribe({
 
-    next: () => {
+   next: (response) => {
 
-      this.showApprovalPopup = false;
-      this.remarks = '';
-          this.selectedQuote = null;
-      this.loadQuotes();
+  this.showApprovalPopup = false;
+  this.selectedQuote = null;
+  this.remarks = '';
 
-    }
+  this.toastService.success(
+      response?.message || 'Quote has been rejected successfully.'
+  );
 
+  this.loadQuotes();
+
+},
+error: () => {
+
+  this.toastService.error('Failed to reject quote.');
+
+}
   });
 
 }
@@ -449,53 +511,111 @@ onView(row: any): void {
       });
 
 }
+// onEdit(row: any): void {
 
+//   console.log("Edit clicked:", row);
+
+//   this.selectedQuote = row;
+//   this.approvalHistory = [];
+
+//   if (row.canApprove) {
+
+//     this.remarks = '';
+//     this.showApprovalPopup = true;
+//     this.showHistoryPopup = false;
+
+//   } else {
+
+//     this.showApprovalPopup = false;
+
+//     console.log("ROW DATA:", row);
+//     console.log("REVISION ID:", row.quoteRevisionId);
+
+//     this.quoteApprovalService.getApprovalHistory(row.quoteRevisionId)
+//       .subscribe({
+
+//         next: (res: any) => {
+
+//           console.log("History API Response:", res);
+
+//           if (res?.status && Array.isArray(res.data)) {
+
+//             this.approvalHistory = res.data;
+
+//             console.log("Approval History:", this.approvalHistory);
+
+//           } else {
+
+//             this.approvalHistory = [];
+//             console.warn("History is empty.");
+
+//           }
+
+//           // Open history popup AFTER data is loaded
+//           this.showHistoryPopup = true;
+
+//         },
+
+//         error: (err) => {
+
+//           console.error("History API Error:", err);
+
+//           this.toastService.error("Unable to load approval history.");
+
+//         }
+
+//       });
+
+//   }
+
+// }
 
 onEdit(row: any): void {
 
-  this.selectedQuote = row;
+  console.log("Edit clicked:", row);
+
+  this.selectedQuote = {
+    ...row,
+    opportunityDetails: 
+      row.opportunityDetails || 
+      row.opportunity || 
+      row.opportunityDetail
+  };
+
+  console.log("Popup Selected Quote:", this.selectedQuote);
+
+  this.approvalHistory = [];
 
   if (row.canApprove) {
 
     this.remarks = '';
     this.showApprovalPopup = true;
-    return;
+    this.showHistoryPopup = false;
+
+  } else {
+
+    this.showApprovalPopup = false;
+
+    this.quoteApprovalService
+      .getApprovalHistory(row.quoteRevisionId)
+      .subscribe({
+
+        next:(res:any)=>{
+
+          this.approvalHistory = res.data || [];
+          this.showHistoryPopup = true;
+
+        },
+
+        error:(err)=>{
+
+          console.error(err);
+
+        }
+
+      });
 
   }
-
-  this.approvalHistory = [];
-
-  // RBH
-  if (row.quoteRemarks1) {
-    this.approvalHistory.push({
-      level: row.rbhName || 'RBH',
-      remarks: row.quoteRemarks1,
-      onDate: row.quoteCreatedTime,
-      status: 'Approved'
-    });
-  }
-
-  // NSM
-  if (row.quoteRemarks2) {
-    this.approvalHistory.push({
-      level: row.nsmName || 'NSM',
-      remarks: row.quoteRemarks2,
-      onDate: row.quoteCreatedTime,
-      status: 'Approved'
-    });
-  }
-
-  // CH
-  if (row.quoteRemarks3) {
-    this.approvalHistory.push({
-      level: row.chName || 'CH',
-      remarks: row.quoteRemarks3,
-      onDate: row.quoteCreatedTime,
-      status: 'Approved'
-    });
-  }
-
-  this.showHistoryPopup = true;
 }
 
 

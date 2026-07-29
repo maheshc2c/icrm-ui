@@ -10,17 +10,25 @@
 <app-data-table
   [columns]="columns"
   [rows]="rows"
+
+  [totalElements]="totalElements"
+  [totalPages]="totalPages"
+  [currentPage]="currentPage + 1"
+  [pageSize]="pageSize"
+
   [showAdd]="false"
   [showDownload]="false"
- [showEdit]="false"
-[showApprove]="true"
-(approveRow)="approveContractNote($event)"
-[showReject]="true"
-(rejectRow)="rejectContractNote($event)"
+  [showEdit]="false"
+  [showApprove]="true"
+  (approveRow)="approveContractNote($event)"
+  [showReject]="false"
   [showDelete]="false"
-    [showReset]="true"
+  [showReset]="true"
+  (downloadRow)="onDownloadRow($event)"
   (reset)="onReset()"
   [searchFields]="searchFields"
-  (search)="onSearch($event)"
+  (searchChange)="onSearch($event)"
   (editRow)="onEdit($event)">
 </app-data-table>
+
+<!-- (rejectRow)="rejectContractNote($event)" -->

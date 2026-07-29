@@ -15,6 +15,7 @@
   [showAdd]="true"
   [showReset]="true"
   [showDelete]="false"
+  tableClass="open-leads-table"
   [showPagination]="true"
   [totalElements]="totalElements"
   [currentPage]="currentPage"
@@ -24,5 +25,7 @@
   (reset)="onReset()"
   (download)="onDownload()"
   (add)="onAdd()"
+  tableClass="open-leads-table"
   (editRow)="onEdit($event)">
+  
 </app-data-table>
