@@ -305,6 +305,10 @@ export class EditLeads implements OnInit {
     });
   }
 
+  goBack(): void {
+    this.router.navigate(['/Approve-Leads']);
+  }
+
   saveLead(callback?: () => void): void {
     const { valid, firstInvalidField } = this.validateForm();
     if (!valid) {
