@@ -5,33 +5,33 @@
   box-sizing: border-box;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
-
+ 
 body {
   background: #f5f7fa;
   color: #333;
   font-size: 14px;
 }
-
+ 
 /* ================= MAIN CONTENT ================= */
 .admin-marketing-content {
   padding: 20px 30px;
   margin-left: 260px;
   min-height: 100vh;
 }
-
+ 
 /* ================= WIZARD ================= */
 .wizard-tabs-container {
   background: #fff;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0,0,0,.1);
 }
-
+ 
 .wizard-navigation-bar {
   display: flex;
   background: #f1f1f1;
   border-bottom: 1px solid #ddd;
 }
-
+ 
 .wizard-step-item {
   flex: 1;
   padding: 14px;
@@ -41,21 +41,21 @@ body {
   font-weight: 500;
   clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%);
 }
-
+ 
 .wizard-step-item:last-child {
   clip-path: none;
 }
-
+ 
 .wizard-step-item.step-active {
   background: #4f46e5;
   color: #fff;
 }
-
+ 
 /* ================= TAB CONTENT ================= */
 .tab-content-wrapper {
   padding: 25px;
 }
-
+ 
 /* ================= PAGE HEADER ================= */
 .page-header-wrapper {
   display: flex;
@@ -65,17 +65,17 @@ body {
   padding-bottom: 12px;
   margin-bottom: 25px;
 }
-
+ 
 .page-heading-text {
   font-size: 20px;
   font-weight: 600;
 }
-
+ 
 .header-action-buttons {
   display: flex;
   gap: 10px;
 }
-
+ 
 /* ================= BUTTONS ================= */
 .action-btn {
   width: 38px;
@@ -85,45 +85,45 @@ body {
   cursor: pointer;
   font-size: 16px;
 }
-
+ 
 .btn-info-primary,
 .btn-reroute-action {
   background: #f5eaff;
   color: #6d28d9;
 }
-
+ 
 .btn-drop-danger {
   background: #ffebee;
   color: #d32f2f;
 }
-
+ 
 /* ================= FORM ================= */
 .form-details-section {
   border: 1px solid #e5e7eb;
   padding: 25px;
   border-radius: 8px;
 }
-
+ 
 .detail-form-row {
   display: grid;
   grid-template-columns: 220px 1fr;
   gap: 20px;
   padding: 12px 0;
 }
-
+ 
 .form-field-label {
   font-weight: 500;
 }
-
+ 
 .required-mark {
   color: red;
 }
-
+ 
 .form-field-input-wrapper {
   display: flex;
   gap: 10px;
 }
-
+ 
 .detail-input-field,
 .detail-select-field,
 .detail-textarea-field {
@@ -132,7 +132,7 @@ body {
   border-radius: 6px;
   border: 1px solid #d1d5db;
 }
-
+ 
 .icon-button-small {
   width: 32px;
   height: 32px;
@@ -140,7 +140,7 @@ body {
   border: 1px solid #d1d5db;
   cursor: pointer;
 }
-
+ 
 /* ================= TABLE ================= */
 .opportunities-data-table,
 .timeline-table,
@@ -151,7 +151,7 @@ body {
   align-items: center;
   text-align: center;
 }
-
+ 
 .opportunities-data-table th,
 .opportunities-data-table td,
 .timeline-table th,
@@ -163,22 +163,22 @@ body {
   padding: 14px;
   border-bottom: 1px solid #e5e7eb;
 }
-
+ 
 .timeline-table thead,
 .installation-table thead {
   background: #ffd6d1;
 }
-
+ 
 .quote-table thead {
   background: #f1f5f9;
 }
-
+ 
 .installation-table .no-data td {
   text-align: center;
   font-style: italic;
   color: #6b7280;
 }
-
+ 
 /* ================= ACTION BUTTONS ================= */
 .btn-action {
   padding: 6px 10px;
@@ -189,26 +189,38 @@ body {
   transition: all 0.2s;
   margin-right: 4px;
 }
-
+ 
 .btn-edit {
   background: #5b9bd5;
   color: #fff;
 }
-
+ 
 .btn-edit:hover {
   background: #4a8cc2;
   transform: scale(1.05);
 }
-
+ 
 /* ================= RESPONSIVE ================= */
 @media (max-width: 1024px) {
   .admin-marketing-content {
     margin-left: 0;
   }
 }
-
+ 
 @media (max-width: 768px) {
   .detail-form-row {
     grid-template-columns: 1fr;
   }
+}
+
+::ng-deep .open-leads-table th:last-child,
+::ng-deep .open-leads-table td:last-child{
+    width:180px;
+}
+
+::ng-deep .open-leads-table th:nth-child(7),
+::ng-deep .open-leads-table td:nth-child(7){
+
+    min-width:420px;
+    width:420px;
 }

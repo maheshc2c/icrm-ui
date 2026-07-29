@@ -131,4 +131,18 @@ export class SegmentService {
       })
     );
   }
+
+  getCompetitorsByCategoryId(categoryId: number): Observable<any[]> {
+    return this.http.get<any>(
+      `${this.productUrl}/competitors/category/${categoryId}`,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => {
+        if (Array.isArray(res)) return res;
+        if (res && Array.isArray(res.content)) return res.content;
+        if (res && Array.isArray(res.data)) return res.data;
+        return [];
+      })
+    );
+  }
 }
