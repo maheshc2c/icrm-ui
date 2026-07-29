@@ -11,17 +11,24 @@
   [rows]="rows"
   [searchFields]="searchFields"
   [showImport]="false"
-  [showAdd]="true"
-  [showStatusToggle]="true"
+  [showAdd]="isAdminMarketing"
+  [showEdit]="isAdminMarketing"
+  [showDelete]="isAdminMarketing"
+  [showStatusToggle]="isAdminMarketing"
+  [showActions]="isAdminMarketing"
   [statusField]="'specialityStatus'"
   [trackByField]="'id'"
+  [totalElements]="totalElements"
+  [currentPage]="currentPage"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
   (searchChange)="onSearchChange($event)"
-  (search)="onSearch()"
+  (search)="onSearch($event)"
   (download)="onDownload()"
   (add)="onAdd()"
   (editRow)="onEdit($event)"
-  (deleteRow)="onDelete($event)">
+  (deleteRow)="onDelete($event)"
+  (downloadRow)="onDownloadDocument($event)"
+  [showReset]="true"
+  (reset)="onReset()">
 </app-data-table>
-
-
-

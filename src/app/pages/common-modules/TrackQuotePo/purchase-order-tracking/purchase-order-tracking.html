@@ -1,0 +1,32 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  title="Purchase Order Tracking"
+  [columns]="columns"
+  [rows]="filteredRows"
+  [showAdd]="false"
+  [searchFields]="searchFields"
+  [showImport]="false"
+  [showReset]="true"
+  [showPagination]="true"
+  [totalElements]="totalElements"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage"
+  [totalPages]="totalPages"
+  [showStatusToggle]="false"
+  [showActions]="false"
+  [trackByField]="'poId'"
+  (searchChange)="onSearchChange($event)"
+  (add)="onAdd()"
+  (editRow)="onEdit($event)"
+  (deleteRow)="onDelete($event)"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
+  (reset)="onReset()">
+</app-data-table>

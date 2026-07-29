@@ -14,7 +14,7 @@ export class Popup implements OnInit {
   @Input() isVisible: boolean = false;
   @Input() title: string = '';
   @Input() message: string = '';
-  @Input() type: 'approve' | 'reject' | 'info' = 'info';
+  @Input() type: 'approve' | 'reject' | 'info' | 'delete' = 'info';
   @Input() confirmButtonText: string = 'Confirm';
   @Input() cancelButtonText: string = 'Cancel';
 
@@ -27,7 +27,7 @@ export class Popup implements OnInit {
   globalMessage = '';
   globalConfirmText = '';
   globalCancelText = '';
-  globalType: 'approve' | 'reject' | 'info' = 'info';
+  globalType: 'approve' | 'reject' | 'info' | 'delete' = 'info';
   private resolveFn?: (result: boolean) => void;
 
   constructor(private confirmService: ConfirmDialogService) {}
@@ -43,7 +43,9 @@ export class Popup implements OnInit {
         
         // Auto-detect aesthetic type for global mode
         const text = this.globalConfirmText.toLowerCase() + this.globalTitle.toLowerCase();
-        if (text.includes('deactivate') || text.includes('delete') || text.includes('reject')) {
+        if (text.includes('delete') || text.includes('deletion')) {
+          this.globalType = 'delete';
+        } else if (text.includes('deactivate') || text.includes('reject')) {
           this.globalType = 'reject';
         } else if (text.includes('activate') || text.includes('approve')) {
           this.globalType = 'approve';

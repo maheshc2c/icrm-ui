@@ -103,15 +103,15 @@ export class AddUsersComponent implements OnInit {
   /* ================= LOAD DROPDOWN OPTIONS ================= */
   private loadDropdownOptions(): void {
     forkJoin({
-      roles: this.userService.getRoles(),
-      branches: this.userService.getBranches(),
-      categories: this.userService.getCategories(),
-      worlds: this.userService.getWorlds(),
-      allGroups: this.userService.getAllGroups(),
+      roles: this.userService.getRoles().pipe(catchError(() => of([]))),
+      branches: this.userService.getBranches().pipe(catchError(() => of([]))),
+      categories: this.userService.getCategories().pipe(catchError(() => of([]))),
+      worlds: this.userService.getWorlds().pipe(catchError(() => of([]))),
+      allGroups: this.userService.getAllGroups().pipe(catchError(() => of([]))),
       companies: this.userService.getCompanies().pipe(catchError(() => of([])))
     }).subscribe({
       next: ({ roles, branches, categories, worlds, allGroups, companies }) => {
-        this.roles = roles.filter((r: string) => r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
+        this.roles = (roles || []).filter((r: any) => typeof r === 'string' && r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
         this.categories = categories;
         
         let groupsArray: any[] = [];
@@ -148,7 +148,9 @@ export class AddUsersComponent implements OnInit {
           error: (err: any) => console.error('Failed to load geos', err)
         });
       },
-      error: (err) => console.error('Failed to load dropdown options', err)
+      error: (err) => {
+        console.error('Failed to load dropdown options', err);
+      }
     });
   }
 

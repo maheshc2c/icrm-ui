@@ -103,91 +103,97 @@ export class Leadservice {
 
   /* ================= GET CUSTOMERS DROPDOWN ================= */
   getCustomers(): Observable<any[]> {
-    console.log('📡 Calling: /salesengineer/customer/dropdown');
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/customer/dropdown`, {
+    console.log('📡 Calling: /leads/customer-dropdown');
+    return this.http.get<any[]>(`${this.baseUrl}/leads/customer-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET CONTACT PERSONS DROPDOWN ================= */
   getContacts(): Observable<any[]> {
-    console.log('📡 Calling: /salesengineer/contacts/dropdown');
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/contacts/dropdown`, {
+    console.log('📡 Calling: /leads/contacts-dropdown');
+    return this.http.get<any[]>(`${this.baseUrl}/leads/contacts-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET RELATIONSHIPS (RAPPORT) DROPDOWN ================= */
   getRelationships(): Observable<any[]> {
-    console.log('📡 Calling: /salesengineer/relationships/dropdown');
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/relationships/dropdown`, {
+    console.log('📡 Calling: /leads/relationships-dropdown');
+    return this.http.get<any[]>(`${this.baseUrl}/leads/relationships-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET SITE READINESS DROPDOWN ================= */
   getSiteReadiness(): Observable<any[]> {
-    console.log('📡 Calling: /salesengineer/site-readiness/dropdown');
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/site-readiness/dropdown`, {
+    console.log('📡 Calling: /leads/site-readiness-dropdown');
+    return this.http.get<any[]>(`${this.baseUrl}/leads/site-readiness-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET DISTRIBUTORS DROPDOWN ================= */
   getDistributors(): Observable<any[]> {
-    console.log('📡 Calling: /salesengineer/distributors/dropdown');
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/distributors/dropdown`, {
+    console.log('📡 Calling: /leads/distributors-dropdown');
+    return this.http.get<any[]>(`${this.baseUrl}/leads/distributors-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET SOURCES (LEAD SOURCE) ================= */
   getSources(): Observable<any[]> {
-    console.log('📡 Calling: /salesengineer/sourcelead-dropdown');
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/sourcelead-dropdown`, {
+    console.log('📡 Calling: /leads/sourcelead-dropdown');
+    return this.http.get<any[]>(`${this.baseUrl}/leads/sourcelead-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET CAMPAIGNS ================= */
   getCampaigns(): Observable<any[]> {
-    console.log('📡 Calling: /adminMarketing/view-campaign');
-    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/view-campaign`, {
+    console.log('📡 Calling: /leads/campaign-dropdown');
+    return this.http.get<any[]>(`${this.baseUrl}/leads/campaign-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
-  /* ================= CREATE LEAD ================= */
-  createLead(lead: LeadPayload): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/salesengineer/assign-lead`, lead, {
+  /* ================= LEAD CREATION ================= */
+  createLead(lead: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/leads`, lead, {
       headers: this.getAuthHeaders()
     });
+  }
+
+  /* ================= SAVE QUOTE ================= */
+  saveQuote(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/quote/create/quote`, payload, { headers: this.getAuthHeaders() });
   }
 
   /* ================= GET OPPORTUNITIES BY LEAD ID ================= */
   getOpportunitiesByLeadId(leadId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/opportunityTable/${leadId}`, {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/by-lead/${leadId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= CREATE OPPORTUNITY ================= */
   createOpportunity(leadId: number, opportunityDto: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/salesengineer/leadOopCreate/${leadId}`, opportunityDto, {
+    opportunityDto.leadId = leadId;
+    return this.http.post<any>(`${this.baseUrl}/opportunity/create/opportunity`, opportunityDto, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET OPPORTUNITY BY ID ================= */
   getOpportunityById(oppId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/salesengineer/opportunity/${oppId}`, {
+    return this.http.get<any>(`${this.baseUrl}/opportunity/opportunity/${oppId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= UPDATE OPPORTUNITY ================= */
   updateOpportunity(oppId: number, opportunityDto: any): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/salesengineer/update-opportunity/${oppId}`, opportunityDto, {
+    return this.http.put<any>(`${this.baseUrl}/opportunity/update-opportunity/${oppId}`, opportunityDto, {
       headers: this.getAuthHeaders()
     });
   }
@@ -218,42 +224,49 @@ export class Leadservice {
 
   /* ================= GET CATEGORIES DROPDOWN ================= */
   getCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/categories-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/categories-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET PRODUCT SEGMENTS DROPDOWN ================= */
   getSegmentsByCategory(categoryId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/groups-by-category/${categoryId}`, {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/groups-by-category/${categoryId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET PRODUCTS BY SEGMENT ================= */
   getProductsBySegment(groupId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/products-by-group/${groupId}`, {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/products-by-group/${groupId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET FUNDS DROPDOWN ================= */
   getFunds(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/funds-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/funds-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET STATUS DROPDOWN ================= */
   getStatus(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/status-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/status-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= GET STAGES DROPDOWN ================= */
   getStages(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/stage-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/stage-dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= GET DEALERS DROPDOWN ================= */
+  getDealers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/quote/dealers`, {
       headers: this.getAuthHeaders()
     });
   }
@@ -269,6 +282,44 @@ export class Leadservice {
   getSalesUsers(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/salesengineer/sales-users/dropdown`, {
       headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= QUOTE DROPDOWNS & LIST ================= */
+  getQuotesByLead(leadId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/quote/quotes-view?leadId=${leadId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  createContractNote(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/contractnote`, payload, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getContractNoteDetails(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/contractnote/details`, payload, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getBillingOptions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/billing`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getCompanyOptions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/company`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  downloadQuotePdf(quoteId: string | number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/quote/quotes/${quoteId}/pdf`, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
     });
   }
 }

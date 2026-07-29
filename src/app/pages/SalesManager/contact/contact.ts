@@ -5,11 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { SearchFieldConfig } from '../../../shared/search/search';
 import { Contactservice } from '../../../service/contactservice';
+import { Header } from '../../../layout/header/header';
+import { Sidebar } from '../../../layout/sidebar/sidebar';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [DataTable, CommonModule, FormsModule],
+  imports: [DataTable, CommonModule, FormsModule, Header, Sidebar],
   templateUrl: './contact.html',
   styleUrls: ['./contact.css']
 })

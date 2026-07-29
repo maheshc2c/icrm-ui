@@ -116,11 +116,13 @@ export class Addcustomer implements OnInit {
           this.installedBases = JSON.parse(JSON.stringify(stateData.customerInstalledBaseDTO));
         }
 
+        const customerCodeVal = this.getCustomerCodeValue(stateData);
         this.formInitialData = {
           ...stateData,
-          customerCategory: stateData.customerCategory?.customerCategoryName,
-          subCategory: stateData.subCategory?.subcategoryName,
-          locations: stateData.locations?.[0]?.locationName
+          customerName1: customerCodeVal,
+          customerCategory: stateData.customerCategory?.customerCategoryName || stateData.customerCategoryName,
+          subCategory: stateData.subCategory?.subcategoryName || stateData.subcategoryName,
+          locations: stateData.locations?.[0]?.locationName || stateData.cityName?.[0]
         };
 
         // Load dropdowns silently in background
@@ -150,7 +152,21 @@ export class Addcustomer implements OnInit {
       this.loadDropdowns();
     }
   }
- 
+
+  private getCustomerCodeValue(c: any): string {
+    if (!c) return '';
+    if (c.customerName1 && String(c.customerName1).trim()) return String(c.customerName1).trim();
+    if (c.customerCode && String(c.customerCode).trim()) return String(c.customerCode).trim();
+    if (c.name1 && String(c.name1).trim()) return String(c.name1).trim();
+    if (c.sapCode && String(c.sapCode).trim()) return String(c.sapCode).trim();
+    if (c.code && String(c.code).trim()) return String(c.code).trim();
+    const id = c.customerId || c.id;
+    if (id) {
+      return 'CUST-' + String(id).padStart(4, '0');
+    }
+    return '';
+  }
+
   /* ================= DROPDOWNS ================= */
   private categoryMap: Map<string, number> = new Map();
 
@@ -233,7 +249,7 @@ export class Addcustomer implements OnInit {
       // dynamicLoad handles the search now!
     }
   }
- 
+
   /* ================= LOAD CUSTOMER (EDIT) ================= */
   private loadCustomerById(id: number): void {
     // Slow path: fallback
@@ -242,7 +258,7 @@ export class Addcustomer implements OnInit {
         const fullCustomer = customers.find(c => 
           (c.customer?.customerId === id) || (c.customerId === id)
         );
- 
+
         if (!fullCustomer) {
           this.toastService.error('Customer not found');
           this.router.navigate(['/customer']);
@@ -279,8 +295,10 @@ export class Addcustomer implements OnInit {
       }
     }
 
+    const customerCodeVal = this.getCustomerCodeValue(customer);
     this.formInitialData = {
       ...customer,
+      customerName1: customerCodeVal,
       customerCategory: customer.customerCategory?.customerCategoryName || customer.customerCategoryName,
       subCategory: subCategoryName,
       locations: customer.locations?.[0]?.locationName || customer.cityName?.[0]
