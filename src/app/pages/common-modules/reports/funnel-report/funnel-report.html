@@ -1,0 +1,153 @@
+
+<app-pageheader
+  title="Funnel Report"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<div class="funnel-page-content">
+
+  <!-- ── Filter Bar ──────────────────────────────────────────────────── -->
+  <div class="funnel-filter-bar">
+
+    <!-- User selector (Searchable Dropdown) -->
+    <div class="filter-control custom-dropdown-container">
+      <div class="dropdown-trigger" [class.active]="dropdownOpen" (click)="toggleDropdown()">
+        <span class="trigger-text">{{ selectedUserName }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      
+      <div class="dropdown-panel" *ngIf="dropdownOpen">
+        <div class="search-box-wrapper">
+          <input type="text" class="dropdown-search-input" placeholder="Search user..." [(ngModel)]="searchQuery" (click)="$event.stopPropagation()">
+        </div>
+        <ul class="options-list">
+          <li class="option-item" (click)="selectUser(null)">Select Users</li>
+          <li class="option-item" *ngFor="let u of filteredUsers" (click)="selectUser(u.id)">
+            {{ u.label }}
+          </li>
+          <li class="no-results" *ngIf="filteredUsers.length === 0">No users found</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right-aligned filters -->
+    <div style="display: flex; gap: 12px; align-items: center; margin-left: auto;">
+      <!-- Period selector (week / month / quarter – no dropdown for year) -->
+      <div class="filter-control" *ngIf="selectedViewTime !== 'y'">
+        <!-- Week dropdown -->
+        <select
+          *ngIf="selectedViewTime === 'w'"
+          id="weekSelect"
+          class="filter-select"
+          [(ngModel)]="selectedWeek"
+          (ngModelChange)="onPeriodChange()">
+          <option *ngFor="let w of weekOptions" [ngValue]="w">{{ w.label }}</option>
+        </select>
+
+        <!-- Month dropdown -->
+        <select
+          *ngIf="selectedViewTime === 'm'"
+          id="monthSelect"
+          class="filter-select"
+          [(ngModel)]="selectedMonth"
+          (ngModelChange)="onPeriodChange()">
+          <option *ngFor="let m of monthOptions" [ngValue]="m">{{ m.label }}</option>
+        </select>
+
+        <!-- Quarter dropdown -->
+        <select
+          *ngIf="selectedViewTime === 'q'"
+          id="quarterSelect"
+          class="filter-select"
+          [(ngModel)]="selectedQuarter"
+          (ngModelChange)="onPeriodChange()">
+          <option *ngFor="let q of quarterOptions" [ngValue]="q">{{ q.label }}</option>
+        </select>
+      </div>
+
+      <!-- View-time tab buttons -->
+      <div class="view-time-tabs">
+        <button
+          id="btnWeek"
+          class="tab-btn"
+          [class.active]="selectedViewTime === 'w'"
+          (click)="selectViewTime('w')">Week</button>
+        <button
+          id="btnMonth"
+          class="tab-btn"
+          [class.active]="selectedViewTime === 'm'"
+          (click)="selectViewTime('m')">Month</button>
+        <button
+          id="btnQuarter"
+          class="tab-btn"
+          [class.active]="selectedViewTime === 'q'"
+          (click)="selectViewTime('q')">Quarter</button>
+        <button
+          id="btnYear"
+          class="tab-btn"
+          [class.active]="selectedViewTime === 'y'"
+          (click)="selectViewTime('y')">Year</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Chart Card ──────────────────────────────────────────────────── -->
+  <div class="funnel-chart-card">
+
+    <!-- Card header: title + legend + hamburger icon -->
+    <div class="chart-card-header">
+      <h3 class="chart-title">
+        <button *ngIf="currentLevel > 1" class="back-btn" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i> Back
+        </button>
+        {{ currentLevel > 1 ? chartTitleLevel : chartTitle }}
+      </h3>
+    </div>
+
+    <!-- Loading indicator -->
+    <div class="chart-loading" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <span>Loading chart data…</span>
+    </div>
+
+    <!-- Error state -->
+    <div class="chart-error" *ngIf="hasError && !isLoading">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>Failed to load data. Please try again.</span>
+      <button class="retry-btn" (click)="loadReport()">Retry</button>
+    </div>
+
+    <!-- Chart container (Levels 1, 2, 3) -->
+    <div
+      *ngIf="currentLevel < 4"
+      id="funnel-chart-container"
+      class="chart-container"
+      [class.hidden]="isLoading">
+    </div>
+
+    <!-- Data Table (Level 4) -->
+    <div class="data-table-container" *ngIf="currentLevel === 4 && !isLoading">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Lead Code</th>
+            <th>Customer Name</th>
+            <th>Stage</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of tableData">
+            <td>{{ row.lead_code }}</td>
+            <td>{{ row.customer_name }}</td>
+            <td>{{ row.status_name }}</td>
+            <td>{{ row.opportunity_value }}</td>
+          </tr>
+          <tr *ngIf="tableData.length === 0">
+            <td colspan="4" class="text-center">No deals found for this selection.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+

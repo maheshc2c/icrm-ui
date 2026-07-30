@@ -162,9 +162,8 @@ export class ProductService {
       catchError(() => of([]))
     );
   }
- 
   // --- METHODS FOR DYNAMIC DROPDOWNS ---
- 
+
   getCategoriesFull(): Observable<any[]> {
     return this.http.get<any>(`${this.productApiUrl}/category`, {
       headers: this.getAuthHeaders()
@@ -182,7 +181,7 @@ export class ProductService {
       })
     );
   }
- 
+
   getGroupsByCategoryIdFull(categoryId: number): Observable<any[]> {
     return this.http.get<any>(`${this.productApiUrl}/group?name=`, {
       headers: this.getAuthHeaders()
@@ -200,7 +199,7 @@ export class ProductService {
       })
     );
   }
- 
+
   getProductTypesFull(): Observable<any[]> {
     return this.http.get<any>(`${this.productApiUrl}/types`, {
       headers: this.getAuthHeaders()
@@ -218,7 +217,7 @@ export class ProductService {
       })
     );
   }
- 
+
   getSubCategoriesFull(segmentName?: string): Observable<any[]> {
     return this.http.post<any>(`${this.productApiUrl}/subcategory-search`, {
       pagination: { pageNumber: 0, pageSize: 1000, sortBy: "subCategoryId", sortOrder: "ASC" }
@@ -245,7 +244,7 @@ export class ProductService {
       })
     );
   }
- 
+
   searchGroups(categoryName: string): Observable<any[]> {
     return this.http.get<any>(`${this.productApiUrl}/group?name=`, {
       headers: this.getAuthHeaders()

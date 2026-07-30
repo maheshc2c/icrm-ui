@@ -33,11 +33,15 @@ export class ChannelPartner implements OnInit {
   ];
 
   columns = [
+
     { header: 'Name', field: 'name' },
-    { header: 'City', field: 'city' },
-    { header: 'Bank Name', field: 'bankName' },
-    { header: 'IFSC Code', field: 'ifscCode' },
-    { header: 'Status', field: 'status' }
+  { header: 'Beneficiary', field: 'benificiaryName' },
+  { header: 'City', field: 'city' }
+    // { header: 'Name', field: 'name' },
+    // { header: 'City', field: 'city' },
+    // { header: 'Bank Name', field: 'bankName' },
+    // { header: 'IFSC Code', field: 'ifscCode' },
+    // { header: 'Status', field: 'status' }
   ];
 
   rows: any[] = [];
@@ -45,27 +49,52 @@ export class ChannelPartner implements OnInit {
 
   ngOnInit(): void {
     this.loadChannelPartners();
+    // this.loadChannelPartners(event.pageIndex, event.pageSize);
   }
 
-  private loadChannelPartners() {
-    this.adminservice.getChannelPartners().subscribe({
+
+  pageNumber = 0;
+pageSize = 10;
+totalPages = 0;
+totalElements = 0;
+
+ private loadChannelPartners(
+  page: number = 0,
+  size: number = 10
+) {
+
+  this.adminservice.searchChannelPartners(null, page, size)
+    .subscribe({
+
       next: (res: any) => {
-        const partners = Array.isArray(res) ? res : [res];
+
+        const partners = res.content;
+
         this.fullRows = partners;
 
-        this.rows = partners.map((p, i) => ({
-          sno: i + 1,
-          channelPartnerId: Number(p.channelPartnerId),
+        this.rows = partners.map((p: any, i: number) => ({
+          sno: page * size + i + 1,
+          channelPartnerId: p.channelPartnerId,
           name: p.name,
           city: p.city,
+          benificiaryName: p.benificiaryName,
           bankName: p.bankName,
           ifscCode: p.ifscCode,
-          status: Number(p.status)
+          status: p.status
         }));
+
+        // Save pagination details
+        this.totalElements = res.totalElements;
+        this.totalPages = res.totalPages;
+        this.pageNumber = res.number;
+        this.pageSize = res.size;
+
       },
-      error: (err) => console.error('Failed to load channel partners', err)
+
+      error: err => console.error(err)
+
     });
-  }
+}
 
   onAdd() {
     this.router.navigate(['/channelpartner/add']);
@@ -76,35 +105,42 @@ export class ChannelPartner implements OnInit {
   }
 
   onDelete(row: any) {
-    const id = Number(row?.channelPartnerId);
-    if (!id) return;
 
-    const isActive = Number(row.status) === 1;
-    const apiCall = isActive
-      ? this.adminservice.deactivateChannelPartners(id)
-      : this.adminservice.activateChannelPartners(id);
+  const status = row.status == 1 ? 0 : 1;
 
-    apiCall.subscribe({
-      next: () => this.loadChannelPartners(),
-      error: (err) => console.error('Status update failed', err)
-    });
-  }
+  this.adminservice
+      .changeChannelPartnerStatus(row.channelPartnerId, status)
+      .subscribe({
+
+        next: () => this.loadChannelPartners(),
+
+        error: err => console.error(err)
+
+      });
+
+}
 
   onImport() {
-    if (!this.fullRows.length) {
-      alert('No data to download');
-      return;
-    }
 
-    this.adminservice.downloadChannelExcel(this.fullRows).subscribe(blob => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'ChannelPartners.xlsx';
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
-  }
+  this.adminservice
+      .downloadChannelPartners('')
+      .subscribe(blob => {
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+
+        a.href = url;
+
+        a.download = 'channel_partner.xlsx';
+
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+
+      });
+
+}
 
   searchFields: SearchFieldConfig[] = [
     {
@@ -116,21 +152,39 @@ export class ChannelPartner implements OnInit {
   ];
 
   onSearch(keyword: string) {
-    if (!keyword?.trim()) {
-      this.loadChannelPartners();
-      return;
-    }
 
-    this.adminservice.searchChannelPartner(keyword).subscribe(results => {
-      this.rows = results.map((p, i) => ({
-        sno: i + 1,
-        channelPartnerId: Number(p.channelPartnerId),
-        name: p.name,
-        city: p.city,
-        bankName: p.bankName,
-        ifscCode: p.ifscCode,
-        status: Number(p.status)
-      }));
-    });
+  this.adminservice.searchChannelPartners(keyword).subscribe({
+
+  next: (res: any) => {
+
+    const partners = res.content;
+
+    this.fullRows = partners;
+
+    this.rows = partners.map((p: any, i: number) => ({
+      sno: i + 1,
+      channelPartnerId: p.channelPartnerId,
+      name: p.name,
+      city: p.city,
+      benificiaryName: p.benificiaryName,
+      bankName: p.bankName,
+      ifscCode: p.ifscCode,
+      status: p.status
+    }));
+
+    this.totalElements = res.totalElements;
+    this.totalPages = res.totalPages;
+    this.pageNumber = res.number;
+    this.pageSize = res.size;
   }
+
+});
+
+}
+
+
+onReset(){
+  this.pageNumber = 0;
+  this.loadChannelPartners(0, this.pageSize);
+}
 }

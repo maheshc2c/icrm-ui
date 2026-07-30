@@ -117,7 +117,24 @@ export class Userservice {
       `${this.baseUrl}/user/roles`,
       { headers: this.getAuthHeaders() }
     ).pipe(
-      map(res => res.map(r => r.name))
+      map(res => {
+        if (!res) return [];
+        let items: any[] = [];
+        if (Array.isArray(res)) {
+          items = res;
+        } else if (Array.isArray((res as any).data)) {
+          items = (res as any).data;
+        } else if (Array.isArray((res as any).content)) {
+          items = (res as any).content;
+        }
+        return items
+          .map(r => typeof r === 'string' ? r : (r?.roleName || r?.name || r?.role || ''))
+          .filter(name => !!name);
+      }),
+      catchError(err => {
+        console.error('Failed to fetch roles from API server:', err);
+        return of([]);
+      })
     );
   }
 
@@ -133,7 +150,11 @@ export class Userservice {
       `${this.baseUrl}/user/branch`,
       { headers: this.getAuthHeaders() }
     ).pipe(
-      map(res => res.map(b => b.branchName))
+      map(res => {
+        if (!Array.isArray(res)) return [];
+        return res.map(b => typeof b === 'string' ? b : (b?.branchName || b?.name || '')).filter(Boolean);
+      }),
+      catchError(() => of([]))
     );
   }
 
@@ -142,14 +163,26 @@ export class Userservice {
       `${this.baseUrl}/user/company`,
       { headers: this.getAuthHeaders() }
     ).pipe(
-      map(res => res.map(c => c.companyName))
+      map(res => {
+        if (!Array.isArray(res)) return [];
+        return res.map(c => typeof c === 'string' ? c : (c?.companyName || c?.name || '')).filter(Boolean);
+      }),
+      catchError(() => of([]))
     );
   }
 
   getWorlds(): Observable<string[]> {
-    return this.http.get<string[]>(
+    return this.http.get<any>(
       `${this.baseUrl}/admin/worlds-list-admin`,
       { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => {
+        if (Array.isArray(res)) return res;
+        if (res && Array.isArray(res.data)) return res.data;
+        if (res && Array.isArray(res.content)) return res.content;
+        return [];
+      }),
+      catchError(() => of([]))
     );
   }
 
@@ -158,7 +191,11 @@ export class Userservice {
       `${this.baseUrl}/product/category`,
       { headers: this.getAuthHeaders() }
     ).pipe(
-      map(res => res.map(c => c.categoryName))
+      map(res => {
+        if (!Array.isArray(res)) return [];
+        return res.map(c => typeof c === 'string' ? c : (c?.categoryName || c?.name || '')).filter(Boolean);
+      }),
+      catchError(() => of([]))
     );
   }
 
@@ -167,10 +204,14 @@ export class Userservice {
     let url = `${this.baseUrl}/location/locations?territoryLevelId=${levelId}`;
     if (parentId != null) url += `&parentId=${parentId}`;
     return this.http.get<any[]>(url, { headers: this.getAuthHeaders() }).pipe(
-      map(res => res.map(loc => ({
-         locationId: loc.id,
-         locationName: loc.name
-      })))
+      map(res => {
+        if (!Array.isArray(res)) return [];
+        return res.map(loc => ({
+          locationId: loc.id,
+          locationName: loc.name
+        }));
+      }),
+      catchError(() => of([]))
     );
   }
 
@@ -179,6 +220,8 @@ export class Userservice {
     return this.http.get<any[]>(
       `${this.baseUrl}/product/group?name=`,
       { headers: this.getAuthHeaders() }
+    ).pipe(
+      catchError(() => of([]))
     );
   }
 

@@ -1,7 +1,6 @@
 <!-- MAIN -->
 <main class="content" [style.margin-left]="noMargin ? '0' : ''" [style.width]="noMargin ? '100%' : ''" [style.padding]="noMargin ? '0' : ''" [style.min-height]="noMargin ? 'auto' : ''" (click)="hostClick()">
 <div class="datatable-toolbar" *ngIf="showSearch || showImport || showAdd || showReset || showRefresh || showUpload || showDownload || showBulkUpload || showSubmit">
-
   @if (showSearch) {
     <app-search
       [fields]="searchFields"
@@ -30,7 +29,7 @@
     (download)="download.emit()">
   </app-button>
 </div> <!-- CLOSE datatable-toolbar -->
-
+ 
   <div class="content-wrapper">
     <div class="card">
       <div class="card-body">
@@ -74,7 +73,7 @@
                     @if (showSno) {
                       <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
                     }
-
+ 
                     <!-- DATA -->
                     @for (col of columns; track col) {
                       <td>
@@ -98,20 +97,20 @@
                             <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 8 || row.hasCNote)" [class.inactive]="((row.leadStatus !== undefined ? row.leadStatus : row.status) < 8 && !row.hasCNote)">C Note</span>
                           </div>
                         } @else if (col.field === 'editableQuantity') {
-                          <input type="text" 
-                            [value]="row[col.field]" 
+                          <input type="text"
+                            [value]="row[col.field]"
                             (change)="onQuantityChange(row, col.field, $any($event.target).value)"
                             style="width: 60px; text-align: center; color: #ef4444; font-weight: 500; border: 1px solid #ccc; border-radius: 4px; padding: 4px;">
                         } @else if (col.field === 'editableDiscount') {
                           <div style="display: flex; gap: 5px; align-items: center; justify-content: center;">
-                            <select 
+                            <select
                               [value]="row['discountType'] || 'in %'"
                               (change)="onDiscountChange(row, col.field, row[col.field], $any($event.target).value)"
                               style="padding: 4px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; background: #fff;">
                               <option value="in %">in %</option>
                               <option value="Flat">Flat</option>
                             </select>
-                            <input type="text" 
+                            <input type="text"
                               [value]="row[col.field]"
                               (change)="onDiscountChange(row, col.field, $any($event.target).value, row['discountType'] || 'in %')"
                               style="padding: 4px; border: 1px solid #ccc; border-radius: 4px; width: 60px; font-size: 12px;">
@@ -143,7 +142,7 @@
                         }
                       </td>
                     }
-
+ 
                     <!-- ACTIONS -->
                     @if (showActions) {
                       <td class="action-cell">
@@ -156,7 +155,6 @@
                               <i class="fas fa-check"></i>
                             </button>
                           }
-
                           @if (showReject && row.canApprove) {
                             <button
                               class="btn btn-sm btn-danger reject-btn"
@@ -165,7 +163,6 @@
                               <i class="fas fa-times"></i>
                             </button>
                           }
-
                           @if (showView) {
                             <button
                               class="btn btn-sm btn-info view-btn"
@@ -174,7 +171,6 @@
                               <i class="fas fa-eye"></i>
                             </button>
                           }
-
                           @if (showEdit && showEditButton) {
                             <button
                               class="btn btn-sm btn-warning edit-btn"
@@ -214,6 +210,14 @@
                               <i class="fas fa-user-plus"></i>
                             </button>
                           }
+                          @if (showUpload) {
+                            <button
+                              class="btn btn-sm btn-info upload-btn"
+                              (click)="upload(row)"
+                              title="Upload Target">
+                              <i class="fas fa-upload"></i>
+                            </button>
+                          }
                           @if (showFeedback) {
                             <button
                             class="btn btn-sm"
@@ -222,7 +226,6 @@
                         title="Feedback">
                   <i class="fas fa-paperclip"></i></button>
                               }
-
                          
                           @if (showDelete && showDeleteButton) {
                             @if (showStatusToggle && getRowStatus(row) !== undefined) {
@@ -264,43 +267,43 @@
       <div class="pagination-info">
         Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
       </div>
-
+ 
       <div class="pagination-right">
         <div class="pagination-controls">
           <button (click)="prevPage()" [disabled]="currentPage === 1">
             Prev
           </button>
-
+ 
           @for (page of getVisiblePages(); track page) {
             @if (page === '...') {
               <span class="pagination-ellipsis">...</span>
             } @else {
-              <button 
-                [class.active]="currentPage === page" 
+              <button
+                [class.active]="currentPage === page"
                 (click)="goToPage(page)">
                 {{ page }}
               </button>
             }
           }
-
+ 
           <button (click)="nextPage()" [disabled]="currentPage === totalPages">
             Next
           </button>
         </div>
-
+ 
         <!-- Custom Page Size Dropdown -->
         <div class="custom-dropdown-container page-size-dropdown">
-          <div class="dropdown-trigger" 
+          <div class="dropdown-trigger"
                [class.active]="openPageSizeDropdown"
                (click)="togglePageSizeDropdown($event)">
             <span class="trigger-text">{{ pageSize }}</span>
             <i class="fas fa-chevron-down arrow-icon"></i>
           </div>
-
+ 
           <div class="dropdown-panel small-panel" *ngIf="openPageSizeDropdown">
             <ul class="options-list">
-              <li class="option-item" 
-                  *ngFor="let opt of pageSizeOptions" 
+              <li class="option-item"
+                  *ngFor="let opt of pageSizeOptions"
                   (click)="selectPageSize(opt.value)">
                 {{ opt.label }}
               </li>
@@ -310,7 +313,9 @@
       </div>
     </div>
   }
-
-
-
+ 
+ 
+ 
 </main>
+ 
+ 

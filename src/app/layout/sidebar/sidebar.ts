@@ -158,7 +158,7 @@ constructor() {
     );
   }
 
-   if (role === 'ADMIN MARKETING') {
+    if (role === 'ADMIN MARKETING' || role === 'ADMINMARKETING' || role === 'ADMIN_MARKETING' || role === 'Admin Marketing') {
       this.menuItems.push(
         {
           label: 'Home',

@@ -37,6 +37,35 @@ export const routes: Routes = [
       path: 'dashboard',
       loadComponent: () =>
         import('./pages/dashboard/dashboard').then(m => m.Dashboard)
+    },
+    // ── Funnel Report (common-modules) ──────────────────────────────────
+    {
+      path: 'reports/funnel',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
+    },
+    {
+      path: 'funnel-report',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
     }
   ]
 },
@@ -531,19 +560,22 @@ export const routes: Routes = [
 //     import('./pages/SalesDirector/new/addcustomer/addcustomer').then(m => m.Addcustomer),
 // },
 
- {
-  path: 'salesdirector/track-quotes',
-  loadComponent: () =>
-    import('./pages/SalesDirector/TrackPO/track-quote/track-quote')
-      .then(m => m.TrackQuote)
-},
-
-{
-  path: 'salesdirector/track-po',
-  loadComponent: () =>
-    import('./pages/SalesDirector/TrackPO/track-po/track-po')
-      .then(m => m.TrackPo)
-},
+  {
+    path: 'salesdirector/track-quotes',
+    loadComponent: () =>
+      import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking')
+        .then(m => m.QuoteTracking),
+    canActivate: [authGuard],
+    data: { roles: ['Sales Director'] }
+  },
+  {
+    path: 'salesdirector/track-po',
+    loadComponent: () =>
+      import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking')
+        .then(m => m.PurchaseOrderTracking),
+    canActivate: [authGuard],
+    data: { roles: ['Sales Director'] }
+  },
 {
   path: 'salesdirector/viewCampaignDocuments',
   loadComponent: () =>

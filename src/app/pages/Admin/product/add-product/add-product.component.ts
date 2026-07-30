@@ -39,13 +39,14 @@ export class AddProduct implements OnInit {
   allSegments: any[] = [];
   subSystems: any[] = [];
   productTypes: any[] = [];
- 
+
   /* ================= ON INIT ================= */
   ngOnInit(): void {
     this.setupCreateMode();
     this.loadDropdownData();
   }
- 
+
+  /* ================= LOAD DROPDOWN DATA ================= */
   /* ================= LOAD DROPDOWN DATA ================= */
   /* ================= LOAD DROPDOWN DATA ================= */
   private loadDropdownData(): void {
@@ -60,7 +61,7 @@ export class AddProduct implements OnInit {
       },
       error: (err) => console.error('Failed to load categories:', err)
     });
- 
+
     // 2. Load all Product Segments / Groups for reference
     this.productService.searchGroups('').subscribe({
       next: (data) => {
@@ -68,7 +69,7 @@ export class AddProduct implements OnInit {
       },
       error: (err) => console.error('Failed to load segments:', err)
     });
- 
+
     // 3. Load Product Types
     this.productService.getProductTypesFull().subscribe({
       next: (data) => {
@@ -80,7 +81,7 @@ export class AddProduct implements OnInit {
       },
       error: (err) => console.error('Failed to load product types:', err)
     });
- 
+
     // 4. Load Sub Systems (SubCategories)
     this.productService.getSubCategoriesFull().subscribe({
       next: (data) => {
@@ -89,11 +90,11 @@ export class AddProduct implements OnInit {
       error: (err) => console.error('Failed to load sub systems:', err)
     });
   }
- 
+
   /* ================= MODE SETUP ================= */
   private setupCreateMode(): void {
     this.isEditMode = false;
- 
+
     this.headerTitle = 'Add New Product';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admin' },
@@ -101,7 +102,7 @@ export class AddProduct implements OnInit {
       { label: 'Add Product' }
     ];
   }
- 
+
   /* ================= FORM FIELDS ================= */
   productFields = [
     { name: 'productCode', label: 'Product Code', placeholder: 'Product Code', type: 'text', required: true },
@@ -132,18 +133,18 @@ export class AddProduct implements OnInit {
     { name: 'productTechnicalSpecifications', label: 'Technical Specifications', placeholder: 'Technical Specifications', type: 'textarea', required: false },
     { name: 'productScopeOfSupply', label: 'Scope of Supply', placeholder: 'Scope of Supply', type: 'textarea', required: false }
   ];
- 
+
   /* ================= DYNAMIC CASCADING LOGIC ================= */
   onFieldChange(event: { name: string, value: any }): void {
     console.log('AddProduct: onFieldChange', event);
- 
+
     if (event.name === 'productCategory') {
       const selectedCategoryName = event.value;
- 
+
       // Reset Segment & Sub System dropdown options
       this.updateFieldOptions('productSegment', []);
       this.updateFieldOptions('productSubSystem', []);
- 
+
       if (selectedCategoryName) {
         console.log('Filtering segments for category:', selectedCategoryName);
         this.productService.searchGroups(selectedCategoryName).subscribe({
@@ -152,12 +153,12 @@ export class AddProduct implements OnInit {
               g.productCategory?.categoryName?.toLowerCase() === selectedCategoryName.toLowerCase() ||
               g.category?.categoryName?.toLowerCase() === selectedCategoryName.toLowerCase()
             );
- 
+
             // Fallback to all segments if category association is not set
             if (!filtered || filtered.length === 0) {
               filtered = this.allSegments;
             }
- 
+
             this.segments = filtered;
             this.updateFieldOptions('productSegment', this.segments.map(g => ({
               label: g.groupName,
@@ -176,10 +177,9 @@ export class AddProduct implements OnInit {
       }
     } else if (event.name === 'productSegment') {
       const selectedSegmentName = event.value;
- 
+
       // Reset Sub System dropdown options
       this.updateFieldOptions('productSubSystem', []);
- 
       if (selectedSegmentName) {
         console.log('Fetching sub-systems for segment:', selectedSegmentName);
         this.productService.getSubCategoriesFull(selectedSegmentName).subscribe({

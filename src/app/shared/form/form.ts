@@ -172,10 +172,10 @@ export class Form implements OnChanges {
     const selectedLabels = Object.keys(value)
       .filter(key => value[key])
       .map(val => {
-        const opt = field.options?.find((o: any) => o.value === val);
+        const opt = field.options?.find((o: any) => String(o.value) === String(val) || o.label === val);
         return opt ? opt.label : val;
       });
-    return selectedLabels.join(', ');
+    return Array.from(new Set(selectedLabels)).join(', ');
   }
  
   /* ================= CHECKBOX GROUP ================= */
