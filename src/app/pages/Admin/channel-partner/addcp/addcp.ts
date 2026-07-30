@@ -67,63 +67,156 @@ export class Addcp implements OnInit {
     }
   }
 
-  private loadChannelPartnerById(id: number) {
-    this.adminService.getChannelPartners().subscribe({
-      next: (partners: any[]) => {
-        const partner = partners.find(p => Number(p.channelPartnerId) === id);
+  private loadChannelPartnerById(id:number){
 
-        if (!partner) {
-          alert('Channel Partner not found');
-          this.router.navigate(['/admin/channelpartner']);
-          return;
-        }
+ const payload={
+   channelPartnerName:null,
+   pagination:{
+     pageNumber:0,
+     pageSize:100,
+     sortBy:"channelPartnerId",
+     sortOrder:"DESC"
+   }
+ };
 
-        this.formInitialData = { ...partner };
-      },
-      error: () => {
-        alert('Failed to load data');
-        this.router.navigate(['/admin/channelpartner']);
-      }
-    });
-  }
 
-  saveChannelPartner(data: Partial<ChannelPartnerModel>) {
+ this.adminService.searchChannelPartners(
+    null,
+    0,
+    100
+ )
+ .subscribe({
+
+ next:(res:any)=>{
+
+   const partners =
+     res.content || res;
+
+
+   const partner =
+     partners.find(
+       (p:any)=>
+       Number(p.channelPartnerId)===id
+     );
+
+
+   if(!partner){
+
+     alert(
+       "Channel Partner not found"
+     );
+
+     this.router.navigate([
+       '/admin/channelpartner'
+     ]);
+
+     return;
+   }
+
+
+   this.formInitialData={
+     ...partner
+   };
+
+
+ },
+
+ error:()=>{
+
+   alert(
+    "Failed to load data"
+   );
+
+ }
+
+ });
+
+}
+
+ saveChannelPartner(data: Partial<ChannelPartnerModel>) {
+
   if (!data.name?.trim()) {
     alert('Channel Partner Name is required');
     return;
   }
 
+
   const payload = {
     name: data.name.trim(),
-    bankName: data.bankName?.trim() || null,
-    bankAddress: data.bankAddress?.trim() || null,
-    ifscCode: data.ifscCode?.trim() || null,
-    accountType: data.accountType?.trim() || null,
-    accountNumber: data.accountNumber ? Number(data.accountNumber) : null,
-    city: data.city?.trim() || null,
-    benificiaryName: data.benificiaryName?.trim() || null,
-    benificiaryAddress: data.benificiaryAddress?.trim() || null,
-    communicationAddress: data.communicationAddress?.trim() || null,
 
-    // add these only if backend expects them
-    type: 1,
-    companyId: 1,
-    status: 1
+    bankName: data.bankName?.trim() || null,
+
+    bankAddress: data.bankAddress?.trim() || null,
+
+    ifscCode: data.ifscCode?.trim() || null,
+
+    accountType: data.accountType?.trim() || null,
+
+    accountNumber: data.accountNumber
+      ? Number(data.accountNumber)
+      : null,
+
+    city: data.city?.trim() || null,
+
+    benificiaryName:
+      data.benificiaryName?.trim() || null,
+
+    benificiaryAddress:
+      data.benificiaryAddress?.trim() || null,
+
+    communicationAddress:
+      data.communicationAddress?.trim() || null
   };
 
-  console.log('CREATE/UPDATE PAYLOAD =>', payload);
 
-  const req = this.isEditMode
-    ? this.adminService.updateChannelPartner(this.channelPartnerId, payload as ChannelPartnerModel)
-    : this.adminService.createChannelPartner(payload as ChannelPartnerModel);
+  console.log(
+    "CHANNEL PARTNER PAYLOAD => ",
+    payload
+  );
 
-  req.subscribe({
-    next: () => this.router.navigate(['/admin/channelpartner']),
-    error: (err) => {
-      console.error('SAVE FAILED =>', err);
-      alert(err?.error?.message || 'Save failed');
+
+  const request = this.isEditMode
+    ? this.adminService.updateChannelPartner(
+        this.channelPartnerId,
+        payload
+      )
+    : this.adminService.createChannelPartner(
+        payload
+      );
+
+
+  request.subscribe({
+
+    next:(response)=>{
+
+      console.log(
+        "CHANNEL PARTNER SAVED =>",
+        response
+      );
+
+      this.router.navigate([
+        '/admin/channelpartner'
+      ]);
+
+    },
+
+
+    error:(err)=>{
+
+      console.error(
+        "CHANNEL PARTNER ERROR =>",
+        err
+      );
+
+      alert(
+        err?.error?.message ||
+        "Save failed"
+      );
+
     }
+
   });
+
 }
 
   onCancel() {

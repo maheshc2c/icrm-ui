@@ -8,6 +8,7 @@ import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { UserTargetService } from '../../../../service/user-target.service';
 import { ToastService } from '../../../../service/toast.service';
+import { DataTable } from '../../../../shared/data-table/data-table';
 
 @Component({
     standalone: true,

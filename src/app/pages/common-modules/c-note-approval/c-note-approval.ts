@@ -312,5 +312,22 @@ downloadContractNote(cnoteId: number): void {
 }
 
 
+onPageChange(page: number): void {
+
+  this.currentPage = page - 1;   // backend uses 0-based page numbering
+
+  this.searchContractNotes();
+
+}
+
+onPageSizeChange(size: number): void {
+
+  this.pageSize = size;
+
+  this.currentPage = 0;
+
+  this.searchContractNotes();
+
+}
 
 }
