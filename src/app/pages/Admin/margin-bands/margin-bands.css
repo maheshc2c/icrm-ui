@@ -1,0 +1,122 @@
+/* Container styling based on edit-leads reference */
+.main-content-container {
+    padding: 24px;
+    min-height: calc(100vh - 160px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Card Container */
+.card-form-container {
+   width: 100%;                 
+  max-width: 100%;
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+/* Table wrapper */
+.margin-table-wrapper {
+    padding: 24px 24px 0;
+    padding-left: 280px;
+}
+
+.margin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.margin-table th,
+.margin-table td {
+    padding: 16px 18px;
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.margin-table th:not(:last-child),
+.margin-table td:not(:last-child) {
+    border-right: 1px solid #e6e6e6;
+}
+
+.margin-table thead th {
+   background: #ffd0ca !important;
+    backdrop-filter: blur(8px) !important;
+    text-transform: uppercase;
+    color: #495057 !important;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #ffd0ca;
+    position: sticky;
+    top: 0;
+    z-index: 10;;
+}
+
+.margin-table tbody tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.margin-table tbody tr:hover {
+    background: #eef4ff;
+}
+
+.margin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.margin-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.footer-details {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.detail-item {
+    font-size: 14px;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+.detail-label {
+    margin-right: 6px;
+    color: #1f2937;
+}
+
+.action-item {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-edit {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-edit:hover {
+    background-color: #1d4ed8;
+}

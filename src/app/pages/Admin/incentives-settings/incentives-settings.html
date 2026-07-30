@@ -1,0 +1,30 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [columns]="columns"
+  [rows]="rows"
+  [showSearch]="true"
+  [showImport]="false"
+  [showAdd]="true"
+  [showEdit]="false"
+  [showDelete]="false"
+  [showView]="true"
+  [showDownload]="false"
+  [showRefresh]="true"
+  [searchFields]="searchFields"
+  (searchChange)="onSearchFromChild($event)"
+  (refresh)="onRefresh()"
+  (add)="onAdd()"
+  (viewRow)="onView($event)"
+  [showPagination]="true"
+  [currentPage]="currentPage"
+  [totalPages]="totalPages"
+  [totalItems]="totalItems"
+  [pageSize]="pageSize"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)">
+</app-data-table>

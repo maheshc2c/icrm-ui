@@ -1,0 +1,124 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="main-content-container">
+    <div class="card-form-container">
+        <form [formGroup]="settingsForm" (ngSubmit)="onSave()" novalidate>
+            
+            <!-- Dealer PO Settings -->
+            <div class="settings-section">
+                <h3 class="section-title">Dealer PO Settings</h3>
+                
+                <div class="settings-row">
+                    <div class="settings-label">Dealer Warranty</div>
+                    <div class="settings-field">
+                        <label class="checkbox-wrap">
+                            <input type="checkbox" formControlName="dealerWarranty">
+                            <span class="checkbox-label">{{ settingsForm.get('dealerWarranty')?.value ? 'Enabled' : 'Disabled' }}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">PO Documents Upload</div>
+                    <div class="settings-field">
+                        <label class="checkbox-wrap">
+                            <input type="checkbox" formControlName="poDocumentsUpload">
+                            <span class="checkbox-label">{{ settingsForm.get('poDocumentsUpload')?.value ? 'Enabled' : 'Disabled' }}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">PO Upload Check at PO Creation</div>
+                    <div class="settings-field">
+                        <label class="checkbox-wrap">
+                            <input type="checkbox" formControlName="poUploadCheck">
+                            <span class="checkbox-label">{{ settingsForm.get('poUploadCheck')?.value ? 'Enabled' : 'Disabled' }}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">Max Discount (%)</div>
+                    <div class="settings-field">
+                        <input type="number" formControlName="maxDiscount" class="form-control">
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">Max Balance Payment Days</div>
+                    <div class="settings-field">
+                        <input type="number" formControlName="maxBalancePaymentDays" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <!-- General Settings -->
+            <div class="settings-section">
+                <h3 class="section-title">General Settings</h3>
+                
+                <div class="settings-row">
+                    <div class="settings-label">Default Warranty (Months)</div>
+                    <div class="settings-field">
+                        <input type="number" formControlName="defaultWarranty" class="form-control">
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">Default Balance Payment (Days)</div>
+                    <div class="settings-field">
+                        <input type="number" formControlName="defaultBalancePayment" class="form-control">
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">Default Advance (%)</div>
+                    <div class="settings-field">
+                        <input type="number" formControlName="defaultAdvance" class="form-control">
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">Records per page</div>
+                    <div class="settings-field">
+                        <input type="number" formControlName="recordsPerPage" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Margin Settings -->
+            <div class="settings-section">
+                <h3 class="section-title">Margin Settings</h3>
+                
+                <div class="settings-row">
+                    <div class="settings-label">Cost of Maintaining Warranty %</div>
+                    <div class="settings-field">
+                        <input type="number" formControlName="costOfMaintainingWarranty" class="form-control">
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div class="settings-label">Cost of Capital</div>
+                    <div class="settings-field">
+                        <input type="number" formControlName="costOfCapital" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Save Changes
+                </button>
+                <button type="button" class="btn btn-danger" (click)="onCancel()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>

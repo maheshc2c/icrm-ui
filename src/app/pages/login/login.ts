@@ -59,7 +59,8 @@ export class Login {
           setTimeout(() => {
             switch (decoded.role) {
 
-              case 'ADMIN':
+              case 'Admin':
+                case 'ADMIN':
                 this.router.navigateByUrl('/admindashboard');
                 break;
 

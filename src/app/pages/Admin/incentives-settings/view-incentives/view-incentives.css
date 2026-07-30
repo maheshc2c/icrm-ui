@@ -1,0 +1,156 @@
+.view-incentive-container {
+  padding: 2px 20px 40px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 120px);
+  box-sizing: border-box;
+}
+
+/* .view-incentive-card {
+  background: #ffffff;
+  border: 1px solid #e6e8eb;
+  border-radius: 12px;
+  padding: 32px 36px;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  box-sizing: border-box;
+} */
+
+.view-incentive-card{
+   background: #ffffff;
+  border: 1px solid #e3e6f0;
+  border-radius: 6px;
+  padding: 24px 28px 24px;
+  max-width: 970px;
+  width: 100%;
+  /* position card toward right and slightly lower on large viewports */
+  margin: clamp(18px, calc(50vh - 260px), 140px) 0 0 auto;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 48px;
+  margin-bottom: 32px;
+}
+
+.detail-item {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 12px;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.7;
+  width: 100%;
+}
+
+.detail-label {
+  color: #374151;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.detail-value {
+  color: #111827;
+  font-weight: 500;
+  text-align: left;
+}
+
+.grade-section {
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.grade-heading {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 18px;
+}
+
+.grade-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 48px;
+  margin-bottom: 18px;
+}
+
+.grade-item {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 12px;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.7;
+  width: 100%;
+}
+
+.grade-label {
+  font-weight: 600;
+  color: #374151;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.grade-value {
+  color: #111827;
+  font-weight: 500;
+  text-align: left;
+}
+
+.action-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.btn-back {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-back:hover {
+  background-color: #1d4ed8;
+}
+
+@media (max-width: 900px) {
+  .view-incentive-card {
+    padding: 24px 22px;
+  }
+
+  .detail-grid,
+  .grade-grid {
+    grid-template-columns: 1fr;
+    gap: 14px 0;
+  }
+
+  .detail-item,
+  .grade-item {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .detail-label,
+  .grade-label {
+    text-align: left;
+    min-width: auto;
+    white-space: normal;
+  }
+
+  .detail-value,
+  .grade-value {
+    text-align: left;
+  }
+}
