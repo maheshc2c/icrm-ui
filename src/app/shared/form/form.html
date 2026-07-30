@@ -76,7 +76,7 @@
                 [name]="field.name"
                 [id]="'form-field-' + field.name">
                 <option [ngValue]="null">-- {{ field.placeholder || 'Select' }} --</option>
-                <option *ngFor="let opt of (field._filtered || field.options)" [value]="opt.value">
+                <option *ngFor="let opt of (field._filtered || field.options)" [ngValue]="opt.value">
                   {{ opt.label }}
                 </option>
               </select>
@@ -161,7 +161,7 @@
                      [class.active]="field._open"
                      (click)="field._open = !field._open; $event.stopPropagation()">
                   <span class="trigger-text" style="font-weight: normal; font-size: 14px;">
-                    {{ getMultiselectLabel(field) || (field.placeholder || '-- Select Roles --') }}
+                    {{ getMultiselectLabel(field) || (field.placeholder || '-- Select --') }}
                   </span>
                   <i class="fas fa-chevron-down arrow-icon"></i>
                 </div>
