@@ -1,0 +1,441 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   funnel-report.css
+   Matches the UI screenshots: white card, clean filter bar, Highcharts chart
+════════════════════════════════════════════════════════════════════════════ */
+
+/* Reset body margin for this page */
+:host {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Page wrapper (content area inside layout) ──────────────── */
+::ng-deep .page-header {
+  background: #fff !important;
+  padding: 1.25rem 2rem !important;
+  margin: 0 0 20px 0 !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  width: calc(100% - 280px) !important;
+  margin-left: 255px !important;
+  border-bottom: 1px solid #edf2f7 !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 100px !important;
+  margin-top: -40px !important;
+}
+
+.funnel-page-content {
+  margin-left: 255px;
+  width: calc(100% - 280px);
+  margin-top: 0px;
+  padding: 20px 24px;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+}
+
+/* ─── Filter bar ──────────────────────────────────────────────────────── */
+.funnel-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-control {
+  flex-shrink: 0;
+}
+
+.filter-select {
+  padding: 6px 32px 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23555'/%3E%3C/svg%3E") no-repeat right 10px center;
+  background-size: 10px 6px;
+  appearance: none;
+  -webkit-appearance: none;
+  font-size: 13px;
+  color: #333;
+  min-width: 160px;
+  cursor: pointer;
+  height: 34px;
+  transition: border-color 0.2s;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
+}
+
+/* ─── View-time tab buttons ────────────────────────────────────────────── */
+.view-time-tabs {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tab-btn {
+  padding: 6px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: #fff;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border-right: 1px solid #ccc;
+  height: 34px;
+  line-height: 1;
+}
+
+.tab-btn:last-child {
+  border-right: none;
+}
+
+.tab-btn:hover {
+  background: #eaf4fb;
+  color: #2980b9;
+}
+
+.tab-btn.active {
+  background: #3498db;
+  color: #fff;
+}
+
+/* ─── Chart card ──────────────────────────────────────────────────────── */
+.funnel-chart-card {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 20px 24px 24px;
+  min-height: 380px;
+  position: relative;
+}
+
+/* ─── Card header row ─────────────────────────────────────────────────── */
+.chart-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.chart-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ─── Legend ──────────────────────────────────────────────────────────── */
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #555;
+  font-weight: 500;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend-dot.hot    { background: #e74c3c; }
+.legend-dot.warm   { background: #e67e22; }
+.legend-dot.cold   { background: #bdc3c7; }
+.legend-dot.new    { background: #2c3e50; }
+.legend-dot.closed { background: #27ae60; }
+
+/* ─── Hamburger menu icon ─────────────────────────────────────────────── */
+.chart-menu-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #aaa;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 3px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.chart-menu-icon:hover {
+  background: #f0f0f0;
+  color: #555;
+}
+
+/* ─── Chart container ─────────────────────────────────────────────────── */
+.chart-container {
+  width: 100%;
+  height: 450px;
+  transition: opacity 0.3s;
+}
+
+.chart-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─── Loading spinner ─────────────────────────────────────────────────── */
+.chart-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 280px;
+  gap: 14px;
+  color: #888;
+  font-size: 14px;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #3498db;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Error state ─────────────────────────────────────────────────────── */
+.chart-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 240px;
+  gap: 12px;
+  color: #c0392b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.chart-error i {
+  font-size: 32px;
+  color: #e74c3c;
+}
+
+.retry-btn {
+  padding: 6px 18px;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: 4px;
+  transition: background 0.2s;
+}
+
+.back-btn {
+  background: #f1f3f5;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 4px 10px;
+  margin-right: 12px;
+  font-size: 13px;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background: #e9ecef;
+  color: #212529;
+}
+
+.data-table-container {
+  width: 100%;
+  overflow-x: auto;
+  padding: 16px;
+  min-height: 350px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.data-table th, .data-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.data-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.retry-btn:hover {
+  background: #2980b9;
+}
+
+/* ─── Responsive tweaks ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .funnel-page-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 12px;
+  }
+
+  .funnel-filter-bar {
+    gap: 8px;
+  }
+
+  .filter-select {
+    min-width: 130px;
+  }
+
+  .tab-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .chart-container {
+    height: 260px;
+  }
+}
+
+/* ================= CUSTOM DROPDOWN ================= */
+.custom-dropdown-container {
+  position: relative;
+  width: 220px; /* Increased to allow full user names */
+}
+
+.dropdown-trigger {
+  width: 100%;
+  height: 34px; /* Reduced from 40px to align perfectly */
+  padding: 6px 10px; /* Matched to .filter-select */
+  background: #fff;
+  border: 1px solid #ccc; /* Matched to .filter-select */
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-sizing: border-box; /* Fixes width overflow */
+}
+
+.dropdown-trigger.active {
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+.trigger-text {
+  font-size: 13px; /* Matched to .filter-select */
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  color: #999;
+  transition: transform 0.2s;
+}
+
+.dropdown-trigger.active .arrow-icon {
+  transform: rotate(180deg);
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0 0 4px 4px;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  margin-top: -1px;
+  box-sizing: border-box;
+}
+
+.search-box-wrapper {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  box-sizing: border-box;
+}
+
+.dropdown-search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  outline: none;
+  box-sizing: border-box; /* Fixes the input overflowing the container */
+}
+
+.dropdown-search-input:focus {
+  border-color: #3498db;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.option-item {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.option-item:hover {
+  background: #f5f8fa;
+  color: #3498db;
+}
+
+.no-results {
+  padding: 15px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+}

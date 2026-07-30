@@ -89,23 +89,43 @@ export class EditSegment implements OnInit {
  
   private loadSegment(): void {
     this.segmentService.getSegmentById(this.segmentId).subscribe({
-      next: (segment: any) => { // GroupDto
-        // Map backend DTO to form fields
- 
+      next: (segment: any) => {
+        const categoryId = segment.productCategoryId || segment.category?.categoryId;
         let compsObj: any = {};
-        if (segment.competitorNames) {
+
+        const finishLoading = () => {
+          this.initialData = {
+            categoryId: categoryId || '',
+            groupName: segment.groupName,
+            groupDescription: segment.groupDescription,
+            groupStatus: segment.groupStatus,
+            competitors: compsObj
+          };
+        };
+
+        if (segment.competitorNames && Array.isArray(segment.competitorNames) && segment.competitorNames.length > 0) {
           segment.competitorNames.forEach((name: string) => {
             compsObj[name] = true;
           });
+          finishLoading();
+        } else if (categoryId) {
+          this.segmentService.getCompetitorsByCategoryId(categoryId).subscribe({
+            next: (comps: any[]) => {
+              if (Array.isArray(comps)) {
+                comps.forEach((c: any) => {
+                  const name = c.competitorName || c.name;
+                  if (name) {
+                    compsObj[name] = true;
+                  }
+                });
+              }
+              finishLoading();
+            },
+            error: () => finishLoading()
+          });
+        } else {
+          finishLoading();
         }
- 
-        this.initialData = {
-          categoryId: segment.productCategoryId || segment.category?.categoryId || '',
-          groupName: segment.groupName,
-          groupDescription: segment.groupDescription,
-          groupStatus: segment.groupStatus,
-          competitors: compsObj
-        };
       },
       error: (err) => {
         console.error('Failed to load segment', err);

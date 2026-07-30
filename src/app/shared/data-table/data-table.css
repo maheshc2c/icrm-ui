@@ -721,3 +721,13 @@
 .approval-stage:hover {
     color: #0d47a1;
 }
+.upload-btn {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    margin-left: 8px;
+}
+
+.upload-btn:hover {
+    background: #218838;
+}

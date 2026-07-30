@@ -8,6 +8,7 @@ import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { UserTargetService } from '../../../../service/user-target.service';
 import { ToastService } from '../../../../service/toast.service';
+import { DataTable } from '../../../../shared/data-table/data-table';
 
 @Component({
     standalone: true,
@@ -21,7 +22,7 @@ export class UploadTargetComponent implements OnInit {
     headerTitle = 'Upload Product Target';
     headerBreadcrumbs: Breadcrumb[] = [
         { label: 'Home', route: '/admindashboard' },
-        { label: 'Target Role', route: '/admin/user-target' },
+        { label: 'Target Role', route: '/user-target' },
         { label: 'Upload Target' }
     ];
 
@@ -139,7 +140,7 @@ export class UploadTargetComponent implements OnInit {
         this.userTargetService.uploadUserTargetFile(this.employeeId, formData).subscribe({
             next: () => {
                 this.toastService.success('File uploaded successfully!');
-                this.router.navigate(['/admin/user-target']);
+                this.router.navigate(['/user-target']);
             },
             error: (err: any) => {
                 console.error('Upload failed', err);
@@ -151,6 +152,6 @@ export class UploadTargetComponent implements OnInit {
     }
 
     onCancel(): void {
-        this.router.navigate(['/admin/user-target']);
+        this.router.navigate(['/user-target']);
     }
 }

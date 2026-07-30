@@ -167,7 +167,8 @@ export class ApproveLeads implements OnInit {
           createdBy: lead.createdBy,
           leadSource: lead.leadSource,
           createdTime: lead.createdTime,
-          leadStatus: lead.leadStatus
+          leadStatus: lead.leadStatus,
+          canApprove: lead.leadStatus === 1
         }));
         this.rows = [...this.allRows];
         this.totalElements = response.totalElements;

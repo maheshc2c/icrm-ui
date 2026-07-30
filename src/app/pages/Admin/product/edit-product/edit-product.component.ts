@@ -26,24 +26,25 @@ export class EditProduct implements OnInit {
   // Dynamic dropdown options
   categories: any[] = [];
   segments: any[] = [];
+  allSegments: any[] = [];
   subSystems: any[] = [];
   productTypes: any[] = [];
- 
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
     private toastService: ToastService
   ) { }
- 
+
   headerTitle = 'Edit Product';
- 
+
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admin' },
     { label: 'Product', route: '/product' },
     { label: 'Edit' }
   ];
- 
+
   productFields = [
     { name: 'productCode', label: 'Product Code', placeholder: 'Product Code', type: 'text', required: true },
     { name: 'productCategory', label: 'Category', placeholder: 'Select Category', type: 'select', required: true, options: [] }, // Dynamic
@@ -53,13 +54,13 @@ export class EditProduct implements OnInit {
     { name: 'productDescription', label: 'Description', placeholder: 'Product Description', type: 'textarea', required: false }, // optional
     { name: 'productType', label: 'Product Type', placeholder: 'Select Product Type', type: 'select', required: true, options: [] }, // Dynamic
     {
-      name: 'productTarget', label: 'Target', type: 'radio', required: false, options: [
+      name: 'productTarget', label: 'Target', type: 'radio', required: true, options: [
         { label: 'Yes', value: '1' },
         { label: 'No', value: '0' }
       ]
     },
     {
-      name: 'productAvailability', label: 'Availability', type: 'radio', required: false, options: [
+      name: 'productAvailability', label: 'Availability', type: 'radio', required: true, options: [
         { label: 'Active', value: '1' },
         { label: 'Inactive', value: '0' }
       ]
@@ -73,29 +74,37 @@ export class EditProduct implements OnInit {
     { name: 'productTechnicalSpecifications', label: 'Technical Specifications', placeholder: 'Technical Specifications', type: 'textarea', required: false },
     { name: 'productScopeOfSupply', label: 'Scope of Supply', placeholder: 'Scope of Supply', type: 'textarea', required: false }
   ];
- 
+
   ngOnInit(): void {
     this.productId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadDropdownData();
     this.loadProduct();
   }
- 
- 
+
+
   /* ================= LOAD DROPDOWN DATA ================= */
   private loadDropdownData(): void {
-    // Lead categories (Full object for ID reference)
+    // 1. Lead categories
     this.productService.getCategoriesFull().subscribe({
       next: (data) => {
         this.categories = data;
         this.updateFieldOptions('productCategory', this.categories.map(c => ({
           label: c.categoryName,
-          value: c.categoryName // Value is Name as per backend requirement
+          value: c.categoryName
         })));
       },
       error: (err) => console.error('Failed to load categories:', err)
     });
- 
-    // Load Product Types
+
+    // 2. Load all Product Segments / Groups for reference
+    this.productService.searchGroups('').subscribe({
+      next: (data) => {
+        this.allSegments = data || [];
+      },
+      error: (err) => console.error('Failed to load segments:', err)
+    });
+
+    // 3. Load Product Types
     this.productService.getProductTypesFull().subscribe({
       next: (data) => {
         this.productTypes = data;
@@ -106,26 +115,14 @@ export class EditProduct implements OnInit {
       },
       error: (err) => console.error('Failed to load product types:', err)
     });
- 
-    // Load Sub Systems (SubCategories)
-    this.productService.getSubCategoriesFull().subscribe({
-      next: (data) => {
-        this.subSystems = data;
-        this.updateFieldOptions('productSubSystem', this.subSystems.map(s => ({
-          label: s.subcategoryName,
-          value: s.subcategoryName
-        })));
-      },
-      error: (err) => console.error('Failed to load sub systems:', err)
-    });
   }
- 
+
   loadProduct(): void {
     this.productService.getProductById(this.productId).subscribe({
       next: (product: any) => {
         if (product) {
           console.log('Loaded Product:', product);
- 
+
           const hasSecondaryName = !!product.productSecondaryName;
 
           // Flatten the nested object to match form control names
@@ -143,44 +140,74 @@ export class EditProduct implements OnInit {
             productTarget: product.productTarget != null ? String(product.productTarget) : null,
             productAvailability: product.productAvailability != null ? String(product.productAvailability) : null
           };
- 
+
           // Trigger segment loading if category is present
           if (this.productData.productCategory) {
             this.loadSegments(this.productData.productCategory);
+          }
+          if (this.productData.productSegment) {
+            this.loadSubSystems(this.productData.productSegment);
           }
         }
       },
       error: () => this.toastService.error('Failed to load product')
     });
   }
- 
+
   /* ================= DYNAMIC LOGIC ================= */
   onFieldChange(event: { name: string, value: any }): void {
     console.log('EditProduct: onFieldChange', event);
- 
+
     if (event.name === 'productCategory') {
       const selectedCategoryName = event.value;
+      this.updateFieldOptions('productSegment', []);
+      this.updateFieldOptions('productSubSystem', []);
       this.loadSegments(selectedCategoryName);
+    } else if (event.name === 'productSegment') {
+      const selectedSegmentName = event.value;
+      this.updateFieldOptions('productSubSystem', []);
+      this.loadSubSystems(selectedSegmentName);
     }
   }
- 
+
   private loadSegments(categoryName: string): void {
-    if (categoryName) {
-      // Fetch groups (Segments) by NAME using search API
-      console.log('Fetching segments for category Name using search:', categoryName);
-      this.productService.searchGroups(categoryName).subscribe({
+    if (!categoryName) {
+      this.updateFieldOptions('productSegment', []);
+      return;
+    }
+    this.productService.searchGroups(categoryName).subscribe({
+      next: (data) => {
+        let list = (data && data.length > 0) ? data : this.allSegments.filter(g => 
+          g.productCategory?.categoryName?.toLowerCase() === categoryName.toLowerCase() ||
+          g.category?.categoryName?.toLowerCase() === categoryName.toLowerCase()
+        );
+        if (!list || list.length === 0) {
+          list = this.allSegments;
+        }
+        this.segments = list;
+        this.updateFieldOptions('productSegment', this.segments.map(g => ({
+          label: g.groupName,
+          value: g.groupName
+        })));
+      },
+      error: (err) => console.error('Failed to load segments:', err)
+    });
+  }
+
+  private loadSubSystems(segmentName: string): void {
+    if (segmentName) {
+      this.productService.getSubCategoriesFull(segmentName).subscribe({
         next: (data) => {
-          console.log('Segments fetched via search:', data);
-          this.segments = data;
-          this.updateFieldOptions('productSegment', this.segments.map(g => ({
-            label: g.groupName,
-            value: g.groupName
+          this.subSystems = data || [];
+          this.updateFieldOptions('productSubSystem', this.subSystems.map(s => ({
+            label: s.subcategoryName || s.name,
+            value: s.subcategoryName || s.name
           })));
         },
-        error: (err) => console.error('Failed to load segments:', err)
+        error: (err) => console.error('Failed to load sub-systems:', err)
       });
     } else {
-      this.updateFieldOptions('productSegment', []);
+      this.updateFieldOptions('productSubSystem', []);
     }
   }
  

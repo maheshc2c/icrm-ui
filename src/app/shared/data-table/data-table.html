@@ -156,7 +156,6 @@
                               <i class="fas fa-check"></i>
                             </button>
                           }
- 
                           @if (showReject && row.canApprove) {
                             <button
                               class="btn btn-sm btn-danger reject-btn"
@@ -165,7 +164,6 @@
                               <i class="fas fa-times"></i>
                             </button>
                           }
- 
                           @if (showView) {
                             <button
                               class="btn btn-sm btn-info view-btn"
@@ -174,7 +172,6 @@
                               <i class="fas fa-eye"></i>
                             </button>
                           }
- 
                           @if (showEdit && showEditButton) {
                             <button
                               class="btn btn-sm btn-warning edit-btn"
@@ -183,29 +180,29 @@
                               title="Edit">
                               <i class="fas fa-edit"></i>
                             </button>
-                          }
+                          } 
                           @if (showApprovalAction) {
- 
+
                               @if (row.canApprove) {
- 
+
                                   <button
                                       class="btn btn-sm btn-warning edit-btn"
                                       (click)="edit(row)">
                                       <i class="fas fa-edit"></i>
                                   </button>
- 
+
                               } @else {
- 
+
                                   <span
                                       class="approval-stage"
                                       (click)="edit(row)">
                                       At {{ row.currentStage }}
                                   </span>
- 
+
                               }
- 
+
                           }
- 
+
                           @if (showAssign) {
                             <button
                               class="btn btn-sm btn-primary assign-btn"
@@ -222,7 +219,6 @@
                         title="Feedback">
                   <i class="fas fa-paperclip"></i></button>
                               }
- 
                          
                           @if (showDelete && showDeleteButton) {
                             @if (showStatusToggle && getRowStatus(row) !== undefined) {
@@ -248,8 +244,8 @@
                         </div>
                       </td>
                     }
- 
-                   
+
+                    
                   </tr>
                 }
               }

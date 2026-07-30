@@ -37,6 +37,35 @@ export const routes: Routes = [
       path: 'dashboard',
       loadComponent: () =>
         import('./pages/dashboard/dashboard').then(m => m.Dashboard)
+    },
+    // ── Funnel Report (common-modules) ──────────────────────────────────
+    {
+      path: 'reports/funnel',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
+    },
+    {
+      path: 'funnel-report',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
     }
   ]
 },
@@ -108,26 +137,29 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/user-target',
+        path: 'user-target',
         loadComponent: () =>
           import('./pages/Admin/target-role/target-role').then(m => m.TargetRoleComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/assign-target/:id',
+        path: 'assign-target/:id',
         loadComponent: () =>
           import('./pages/Admin/target-role/assign-target/assign-target').then(m => m.AssignTargetComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/upload-target/:id',
+        path: 'upload-target/:id',
         loadComponent: () =>
           import('./pages/Admin/target-role/upload-target/upload-target').then(m => m.UploadTargetComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
+      { path: 'admin/user-target', redirectTo: 'user-target', pathMatch: 'full' },
+      { path: 'admin/assign-target/:id', redirectTo: 'assign-target/:id', pathMatch: 'full' },
+      { path: 'admin/upload-target/:id', redirectTo: 'upload-target/:id', pathMatch: 'full' },
       {
   path: 'competitor',
   loadComponent: () =>
@@ -238,23 +270,27 @@ export const routes: Routes = [
 },
 
 
-//Demo
+//Demo Product
 
 {
-  path: 'admin/demo',
+  path: 'demoproduct',
   loadComponent: () =>
     import('./pages/Admin/demo/demo').then(m => m.Demo)
 },
 {
-  path: 'admin/demo/add',
+  path: 'demoproduct/add',
   loadComponent: () =>
     import('./pages/Admin/demo/add/add').then(m => m.Add)
 },
 {
-  path: 'admin/demo/edit/:id',
+  path: 'demoproduct/edit/:id',
   loadComponent: () =>
     import('./pages/Admin/demo/add/add').then(m => m.Add)
 },
+
+{ path: 'admin/demo', redirectTo: 'demoproduct', pathMatch: 'full' },
+{ path: 'admin/demo/add', redirectTo: 'demoproduct/add', pathMatch: 'full' },
+{ path: 'admin/demo/edit/:id', redirectTo: 'demoproduct/edit/:id', pathMatch: 'full' },
 
 
 
@@ -716,19 +752,22 @@ export const routes: Routes = [
       },
 
       {
-        path: 'globalhead/add-visit',
+        path: 'plan-visit/add',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/add-visit/add-visit.component').then(m => m.AddVisitComponent),
       },
       {
-        path: 'globalhead/manage-visits',
+        path: 'plan-visit',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/manage-visits.component').then(m => m.ManageVisitsComponent),
-
       },
       {
-        path: 'globalhead/edit-visit/:id',
+        path: 'plan-visit/edit/:id',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/edit-visit/edit-visit.component').then(m => m.EditVisitComponent),
-
       },
+      { path: 'plan-visits', redirectTo: 'plan-visit', pathMatch: 'full' },
+      { path: 'plan-edit/:id', redirectTo: 'plan-visit/edit/:id', pathMatch: 'full' },
+      { path: 'globalhead/manage-visits', redirectTo: 'plan-visit', pathMatch: 'full' },
+      { path: 'globalhead/add-visit', redirectTo: 'plan-visit/add', pathMatch: 'full' },
+      { path: 'globalhead/edit-visit/:id', redirectTo: 'plan-visit/edit/:id', pathMatch: 'full' },
       {
         path: 'globalhead-dashboard/plan-demo',
         loadComponent: () => import('./pages/GlobalHead/plan-demo/plan-demo.component').then(m => m.PlanDemoComponent),
