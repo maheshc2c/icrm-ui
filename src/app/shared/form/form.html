@@ -31,7 +31,7 @@
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
 
               <!-- DATE / DATETIME -->
-              <input *ngIf="field.type === 'date' || field.type === 'datetime-local'" [type]="field.type" class="company-text-input"
+              <input *ngIf="field.type === 'date'" [type]="field.type" class="company-text-input"
                 [ngModel]="formData[field.name]" (ngModelChange)="onInputChange(field, $event)"
                 [name]="field.name" [required]="!!field.required" />
 
@@ -44,6 +44,23 @@
                 [id]="'form-field-' + field.name"
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
 
+                <!-- DATE TIME -->
+<input
+    *ngIf="field.type === 'datetime-local'"
+    type="datetime-local"
+    class="company-text-input"
+    [(ngModel)]="formData[field.name]"
+    [name]="field.name"
+    [required]="field.required"
+    [id]="'form-field-' + field.name"
+    (ngModelChange)="
+      onFieldInput(field.name);
+      fieldChange.emit({ name: field.name, value: $event });
+      field.onChange?.($event)
+    " />
+
+
+
               <!-- TEXTAREA -->
               <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [placeholder]="field.placeholder || ''"
                 [(ngModel)]="formData[field.name]" [name]="field.name"
@@ -52,17 +69,44 @@
               </textarea>
 
               <!-- STATIC DROPDOWN -->
-              <select *ngIf="field.type === 'select'"
+              <select *ngIf="field.type === 'select' && !field.searchable"
                 class="company-text-input"
                 [(ngModel)]="formData[field.name]"
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
                 [name]="field.name"
                 [id]="'form-field-' + field.name">
                 <option [ngValue]="null">-- {{ field.placeholder || 'Select' }} --</option>
-                <option *ngFor="let opt of (field._filtered || field.options)" [value]="opt.value">
+                <option *ngFor="let opt of (field._filtered || field.options)" [ngValue]="opt.value">
                   {{ opt.label }}
                 </option>
               </select>
+
+              <!-- SEARCHABLE DROPDOWN -->
+              <div *ngIf="field.type === 'select' && field.searchable" class="searchable-dropdown-wrapper" (click)="$event.stopPropagation()">
+                <input type="text"
+                  class="company-text-input"
+                  [placeholder]="field.placeholder || 'Type to search...'"
+                  [value]="getSelectedLabel(field)"
+                  (focus)="onSearchFocus(field, searchInput)"
+                  (input)="onSearchInput(field, searchInput.value)"
+                  (blur)="closeDropdownDelayed(field)"
+                  #searchInput
+                  [id]="'form-field-' + field.name"
+                  autocomplete="off" />
+
+                <div class="searchable-dropdown-list" *ngIf="field._open">
+                  <div class="searchable-dropdown-item"
+                       *ngFor="let opt of (field._filtered || field.options)"
+                       (mousedown)="selectSearchableOption(field, opt)">
+                    {{ opt.label }}
+                  </div>
+                  <div class="searchable-dropdown-item no-result"
+                       *ngIf="(field._filtered || field.options)?.length === 0"
+                       style="padding: 8px 12px; font-size: 13px; color: #888; font-style: italic;">
+                    No results found
+                  </div>
+                </div>
+              </div>
 
  
               <select *ngIf="field.type === 'select-dynamic'"
@@ -88,16 +132,69 @@
                 </ng-container>
 
               </select>
-              <!-- CHECKBOX GROUP (🔥 NEW) -->
-              <div *ngIf="field.type === 'checkbox'" class="checkbox-group-container" [id]="'form-field-' + field.name">
-                <div *ngFor="let opt of field.options" class="checkbox-item">
-                  <input type="checkbox" [id]="field.name + '_' + opt.value"
-                    [ngModel]="getCheckboxValue(field.name, opt.value)"
-                    (ngModelChange)="onCheckboxChange(field.name, opt.value, $event); onFieldInput(field.name)"
-                    [name]="field.name + '_' + opt.value" class="company-checkbox-input" />
-                  <label [for]="field.name + '_' + opt.value" class="checkbox-label">
-                    {{ opt.label }}
-                  </label>
+
+              <!-- FILE UPLOAD -->
+              <div *ngIf="field.type === 'file'" class="file-upload-input-container" style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
+                <div class="company-text-input" style="display: flex; align-items: center; gap: 10px; height: 40px; padding: 6px 12px; border: 1px solid #e0e0e0; border-radius: 4px; background: #fdfdfd; cursor: pointer;" (click)="fileInput.click()">
+                  <input type="file"
+                    style="display: none;"
+                    #fileInput
+                    [id]="'form-field-' + field.name"
+                    [name]="field.name"
+                    (change)="onFileChange(field.name, $event)" />
+                  <button type="button" 
+                    style="background: #f1f1f1; border: 1px solid #ccc; border-radius: 3px; padding: 4px 10px; font-size: 13px; color: #333; cursor: pointer; font-weight: normal;">
+                    Choose File
+                  </button>
+                  <span style="font-size: 13px; color: #555; font-weight: normal;">
+                    {{ formData[field.name]?.name || formData[field.name] || 'No file chosen' }}
+                  </span>
+                </div>
+                <div style="font-size: 12px; color: #666; margin-top: 2px; font-weight: normal; text-align: left;">
+                  (Allowed types: jpg, png, gif, pdf, doc, docx, xls, xlsx Max size:4MB)
+                </div>
+              </div>
+
+              <!-- SEARCHABLE MULTISELECT DROPDOWN -->
+              <div *ngIf="field.type === 'checkbox'" class="custom-dropdown-container" [id]="'form-field-' + field.name">
+                <div class="dropdown-trigger" 
+                     [class.active]="field._open"
+                     (click)="field._open = !field._open; $event.stopPropagation()">
+                  <span class="trigger-text" style="font-weight: normal; font-size: 14px;">
+                    {{ getMultiselectLabel(field) || (field.placeholder || '-- Select --') }}
+                  </span>
+                  <i class="fas fa-chevron-down arrow-icon"></i>
+                </div>
+
+                <!-- DROPDOWN PANEL -->
+                <div class="dropdown-panel" *ngIf="field._open" (click)="$event.stopPropagation()">
+                  <div class="search-box-wrapper" style="padding: 10px;">
+                    <input type="text" 
+                      class="dropdown-search-input" 
+                      [placeholder]="'Search...'"
+                      #searchBox
+                      (input)="onSearchInput(field, searchBox.value)">
+                  </div>
+
+                  <ul class="options-list" style="padding: 6px 0; list-style: none;">
+                    <li class="option-item" 
+                        *ngFor="let opt of (field._filtered || field.options)"
+                        style="display: flex; align-items: center; gap: 8px; padding: 6px 12px;"
+                        (click)="$event.stopPropagation()">
+                      <input type="checkbox" 
+                        [id]="field.name + '_' + opt.value"
+                        [ngModel]="getCheckboxValue(field.name, opt.value)"
+                        (ngModelChange)="onCheckboxChange(field.name, opt.value, $event); onFieldInput(field.name)"
+                        [name]="field.name + '_' + opt.value" 
+                        class="company-checkbox-input" />
+                      <label [for]="field.name + '_' + opt.value" class="checkbox-label" style="margin-bottom: 0; cursor: pointer; font-size: 13px; font-weight: normal;">
+                        {{ opt.label }}
+                      </label>
+                    </li>
+                    <li class="no-results" *ngIf="(field._filtered || field.options)?.length === 0" style="padding: 10px 15px; text-align: center; color: #999; font-size: 13px;">
+                      No results found
+                    </li>
+                  </ul>
                 </div>
               </div>
 
@@ -125,6 +222,8 @@
             </div>
           </ng-container>
         </div>
+
+
 
         <!-- BUTTONS -->
         <div class="form-action-buttons">

@@ -16,6 +16,7 @@ export class DataTable
 {
   @ViewChild(Search) searchComponent?: Search;
 
+  @Input() tableClass = '';
   @Input() columns: any[] = [];   // column headers
   @Input() rows: any[] = [];      // data rows
   @Input() title = '';            // optional title
@@ -28,6 +29,13 @@ export class DataTable
   @Input() noMargin: boolean = false;
 
    filteredRows = [...this.rows];
+
+  get totalColumnsCount(): number {
+    return (this.showCheckboxColumn ? 1 : 0) +
+           (this.showSno ? 1 : 0) +
+           (this.columns ? this.columns.length : 0) +
+           (this.showActions ? 1 : 0);
+  }
 
   edit(row: any) {
     console.log("Edit clicked:", row);
@@ -80,10 +88,16 @@ export class DataTable
   @Input() showDownload = true;
   @Input() showQuoteDoc = false;
   @Input() showQuoteCloud = false;
+  @Input() showBulkUpload = false;
+  @Input() showSubmit = false;
   // New inputs to control table columns
   @Input() showSno: boolean = true;
   @Input() showActions: boolean = true;
   @Input() showCheckboxColumn: boolean = false;
+ 
+ 
+
+ 
 
   /* ===== TOOLBAR EVENTS ===== */
 
@@ -92,16 +106,20 @@ export class DataTable
   @Output() add = new EventEmitter<void>();
   @Output() editRow = new EventEmitter<any>();
   @Output() viewRow = new EventEmitter<any>();
+  @Output() downloadRow = new EventEmitter<any>();
   @Output() assignRow = new EventEmitter<any>();
   @Output() uploadRow = new EventEmitter<any>();
   @Output() approveRow = new EventEmitter<any>();
   @Output() rejectRow = new EventEmitter<any>();
   @Output() quoteRevisionInfo = new EventEmitter<any>();
   @Output() quoteRevisionAdd = new EventEmitter<any>();
+  @Output() bulkUpload = new EventEmitter<void>();
+  @Output() submit = new EventEmitter<void>();
 
   /* ===== INLINE EDITING EVENTS ===== */
   @Output() quantityChange = new EventEmitter<{row: any, field: string, value: any}>();
   @Output() discountChange = new EventEmitter<{row: any, field: string, value: any, discountType: string}>();
+  @Output() cellChange = new EventEmitter<{row: any, field: string, value: any}>();
 
   onQuantityChange(row: any, field: string, event: any) {
     this.quantityChange.emit({ row, field, value: event.target.value });
@@ -109,6 +127,17 @@ export class DataTable
 
   onDiscountChange(row: any, field: string, value: any, discountType: string) {
     this.discountChange.emit({ row, field, value, discountType });
+  }
+
+  onCellChange(row: any, field: string, value: any) {
+    this.cellChange.emit({ row, field, value });
+  }
+
+  onIconClick(row: any, col: any, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.downloadRow.emit(row);
   }
 
   quoteInfo(row: any, event?: Event) {
@@ -233,6 +262,7 @@ detectKey(row: any, index: number) {
   // Removed duplicate showPagination
 @Output() pageChange = new EventEmitter<number>();
 @Output() pageSizeChange = new EventEmitter<number>();
+
 
   @Input() pageSize = 10;
   @Input() currentPage = 1;
@@ -413,5 +443,17 @@ delete(row: any) {
       ?? row?.groupStatus;
   }
 
+@Input() showFeedback = false;
+
+@Output() feedbackRow = new EventEmitter<any>();
+
+feedback(row:any){
+    this.feedbackRow.emit(row);
+}
+
+
+//Approval
+@Input() showApprovalAction = false;
+@Input() showHistoryPopup = false;
 
 }

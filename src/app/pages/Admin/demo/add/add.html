@@ -10,7 +10,7 @@
   [title]="isEditMode ? 'Edit Demo Product' : 'Add New Demo Product'"
   [fields]="demoFields"
   [model]="formInitialData"
-  (formValueChange)="onFormValueChange($event)"
+  (fieldChange)="onFieldChange($event)"
   (formSubmit)="saveDemo($event)"
   (cancelForm)="onCancel()">
 </app-form>

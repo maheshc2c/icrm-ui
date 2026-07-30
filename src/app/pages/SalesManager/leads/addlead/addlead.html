@@ -5,16 +5,7 @@
   [breadcrumbs]="breadcrumbs">
 </app-pageheader>
 
-<!-- Tabs Navigation -->
-<div *ngIf="showQuoteSuccessMessage" style="margin-left: 287px; margin-right: 30px; margin-top: 24px; margin-bottom: -10px; background-color: #dffeef; color: #155724; border: 1px solid #c3e6cb; padding: 15px 20px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-  <div style="display: flex; align-items: center;">
-    <div style="background-color: #63c054; color: white; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-      <i class="fas fa-check" style="font-size: 16px;"></i>
-    </div>
-    <span style="font-size: 14px; color: #495057;"><strong>Success!</strong> New revision to Quote has been Added successfully!!</span>
-  </div>
-  <button (click)="showQuoteSuccessMessage = false" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #adb5bd; outline: none;">&times;</button>
-</div>
+
 <div *ngIf="isEditMode" class="form-wrapper-tabs" style="margin-left: 287px; padding: 24px 30px 0 30px; display: flex; justify-content: flex-start;">
   <div style="width: 100%; display: flex; align-items: flex-end;">
     <div *ngFor="let tab of tabs" 
@@ -346,8 +337,8 @@
 
       <!-- Quote Table -->
       <div style="margin-bottom: 30px; overflow-x: auto;">
-        <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #dee2e6;">
-          <thead style="background-color: #5b9bd5; color: white; font-weight: 500;">
+        <table class="table table-bordered table-striped soft-header text-center" style="width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #dee2e6;">
+          <thead>
             <tr>
               <th style="padding: 12px; border: 1px solid #dee2e6;">S.NO</th>
               <th style="padding: 12px; border: 1px solid #dee2e6;">QUOTE ID</th>
@@ -377,13 +368,13 @@
                         <button class="btn btn-sm btn-primary view-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionInfo(row)" title="View Revision">
                           <i class="fa-solid fa-info"></i>
                         </button>
-                        <button class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
+                        <button *ngIf="row.quoteStatus === 'Quote Approved' || row.revisionStatus === 1" class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
                         <i class="fa-solid fa-plus"></i>
                       </button>
                     </div>
                   </td>
                   <td style="padding: 12px; border: 1px solid #dee2e6;">
-                    <div style="display: flex; justify-content: center; gap: 8px;">
+                    <div *ngIf="row.quoteStatus === 'Quote Approved' || row.revisionStatus === 1" style="display: flex; justify-content: center; gap: 8px;">
                       <button class="btn btn-sm btn-primary" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 32px; height: 32px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" title="View Document" (click)="onViewQuote(row.quoteId)">
                         <i class="fas fa-file-alt"></i>
                       </button>
@@ -840,8 +831,8 @@
       <!-- Opportunity Table Row -->
       <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Opportunity <span style="color: red;">*</span></div>
       <div>
-        <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6;">
-          <thead style="background-color: #5b9bd5; color: white;">
+        <table class="table table-bordered table-striped soft-header text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6;">
+          <thead>
             <tr>
               <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center; width: 40px;"></th>
               <th style="padding: 8px; border: 1px solid #dee2e6; text-align: center;">Product Name</th>
@@ -937,8 +928,8 @@
     </div>
     
     <div style="max-width: 750px; margin-left: auto; margin-right: auto;">
-      <table class="table table-bordered" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6;">
-        <thead style="background-color: #6da5d8; color: white;">
+      <table class="table table-bordered table-striped soft-header text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6;">
+        <thead>
           <tr>
             <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Revision</th>
             <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Billing</th>

@@ -173,11 +173,11 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-
+ 
 .btn-submit-form:hover {
   background: #2980b9;
 }
-
+ 
 .btn-cancel-form {
   padding: 8px 24px;
   font-size: 14px;
@@ -189,11 +189,11 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-
+ 
 .btn-cancel-form:hover {
   background: #e5e5e5;
 }
-
+ 
 .has-error {
   border-color: #e74c3c !important;
 }
@@ -275,7 +275,7 @@
   align-items: center;
   justify-content: center;
 }
-
+ 
 .action-buttons .btn {
   width: 40px;
   height: 40px;
@@ -286,18 +286,16 @@
   justify-content: center;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
+ 
 .action-buttons .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
-
+ 
 .action-buttons .btn:active {
   transform: translateY(0);
 }
-
-.edit-btn {
-}
+ 
  
 /* ================= INPUTS ================= */
 .company-text-input,
@@ -369,11 +367,11 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-
+ 
 .btn-submit-form:hover {
   background: #2980b9;
 }
-
+ 
 .btn-cancel-form {
   padding: 8px 24px;
   font-size: 14px;
@@ -385,11 +383,11 @@
   cursor: pointer;
   transition: background 0.2s;
 }
-
+ 
 .btn-cancel-form:hover {
   background: #e5e5e5;
 }
-
+ 
 .has-error {
   border-color: #e74c3c !important;
 }
@@ -471,7 +469,7 @@
   align-items: center;
   justify-content: center;
 }
-
+ 
 .action-buttons .btn {
   width: 40px;
   height: 40px;
@@ -482,27 +480,27 @@
   justify-content: center;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
+ 
 .action-buttons .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
-
+ 
 .action-buttons .btn:active {
   transform: translateY(0);
 }
-
+ 
 .edit-btn {
   background: #e3f2fd !important;
   color: #2196f3 !important;
   border: 1px solid #bbdefb !important;
 }
-
+ 
 .view-btn {
   background: #17a2b8 !important; /* btn-info color */
   color: white !important;
 }
-
+ 
 /* ================= OVERRIDE DATA-TABLE GLOBALS ================= */
 ::ng-deep app-data-table .content {
   margin-left: 0 !important;
@@ -510,7 +508,22 @@
   padding: 0 !important;
   min-height: auto !important;
 }
-
+ 
 .is-invalid {
   border-color: #ef4444 !important;
 }
+ 
+/* ================= TABLE HEADER ================= */
+.soft-header thead th {
+     background: #ffd0ca !important;
+    backdrop-filter: blur(8px) !important;
+    text-transform: uppercase;
+    color: #495057 !important;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #ffd0ca;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+ 

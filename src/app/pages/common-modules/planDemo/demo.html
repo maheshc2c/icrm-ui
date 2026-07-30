@@ -1,0 +1,66 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+[title]="headerTitle"
+[breadcrumbs]="headerBreadcrumbs"></app-pageheader>
+
+<app-data-table
+  [columns]="columns"
+  [rows]="rows"
+  [searchFields]="searchFields"
+  [currentPage]="currentPage"
+  [pageSize]="pageSize"
+  [totalPages]="totalPages"
+  [totalElements]="totalElements"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
+  [showImport]="true"
+  [showAdd]="true"
+  [showReset]="true"
+  [showDelete]="false"
+  (reset)="onReset()"
+  (searchChange)="onSearch($event)"
+  (download)="onImport()"
+  (add)="onAdd()"
+  (editRow)="onEdit($event)"
+  (deleteRow)="onDelete($event)"
+  [showFeedback]="true"
+  (feedbackRow)="openFeedback($event)">
+</app-data-table>
+
+<div class="modal-backdrop" *ngIf="showFeedbackPopup">
+
+    <div class="modal">
+
+        <h3>Update Demo Feedback</h3>
+
+        <p><b>Customer :</b> {{selectedDemo.customerName}}</p>
+
+        <p><b>Opportunity :</b> {{selectedDemo.opportunity}}</p>
+
+        <p><b>Demo :</b> {{selectedDemo.demoMachine}}</p>
+
+        <textarea
+            [(ngModel)]="feedback"
+            rows="5">
+        </textarea>
+
+        <button (click)="showFeedbackPopup=false">
+            Cancel
+        </button>
+
+        <button (click)="saveFeedback()">
+            Submit
+        </button>
+
+    </div>
+
+</div>
+
+<!-- 
+[searchFields]="searchFields" -->
+<!-- (deleteRow)="onDelete($event)" -->
+
+<!-- (search)="onSearch($event)" -->
+ <!-- [searchFields]="searchFields" -->

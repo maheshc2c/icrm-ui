@@ -55,9 +55,11 @@ export class Login {
           this.successMessage = 'Login successful! Redirecting...';
           this.isLoading = false;
 
+          const normalizedRole = decoded.role ? decoded.role.replace(/[\s_]+/g, '').toUpperCase() : '';
+
           // ROLE BASED NAVIGATION (Delayed by 1200ms for premium visual transition)
           setTimeout(() => {
-            switch (decoded.role) {
+            switch (normalizedRole) {
 
               case 'Admin':
                 case 'ADMIN':
@@ -69,50 +71,47 @@ export class Login {
                 this.router.navigateByUrl('/superadmindashboard');
                 break;
                 
-              case 'Sales Director':
+              case 'SALESDIRECTOR':
                 this.router.navigateByUrl('/sddashboard');
                 break;
 
-              case 'Sales Engineer':
-              case 'Sales Manager':
-              case 'SALES_MANAGER':
+              case 'SALESENGINEER':
               case 'SALESMANAGER':
-              this.router.navigateByUrl('/sales-manager-dashboard');
-              break;
+                this.router.navigateByUrl('/sales-manager-dashboard');
+                break;
 
               case 'ADMINMARKETING':
               case 'ADMIN MARKETING':
                 this.router.navigateByUrl('/adminmarketingdashboard');
                 break;
 
-              case 'National Sales Manager':
+              case 'NATIONALSALESMANAGER':
                 this.router.navigateByUrl('/national-sales-manager-dashboard');
                 break;
 
-              case 'Regional Branch Head':
+              case 'REGIONALBRANCHHEAD':
                 this.router.navigateByUrl('/regional-branch-head-dashboard');
                 break;
                 
-              case 'Regional Sales Manager':
+              case 'REGIONALSALESMANAGER':
                 this.router.navigateByUrl('/regional-sales-manager-dashboard');
                 break;
 
-              case 'Global Head':
+              case 'GLOBALHEAD':
                 this.router.navigateByUrl('/globalhead-dashboard');
                 break;
 
-              case 'Country Head':
+              case 'COUNTRYHEAD':
                 this.router.navigateByUrl('/country-head');
                 break;
 
-              case 'Customer Interaction Center':
+              case 'CUSTOMERINTERACTIONCENTER':
                 this.router.navigateByUrl('/Approve-Leads');
                 break;
 
               case 'OTR':
                 this.router.navigateByUrl('/Cnotedownload');
                 break;
-                
 
               default:
                 this.router.navigateByUrl('/login');

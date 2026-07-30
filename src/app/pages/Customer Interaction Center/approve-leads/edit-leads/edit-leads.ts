@@ -99,32 +99,34 @@ export class EditLeads implements OnInit {
 
   loadLeadDetails(): void {
     this.cicService.getLeadById(this.leadId).subscribe({
-      next: (res) => {
-        this.lead = res;
-        
-        // Ensure values are numbers/strings - only set defaults if not present
-        if (this.lead.leadVisitRequirement === undefined || this.lead.leadVisitRequirement === null) {
-          this.lead.leadVisitRequirement = 0;
-        }
-        if (this.lead.leadResourceRequirement === undefined || this.lead.leadResourceRequirement === null) {
-          this.lead.leadResourceRequirement = 0;
-        }
-        if (this.lead.relationshipName === undefined || this.lead.relationshipName === null) {
-          this.lead.relationshipName = '';
-        }
-        if (this.lead.siteReadinessName === undefined || this.lead.siteReadinessName === null) {
-          this.lead.siteReadinessName = '';
-        }
+      next: (res: any) => {
+        // Map backend LeadDetailsDTO to UI form model properties:
+        this.lead = {
+          ...res,
+          leadId: res.leadId,
+          customerName: res.customerName,
+          customerId: res.customerId,
+          contactFirstName: res.contactName,
+          username: res.createdUserName,
+          sourceName: res.sourceName,
+          leadStatus: res.status,
+          leadPurchasePotential: res.purchasePotential !== null && res.purchasePotential !== undefined ? res.purchasePotential : 0,
+          relationshipName: res.relationshipName || '',
+          siteReadinessName: res.siteReadiness || '',
+          leadVisitRequirement: res.visitRequirement ? 1 : 0,
+          leadResourceRequirement: res.resourceRequirement ? 1 : 0,
+          resourceRequiredDetails: res.remarks3 || '',
+          distributorId: res.distributorId || '',
+          leadCmdLine1: res.remarks1 || '',
+          leadCmdLine2: res.remarks2 || ''
+        };
 
-        // Map distributor ID only if we have a matching distributor name
-        const matchedDist = this.distributors.find(d => d.distributorName === this.lead.distributorName);
+        // Map distributor ID only if we have a matching distributor name or ID
+        const matchedDist = this.distributors.find(d => d.distributorName === res.distributorName || d.userId === res.distributorId);
         if (matchedDist) {
           this.lead.distributorId = matchedDist.userId;
         } else {
-          // Don't auto-select first distributor - leave empty for validation!
-          if (this.lead.distributorId === undefined || this.lead.distributorId === null) {
-            this.lead.distributorId = '';
-          }
+          this.lead.distributorId = res.distributorId || '';
         }
         
         // Fetch customer details & installation base details
@@ -305,6 +307,10 @@ export class EditLeads implements OnInit {
     });
   }
 
+  goBack(): void {
+    this.router.navigate(['/Approve-Leads']);
+  }
+
   saveLead(callback?: () => void): void {
     const { valid, firstInvalidField } = this.validateForm();
     if (!valid) {
@@ -341,6 +347,7 @@ export class EditLeads implements OnInit {
       leadSource: this.lead.sourceName,
       leadStatus: this.lead.leadStatus,
       purchasePotential: this.lead.leadPurchasePotential || 0,
+      relationship: this.lead.relationshipName,
       siteReadiness: this.lead.siteReadinessName,
       visitRequirement: this.lead.leadVisitRequirement,
       resourceRequirement: this.lead.leadResourceRequirement,

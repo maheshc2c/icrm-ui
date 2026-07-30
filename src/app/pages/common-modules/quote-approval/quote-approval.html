@@ -1,0 +1,327 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+[title]="headerTitle"
+[breadcrumbs]="headerBreadcrumbs"></app-pageheader>
+
+
+<app-data-table
+[columns]="columns"
+[rows]="rows"
+[totalElements]="totalElements"
+[totalPages]="totalPages"
+[currentPage]="currentPage"
+[pageSize]="pageSize"
+[showAdd]="false"
+[showDownload]="false"
+[showDelete]="false"
+[showReset]="true"
+(reset)="OnReset()"
+[showEdit]="false"
+[showApprovalAction]="true"
+[showView]="true"
+[searchFields]="searchFields"
+(searchChange)="onSearch($event)"
+(pageChange)="onPageChange($event)"
+(pageSizeChange)="onPageSizeChange($event)"
+(editRow)="onEdit($event)"
+(viewRow)="onView($event)"
+(approveRow)="approve($event)"
+(rejectRow)="reject($event)">
+</app-data-table>
+<div class="modal-backdrop" *ngIf="showApprovalPopup">
+
+    <div class="approval-popup">
+
+        <div class="popup-header">
+
+            <h2>Margin Analysis Report</h2>
+
+            <button
+                class="close-btn"
+                (click)="closeApprovalPopup()">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <div class="popup-body">
+
+            <div class="info-row">
+
+                <div class="info-item">
+
+                    <label>Quote ID</label>
+
+                   <span>{{ selectedQuote?.quoteNumber }}</span>
+
+                </div>
+
+                <div class="info-item">
+
+                    <label>Date</label>
+
+                    <span>{{selectedQuote?.quoteCreatedTime | date:'dd-MM-yyyy'}}</span>
+
+                </div>
+
+            </div>
+
+            <div class="info-row">
+
+                <div class="info-item full-width">
+
+                    <label>Opportunity</label>
+
+                    <span>{{selectedQuote?.opportunityDetails}}</span>
+
+                </div>
+
+            </div>
+
+            <div class="remarks-section">
+
+                <label>
+
+                    Remarks / Business Case
+
+                    <span class="required">*</span>
+
+                </label>
+
+                <textarea
+
+                    rows="5"
+
+                    [(ngModel)]="remarks">
+
+                </textarea>
+
+            </div>
+
+        </div>
+
+        <div class="popup-footer">
+
+            <button
+                class="approve-btn"
+                (click)="approve(selectedQuote)">
+
+                👍 Approve
+
+            </button>
+
+            <button
+                class="reject-btn"
+                (click)="reject(selectedQuote)">
+
+                👎 Reject
+
+            </button>
+
+            <button
+                class="cancel-btn"
+                (click)="closeApprovalPopup()">
+
+                Cancel
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal-backdrop"
+
+     *ngIf="showHistoryPopup">
+
+    <div class="approval-popup">
+
+        <div class="popup-header">
+
+            <h2>Margin Analysis Report History</h2>
+
+            <button
+                class="close-btn"
+                (click)="closeHistoryPopup()">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <div class="popup-body">
+
+            <div class="info-row">
+
+                <div class="info-item">
+
+                    <label>Quote ID</label>
+
+                    <span>{{ selectedQuote?.quoteNumber }}</span>
+
+                </div>
+
+                <div class="info-item">
+
+                    <label>Date</label>
+
+                    <span>{{selectedQuote?.quoteCreatedTime | date:'dd-MM-yyyy'}}</span>
+
+                </div>
+
+            </div>
+
+            <div class="info-row">
+
+                <div class="info-item full-width">
+
+                    <label>Opportunity</label>
+
+                    <span>{{selectedQuote?.opportunityDetails}}</span>
+
+                </div>
+
+            </div>
+
+            <table class="table table-bordered">
+
+                <thead>
+
+                    <tr>
+
+                        <th>S.No</th>
+
+                        <th>Level</th>
+
+                        <th>Remarks / Business Case</th>
+
+                        <th>On Date</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+    <tr *ngFor="let history of approvalHistory">
+  <td>{{history.sno}}</td>
+  <td>{{history.level}}</td>
+  <td>{{history.remarks}}</td>
+  <td>{{history.onDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+  <td>{{history.status}}</td>
+</tr>
+
+    <tr *ngIf="approvalHistory.length === 0">
+        <td colspan="5" class="text-center">
+            No Approval History Found
+        </td>
+    </tr>
+
+</tbody>
+
+            </table>
+
+        </div>
+
+        <div class="popup-footer">
+
+            <button
+                class="cancel-btn"
+                (click)="closeHistoryPopup()">
+
+                Cancel
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal-backdrop" *ngIf="showViewPopup">
+    <div class="approval-popup margin-analysis-popup">
+        <div class="popup-header">
+            <h2>Margin Analysis Report</h2>
+            <button class="close-btn" (click)="closeViewPopup()">×</button>
+        </div>
+        <div class="popup-body" *ngIf="marginAnalysisData">
+            <div class="info-row" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <div class="info-item">
+                    <label style="font-weight: bold; margin-right: 10px;">Quote ID:</label>
+                    <span>{{marginAnalysisData?.quoteId}}</span>
+                </div>
+                <div class="info-item text-right">
+                    <label style="font-weight: bold; margin-right: 10px;">Requested On:</label>
+                    <span>{{marginAnalysisData?.requestedOn | date:'dd-MM-yyyy'}}</span>
+                </div>
+            </div>
+
+            <table class="table table-bordered ma-table" style="width: 100%; margin-bottom: 20px;">
+                <thead>
+                    <tr style="background-color: #2196F3; color: white;">
+                        <th>Opportunity ID</th>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Unit MRP</th>
+                        <th>Discount %</th>
+                        <th>Quoted Price</th>
+                        <th>DP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{marginAnalysisData?.opportunityId}}</td>
+                        <td>{{marginAnalysisData?.productName}}</td>
+                        <td>{{marginAnalysisData?.quantity}}</td>
+                        <td>{{marginAnalysisData?.unitMrp | number:'1.2-2'}}</td>
+                        <td>{{marginAnalysisData?.discount}}%</td>
+                        <td>{{marginAnalysisData?.quotedPrice | number:'1.2-2'}}</td>
+                        <td>{{marginAnalysisData?.dp | number}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="ma-split-view" style="display: flex; gap: 20px;">
+                <div class="ma-left-col" style="flex: 1;">
+                    <table class="table table-bordered ma-detail-table" style="width: 100%;">
+                        <tbody>
+                            <tr><td style="background-color: #f1f8ff;">Order Value</td><td>{{marginAnalysisData?.orderValue | number:'1.2-2'}}</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Net Selling Price</td><td>{{marginAnalysisData?.netSellingPrice | number:'1.2-2'}}</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Discount %</td><td>{{marginAnalysisData?.discount | number:'1.0-2'}}%</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Warranty (YEARS)</td><td>{{marginAnalysisData.warranty}}</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Advance Collected %</td><td>{{marginAnalysisData?.advanceCollected}}%</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Balance Payment (DAYS)</td><td>{{marginAnalysisData?.balancePaymentDays}} <span *ngIf="marginAnalysisData.balancePaymentDays">DAYS</span></td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Commission to Dealer (%)</td><td>{{marginAnalysisData?.dealerCommissionPercent}}<span *ngIf="marginAnalysisData.dealerCommissionPercent">%</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="ma-right-col" style="flex: 1;">
+                    <table class="table table-bordered ma-detail-table" style="width: 100%;">
+                        <tbody>
+                            <tr><td style="background-color: #f1f8ff;">Cost of Warranty</td><td>{{marginAnalysisData?.warrantyCost | number}}</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Cost of Finance</td><td>{{marginAnalysisData?.financeCost | number}}</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Commission to Dealer in Rs</td><td>{{marginAnalysisData?.dealerCommissionRs | number}}</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Cost of Free Supply</td><td>{{marginAnalysisData?.freeSupplyCost | number}}</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Gross Margin %</td><td>{{marginAnalysisData?.grossMarginPercent | number:'1.2-2'}}%</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Gross Margin in Rs</td><td>{{marginAnalysisData?.grossMarginRs | number}}</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Net Margin %</td><td>{{marginAnalysisData?.netMarginPercent | number:'1.2-2'}}%</td></tr>
+                            <tr><td style="background-color: #f1f8ff;">Net Margin in Rs</td><td>{{marginAnalysisData?.netMarginRs | number}}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="popup-footer" style="text-align: right;">
+            <button class="approve-btn" style="background-color: #2196F3;" (click)="closeViewPopup()">Ok</button>
+        </div>
+    </div>
+</div>

@@ -4,209 +4,239 @@
   box-sizing: border-box;
 }
 
-/* SEARCH GROUP CONTAINER */
+/* ===========================================
+   SEARCH CONTAINER
+=========================================== */
+
 .search-group {
   display: flex;
-  gap: 12px;
   align-items: flex-end;
-  flex-wrap: wrap;
+  gap: 24px;
   width: 100%;
+  flex-wrap: nowrap;
 }
 
-/* EACH SEARCH FIELD */
+/* ===========================================
+   SEARCH FIELD
+=========================================== */
+
 .search-field {
-  flex: 1;
-  min-width: 130px;
+  flex: 0 0 280px;
+  max-width: 200px;
 }
 
-/* LABEL STYLE (MATCH TEXT TONE) */
 .search-label {
   display: block;
+  margin-bottom: 6px;
   font-size: 14px;
   font-weight: 600;
-  color: #6d28d9; /* same purple */
-  margin-bottom: 4px;
-}
-
-/* INPUT & SELECT COMMON STYLE */
-.search-field input,
-.search-field select {
-  height: 35px;
-  padding: 6px 10px;
-  font-size: 14px;
-  border-radius: 6px; /* same as button */
-  border: 1px solid #eadcff;
-  transition: all 0.2s ease;
-}
-
-/* PLACEHOLDER */
-.search-field input::placeholder {
-  color: #a0aec0; /* standard placeholder gray */
-  opacity: 0.8;
-}
-
-/* DROPDOWN PLACEHOLDER STYLE */
-.search-field select.placeholder-active {
-  color: #a0aec0; /* Match input placeholder gray */
-}
-
-.search-field select option {
-  color: #2c3e50; /* Ensure actual options are always dark */
-  background-color: #fff;
-}
-
-/* FOCUS EFFECT (MATCH BUTTON HOVER FEEL) */
-.search-field input:focus,
-.search-field select:focus {
-  outline: none;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
-  background: #ffffff;
-}
-
-/* DROPDOWN ARROW FIX (OPTIONAL) */
-.search-field select {
-
-  height: 35px;
-  padding: 6px 10px;
-  font-size: 14px;
-  border-radius: 6px; /* same as button */
-  border: 1px solid #eadcff;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  width: 150px;
-}
-
-/* CLEAR BUTTON (MATCH ICON BUTTON STYLE) */
-.clear-btn {
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 12px;
-  background: #f5eaff;
-  border: 1px solid #eadcff;
   color: #6d28d9;
-  font-size: 13px;
-  font-weight: 500;
-  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.12);
-  transition: all 0.2s ease;
-  cursor: pointer;
 }
 
-/* CLEAR BUTTON HOVER */
-.clear-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
-}
+/* ===========================================
+   INPUTS
+=========================================== */
 
-/* ================= CUSTOM DROPDOWN ================= */
-.custom-dropdown-container {
-  position: relative;
-  width: 100%;
-}
-
+.search-field input,
+.search-field select,
 .dropdown-trigger {
   width: 100%;
-  height: 35px;
-  padding: 6px 12px;
-  background: #ffffff;
+  height: 38px;
+  padding: 0 12px;
   border: 1px solid #eadcff;
   border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.dropdown-trigger.active {
-  box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.1);
-}
-
-.trigger-text {
   font-size: 14px;
-  color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background: #ffffff;
+  transition: all .25s ease;
 }
 
-.arrow-icon {
-  font-size: 12px;
-  transition: transform 0.2s;
+.search-field input::placeholder{
+  color:#b6b6b6;
 }
 
-.dropdown-trigger.active .arrow-icon {
-  transform: rotate(180deg);
+/* ===========================================
+   FOCUS
+=========================================== */
+
+.search-field input:focus,
+.search-field select:focus,
+.dropdown-trigger.active{
+  outline:none;
+  border-color:#b36cff;
+  box-shadow:0 0 0 3px rgba(109,40,217,.12);
 }
 
-.dropdown-panel {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 0 0 6px 6px;
-  z-index: 1000;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  margin-top: 2px;
-  min-width: 250px;
+/* ===========================================
+   NATIVE SELECT
+=========================================== */
+
+.search-field select{
+  cursor:pointer;
 }
 
-.search-box-wrapper {
-  padding: 10px;
-  border-bottom: 1px solid #f0f0f0;
+/* ===========================================
+   CUSTOM DROPDOWN
+=========================================== */
+
+.custom-dropdown-container{
+  position:relative;
+  width:100%;
 }
 
-.options-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 200px;
-  overflow-y: auto;
+.dropdown-trigger{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
 }
 
-.option-item {
-  padding: 10px 15px;
-  font-size: 14px;
-  color: #444;
-  cursor: pointer;
-  transition: background 0.2s;
+.trigger-text{
+  flex:1;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  color:#555;
 }
 
-.option-item:hover {
-  background: #f5f8fa;
-  color: #3498db;
+.arrow-icon{
+  font-size:12px;
+  transition:.25s;
 }
 
-.no-results {
-  padding: 15px;
-  text-align: center;
-  color: #999;
-  font-size: 13px;
+.dropdown-trigger.active .arrow-icon{
+  transform:rotate(180deg);
 }
 
-/* ================= DROPDOWN SEARCH ================= */
-.search-panel {
-  padding: 0;
-  border: none;
-  box-shadow: none;
+/* ===========================================
+   DROPDOWN PANEL
+=========================================== */
+
+.dropdown-panel{
+  position:absolute;
+  top:calc(100% + 4px);
+  left:0;
+  width:100%;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:6px;
+  box-shadow:0 8px 20px rgba(0,0,0,.12);
+  z-index:999;
+  overflow:hidden;
 }
 
-.dropdown-search-input {
-  width: 100%;
-  height: 34px;
-  padding: 0 10px;
-  font-size: 14px;
-  border: 2px solid #000; /* Matching the black border from image */
-  border-radius: 4px;
-  outline: none;
+/* ===========================================
+   SEARCH BOX INSIDE DROPDOWN
+=========================================== */
+
+.search-box-wrapper{
+  padding:10px;
+  border-bottom:1px solid #f0f0f0;
 }
 
-.search-helper-text {
-  font-size: 11px;
-  color: #888;
-  margin-top: 6px;
+.search-panel{
+  display:flex;
+  flex-direction:column;
 }
 
+.dropdown-search-input{
+  width:100%;
+  height:34px;
+  padding:0 10px;
+  border:1px solid #d1d5db;
+  border-radius:4px;
+  font-size:13px;
+}
 
+.dropdown-search-input:focus{
+  outline:none;
+  border-color:#6d28d9;
+}
+
+.search-helper-text{
+  margin-top:6px;
+  font-size:11px;
+  color:#888;
+}
+
+/* ===========================================
+   OPTIONS
+=========================================== */
+
+.options-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  max-height:220px;
+  overflow-y:auto;
+}
+
+.option-item{
+  padding:10px 14px;
+  cursor:pointer;
+  font-size:14px;
+  transition:.2s;
+}
+
+.option-item:hover{
+  background:#f4f1ff;
+  color:#6d28d9;
+}
+
+.no-results{
+  padding:14px;
+  text-align:center;
+  color:#999;
+  font-size:13px;
+}
+
+/* ===========================================
+   CLEAR BUTTON
+=========================================== */
+
+.clear-btn{
+  height:38px;
+  padding:0 16px;
+  border:none;
+  border-radius:6px;
+  background:#f5eaff;
+  color:#6d28d9;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.clear-btn:hover{
+  background:#eadcff;
+}
+
+/* ===========================================
+   RESPONSIVE
+=========================================== */
+
+@media (max-width:1200px){
+
+  .search-group{
+    flex-wrap:wrap;
+  }
+
+  .search-field{
+    flex:1 1 260px;
+    max-width:100%;
+  }
+
+}
+
+@media (max-width:768px){
+
+  .search-group{
+    flex-direction:column;
+    align-items:stretch;
+    gap:16px;
+  }
+
+  .search-field{
+    width:100%;
+    max-width:100%;
+    flex:unset;
+  }
+
+}

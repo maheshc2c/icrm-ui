@@ -1,0 +1,32 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  title="Contract Notes"
+  [columns]="columns"
+  [rows]="rows"
+  [showAdd]="false"
+  [showImport]="false"
+  [showReset]="true"
+  [showDownload]="false"
+  [searchFields]="searchFields"
+  (searchChange)="onSearch($event)"
+  (reset)="onReset()"
+  [showPagination]="true"
+  [totalElements]="totalElements"
+  [pageSize]="pageSize"
+  [currentPage]="currentPage"
+  [totalPages]="totalPages"
+  [showActions]="true"
+  [showEditButton]="false"
+  [showDeleteButton]="true"
+  [trackByField]="'cnoteId'"
+  (deleteRow)="onDelete($event)"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)">
+</app-data-table>

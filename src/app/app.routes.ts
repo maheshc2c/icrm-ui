@@ -37,6 +37,35 @@ export const routes: Routes = [
       path: 'dashboard',
       loadComponent: () =>
         import('./pages/dashboard/dashboard').then(m => m.Dashboard)
+    },
+    // ── Funnel Report (common-modules) ──────────────────────────────────
+    {
+      path: 'reports/funnel',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
+    },
+    {
+      path: 'funnel-report',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
     }
   ]
 },
@@ -66,11 +95,18 @@ export const routes: Routes = [
 },
 
 //Admin Role
- {
+      {
         path: 'admindashboard',
         component: AdminDashboard,
         canActivate: [authGuard],
         data: { roles: ['ADMIN' , 'Admin'] }
+      },
+      {
+        path: 'admin/delete-contract-note',
+        loadComponent: () =>
+          import('./pages/Admin/delete-contract-note/delete-contract-note').then(m => m.DeleteContractNote),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
       },
       {
         path: 'users',
@@ -101,14 +137,14 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/user-target',
+        path: 'user-target',
         loadComponent: () =>
           import('./pages/Admin/target-role/target-role').then(m => m.TargetRoleComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/assign-target/:id',
+        path: 'assign-target/:id',
         loadComponent: () =>
           import('./pages/Admin/target-role/assign-target/assign-target').then(m => m.AssignTargetComponent),
         canActivate: [authGuard],
@@ -136,12 +172,15 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'admin/upload-target/:id',
+         path: 'upload-target/:id',
         loadComponent: () =>
           import('./pages/Admin/target-role/upload-target/upload-target').then(m => m.UploadTargetComponent),
         canActivate: [authGuard],
         data: { roles: ['ADMIN'] }
       },
+      { path: 'admin/user-target', redirectTo: 'user-target', pathMatch: 'full' },
+      { path: 'admin/assign-target/:id', redirectTo: 'assign-target/:id', pathMatch: 'full' },
+      { path: 'admin/upload-target/:id', redirectTo: 'upload-target/:id', pathMatch: 'full' },
       {
   path: 'competitor',
   loadComponent: () =>
@@ -272,23 +311,27 @@ export const routes: Routes = [
 },
 
 
-//Demo
+//Demo Product
 
 {
-  path: 'admin/demo',
+  path: 'demoproduct',
   loadComponent: () =>
     import('./pages/Admin/demo/demo').then(m => m.Demo)
 },
 {
-  path: 'admin/demo/add',
+  path: 'demoproduct/add',
   loadComponent: () =>
     import('./pages/Admin/demo/add/add').then(m => m.Add)
 },
 {
-  path: 'admin/demo/edit/:id',
+  path: 'demoproduct/edit/:id',
   loadComponent: () =>
     import('./pages/Admin/demo/add/add').then(m => m.Add)
 },
+
+{ path: 'admin/demo', redirectTo: 'demoproduct', pathMatch: 'full' },
+{ path: 'admin/demo/add', redirectTo: 'demoproduct/add', pathMatch: 'full' },
+{ path: 'admin/demo/edit/:id', redirectTo: 'demoproduct/edit/:id', pathMatch: 'full' },
 
 
 
@@ -524,11 +567,11 @@ export const routes: Routes = [
         data: { roles: ['Sales Director'] }
       },
 
-      {
-  path: 'salesdirector/addleads',
-  loadComponent: () =>
-    import('./pages/SalesDirector/new/new').then(m => m.New),
-},
+//       {
+//   path: 'salesdirector/addleads',
+//   loadComponent: () =>
+//     import('./pages/SalesDirector/new/new').then(m => m.New),
+// },
 
   {
   path: 'oppurtunity/open',
@@ -542,30 +585,33 @@ export const routes: Routes = [
 },
 
 
-{
-  path: 'salesdirector/addleads/addcontact',
-  loadComponent: () =>
-    import('./pages/SalesDirector/new/addcontact/addcontact').then(m => m.Addcontact),
-},
-{
-  path: 'salesdirector/addleads/addcustomer',
-  loadComponent: () =>
-    import('./pages/SalesDirector/new/addcustomer/addcustomer').then(m => m.Addcustomer),
-},
+// {
+//   path: 'salesdirector/addleads/addcontact',
+//   loadComponent: () =>
+//     import('./pages/SalesDirector/new/addcontact/addcontact').then(m => m.Addcontact),
+// },
+// {
+//   path: 'salesdirector/addleads/addcustomer',
+//   loadComponent: () =>
+//     import('./pages/SalesDirector/new/addcustomer/addcustomer').then(m => m.Addcustomer),
+// },
 
- {
-  path: 'salesdirector/track-quotes',
-  loadComponent: () =>
-    import('./pages/SalesDirector/TrackPO/track-quote/track-quote')
-      .then(m => m.TrackQuote)
-},
-
-{
-  path: 'salesdirector/track-po',
-  loadComponent: () =>
-    import('./pages/SalesDirector/TrackPO/track-po/track-po')
-      .then(m => m.TrackPo)
-},
+  {
+    path: 'salesdirector/track-quotes',
+    loadComponent: () =>
+      import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking')
+        .then(m => m.QuoteTracking),
+    canActivate: [authGuard],
+    data: { roles: ['Sales Director'] }
+  },
+  {
+    path: 'salesdirector/track-po',
+    loadComponent: () =>
+      import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking')
+        .then(m => m.PurchaseOrderTracking),
+    canActivate: [authGuard],
+    data: { roles: ['Sales Director'] }
+  },
 {
   path: 'salesdirector/viewCampaignDocuments',
   loadComponent: () =>
@@ -721,7 +767,15 @@ export const routes: Routes = [
       },
       {
         path: 'planDemo',
-        loadComponent: () => import('./pages/SalesManager/plan-demo/plan-demo').then(m => m.PlanDemoComponent),
+        loadComponent: () => import('./pages/common-modules/planDemo/demo').then(m => m.Demo),
+      },
+      {
+        path: 'planDemo/Add',
+        loadComponent: () => import('./pages/common-modules/planDemo/add-plan-demo/add-plan-demo').then(m => m.AddPlanDemo),
+      },
+       {
+        path: 'planDemo/edit/:id',
+        loadComponent: () => import('./pages/common-modules/planDemo/add-plan-demo/add-plan-demo').then(m => m.AddPlanDemo),
         // canActivate: [authGuard],
         // data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',] }
       },
@@ -742,19 +796,22 @@ export const routes: Routes = [
       },
 
       {
-        path: 'globalhead/add-visit',
+        path: 'plan-visit/add',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/add-visit/add-visit.component').then(m => m.AddVisitComponent),
       },
       {
-        path: 'globalhead/manage-visits',
+        path: 'plan-visit',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/manage-visits.component').then(m => m.ManageVisitsComponent),
-
       },
       {
-        path: 'globalhead/edit-visit/:id',
+        path: 'plan-visit/edit/:id',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/edit-visit/edit-visit.component').then(m => m.EditVisitComponent),
-
       },
+      { path: 'plan-visits', redirectTo: 'plan-visit', pathMatch: 'full' },
+      { path: 'plan-edit/:id', redirectTo: 'plan-visit/edit/:id', pathMatch: 'full' },
+      { path: 'globalhead/manage-visits', redirectTo: 'plan-visit', pathMatch: 'full' },
+      { path: 'globalhead/add-visit', redirectTo: 'plan-visit/add', pathMatch: 'full' },
+      { path: 'globalhead/edit-visit/:id', redirectTo: 'plan-visit/edit/:id', pathMatch: 'full' },
       {
         path: 'globalhead-dashboard/plan-demo',
         loadComponent: () => import('./pages/GlobalHead/plan-demo/plan-demo.component').then(m => m.PlanDemoComponent),
@@ -769,6 +826,124 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/ContryHead/country-head-dashborad/country-head-dashborad').then(m => m.CountryHead),
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/marketing-document',
+        loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/dashboard/marketing-document',
+        loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/dashboard/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/dashboard/track-po',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/track-po',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/dashboard/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+
+      // Regional Branch Head Track Quote/PO
+      {
+        path: 'regional-branch-head/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Branch Head'] }
+      },
+      {
+        path: 'regional-branch-head/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Branch Head'] }
+      },
+
+      // Regional Sales Manager Track Quote/PO
+      {
+        path: 'regional-sales-manager-dashboard/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Sales Manager'] }
+      },
+      {
+        path: 'regional-sales-manager-dashboard/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Sales Manager'] }
+      },
+
+      // Global Head Track Quote/PO
+      {
+        path: 'globalhead-dashboard/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Global Head'] }
+      },
+      {
+        path: 'globalhead-dashboard/track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Global Head'] }
+      },
+
+      // Sales Engineer Track Quote/PO
+      {
+        path: 'track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'National Sales Manager'] }
+      },
+      {
+        path: 'track-purchase-order',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'National Sales Manager'] }
+      },
+
+      // Sales Manager Track Quote/PO
+      {
+        path: 'salesmanager/track-quotes',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/quote-tracking/quote-tracking').then(m => m.QuoteTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Sales Engineer'] }
+      },
+      {
+        path: 'salesmanager/track-po',
+        loadComponent: () => import('./pages/common-modules/TrackQuotePo/purchase-order-tracking/purchase-order-tracking').then(m => m.PurchaseOrderTracking),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Sales Engineer'] }
       },
 
       {
@@ -807,11 +982,11 @@ export const routes: Routes = [
 
       {
         path: 'quotes-view',
-        loadComponent: () => import('./pages/Regional-Branch-Head/quote-approval/quote-approval').then(m => m.QuoteApproval),
+        loadComponent: () => import('./pages/common-modules/quote-approval/quote-approval').then(m => m.QuoteApproval),
       },
       {
         path: 'c-note',
-        loadComponent: () => import('./pages/Regional-Branch-Head/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
+        loadComponent: () => import('./pages/common-modules/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
       },
       {
         path: 'PO-Approval',
@@ -891,7 +1066,7 @@ export const routes: Routes = [
   
         {
           path: 'adminmarketing/managedacument',
-          loadComponent: () => import('./pages/AdminMarketing/managedacument/managedacument').then(m => m.UploadDocument),
+          loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },

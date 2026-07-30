@@ -1,7 +1,7 @@
 <!-- MAIN -->
 <main class="content" [style.margin-left]="noMargin ? '0' : ''" [style.width]="noMargin ? '100%' : ''" [style.padding]="noMargin ? '0' : ''" [style.min-height]="noMargin ? 'auto' : ''" (click)="hostClick()">
-<div class="datatable-toolbar">
-
+<div class="datatable-toolbar" *ngIf="showSearch || showImport || showAdd || showReset || showRefresh || showUpload || showDownload || showBulkUpload || showSubmit">
+ 
   @if (showSearch) {
     <app-search
       [fields]="searchFields"
@@ -20,19 +20,23 @@
     [showDownload]="showDownload"
     (upload)="uploadRow.emit()"
     (reset)="onResetClick()"
+    [showBulkUpload]="showBulkUpload"
+    [showSubmit]="showSubmit"
+    (bulkUpload)="bulkUpload.emit()"
+    (submit)="submit.emit()"
     (refresh)="onRefreshClick()"
     (search)="onSearchClick()"
     (add)="add.emit()"
     (download)="download.emit()">
   </app-button>
 </div> <!-- CLOSE datatable-toolbar -->
-
+ 
   <div class="content-wrapper">
     <div class="card">
       <div class="card-body">
         <!-- THE TABLE -->
         <div class="table-responsive">
-          <table class="table table-bordered table-striped soft-header">
+          <table class="table table-bordered table-striped soft-header" [ngClass]="tableClass">
             <thead>
               <tr>
                 @if (showCheckboxColumn) {
@@ -52,7 +56,7 @@
             <tbody>
               @if (filteredRows.length === 0) {
                 <tr class="no-records-row">
-                  <td [attr.colspan]="columns.length + 2">
+                  <td [attr.colspan]="totalColumnsCount">
                     <div class="no-records-content">
                       <i class="fas fa-search"></i>
                       {{ emptyMessage }}
@@ -70,7 +74,7 @@
                     @if (showSno) {
                       <td>{{ showPagination ? (currentPage - 1) * pageSize + i + 1 : i + 1 }}</td>
                     }
-
+ 
                     <!-- DATA -->
                     @for (col of columns; track col) {
                       <td>
@@ -85,46 +89,66 @@
                               {{ row[col.field] }}%
                             </div>
                           </div>
-                        } @else if (col.field === 'status') {
+                        } @else if (col.field === 'status' && row.leadStatus !== undefined) {
                           <div class="status-badge-container">
                             <span class="status-badge" [class.active]="row.leadStatus >= 1" [class.inactive]="row.leadStatus < 1">Lead</span>
-                            <span class="status-badge" [class.active]="row.leadStatus >= 2" [class.inactive]="row.leadStatus < 2">Approved</span>
-                            <span class="status-badge" [class.active]="row.hasOpportunity" [class.inactive]="!row.hasOpportunity">Opportunity</span>
-                            <span class="status-badge" [class.active]="row.hasQuote" [class.inactive]="!row.hasQuote">Quote</span>
-                            <span class="status-badge" [class.active]="row.hasCNote" [class.inactive]="!row.hasCNote">C Note</span>
+                            <span class="status-badge" [class.active]="row.leadStatus > 1" [class.inactive]="row.leadStatus <= 1">Approved</span>
+                            <span class="status-badge" [class.active]="row.leadStatus > 2" [class.inactive]="row.leadStatus <= 2">Opportunity</span>
+                            <span class="status-badge" [class.active]="row.leadStatus > 5" [class.inactive]="row.leadStatus <= 5">Quote</span>
+                            <span class="status-badge" [class.active]="row.leadStatus >= 8" [class.inactive]="row.leadStatus < 8">C Note</span>
                           </div>
                         } @else if (col.field === 'editableQuantity') {
-                          <input type="text" 
-                            [value]="row[col.field]" 
+                          <input type="text"
+                            [value]="row[col.field]"
                             (change)="onQuantityChange(row, col.field, $any($event.target).value)"
                             style="width: 60px; text-align: center; color: #ef4444; font-weight: 500; border: 1px solid #ccc; border-radius: 4px; padding: 4px;">
                         } @else if (col.field === 'editableDiscount') {
                           <div style="display: flex; gap: 5px; align-items: center; justify-content: center;">
-                            <select 
+                            <select
                               [value]="row['discountType'] || 'in %'"
                               (change)="onDiscountChange(row, col.field, row[col.field], $any($event.target).value)"
                               style="padding: 4px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; background: #fff;">
                               <option value="in %">in %</option>
                               <option value="Flat">Flat</option>
                             </select>
-                            <input type="text" 
+                            <input type="text"
                               [value]="row[col.field]"
                               (change)="onDiscountChange(row, col.field, $any($event.target).value, row['discountType'] || 'in %')"
                               style="padding: 4px; border: 1px solid #ccc; border-radius: 4px; width: 60px; font-size: 12px;">
                           </div>
                         } @else if (col.field === 'productNameWithIcon') {
                           <span style="color: #333;"><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 5px;"></i> {{ row['productName'] || row[col.field] }}</span>
+                        } @else if (col.type === 'checkbox') {
+                          <input
+                            type="checkbox"
+                            [checked]="row[col.field] || false"
+                            (change)="row[col.field] = $any($event.target).checked; onCellChange(row, col.field, $any($event.target).checked)"
+                            style="width: 18px; height: 18px; cursor: pointer;">
+                        } @else if (col.type === 'icon') {
+                          <button
+                            type="button"
+                            class="icon-action-btn"
+                            [title]="col.title || col.header"
+                            (click)="onIconClick(row, col, $event)">
+                            <i [class]="col.icon || 'fas fa-download'"></i>
+                          </button>
+                        } @else if (col.editable) {
+                          <input type="text"
+                            class="form-control"
+                            [(ngModel)]="row[col.field]"
+                            (ngModelChange)="onCellChange(row, col.field, $event)"
+                            style="width: 100%; min-width: 120px;" />
                         } @else {
                           {{ row[col.field] }}
                         }
                       </td>
                     }
-
+ 
                     <!-- ACTIONS -->
                     @if (showActions) {
                       <td class="action-cell">
                         <div class="action-buttons">
-                          @if (showApprove) {
+                          @if (showApprove && row.canApprove) {
                             <button
                               class="btn btn-sm btn-success approve-btn"
                               (click)="approve(row)"
@@ -132,8 +156,7 @@
                               <i class="fas fa-check"></i>
                             </button>
                           }
-
-                          @if (showReject) {
+                          @if (showReject && row.canApprove) {
                             <button
                               class="btn btn-sm btn-danger reject-btn"
                               (click)="reject(row)"
@@ -141,7 +164,6 @@
                               <i class="fas fa-times"></i>
                             </button>
                           }
-
                           @if (showView) {
                             <button
                               class="btn btn-sm btn-info view-btn"
@@ -150,25 +172,62 @@
                               <i class="fas fa-eye"></i>
                             </button>
                           }
-
-                          @if (showQuoteDoc) {
+                          @if (showEdit && showEditButton) {
                             <button
-                              class="btn btn-sm btn-primary"
-                              style="background: #3b82f6; border-color: #3b82f6; color: white;"
-                              title="Document">
-                              <i class="fas fa-file-alt"></i>
+                              class="btn btn-sm btn-warning edit-btn"
+                              style="background: #e3f2fd; color: #2196f3; border: 1px solid #bbdefb; margin-right: 8px;"
+                              (click)="edit(row)"
+                              title="Edit">
+                              <i class="fas fa-edit"></i>
                             </button>
+                          } 
+                          @if (showApprovalAction) {
+
+                              @if (row.canApprove) {
+
+                                  <button
+                                      class="btn btn-sm btn-warning edit-btn"
+                                      (click)="edit(row)">
+                                      <i class="fas fa-edit"></i>
+                                  </button>
+
+                              } @else {
+
+                                  <span
+                                      class="approval-stage"
+                                      (click)="edit(row)">
+                                      At {{ row.currentStage }}
+                                  </span>
+
+                              }
+
                           }
 
-                          @if (showQuoteCloud) {
+                          @if (showAssign) {
                             <button
-                              class="btn btn-sm btn-info"
-                              style="background: #3b82f6; border-color: #3b82f6; color: white;"
-                              title="Download Quote">
-                              <i class="fas fa-cloud-download-alt"></i>
+                              class="btn btn-sm btn-primary assign-btn"
+                              (click)="assign(row)"
+                              title="Assign Target">
+                              <i class="fas fa-user-plus"></i>
                             </button>
                           }
-
+                          @if (showUpload) {
+                            <button
+                              class="btn btn-sm btn-info upload-btn"
+                              (click)="upload(row)"
+                              title="Upload Target">
+                              <i class="fas fa-upload"></i>
+                            </button>
+                          }
+                          @if (showFeedback) {
+                            <button
+                            class="btn btn-sm"
+                        [ngClass]="row.demoRemarks2 ? 'feedback-filled' : 'feedback-empty'"
+                        (click)="feedback(row)"
+                        title="Feedback">
+                  <i class="fas fa-paperclip"></i></button>
+                              }
+                         
                           @if (showDelete && showDeleteButton) {
                             @if (showStatusToggle && getRowStatus(row) !== undefined) {
                               <button
@@ -190,37 +249,11 @@
                               </button>
                             }
                           }
-
-                          @if (showAssign) {
-                            <button
-                              class="btn btn-sm btn-primary assign-btn"
-                              (click)="assign(row)"
-                              title="Assign Target">
-                              <i class="fas fa-user-plus"></i>
-                            </button>
-                          }
-
-                          @if (showUpload) {
-                            <button
-                              class="btn btn-sm btn-success upload-btn"
-                              style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; margin-right: 8px;"
-                              (click)="upload(row)"
-                              title="Upload Target">
-                              <i class="fas fa-upload"></i>
-                            </button>
-                          }
-
-                          @if (showEdit && showEditButton) {
-                            <button
-                              class="btn btn-sm btn-warning edit-btn"
-                              (click)="edit(row)"
-                              title="Edit">
-                              <i class="fas fa-edit"></i>
-                            </button>
-                          }
                         </div>
                       </td>
                     }
+
+                    
                   </tr>
                 }
               }
@@ -235,43 +268,43 @@
       <div class="pagination-info">
         Showing {{ getStartRecord() }} to {{ getEndRecord() }} of {{ totalElements !== null ? totalElements : filteredRows.length }} records
       </div>
-
+ 
       <div class="pagination-right">
         <div class="pagination-controls">
           <button (click)="prevPage()" [disabled]="currentPage === 1">
             Prev
           </button>
-
+ 
           @for (page of getVisiblePages(); track page) {
             @if (page === '...') {
               <span class="pagination-ellipsis">...</span>
             } @else {
-              <button 
-                [class.active]="currentPage === page" 
+              <button
+                [class.active]="currentPage === page"
                 (click)="goToPage(page)">
                 {{ page }}
               </button>
             }
           }
-
+ 
           <button (click)="nextPage()" [disabled]="currentPage === totalPages">
             Next
           </button>
         </div>
-
+ 
         <!-- Custom Page Size Dropdown -->
         <div class="custom-dropdown-container page-size-dropdown">
-          <div class="dropdown-trigger" 
+          <div class="dropdown-trigger"
                [class.active]="openPageSizeDropdown"
                (click)="togglePageSizeDropdown($event)">
             <span class="trigger-text">{{ pageSize }}</span>
             <i class="fas fa-chevron-down arrow-icon"></i>
           </div>
-
+ 
           <div class="dropdown-panel small-panel" *ngIf="openPageSizeDropdown">
             <ul class="options-list">
-              <li class="option-item" 
-                  *ngFor="let opt of pageSizeOptions" 
+              <li class="option-item"
+                  *ngFor="let opt of pageSizeOptions"
                   (click)="selectPageSize(opt.value)">
                 {{ opt.label }}
               </li>
@@ -281,7 +314,9 @@
       </div>
     </div>
   }
-
-
-
+ 
+ 
+ 
 </main>
+ 
+ 

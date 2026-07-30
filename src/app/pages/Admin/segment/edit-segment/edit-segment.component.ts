@@ -51,23 +51,27 @@ export class EditSegment implements OnInit {
   }
  
   private loadDropdownData(): void {
-    // 1. Fetch Categories
-    this.segmentService.getCategories().subscribe({
-      next: (data) => {
-        this.categories = data.map(cat => ({ label: cat.categoryName, value: cat.categoryId }));
-        // 2. Fetch Competitors (for options)
-        this.segmentService.getCompetitors().subscribe({
-          next: (comps) => {
-            this.competitors = comps.map(c => ({ label: c.competitorName, value: c.competitorName }));
-            this.buildForm();
-          },
-          error: (err) => console.error('Failed to load competitors', err)
-        });
+    forkJoin({
+      categories: this.segmentService.getCategories(),
+      competitors: this.segmentService.getCompetitors()
+    }).subscribe({
+      next: (res) => {
+        this.categories = (res.categories || []).map(cat => ({
+          label: cat.categoryName,
+          value: cat.categoryId
+        }));
+        this.competitors = (res.competitors || []).map(c => ({
+          label: c.competitorName,
+          value: c.competitorId
+        }));
+        this.buildForm();
       },
-      error: (err) => console.error('Failed to load categories', err)
+      error: (err) => {
+        console.error('Failed to load dropdown data', err);
+        this.buildForm();
+      }
     });
- 
-    // 2. Load Statuses (Static - though hidden now)
+
     this.statuses = [
       { label: 'Active', value: 1 },
       { label: 'Inactive', value: 0 }
@@ -76,12 +80,10 @@ export class EditSegment implements OnInit {
  
   private buildForm(): void {
     this.segmentFields = [
-      { name: 'categoryId', label: 'Business Category', type: 'select', required: true, options: this.categories },
-      { name: 'groupName', label: 'Segment Name', type: 'text', required: true },
-      { name: 'groupDescription', label: 'Description', type: 'textarea', required: false },
-      // Competitors Field Added
-      { name: 'competitors', label: 'Competitors', type: 'checkbox', options: this.competitors }
-      // Group Status Field Removed
+      { name: 'categoryId', label: 'Business Category', placeholder: 'Select Business Category', type: 'select', required: true, options: this.categories },
+      { name: 'groupName', label: 'Segment Name', placeholder: 'Enter segment name', type: 'text', required: true },
+      { name: 'groupDescription', label: 'Description', placeholder: 'Enter description', type: 'textarea', required: false },
+      { name: 'competitors', label: 'Competitors', placeholder: '-- Select Competitors --', type: 'checkbox', options: this.competitors }
     ];
  
     this.loadSegment();
@@ -89,54 +91,93 @@ export class EditSegment implements OnInit {
  
   private loadSegment(): void {
     this.segmentService.getSegmentById(this.segmentId).subscribe({
-      next: (segment: any) => { // GroupDto
-        // Map backend DTO to form fields
- 
-        let compsObj: any = {};
-        if (segment.competitorNames) {
+      next: (segment: any) => {
+        console.log('Loaded segment details for edit:', segment);
+        const categoryId = segment.categoryId || segment.productCategoryId || segment.category?.categoryId;
+        const description = segment.description || segment.groupDescription || '';
+        const compsObj: any = {};
+
+        if (segment.competitors && Array.isArray(segment.competitors) && segment.competitors.length > 0) {
+          segment.competitors.forEach((c: any) => {
+            if (typeof c === 'object' && c !== null) {
+              if (c.competitorId !== undefined && c.competitorId !== null) {
+                compsObj[c.competitorId] = true;
+              }
+              if (c.competitorName) {
+                compsObj[c.competitorName] = true;
+              }
+            } else if (c !== undefined && c !== null) {
+              compsObj[c] = true;
+            }
+          });
+        } else if (segment.competitorIds && Array.isArray(segment.competitorIds) && segment.competitorIds.length > 0) {
+          segment.competitorIds.forEach((id: any) => {
+            compsObj[id] = true;
+          });
+        } else if (segment.competitorNames && Array.isArray(segment.competitorNames) && segment.competitorNames.length > 0) {
           segment.competitorNames.forEach((name: string) => {
             compsObj[name] = true;
           });
         }
- 
-        this.initialData = {
-          categoryId: segment.productCategoryId || segment.category?.categoryId || '',
-          groupName: segment.groupName,
-          groupDescription: segment.groupDescription,
-          groupStatus: segment.groupStatus,
-          competitors: compsObj
-        };
+
+        this.setInitialData(categoryId, segment, description, compsObj);
       },
       error: (err) => {
-        console.error('Failed to load segment', err);
+        console.error('Failed to load segment:', err);
         if (err.status === 403) {
           console.error('Permission denied. Please ensure you are logged in as Admin.');
         }
       }
     });
   }
+
+  private setInitialData(categoryId: any, segment: any, description: string, compsObj: any): void {
+    this.initialData = {
+      categoryId: categoryId ? Number(categoryId) : '',
+      groupName: segment.groupName || '',
+      groupDescription: description,
+      groupStatus: segment.status ?? segment.groupStatus ?? 1,
+      competitors: compsObj
+    };
+  }
  
   updateSegment(formData: any): void {
-    // Transform competitors object { 'A': true } to list ['A']
-    const selectedCompetitors: string[] = [];
-    if (formData.competitors) {
+    const selectedCompetitorIds: number[] = [];
+    const selectedCompetitorNames: string[] = [];
+
+    if (formData.competitors && typeof formData.competitors === 'object') {
       Object.keys(formData.competitors).forEach(key => {
         if (formData.competitors[key]) {
-          selectedCompetitors.push(key);
+          const numKey = Number(key);
+          if (!isNaN(numKey)) {
+            selectedCompetitorIds.push(numKey);
+            const found = this.competitors.find(c => c.value === numKey);
+            if (found) {
+              selectedCompetitorNames.push(found.label);
+            }
+          } else {
+            selectedCompetitorNames.push(key);
+            const found = this.competitors.find(c => c.label === key || c.value === key);
+            if (found && typeof found.value === 'number') {
+              selectedCompetitorIds.push(found.value);
+            }
+          }
         }
       });
     }
- 
+
     const payload: SegmentDto = {
-      categoryId: formData.categoryId,
+      categoryId: Number(formData.categoryId),
       groupName: formData.groupName,
       description: formData.groupDescription,
-      groupStatus: Number(this.initialData.groupStatus || 1), // Preserve hidden status
-      competitorNames: selectedCompetitors
+      groupDescription: formData.groupDescription,
+      groupStatus: Number(this.initialData?.groupStatus ?? 1),
+      competitorIds: selectedCompetitorIds,
+      competitorNames: selectedCompetitorNames
     };
- 
+
     console.log('Updating segment:', payload);
- 
+
     this.segmentService.updateSegment(this.segmentId, payload).subscribe({
       next: () => {
         console.log('Segment updated successfully');

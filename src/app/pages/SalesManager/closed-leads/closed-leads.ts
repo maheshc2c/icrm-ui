@@ -85,8 +85,11 @@ export class ClosedLeadsComponent implements OnInit {
         const data = Array.isArray(response) ? response : (response.data || []);
         this.closedLeads = data.map((item: any) => {
           let statusLabel = 'Lead';
-          if (item.leadStatus === 2) statusLabel = 'Won';
-          else if (item.leadStatus === 3) statusLabel = 'Lead Dropped';
+          if (item.leadStatus === 0 || item.leadStatus === 21) statusLabel = 'Lead Dropped';
+          else if (item.leadStatus === 2) statusLabel = 'Won';
+          else if (item.leadStatus === 3) statusLabel = 'Opportunity';
+          else if (item.leadStatus === 4) statusLabel = 'Converted';
+          else if (item.leadStatus === 22) statusLabel = 'Closed';
           
           return {
             leadId: item.leadId,

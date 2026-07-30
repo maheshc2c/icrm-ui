@@ -74,7 +74,6 @@ export class ApproveLeads implements OnInit {
     }
   ];
 
-
   /* TABLE DATA */
   rows: any[] = [];
   allRows: any[] = [];
@@ -138,7 +137,8 @@ export class ApproveLeads implements OnInit {
               { label: 'Select Owner', value: '' },
               ...owners.map(u => {
                 const fullName = (u.firstName + ' ' + (u.lastName || '')).trim();
-                return { label: fullName, value: fullName };
+                const matchVal = `${u.firstName} (${u.username})`;
+                return { label: fullName, value: matchVal };
               })
             ];
           }
@@ -167,7 +167,8 @@ export class ApproveLeads implements OnInit {
           createdBy: lead.createdBy,
           leadSource: lead.leadSource,
           createdTime: lead.createdTime,
-          leadStatus: lead.leadStatus
+          leadStatus: lead.leadStatus,
+          canApprove: lead.leadStatus === 1
         }));
         this.rows = [...this.allRows];
         this.totalElements = response.totalElements;

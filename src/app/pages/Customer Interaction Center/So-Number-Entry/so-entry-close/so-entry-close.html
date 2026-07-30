@@ -1,34 +1,3 @@
-<!-- <app-header></app-header>
-<app-sidebar></app-sidebar>
-<app-pageheader
-  [title]="headerTitle"
-  [breadcrumbs]="headerBreadcrumbs">
-</app-pageheader>
-
-<app-data-table
-  title="Campaign List"
-  [columns]="columns"
-  [rows]="rows"
-  [searchFields]="searchFields"
-  [showSearch]="true"
-  [showImport]="true"
-  [showAdd]="false"
-  [showRefresh]="true"
-  [showSubmit]="false"
-  [showSNo]="false"
-  [showActions]="false"
-  (search)="onSearch()"
-  (refresh)="onRefresh()"
-  (import)="onImport()"
-  (deleteRow)="onDelete($event)"
-  (deleteRow)="onDelete($event)"
-  (cellChange)="onCellChange($event)"
-  (downloadRow)="onDownload($event)">
-</app-data-table>
-
-
-
- -->
 
  <app-header></app-header>
 <app-sidebar></app-sidebar>
@@ -42,21 +11,26 @@
   title="Campaign List"
   [columns]="columns"
   [rows]="rows"
+  [showReset]="true"
+  [showAdd]="false"
+  [showDelete]="true"
+  [showDownload]="true"
   [searchFields]="searchFields"
-
-
-
-  (search)="onSearch($event)"   
-  (refresh)="onRefresh()"
+  [showEdit]="false"
+  [showDelete]="false"
+  [showPagination]="true"
+  [totalElements]="totalElements"
+  [pageSize]="pageSize"
+  [showActions]="false"
+  [showSno]="false"
+  [currentPage]="currentPage"
+  [totalPages]="totalPages"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
+  (searchChange)="onSearch($event)"   
   (import)="onImport()"
   (deleteRow)="onDelete($event)"
   (cellChange)="onCellChange($event)"
+  (download)="onBulkDownload()"
   (downloadRow)="onDownload($event)">
 </app-data-table>
-  <!-- [showSearch]="true"
-  [showImport]="true"
-  [showAdd]="false"
-  [showRefresh]="true"
-  [showSubmit]="false"
-  [showSNo]="false"
-  [showActions]="false" -->

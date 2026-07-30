@@ -24,10 +24,15 @@ export const authGuard: CanActivateFn = (route, state) => {
     .filter(Boolean);
 
   if (allowedRoles && allowedRoles.length > 0) {
-    const normalizedUserRole = userRole?.toLowerCase();
-    const normalizedAllowedRoles = allowedRoles.map(role => role.toLowerCase());
-
-    if (!normalizedUserRole || !normalizedAllowedRoles.includes(normalizedUserRole)) {
+    if (!userRole) {
+      router.navigate(['/unauthorized']);
+      return false;
+    }
+    const normalizedUserRole = userRole.replace(/[\s_]+/g, '').toUpperCase();
+    const isAllowed = allowedRoles.some(role => 
+      role.replace(/[\s_]+/g, '').toUpperCase() === normalizedUserRole
+    );
+    if (!isAllowed) {
       router.navigate(['/unauthorized']);
       return false;
     }

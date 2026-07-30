@@ -21,7 +21,7 @@ export class adminMarketingservice {
   public refreshSubject = new Subject<void>();
 
 
-  private baseUrl = 'http://localhost:8080'; // ✅ no trailing slash
+  public baseUrl = 'http://localhost:8080'; // ✅ no trailing slash
 
   constructor(
     private http: HttpClient,
@@ -417,9 +417,20 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
 
   // ================= CAMPAIGN DOCUMENT METHODS =================
   getCampaignDocuments(): Observable<CampaignDocument[]> {
-    return this.http.get<CampaignDocument[]>(`${this.baseUrl}/adminMarketing/view-campdoc`, {
+    const payload = {
+      searchTerm: null,
+      roleName: null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 100000,
+        sortBy: 'campaignDoccreatedTime',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.baseUrl}/marketing-document/view-document`, payload, {
       headers: this.getAuthHeaders()
     }).pipe(
+      map(res => res?.content || []),
       catchError((error) => {
         console.error('Error fetching campaign documents', error);
         return of([]);
@@ -427,24 +438,73 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
     );
   }
 
-  getDocumentById(id: number): Observable<CampaignDocument[]> {
-    return this.http.get<CampaignDocument[]>(`${this.baseUrl}/adminMarketing/view-campdoc`, {
+  searchCampaignDocumentsPaged(
+    searchTerm: string | null,
+    roleName: string | null,
+    pageNumber: number,
+    pageSize: number,
+    sortBy: string = 'campaignDoccreatedTime',
+    sortOrder: string = 'desc'
+  ): Observable<any> {
+    const payload = {
+      searchTerm: searchTerm || null,
+      roleName: roleName || null,
+      pagination: {
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+        sortBy: sortBy,
+        sortOrder: sortOrder
+      }
+    };
+    return this.http.post<any>(`${this.baseUrl}/marketing-document/view-document`, payload, {
       headers: this.getAuthHeaders()
     });
   }
 
-  createDocument(payload: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/adminMarketing/create-campDoc`, payload, {
+  getDocumentById(id: number): Observable<CampaignDocument[]> {
+    const payload = {
+      searchTerm: null,
+      roleName: null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 100000,
+        sortBy: 'campaignDoccreatedTime',
+        sortOrder: 'desc'
+      }
+    };
+    return this.http.post<any>(`${this.baseUrl}/marketing-document/view-document`, payload, {
       headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => res?.content || []),
+      catchError(() => of([]))
+    );
+  }
+
+  downloadFile(fileName: string): Observable<Blob> {
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.baseUrl}/marketing-document/download/${fileName}`, {
+      headers: headers,
+      responseType: 'blob'
+    });
+  }
+
+  createDocument(formData: FormData): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.post(`${this.baseUrl}/marketing-document/create-document`, formData, {
+      headers
     }).pipe(
       tap(() => this.triggerRefresh())
     );
   }
 
-  updateDocument(id: number, payload: any): Observable<any> {
-    payload.campaignDocumentId = id;
-    return this.http.post(`${this.baseUrl}/adminMarketing/create-campDoc`, payload, {
-      headers: this.getAuthHeaders()
+  updateDocument(id: number, formData: FormData): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    return this.http.put(`${this.baseUrl}/marketing-document/document/${id}`, formData, {
+      headers
     }).pipe(
       tap(() => this.triggerRefresh())
     );
@@ -452,7 +512,7 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
 
   deactivateCampdoc(id: number) {
     return this.http.put<CampaignDocument>(
-      `${this.baseUrl}/adminMarketing/deactivate-campdoc/${id}`,
+      `${this.baseUrl}/marketing-document/deactivate-document/${id}`,
       {},
       { headers: this.getAuthHeaders() }
     );
@@ -460,7 +520,7 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
 
   activateCampdoc(id: number) {
     return this.http.put<CampaignDocument>(
-      `${this.baseUrl}/adminMarketing/activate-campdoc/${id}`,
+      `${this.baseUrl}/marketing-document/activate-document/${id}`,
       {},
       { headers: this.getAuthHeaders() }
     );
@@ -484,11 +544,11 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
   }
 
   getRoles(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/role-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/marketing-document/roles`, {
       headers: this.getAuthHeaders()
     }).pipe(
       catchError(() => of([
-        { id: 3, roleName: 'ADMINMARKETING' },
+        { id: 3, roleName: 'ADMIN MARKETING' },
         { id: 6, roleName: 'Regional Sales Manager' },
         { id: 10, roleName: 'Sales Director' },
         { id: 4, roleName: 'Sales Engineer' },

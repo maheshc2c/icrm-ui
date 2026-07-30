@@ -74,6 +74,8 @@ export class Demo {
     console.log('Delete row:', row);
   }
 
+  
+
 
   searchFields: SearchFieldConfig[] = [
     {

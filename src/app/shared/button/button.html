@@ -51,6 +51,23 @@
           title="Reset">
     <i class="fas fa-undo" aria-hidden="true"></i>
   </button>
+
+  <!-- BULK UPLOAD -->
+  <button *ngIf="showBulkUpload"
+          class="btn btn-secondary"
+          (click)="bulkUpload.emit()"
+          title="Bulk Upload">
+    <i class="fas fa-cloud-upload"></i> Bulk Upload
+  </button>
+
+  <!-- SUBMIT -->
+  <button *ngIf="showSubmit"
+          class="btn btn-submit"
+          (click)="submit.emit()"
+          title="Submit">
+    Submit
+  </button>
+
 </div>
 
 
