@@ -48,7 +48,7 @@ constructor() {
     );
   }
 
-   if (role === 'ADMIN') {
+   if (role === 'Admin') {
     this.menuItems.push(
        {
         label: 'Home',

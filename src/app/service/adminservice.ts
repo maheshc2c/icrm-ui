@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ContentChildDecorator, Injectable } from '@angular/core';
-import { Observable, map, shareReplay } from 'rxjs';
+import { Observable, map, shareReplay, catchError, of } from 'rxjs';
 import { CompetitorModel } from '../models/competitor-model';
 import { AuthService } from './auth-service';
 import { CustomerModel } from '../models/customer-model';
@@ -145,31 +145,47 @@ downloadCompetitor(payload: any) {
     );
   }
 
-   deactivateCustomer(id: number) {
-  const token = localStorage.getItem('token'); // or your existing token key
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
+  deactivateCustomer(id: number) {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
 
-  return this.http.put<CustomerModel>(
-    `${this.baseUrl}/admin/deactivate-customer/${id}`,
-    {},
-    { headers }
-  );
-}
+    return this.http.put<CustomerModel>(
+      `${this.baseUrl}/admin/deactivate-customer/${id}`,
+      {},
+      { headers }
+    ).pipe(
+      catchError(() => {
+        return this.http.put<CustomerModel>(
+          `${this.baseUrl}/customer/deactivate-customer/${id}`,
+          {},
+          { headers }
+        );
+      })
+    );
+  }
 
-activateCustomer(id: number) {
-  const token = localStorage.getItem('token'); // or your existing token key
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
+  activateCustomer(id: number) {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
 
-  return this.http.put<CustomerModel>(
-    `${this.baseUrl}/admin/activate-customer/${id}`,
-    {},
-    { headers }
-  );
-}
+    return this.http.put<CustomerModel>(
+      `${this.baseUrl}/admin/activate-customer/${id}`,
+      {},
+      { headers }
+    ).pipe(
+      catchError(() => {
+        return this.http.put<CustomerModel>(
+          `${this.baseUrl}/customer/activate-customer/${id}`,
+          {},
+          { headers }
+        );
+      })
+    );
+  }
 
 
   // ================= GET ALL CUSTOMERS =================
@@ -1132,7 +1148,7 @@ activateChannelPartners(id: number) {
 
   downloadGroup(data: Segment[]) {
     return this.http.post(
-      `${this.baseUrl}/admin/group-excel`,
+      `${this.baseUrl}/product/group-excel`,
       data,
       {
         headers: this.getAuthHeaders(),

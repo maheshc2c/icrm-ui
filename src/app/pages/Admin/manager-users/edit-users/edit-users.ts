@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
@@ -142,15 +143,15 @@ export class EditUsersComponent implements OnInit {
     this.isUserLoading = true;
 
     forkJoin({
-      roles: this.userService.getRoles(),
-      branches: this.userService.getBranches(),
-      categories: this.userService.getCategories(),
-      worlds: this.userService.getWorlds(),
-      allGroups: this.userService.getAllGroups(),
-      geos: this.userService.getLocationsByLevel(2)
+      roles: this.userService.getRoles().pipe(catchError(() => of([]))),
+      branches: this.userService.getBranches().pipe(catchError(() => of([]))),
+      categories: this.userService.getCategories().pipe(catchError(() => of([]))),
+      worlds: this.userService.getWorlds().pipe(catchError(() => of([]))),
+      allGroups: this.userService.getAllGroups().pipe(catchError(() => of([]))),
+      geos: this.userService.getLocationsByLevel(2).pipe(catchError(() => of([])))
     }).subscribe({
       next: ({ roles, branches, categories, worlds, allGroups, geos }) => {
-        this.roles = roles.filter((r: string) => r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
+        this.roles = (roles || []).filter((r: any) => typeof r === 'string' && r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
         this.branches = branches;
         this.categories = categories;
         this.worldOptions = worlds;

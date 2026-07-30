@@ -31,7 +31,7 @@
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />
 
               <!-- DATE / DATETIME -->
-              <input *ngIf="field.type === 'date' || field.type === 'datetime-local'" [type]="field.type" class="company-text-input"
+              <input *ngIf="field.type === 'date'" [type]="field.type" class="company-text-input"
                 [ngModel]="formData[field.name]" (ngModelChange)="onInputChange(field, $event)"
                 [name]="field.name" [required]="!!field.required" />
 

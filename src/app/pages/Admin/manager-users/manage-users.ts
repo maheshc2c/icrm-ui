@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Header } from '../../../layout/header/header';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
@@ -146,9 +148,11 @@ export class ManageUsersComponent implements OnInit {
     }
 
     loadRoles() {
-        this.userService.getRoles().subscribe({
+        this.userService.getRoles().pipe(
+            catchError(() => of([]))
+        ).subscribe({
             next: (roles: string[]) => {
-                const uniqueRoles = roles.filter((r: string) => r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
+                const uniqueRoles = (roles || []).filter((r: any) => typeof r === 'string' && r.toLowerCase().replace(/\s+/g, '') !== 'superadmin');
                 this.availableRoles = uniqueRoles.map((role: string) => ({
                     value: role,
                     label: role

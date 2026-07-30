@@ -37,6 +37,35 @@ export const routes: Routes = [
       path: 'dashboard',
       loadComponent: () =>
         import('./pages/dashboard/dashboard').then(m => m.Dashboard)
+    },
+    // ── Funnel Report (common-modules) ──────────────────────────────────
+    {
+      path: 'reports/funnel',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
+    },
+    {
+      path: 'funnel-report',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
     }
   ]
 },
