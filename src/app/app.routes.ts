@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
 import { SuperadminDashboard } from './pages/Superadmin/superadmin-dashboard/superadmin-dashboard';
-import { OpenLeads } from './pages/SalesManager/open-leads/open-leads';
-import { ClosedLeadsComponent } from './pages/SalesManager/closed-leads/closed-leads';
+import { OpenLeads } from './pages/common-modules/leads/open-leads/open-leads';
+import { ClosedLeadsComponent } from './pages/common-modules/leads/closed-leads/closed-leads';
 import { Addcompany } from './pages/Superadmin/addcompany/addcompany';
 import { Competitor } from './pages/Admin/competitor/competitor';
 import { AddCompetitor } from './pages/Admin/competitor/add-competitor/add-competitor';
@@ -131,6 +131,11 @@ export const routes: Routes = [
       { path: 'admin/user-target', redirectTo: 'user-target', pathMatch: 'full' },
       { path: 'admin/assign-target/:id', redirectTo: 'assign-target/:id', pathMatch: 'full' },
       { path: 'admin/upload-target/:id', redirectTo: 'upload-target/:id', pathMatch: 'full' },
+      {
+        path: 'admin/inactive-user-leads',
+        loadComponent: () =>
+          import('./pages/common-modules/inactive-user-leads/inactive-user-leads').then(m => m.InactiveUserLeads)
+      },
       {
   path: 'competitor',
   loadComponent: () =>
@@ -577,17 +582,17 @@ export const routes: Routes = [
 {
   path: 'salesdirector/contact',
   loadComponent: () =>
-    import('./pages/SalesDirector/contact/contact').then(m => m.Contact)
+    import('./pages/common-modules/contact/contact').then(m => m.Contact)
 },
 {
   path: 'salesdirector/contact/add',
   loadComponent: () =>
-    import('./pages/SalesDirector/contact/addcontact/addcontact').then(m => m.Addcontact)
+    import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact)
 },
 {
   path: 'salesdirector/contact/edit/:id',
    loadComponent: () =>
-    import('./pages/SalesDirector/contact/addcontact/addcontact').then(m => m.Addcontact)
+    import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact)
 },
 
 {
@@ -621,13 +626,13 @@ export const routes: Routes = [
       },
       {
         path: 'salesmanager/opportunities',
-        loadComponent: () => import('./pages/SalesManager/opportunities/opportunities').then(m => m.OpportunitiesComponent),
+        loadComponent: () => import('./pages/common-modules/opportunities/opportunities').then(m => m.OpportunitiesComponent),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'salesmanager/closed-opportunities',
-        loadComponent: () => import('./pages/SalesManager/closed-opportunities/closed-opportunities').then(m => m.ClosedOpportunitiesComponent),
+        loadComponent: () => import('./pages/common-modules/opportunities/closed-opportunities/closed-opportunities').then(m => m.ClosedOpportunitiesComponent),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
@@ -639,13 +644,13 @@ export const routes: Routes = [
       },
       {
         path: 'salesmanager/leads/add',
-        loadComponent: () => import('./pages/SalesManager/leads/addlead/addlead').then(m => m.AddleadComponent),
+        loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'salesmanager/leads/edit/:id',
-        loadComponent: () => import('./pages/SalesManager/leads/addlead/addlead').then(m => m.AddleadComponent),
+        loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
@@ -676,19 +681,19 @@ export const routes: Routes = [
       },
       {
         path: 'salesmanager/contact',
-        loadComponent: () => import('./pages/SalesManager/contact/contact').then(m => m.ContactComponent),
+        loadComponent: () => import('./pages/common-modules/contact/contact').then(m => m.Contact),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'salesmanager/contact/add',
-        loadComponent: () => import('./pages/SalesManager/contact/addcontact/addcontact').then(m => m.AddcontactComponent),
+        loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'salesmanager/contact/edit/:id',
-        loadComponent: () => import('./pages/SalesManager/contact/addcontact/addcontact').then(m => m.AddcontactComponent),
+        loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
         canActivate: [authGuard],
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },

@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DataTable } from '../../../shared/data-table/data-table';
-import { SearchFieldConfig } from '../../../shared/search/search';
-import { Breadcrumb } from '../../../models/breadcrumb';
-import { Pageheader } from '../../../shared/pageheader/pageheader';
-import { Header } from '../../../layout/header/header';
-import { Sidebar } from '../../../layout/sidebar/sidebar';
-import { Leadservice } from '../../../service/leadservice';
+import { DataTable } from '../../../../shared/data-table/data-table';
+import { SearchFieldConfig } from '../../../../shared/search/search';
+import { Breadcrumb } from '../../../../models/breadcrumb';
+import { Pageheader } from '../../../../shared/pageheader/pageheader';
+import { Header } from '../../../../layout/header/header';
+import { Sidebar } from '../../../../layout/sidebar/sidebar';
+import { Leadservice } from '../../../../service/leadservice';
 
 @Component({
   selector: 'app-closed-leads',

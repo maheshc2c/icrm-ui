@@ -48,7 +48,7 @@ constructor() {
     );
   }
 
-   if (role === 'ADMIN') {
+   if (role === 'Admin') {
     this.menuItems.push(
        {
         label: 'Home',
@@ -122,7 +122,7 @@ constructor() {
                 {
         label: 'Inactive User Leads',
         icon: 'fas fa-user-slash',
-        route: '/admindashboard'
+        route: '/admin/inactive-user-leads'
       },
                     {
         label: 'Delete Contract Note',

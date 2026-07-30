@@ -307,7 +307,6 @@ export class AddleadComponent implements OnInit {
       name: 'distributor',
       label: 'Distributor',
       type: 'select',
-      required: true,
       options: []
     },
     {
@@ -561,7 +560,8 @@ export class AddleadComponent implements OnInit {
 
   private loadLeadData(id: number): void {
     this.leadservice.getLeadById(id).subscribe({
-      next: (data: LeadPayload) => {
+      next: (res: any) => {
+        const data = res.data || res;
         console.log('Loaded Lead Data:', data);
         this.originalLeadData = data;
 
@@ -990,12 +990,20 @@ export class AddleadComponent implements OnInit {
 
   fetchOpportunities(id: number): void {
     this.leadservice.getOpportunitiesByLeadId(id).subscribe({
-      next: (data) => {
-        console.log('Fetched Opportunities:', data);
-        this.opportunities = data.map((opp: any) => ({
+      next: (res: any) => {
+        console.log('Fetched Opportunities raw response:', res);
+        const rawList = res?.data || res?.content || (Array.isArray(res) ? res : []);
+        this.opportunities = rawList.map((opp: any) => ({
           ...opp,
-          probabilityDisplay: opp.probability ? opp.probability + '%' : '0%'
+          id: opp.id || opp.opportunityId,
+          productAndCategory: opp.productAndCategory || opp.productName || opp.product || 'N/A',
+          qty: opp.qty !== undefined ? opp.qty : (opp.requiredQuantity || opp.quantity || 0),
+          stage: opp.stage || opp.statusName || ('Stage ' + opp.status),
+          category: opp.category || 'Warm',
+          probability: typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 40),
+          probabilityDisplay: (typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 40)) + '%'
         }));
+        console.log('Processed Opportunities rows:', this.opportunities);
       },
       error: (err) => console.error('Failed to fetch opportunities:', err)
     });
@@ -1546,8 +1554,8 @@ export class AddleadComponent implements OnInit {
   private getNumericQuoteId(quoteIdParam: any): number {
     if (typeof quoteIdParam === 'number') return quoteIdParam;
     if (typeof quoteIdParam === 'object' && quoteIdParam !== null) {
-      if (quoteIdParam.quoteRevisionId) return Number(quoteIdParam.quoteRevisionId);
       if (quoteIdParam.quoteId) return this.getNumericQuoteId(quoteIdParam.quoteId);
+      if (quoteIdParam.id) return this.getNumericQuoteId(quoteIdParam.id);
     }
     if (typeof quoteIdParam === 'string') {
       if (quoteIdParam.includes('-')) {
@@ -1611,31 +1619,43 @@ export class AddleadComponent implements OnInit {
     if (this.leadId) {
       console.log('openAddQuoteModal: fetching opportunities for leadId:', this.leadId);
       this.leadservice.getOpportunitiesByLeadId(this.leadId).subscribe({
-        next: (data) => {
-          console.log('openAddQuoteModal: fetched opportunities:', data);
+        next: (res: any) => {
+          console.log('openAddQuoteModal: fetched opportunities:', res);
+          const data = res?.data || res?.content || (Array.isArray(res) ? res : []);
           this.quoteOpportunities = data || [];
+          if (this.quoteOpportunities.length > 0) {
+            this.quoteForm.opportunityId = this.quoteOpportunities[0].id || this.quoteOpportunities[0].opportunityId;
+          }
           this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load opportunities for quote:', err)
       });
 
       this.leadservice.getBillingOptions().subscribe({
-        next: (data) => {
-          this.quoteBillingOptions = data || [];
+        next: (res: any) => {
+          console.log('Billing options response:', res);
+          this.quoteBillingOptions = Array.isArray(res) ? res : (res?.data || []);
+          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load billing options:', err)
       });
 
       this.leadservice.getCompanyOptions().subscribe({
-        next: (data) => {
-          this.quoteCompanyOptions = data ? data.map((c: any) => ({ id: c.companyId, name: c.companyName })) : [];
+        next: (res: any) => {
+          console.log('Company options response:', res);
+          const list = Array.isArray(res) ? res : (res?.data || []);
+          this.quoteCompanyOptions = list.map((c: any) => ({ id: c.id || c.companyId, name: c.name || c.companyName }));
+          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load company options:', err)
       });
 
       this.leadservice.getDealers().subscribe({
-        next: (data) => {
-          this.quoteDealerOptions = data || [];
+        next: (res: any) => {
+          console.log('Dealer options response:', res);
+          const list = Array.isArray(res) ? res : (res?.data || []);
+          this.quoteDealerOptions = list.map((d: any) => ({ id: d.id || d.dealerId, name: d.name || d.dealerName }));
+          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load dealer options:', err)
       });
