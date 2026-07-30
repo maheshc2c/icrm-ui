@@ -203,6 +203,28 @@
   background: #ffcdd2;
   color: #b71c1c;
 }
+
+/* Assign */
+.assign-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.assign-btn:hover {
+  background: #bbdefb;
+  color: #0d47a1;
+}
+
+/* Upload */
+.upload-btn {
+  background: #e0f2f1;
+  color: #00796b;
+}
+
+.upload-btn:hover {
+  background: #b2dfdb;
+  color: #004d40;
+}
  
 /* ================= NO RECORDS FOUND (MATCHES TABLE DESIGN) ================= */
  
