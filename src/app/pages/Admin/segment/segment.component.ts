@@ -165,7 +165,7 @@ onImport() {
     },
     error: err => {
       console.error('Download failed:', err);
-      alert(`Download failed: ${err.status}`);
+      this.toastService.show(`Download failed: ${err.status}`, 'error', 3000);
     }
   });
 }

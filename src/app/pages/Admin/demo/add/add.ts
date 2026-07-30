@@ -200,24 +200,9 @@ demoFields: any[] = [
   }
 
   /* 🔥 FORM CHANGE HANDLER */
-  onFormValueChange(data: any): void {
-    this.formInitialData = { ...data };
-
-    if (data.categoryId) {
-      this.onCategoryChange(data.categoryId);
-    }
-
-    if (data.groupId) {
-      this.onGroupChange(data.groupId);
-    }
-
-    if (data.regionId) {
-      this.onRegionChange(data.regionId);
-    }
-
-    if (data.branchId) {
-      this.onBranchChange(data.branchId);
-    }
+  onFieldChange(event: { name: string, value: any }): void {
+    // Keep formInitialData in sync so it doesn't get reverted during setOptions triggering ngOnChanges
+    this.formInitialData[event.name] = event.value;
   }
 
   /* ================= DROPDOWNS ================= */
