@@ -27,7 +27,7 @@ export class Userlog {
 
   /* ================= HEADER ================= */
 
-  headerTitle = 'User Login History';
+  headerTitle = 'Manage User Logs';
 
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
@@ -113,11 +113,41 @@ export class Userlog {
 
   searchFields: SearchFieldConfig[] = [
     {
+      key: 'role',
+      label: 'Role ',
+      dependsOn: '',
+      placeholder: 'Select Role',
+      type: 'select',
+      options: []
+    },
+
+    {
       key: 'name',
-      label: 'User Name',
-      placeholder: 'Search user',
+      label: 'Name',
+      placeholder: 'search name',
       type: 'text'
-    }
+    },
+
+    {
+      key: 'employeeId',
+      label: 'Employee ID',
+      placeholder: 'Search employee ID',
+      type: 'text'
+    },
+
+   {
+    key: 'fromDate',
+    label: 'From Date',
+    placeholder: 'Select from date',
+    type: 'date'
+   },
+   
+   {
+    key: 'toDate',
+    label: 'To Date',
+    placeholder: 'Select to date',
+    type: 'date'
+   }
   ];
 
   onSearch(keyword: string) {
