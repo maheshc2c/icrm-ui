@@ -4,23 +4,23 @@ import { Observable, map, of, catchError } from 'rxjs';
 import { Product, ProductDto } from '../models/product';
 import { AuthService } from './auth-service';
 import { isPlatformBrowser } from '@angular/common';
-
+ 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
   private baseUrl = 'http://localhost:8080/admin';
   private productApiUrl = 'http://localhost:8080/product';
-
+ 
   constructor(
     private http: HttpClient,
     private auth: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
-
+ 
   private getAuthHeaders(): HttpHeaders {
     const token = this.auth.getToken();
-
+ 
     if (token) {
       return new HttpHeaders({
         'Authorization': `Bearer ${token}`,
@@ -32,7 +32,7 @@ export class ProductService {
       });
     }
   }
-
+ 
   // Get all products using search with empty body
   getProducts(page: number = 0, size: number = 100000): Observable<Product[]> {
     return this.http.post<any>(`${this.productApiUrl}/search`, {
@@ -48,28 +48,28 @@ export class ProductService {
       catchError(() => of([]))
     );
   }
-
+ 
   // Get product by ID
   getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.productApiUrl}/${id}`, {
       headers: this.getAuthHeaders()
     });
   }
-
+ 
   // Create new product
   createProduct(productDto: ProductDto): Observable<Product> {
     return this.http.post<Product>(`${this.productApiUrl}`, productDto, {
       headers: this.getAuthHeaders()
     });
   }
-
+ 
   // Update product
   updateProduct(id: number, productDto: ProductDto): Observable<Product> {
     return this.http.put<Product>(`${this.productApiUrl}/${id}`, productDto, {
       headers: this.getAuthHeaders()
     });
   }
-
+ 
   // Search products
   searchProducts(params: {
     categoryName?: string;
@@ -89,14 +89,14 @@ export class ProductService {
       catchError(() => of([]))
     );
   }
-
+ 
   // Activate/Deactivate Product
   activateDeactivateProduct(id: number): Observable<any> {
     return this.http.delete(`${this.productApiUrl}/${id}`, {
       headers: this.getAuthHeaders()
     });
   }
-
+ 
   // Get product categories
   getProductCategories(): Observable<string[]> {
     return this.http.get<any>(`${this.productApiUrl}/category`, {
@@ -109,7 +109,7 @@ export class ProductService {
       catchError(() => of([]))
     );
   }
-
+ 
   // Get product groups by category
   getProductGroupsByCategory(categoryId: number): Observable<string[]> {
     return this.http.get<any>(`${this.productApiUrl}/group?name=`, {
@@ -125,7 +125,7 @@ export class ProductService {
       catchError(() => of([]))
     );
   }
-
+ 
   // Get products by group
   getProductsByGroup(groupId: number): Observable<string[]> {
     return this.http.get<string[]>(`${this.baseUrl}/products-list-admin/${groupId}`, {
@@ -134,7 +134,7 @@ export class ProductService {
       catchError(() => of([]))
     );
   }
-
+ 
   // Get Product Types
   getProductTypes(): Observable<string[]> {
     return this.http.get<any>(`${this.productApiUrl}/types`, {
@@ -147,7 +147,7 @@ export class ProductService {
       catchError(() => of([]))
     );
   }
-
+ 
   // Get Sub Categories
   getSubCategories(): Observable<string[]> {
     return this.http.post<any>(`${this.productApiUrl}/subcategory-search`, {
@@ -162,7 +162,6 @@ export class ProductService {
       catchError(() => of([]))
     );
   }
-
   // --- METHODS FOR DYNAMIC DROPDOWNS ---
 
   getCategoriesFull(): Observable<any[]> {
@@ -253,7 +252,7 @@ export class ProductService {
       map(res => {
         const list = Array.isArray(res) ? res : (res?.content || []);
         if (categoryName) {
-          return list.filter((g: any) => 
+          return list.filter((g: any) =>
             g.productCategory?.categoryName?.toLowerCase() === categoryName.toLowerCase()
           );
         }

@@ -87,18 +87,7 @@ export class AddleadComponent implements OnInit {
     { header: 'Revisions', field: 'revisions' }
   ];
 
-  quotes: any[] = [
-    {
-      id: 1,
-      quoteId: 'KAR 26 S Rev 2',
-      opportunityDetails: '101 Defense (Qty 1)',
-      discount: '1.06%',
-      currentStage: 'CH',
-      quoteStatus: 'Quote Approved',
-      finalApprover: 'CH',
-      revisions: 'Rev 2'
-    }
-  ];
+  quotes: any[] = [];
 
   /* ================= QUOTE MODAL STATE ================= */
   showAddQuoteModal = false;
@@ -318,7 +307,6 @@ export class AddleadComponent implements OnInit {
       name: 'distributor',
       label: 'Distributor',
       type: 'select',
-      required: true,
       options: []
     },
     {
@@ -393,8 +381,9 @@ export class AddleadComponent implements OnInit {
           ];
         }
 
-        // Load existing lead details immediately
+        // Load existing lead details and quotes immediately
         this.loadLeadData(this.leadId);
+        this.loadQuotes();
       }
     });
 
@@ -571,7 +560,8 @@ export class AddleadComponent implements OnInit {
 
   private loadLeadData(id: number): void {
     this.leadservice.getLeadById(id).subscribe({
-      next: (data: LeadPayload) => {
+      next: (res: any) => {
+        const data = res.data || res;
         console.log('Loaded Lead Data:', data);
         this.originalLeadData = data;
 
@@ -1000,12 +990,20 @@ export class AddleadComponent implements OnInit {
 
   fetchOpportunities(id: number): void {
     this.leadservice.getOpportunitiesByLeadId(id).subscribe({
-      next: (data) => {
-        console.log('Fetched Opportunities:', data);
-        this.opportunities = data.map((opp: any) => ({
+      next: (res: any) => {
+        console.log('Fetched Opportunities raw response:', res);
+        const rawList = res?.data || res?.content || (Array.isArray(res) ? res : []);
+        this.opportunities = rawList.map((opp: any) => ({
           ...opp,
-          probabilityDisplay: opp.probability ? opp.probability + '%' : '0%'
+          id: opp.id || opp.opportunityId,
+          productAndCategory: opp.productAndCategory || opp.productName || opp.product || 'N/A',
+          qty: opp.qty !== undefined ? opp.qty : (opp.requiredQuantity || opp.quantity || 0),
+          stage: opp.stage || opp.statusName || ('Stage ' + opp.status),
+          category: opp.category || 'Warm',
+          probability: typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 40),
+          probabilityDisplay: (typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 40)) + '%'
         }));
+        console.log('Processed Opportunities rows:', this.opportunities);
       },
       error: (err) => console.error('Failed to fetch opportunities:', err)
     });
@@ -1434,6 +1432,10 @@ export class AddleadComponent implements OnInit {
     this.selectedCustomer = null;
   }
 
+  onBlockVisit(): void {
+    this.toastService.info('Block Visit action triggered.');
+  }
+
   formatCustomerValue(val: any): string {
     if (val === null || val === undefined || val === 0 || val === '0' || val === 'null' || val === 'NULL') {
       return '';
@@ -1549,13 +1551,33 @@ export class AddleadComponent implements OnInit {
     }
   }
 
-  onDownloadQuote(quoteId: string | number): void {
-    this.leadservice.downloadQuotePdf(quoteId).subscribe({
+  private getNumericQuoteId(quoteIdParam: any): number {
+    if (typeof quoteIdParam === 'number') return quoteIdParam;
+    if (typeof quoteIdParam === 'object' && quoteIdParam !== null) {
+      if (quoteIdParam.quoteId) return this.getNumericQuoteId(quoteIdParam.quoteId);
+      if (quoteIdParam.id) return this.getNumericQuoteId(quoteIdParam.id);
+    }
+    if (typeof quoteIdParam === 'string') {
+      if (quoteIdParam.includes('-')) {
+        const parts = quoteIdParam.split('-');
+        if (parts.length >= 3 && !isNaN(Number(parts[2]))) {
+          return parseInt(parts[2], 10);
+        }
+        return parseInt(quoteIdParam.replace(/\D/g, '') || '0', 10);
+      }
+      return parseInt(quoteIdParam, 10) || 0;
+    }
+    return 0;
+  }
+
+  onDownloadQuote(quoteId: any): void {
+    const numId = this.getNumericQuoteId(quoteId);
+    this.leadservice.downloadQuotePdf(numId).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `Quote_${quoteId}.pdf`;
+        link.download = `Quote_${numId}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -1565,13 +1587,14 @@ export class AddleadComponent implements OnInit {
     });
   }
 
-  onViewQuote(quoteId: string | number): void {
+  onViewQuote(quoteId: any): void {
+    const numId = this.getNumericQuoteId(quoteId);
     const newWindow = window.open('', '_blank');
     if (newWindow) {
-      newWindow.document.write('<html><body><h3>Loading PDF...</h3></body></html>');
+      newWindow.document.write('<html><body style="font-family:sans-serif; padding:20px;"><h3>Loading PDF...</h3></body></html>');
     }
     
-    this.leadservice.downloadQuotePdf(quoteId).subscribe({
+    this.leadservice.downloadQuotePdf(numId).subscribe({
       next: (blob) => {
         const fileURL = URL.createObjectURL(blob);
         if (newWindow) {
@@ -1582,7 +1605,7 @@ export class AddleadComponent implements OnInit {
         console.error('Failed to view quote PDF:', err);
         if (newWindow) {
           newWindow.document.open();
-          newWindow.document.write('<html><body><h3 style="color:red;">Failed to load PDF</h3></body></html>');
+          newWindow.document.write('<html><body style="font-family:sans-serif; padding:20px;"><h3 style="color:red;">Failed to load PDF</h3><p>Could not fetch PDF from server.</p></body></html>');
           newWindow.document.close();
         }
       }
@@ -1596,31 +1619,43 @@ export class AddleadComponent implements OnInit {
     if (this.leadId) {
       console.log('openAddQuoteModal: fetching opportunities for leadId:', this.leadId);
       this.leadservice.getOpportunitiesByLeadId(this.leadId).subscribe({
-        next: (data) => {
-          console.log('openAddQuoteModal: fetched opportunities:', data);
+        next: (res: any) => {
+          console.log('openAddQuoteModal: fetched opportunities:', res);
+          const data = res?.data || res?.content || (Array.isArray(res) ? res : []);
           this.quoteOpportunities = data || [];
+          if (this.quoteOpportunities.length > 0) {
+            this.quoteForm.opportunityId = this.quoteOpportunities[0].id || this.quoteOpportunities[0].opportunityId;
+          }
           this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load opportunities for quote:', err)
       });
 
       this.leadservice.getBillingOptions().subscribe({
-        next: (data) => {
-          this.quoteBillingOptions = data || [];
+        next: (res: any) => {
+          console.log('Billing options response:', res);
+          this.quoteBillingOptions = Array.isArray(res) ? res : (res?.data || []);
+          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load billing options:', err)
       });
 
       this.leadservice.getCompanyOptions().subscribe({
-        next: (data) => {
-          this.quoteCompanyOptions = data ? data.map((c: any) => ({ id: c.companyId, name: c.companyName })) : [];
+        next: (res: any) => {
+          console.log('Company options response:', res);
+          const list = Array.isArray(res) ? res : (res?.data || []);
+          this.quoteCompanyOptions = list.map((c: any) => ({ id: c.id || c.companyId, name: c.name || c.companyName }));
+          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load company options:', err)
       });
 
       this.leadservice.getDealers().subscribe({
-        next: (data) => {
-          this.quoteDealerOptions = data || [];
+        next: (res: any) => {
+          console.log('Dealer options response:', res);
+          const list = Array.isArray(res) ? res : (res?.data || []);
+          this.quoteDealerOptions = list.map((d: any) => ({ id: d.id || d.dealerId, name: d.name || d.dealerName }));
+          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load dealer options:', err)
       });

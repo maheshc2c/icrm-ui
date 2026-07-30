@@ -18,30 +18,38 @@ export class Categoryservice {
     });
   }
  
-  // Get all categories - YOU NEED TO ADD THIS ENDPOINT TO BACKEND
+  // Get all categories
   getCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/admin/productCategory-view`, {
+    return this.http.get<any[]>(`${this.baseUrl}/product/category`, {
       headers: this.getAuthHeaders()
     });
   }
  
   // Create category
   createCategory(category: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/productCategory-create`, category, {
+    const payload = {
+      businessCategory: category.categoryName || category.businessCategory,
+      description: category.categoryDescription || category.description
+    };
+    return this.http.post(`${this.baseUrl}/product/category`, payload, {
       headers: this.getAuthHeaders()
     });
   }
  
-  // Update category - Backend expects query param: ?id=
+  // Update category
   updateCategory(id: number, category: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/productCategory-edite?id=${id}`, category, {
+    const payload = {
+      businessCategory: category.categoryName || category.businessCategory,
+      description: category.categoryDescription || category.description
+    };
+    return this.http.put(`${this.baseUrl}/product/category/${id}`, payload, {
       headers: this.getAuthHeaders()
     });
   }
  
   // Search category
   searchCategory(keyword: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/admin/productCategory-search?categoryName=${keyword}`, {
+    return this.http.get<any[]>(`${this.baseUrl}/product/category?name=${keyword}`, {
       headers: this.getAuthHeaders()
     });
   }

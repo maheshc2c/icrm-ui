@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Header } from '../../../layout/header/header';
-import { Sidebar } from '../../../layout/sidebar/sidebar';
-import { Pageheader } from '../../../shared/pageheader/pageheader';
-import { SearchFieldConfig } from '../../../shared/search/search';
-import { Breadcrumb } from '../../../models/breadcrumb';
-import { DataTable } from '../../../shared/data-table/data-table';
-import { Leadservice } from '../../../service/leadservice';
-import { OpportunityTableModel } from '../../../models/opportunity-table.model';
+import { Header } from '../../../../layout/header/header';
+import { Sidebar } from '../../../../layout/sidebar/sidebar';
+import { Pageheader } from '../../../../shared/pageheader/pageheader';
+import { SearchFieldConfig } from '../../../../shared/search/search';
+import { Breadcrumb } from '../../../../models/breadcrumb';
+import { DataTable } from '../../../../shared/data-table/data-table';
+import { Leadservice } from '../../../../service/leadservice';
+import { OpportunityTableModel } from '../../../../models/opportunity-table.model';
 
 @Component({
   selector: 'app-closed-opportunities',

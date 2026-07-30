@@ -1,0 +1,14 @@
+@import '../../../shared/search/search.css';
+
+.lead-edit-card-box {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Give clean vertical spacing between the search filters toolbar and the data table header */
+::ng-deep .datatable-toolbar {
+  margin-bottom: 24px !important;
+}
+
+::ng-deep .content-wrapper {
+  margin-top: 16px !important;
+}

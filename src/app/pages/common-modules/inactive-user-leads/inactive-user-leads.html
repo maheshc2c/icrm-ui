@@ -1,0 +1,101 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<main class="content" style="margin-left: 287px; padding: 20px 30px;">
+
+  <!-- 1. Row 1: Search Filters Bar (Select Owner, Select Region, Select State, Select District, Select City) -->
+  <div style="margin-bottom: 12px;">
+    <app-search
+      [fields]="searchFields"
+      (searchChange)="onSearch($event)"
+      (fieldChange)="onFieldChange($event)">
+    </app-search>
+  </div>
+
+  <!-- 2. Row 2: Select User Re-assign Bar directly below Row 1 -->
+  <div style="margin-bottom: 24px; display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap;">
+    <!-- Select User Searchable Dropdown with wider width -->
+    <div class="search-field" style="width: 320px; max-width: 320px; flex: 0 0 320px;">
+      <label class="search-label">Select User</label>
+      <div class="custom-dropdown-container" (click)="$event.stopPropagation()">
+        <div 
+          class="dropdown-trigger" 
+          [class.active]="isTargetUserDropdownOpen"
+          (click)="isTargetUserDropdownOpen = !isTargetUserDropdownOpen">
+          <span class="trigger-text">{{ getSelectedTargetUserName() }}</span>
+          <i class="fas fa-chevron-down arrow-icon"></i>
+        </div>
+
+        <div *ngIf="isTargetUserDropdownOpen" class="dropdown-panel" (click)="$event.stopPropagation()">
+          <div class="search-box-wrapper">
+            <input 
+              type="text" 
+              class="dropdown-search-input" 
+              placeholder="Search..." 
+              [(ngModel)]="activeUserSearchText" />
+          </div>
+
+          <ul class="options-list">
+            <li 
+              class="option-item"
+              [class.selected]="!selectedTargetUserId"
+              (click)="selectTargetUser(null)">
+              Select User
+            </li>
+            <li 
+              *ngFor="let u of filteredActiveUsers" 
+              class="option-item"
+              [class.selected]="selectedTargetUserId === u.id"
+              (click)="selectTargetUser(u)">
+              {{ u.name }}
+            </li>
+            <li *ngIf="filteredActiveUsers.length === 0" class="option-item" style="color: #999; text-align: center;">
+              No matching active users
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template App Button Component for Submit & Refresh/Reset -->
+    <app-button
+      [showSearch]="false"
+      [showDownload]="false"
+      [showImport]="false"
+      [showAdd]="false"
+      [showSubmit]="true"
+      [showRefresh]="true"
+      (submit)="onRerouteLeads()"
+      (refresh)="onReset()">
+    </app-button>
+  </div>
+
+  <!-- 3. DataTable Component with Top Margin Spacing -->
+  <div style="margin-top: 10px;">
+    <app-data-table
+      [columns]="columns"
+      [rows]="filteredRows"
+      [noMargin]="true"
+      [showSearch]="false"
+      [showAdd]="false"
+      [showImport]="false"
+      [showReset]="false"
+      [showDownload]="false"
+      [showCheckboxColumn]="false"
+      [showAssign]="false"
+      [showActions]="false"
+      [showEditButton]="false"
+      [showDeleteButton]="false"
+      (assignRow)="onAssignRow($event)"
+      [showPagination]="true"
+      [pageSize]="10"
+      [trackByField]="'leadId'">
+    </app-data-table>
+  </div>
+
+</main>
