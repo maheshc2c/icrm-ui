@@ -207,6 +207,7 @@ export class AddleadComponent implements OnInit {
   leadForm: any = {
     source: '',
     campaign: '',
+    referralName: '',
     customer: '' as string | number,
     rapportWithCustomer: '',
     contact1: '' as string | number,
@@ -235,6 +236,13 @@ export class AddleadComponent implements OnInit {
       type: 'select',
       required: true,
       options: []
+    },
+    {
+      name: 'referralName',
+      label: 'Referral Name',
+      type: 'text',
+      required: true,
+      placeholder: 'Referral Name'
     },
     {
       name: 'customer',
@@ -381,8 +389,9 @@ export class AddleadComponent implements OnInit {
           ];
         }
 
-        // Load existing lead details and quotes immediately
+        // Load existing lead details, opportunities, and quotes immediately
         this.loadLeadData(this.leadId);
+        this.fetchOpportunities(this.leadId);
         this.loadQuotes();
       }
     });
@@ -644,10 +653,49 @@ export class AddleadComponent implements OnInit {
     }
   }
 
+  /* ================= DYNAMIC SOURCE FIELD VISIBILITY ================= */
+  getSourceType(): 'campaign' | 'referral' | 'other' {
+    const sourceField = this.leadFields.find(f => f.name === 'source');
+    if (!sourceField || !this.leadForm.source) return 'other';
+
+    const selectedOption = sourceField.options?.find(opt => String(opt.value) === String(this.leadForm.source));
+    const label = selectedOption ? selectedOption.label.toLowerCase() : '';
+
+    if (label.includes('campaign') || label.includes('marketing')) {
+      return 'campaign';
+    } else if (label.includes('referral')) {
+      return 'referral';
+    }
+    return 'other';
+  }
+
+  shouldShowField(fieldName: string): boolean {
+    const sourceType = this.getSourceType();
+    if (fieldName === 'campaign') {
+      return sourceType === 'campaign';
+    }
+    if (fieldName === 'referralName') {
+      return sourceType === 'referral';
+    }
+    return true;
+  }
+
   /* ================= HANDLE FIELD CHANGES ================= */
   onFieldChange(event: {name: string, value: any}): void {
     // Clear error on change
     delete this.errors[event.name];
+
+    if (event.name === 'source') {
+      const sourceType = this.getSourceType();
+      if (sourceType !== 'campaign') {
+        this.leadForm.campaign = '';
+        delete this.errors['campaign'];
+      }
+      if (sourceType !== 'referral') {
+        this.leadForm.referralName = '';
+        delete this.errors['referralName'];
+      }
+    }
 
     if (event.name === 'customer') {
       this.showInstallationBaseDetailsModal = false;
@@ -794,10 +842,61 @@ export class AddleadComponent implements OnInit {
     this.openCustomerDropdown = false;
     this.openContact1Dropdown = false;
     this.openContact2Dropdown = false;
+    this.openQuoteDropdown = null;
     
     if (!(event.target as HTMLElement).closest('.custom-dropdown-container')) {
       this.openOppDropdown = null;
     }
+  }
+
+  /* ================= QUOTE SEARCHABLE DROPDOWN ================= */
+  openQuoteDropdown: string | null = null;
+  quoteDealerSearchQuery: string = '';
+  quoteCompanySearchQuery: string = '';
+
+  toggleQuoteDropdown(dropdownName: string, event: MouseEvent): void {
+    event.stopPropagation();
+    if (this.openQuoteDropdown === dropdownName) {
+      this.openQuoteDropdown = null;
+    } else {
+      this.openQuoteDropdown = dropdownName;
+      if (dropdownName === 'dealer') this.quoteDealerSearchQuery = '';
+      if (dropdownName === 'company') this.quoteCompanySearchQuery = '';
+    }
+  }
+
+  getFilteredQuoteDealers(): any[] {
+    if (!this.quoteDealerSearchQuery.trim()) return this.quoteDealerOptions;
+    const q = this.quoteDealerSearchQuery.toLowerCase().trim();
+    return this.quoteDealerOptions.filter((d: any) => d.name && d.name.toLowerCase().includes(q));
+  }
+
+  getFilteredQuoteCompanies(): any[] {
+    if (!this.quoteCompanySearchQuery.trim()) return this.quoteCompanyOptions;
+    const q = this.quoteCompanySearchQuery.toLowerCase().trim();
+    return this.quoteCompanyOptions.filter((c: any) => c.name && c.name.toLowerCase().includes(q));
+  }
+
+  getQuoteDealerLabel(): string {
+    if (!this.quoteForm.dealerId) return 'Select Dealer';
+    const found = this.quoteDealerOptions.find((d: any) => d.id == this.quoteForm.dealerId);
+    return found ? found.name : 'Select Dealer';
+  }
+
+  getQuoteCompanyLabel(): string {
+    if (!this.quoteForm.companyId) return 'Select Dealer';
+    const found = this.quoteCompanyOptions.find((c: any) => c.id == this.quoteForm.companyId);
+    return found ? found.name : 'Select Dealer';
+  }
+
+  selectQuoteDealer(dealerId: any): void {
+    this.quoteForm.dealerId = dealerId;
+    this.openQuoteDropdown = null;
+  }
+
+  selectQuoteCompany(companyId: any): void {
+    this.quoteForm.companyId = companyId;
+    this.openQuoteDropdown = null;
   }
 
   toggleOppDropdown(key: string, event: Event) {
@@ -833,6 +932,9 @@ export class AddleadComponent implements OnInit {
 
   /* ================= VALIDATION ================= */
   validateField(field: any): string | null {
+    if (!this.shouldShowField(field.name)) {
+      return null;
+    }
     const value = this.leadForm[field.name];
     if (field.required && (value === null || value === undefined || value === '')) {
       return `${field.label} is required`;
@@ -964,12 +1066,51 @@ export class AddleadComponent implements OnInit {
         return;
       }
     } else if (tab === 'Quote') {
-      if (!this.opportunities || this.opportunities.length === 0) {
+      if (this.leadId && (!this.opportunities || this.opportunities.length === 0)) {
+        this.leadservice.getOpportunitiesByLeadId(this.leadId).subscribe({
+          next: (res: any) => {
+            const rawList = res?.data || res?.content || (Array.isArray(res) ? res : []);
+            this.opportunities = rawList.map((opp: any) => ({
+              ...opp,
+              id: opp.id || opp.opportunityId,
+              productAndCategory: opp.productAndCategory || opp.productName || opp.product || 'N/A',
+              category: opp.category || 'Warm',
+              qty: opp.qty || opp.requiredQuantity || 1
+            }));
+            if (!this.opportunities || this.opportunities.length === 0) {
+              this.toastService.warning('Please add at least one Opportunity before proceeding to Quote.');
+            } else {
+              this.activeTab = 'Quote';
+              this.loadQuotes();
+            }
+          },
+          error: () => {
+            this.toastService.warning('Please add at least one Opportunity before proceeding to Quote.');
+          }
+        });
+        return;
+      } else if (!this.opportunities || this.opportunities.length === 0) {
         this.toastService.warning('Please add at least one Opportunity before proceeding to Quote.');
         return;
       }
     } else if (tab === 'Contract Note') {
-      if (!this.quotes || this.quotes.length === 0) {
+      if (this.leadId && (!this.quotes || this.quotes.length === 0)) {
+        this.leadservice.getQuotesByLead(this.leadId).subscribe({
+          next: (data: any) => {
+            this.quotes = data || [];
+            if (!this.quotes || this.quotes.length === 0) {
+              this.toastService.warning('Please add at least one Quote before proceeding to Contract Note.');
+            } else {
+              this.activeTab = 'Contract Note';
+              this.loadContractNoteDetails();
+            }
+          },
+          error: () => {
+            this.toastService.warning('Please add at least one Quote before proceeding to Contract Note.');
+          }
+        });
+        return;
+      } else if (!this.quotes || this.quotes.length === 0) {
         this.toastService.warning('Please add at least one Quote before proceeding to Contract Note.');
         return;
       }
@@ -1088,14 +1229,28 @@ export class AddleadComponent implements OnInit {
 
   /* ================= OPPORTUNITY MODAL LOGIC ================= */
   loadOppDropdowns(): void {
-    // Decision Makers (Contacts for this lead)
+    // Decision Makers (Contacts for this customer/lead only)
+    const selectedCustomerId = this.leadForm.customer || (this.originalLeadData ? ((this.originalLeadData as any).customerId || (this.originalLeadData as any).customer?.customerId) : null);
+
     this.leadservice.getContacts().subscribe({
       next: (data: any[]) => {
+        let contactsList = data || [];
+        if (selectedCustomerId) {
+          const matched = contactsList.filter((c: any) => 
+            (c.customer && (c.customer.customerId == selectedCustomerId || c.customer.id == selectedCustomerId)) || 
+            c.customerId == selectedCustomerId ||
+            c.customer_id == selectedCustomerId
+          );
+          if (matched && matched.length > 0) {
+            contactsList = matched;
+          }
+        }
+
         const dmFields = ['decisionMaker1', 'decisionMaker2', 'decisionMaker3', 'decisionMaker4', 'decisionMaker5'];
         dmFields.forEach(fieldName => {
           const field = this.oppFields.find(f => f.name === fieldName);
           if (field) {
-            field.options = data.map(c => ({
+            field.options = contactsList.map(c => ({
               label: `${c.contactFirstName || c.first_name || ''} ${c.contactLastName || c.last_name || ''}`.trim() || c.name || c.contactSalutation || 'Unknown',
               value: c.contactId || c.contact_id || c.id || c.ContactId
             }));
