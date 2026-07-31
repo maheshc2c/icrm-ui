@@ -237,4 +237,25 @@ export class Userservice {
       })
     );
   }
+
+  getInactiveUserLeads(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/user/inactive-user-leads`, { headers: this.getAuthHeaders() }).pipe(
+      catchError(err => {
+        console.error('Error loading inactive user leads:', err);
+        return of([]);
+      })
+    );
+  }
+
+  getActiveUsersDropdown(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/user/active-users-dropdown`, { headers: this.getAuthHeaders() });
+  }
+
+  getInactiveOwnersDropdown(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/user/inactive-owners-dropdown`, { headers: this.getAuthHeaders() });
+  }
+
+  rerouteInactiveLeads(payload: { leadIds: number[], targetUserId: number }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/user/reroute-inactive-leads`, payload, { headers: this.getAuthHeaders() });
+  }
 }

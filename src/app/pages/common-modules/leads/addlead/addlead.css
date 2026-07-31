@@ -1,0 +1,576 @@
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ 
+/* ================= FORM WRAPPER ================= */
+.form-wrapper {
+  margin-left: 287px; /* sidebar */
+  padding: 0px 30px 24px 30px; /* Removed top padding to fix gap under tabs */
+  display: flex;
+  justify-content: flex-start;
+}
+ 
+ 
+/* ================= CONTAINER ================= */
+.company-form-container {
+  width: 100%;
+  margin-bottom: 60px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* ================= CHEVRON TABS ================= */
+.chevron-tabs-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: -1px;
+}
+
+.chevron-tab {
+  position: relative;
+  height: 38px;
+  padding: 0 28px 0 34px;
+  background: #edf2f7;
+  color: #718096;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%, 14px 50%);
+  margin-right: -6px;
+  transition: all 0.2s ease;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chevron-tab.first {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
+  padding-left: 22px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.chevron-tab.active {
+  background: #3182ce;
+  color: #ffffff;
+  z-index: 10;
+  font-weight: 600;
+}
+
+.chevron-tab:hover:not(.active) {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+ 
+/* ================= HEADER ================= */
+.form-header-block {
+  padding: 16px 40px;
+  margin-bottom: 0px;
+  background: #f9f9f9;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ 
+/* ================= ACTION HEADER BUTTONS ================= */
+.action-header-btn {
+  background: #428bca; /* primary blue color from the old UI */
+  color: #fff;
+  border: 1px solid #357ebd;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+}
+ 
+.action-header-btn:hover {
+  background: #3071a9;
+  border-color: #285e8e;
+}
+ 
+.action-header-btn:active {
+  transform: scale(0.98);
+}
+ 
+.form-title-heading {
+  font-size: 18px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+ 
+/* ================= BODY ================= */
+.form-body-section {
+  padding: 30px 48px;
+}
+ 
+ 
+/* ================= FIELD ROW ================= */
+.company-field-row {
+  display: grid;
+  grid-template-columns: 180px 1fr; /* ⬅️ reduced from 220px */
+  align-items: center;
+  column-gap: 24px;                /* ⬅️ reduced from 20px */
+  margin-bottom: 20px;
+}
+.company-field-row[hidden] {
+  display: none !important;
+}
+/* ================= LABEL ================= */
+.field-label-text {
+  text-align: right;        /* ✅ aligns text naturally */
+  margin-left: 0;         /* ✅ remove forced shift */
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+ 
+ 
+.field-label-text .mandatory-star {
+  color: #e74c3c;
+  margin-left: 2px;
+}
+ 
+/* ================= INPUT AREA ================= */
+.field-input-area {
+  width: 100%; /* 🔑 let grid control width */
+}
+ 
+/* ================= INPUTS ================= */
+.company-text-input,
+.company-textarea-input {
+  width: 100%;
+  height: 35px;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  background: #fff;
+  color: #555;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+ 
+.company-textarea-input {
+  height: auto;
+  min-height: 90px;
+  resize: vertical;
+}
+ 
+.company-text-input::placeholder,
+.company-textarea-input::placeholder {
+  color: #999;
+}
+ 
+.company-text-input:focus,
+.company-textarea-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background-color: #f6f9ff;
+}
+ 
+/* ================= ACTION BUTTONS ================= */
+.form-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+  padding-right: 0; /* aligned with inputs */
+}
+ 
+/* ================= BUTTONS ================= */
+.submit-button,
+.cancel-button {
+  min-width: 120px;
+  height: 40px;
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+ 
+.btn-submit-form {
+  padding: 8px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: #3498db;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+ 
+.btn-submit-form:hover {
+  background: #2980b9;
+}
+ 
+.btn-cancel-form {
+  padding: 8px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  background: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+ 
+.btn-cancel-form:hover {
+  background: #e5e5e5;
+}
+ 
+.has-error {
+  border-color: #e74c3c !important;
+}
+ 
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .form-wrapper {
+    margin-left: 0;
+    padding: 16px;
+  }
+ 
+  .company-form-container {
+    max-width: 100%;
+  }
+ 
+  .company-field-row {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+    align-items: flex-start;
+  }
+ 
+  .field-label-text {
+    text-align: left;
+    white-space: normal;
+  }
+ 
+  .form-action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+ 
+  .btn-submit-form,
+  .btn-cancel-form {
+    width: 100%;
+  }
+}
+ 
+.checkbox-group-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 10px 0;
+}
+ 
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background: #fdfdfd;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  transition: all 0.2s;
+}
+ 
+.checkbox-item:hover {
+  background: #f0f7ff;
+  border-color: #4a90e2;
+}
+ 
+.company-checkbox-input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+ 
+.checkbox-label {
+  font-size: 13.5px;
+  color: #555;
+  cursor: pointer;
+  user-select: none;
+}
+ 
+/* ================= ACTION BUTTONS (from data-table) ================= */
+.action-buttons {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.action-buttons .btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+ 
+.action-buttons .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+ 
+.action-buttons .btn:active {
+  transform: translateY(0);
+}
+ 
+ 
+/* ================= INPUTS ================= */
+.company-text-input,
+.company-textarea-input {
+  width: 100%;
+  height: 35px;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  background: #fff;
+  color: #555;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+ 
+.company-textarea-input {
+  height: auto;
+  min-height: 90px;
+  resize: vertical;
+}
+ 
+.company-text-input::placeholder,
+.company-textarea-input::placeholder {
+  color: #999;
+}
+ 
+.company-text-input:focus,
+.company-textarea-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background-color: #f6f9ff;
+}
+ 
+/* ================= ACTION BUTTONS ================= */
+.form-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+  padding-right: 0; /* aligned with inputs */
+}
+ 
+/* ================= BUTTONS ================= */
+.submit-button,
+.cancel-button {
+  min-width: 120px;
+  height: 40px;
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+ 
+.btn-submit-form {
+  padding: 8px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: #3498db;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+ 
+.btn-submit-form:hover {
+  background: #2980b9;
+}
+ 
+.btn-cancel-form {
+  padding: 8px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  background: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+ 
+.btn-cancel-form:hover {
+  background: #e5e5e5;
+}
+ 
+.has-error {
+  border-color: #e74c3c !important;
+}
+ 
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .form-wrapper {
+    margin-left: 0;
+    padding: 16px;
+  }
+ 
+  .company-form-container {
+    max-width: 100%;
+  }
+ 
+  .company-field-row {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+    align-items: flex-start;
+  }
+ 
+  .field-label-text {
+    text-align: left;
+    white-space: normal;
+  }
+ 
+  .form-action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+ 
+  .btn-submit-form,
+  .btn-cancel-form {
+    width: 100%;
+  }
+}
+ 
+.checkbox-group-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 10px 0;
+}
+ 
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  background: #fdfdfd;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  transition: all 0.2s;
+}
+ 
+.checkbox-item:hover {
+  background: #f0f7ff;
+  border-color: #4a90e2;
+}
+ 
+.company-checkbox-input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+ 
+.checkbox-label {
+  font-size: 13.5px;
+  color: #555;
+  cursor: pointer;
+  user-select: none;
+}
+ 
+/* ================= ACTION BUTTONS (from data-table) ================= */
+.action-buttons {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.action-buttons .btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+ 
+.action-buttons .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+ 
+.action-buttons .btn:active {
+  transform: translateY(0);
+}
+ 
+.edit-btn {
+  background: #e3f2fd !important;
+  color: #2196f3 !important;
+  border: 1px solid #bbdefb !important;
+}
+ 
+.view-btn {
+  background: #17a2b8 !important; /* btn-info color */
+  color: white !important;
+}
+ 
+/* ================= OVERRIDE DATA-TABLE GLOBALS ================= */
+::ng-deep app-data-table .content {
+  margin-left: 0 !important;
+  width: 100% !important;
+  padding: 0 !important;
+  min-height: auto !important;
+}
+ 
+.is-invalid {
+  border-color: #ef4444 !important;
+}
+ 
+/* ================= TABLE HEADER ================= */
+.soft-header thead th {
+     background: #ffd0ca !important;
+    backdrop-filter: blur(8px) !important;
+    text-transform: uppercase;
+    color: #495057 !important;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #ffd0ca;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+ 

@@ -362,7 +362,8 @@ approve(row:any):void {
 
 
    // keep row visible
-   this.refreshCurrentRow(row);
+  //  this.refreshCurrentRow(row);
+  this.loadQuotes();
 
 
  },

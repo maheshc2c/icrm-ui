@@ -1,0 +1,98 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="add-incentive-container">
+  <div class="add-incentive-card">
+    <form #incentiveForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <!-- Row 1 -->
+        <div class="form-group">
+          <label class="form-label">Financial Year <span class="required-star">*</span></label>
+          <select name="fyId" [(ngModel)]="formData.fyId" class="form-control" required>
+            <option [ngValue]="null" disabled selected hidden>Select Year</option>
+            <option *ngFor="let fy of financialYears" [ngValue]="fy.value">{{ fy.label }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role <span class="required-star">*</span></label>
+          <select name="roleId" [(ngModel)]="formData.roleId" (change)="onRoleSelected(formData.roleId)" class="form-control" required>
+            <option [ngValue]="null" disabled selected hidden>Select Role</option>
+            <option *ngFor="let r of roles" [ngValue]="r.value">{{ r.label }}</option>
+          </select>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="form-group">
+          <label class="form-label">Quarter Incentive <span class="required-star">*</span></label>
+          <input type="number" name="value" [(ngModel)]="formData.value" class="form-control" placeholder="Quarter Incentive" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Upper Cap <span class="required-star">*</span></label>
+          <input type="number" name="upperValue" [(ngModel)]="formData.upperValue" class="form-control" placeholder="Upper Value" required>
+        </div>
+      </div>
+
+
+      <!-- Section: Grade A -->
+      <h3 class="form-section-title">Grade A</h3>
+
+      <div class="form-grid">
+        <!-- PP LL & PP UL -->
+        <div class="form-group">
+          <label class="form-label">PP LL <span class="required-star">*</span></label>
+          <input type="text" name="ppLl" [(ngModel)]="formData.ppLl" class="form-control" placeholder="Primary Product Lower Limit" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">PP UL <span class="required-star">*</span></label>
+          <input type="text" name="ppUl" [(ngModel)]="formData.ppUl" class="form-control" placeholder="Primary Product Upper Limit" required>
+        </div>
+
+        <!-- SP LL & SP UL -->
+        <div class="form-group">
+          <label class="form-label">SP LL <span class="required-star">*</span></label>
+          <input type="text" name="spLl" [(ngModel)]="formData.spLl" class="form-control" placeholder="Secondary Product Lower Limit" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">SP UL <span class="required-star">*</span></label>
+          <input type="text" name="spUl" [(ngModel)]="formData.spUl" class="form-control" placeholder="Secondary Product Upper Limit" required>
+        </div>
+      </div>
+
+      <div *ngIf="formData.role === 'Sales Manager'">
+        <h3 class="form-section-title">Grade B</h3>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">PP LL <span class="required-star">*</span></label>
+            <input type="text" name="pp2Ll" [(ngModel)]="formData.pp2Ll" class="form-control" placeholder="Primary Product Lower Limit" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">PP UL <span class="required-star">*</span></label>
+            <input type="text" name="pp2Ul" [(ngModel)]="formData.pp2Ul" class="form-control" placeholder="Primary Product Upper Limit" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">SP LL <span class="required-star">*</span></label>
+            <input type="text" name="sp2Ll" [(ngModel)]="formData.sp2Ll" class="form-control" placeholder="Secondary Product Lower Limit" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">SP UL <span class="required-star">*</span></label>
+            <input type="text" name="sp2Ul" [(ngModel)]="formData.sp2Ul" class="form-control" placeholder="Secondary Product Upper Limit" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Buttons -->
+      <div class="form-actions">
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-check"></i> Submit
+        </button>
+        <button type="button" class="btn-cancel" (click)="onCancel()">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

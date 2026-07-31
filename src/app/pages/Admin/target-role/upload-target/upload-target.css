@@ -86,13 +86,11 @@
 }
 
 .file-input {
+    display: block;
+    width: 320px;
+    padding: 8px;
     border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 14px;
-    min-width: 320px;
-    background: #fff;
-    cursor: pointer;
+    background: white;
 }
 
 .file-hint {

@@ -16,12 +16,12 @@ import { Header } from '../../layout/header/header';
   templateUrl: './quote-revision.html'
 })
 export class QuoteRevisionComponent implements OnInit {
-  quoteId: string = '1783402869854';
+  quoteId: string = '';
   leadId: number | null = null;
   breadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/' },
     { label: 'Quote Details' },
-    { label: 'Quote ID - 5' }
+    { label: 'Quote Revision' }
   ];
 
   quoteColumns = [
@@ -72,7 +72,18 @@ export class QuoteRevisionComponent implements OnInit {
   fetchQuoteDetails() {
     const token = localStorage.getItem('token');
     const headers = { 'Authorization': `Bearer ${token}` };
-    const quoteIdNum = parseInt(this.quoteId.replace(/\D/g, '') || '0');
+
+    let quoteIdNum = 0;
+    if (this.quoteId.includes('-')) {
+      const parts = this.quoteId.split('-');
+      if (parts.length >= 3 && !isNaN(Number(parts[2]))) {
+        quoteIdNum = parseInt(parts[2], 10);
+      } else {
+        quoteIdNum = parseInt(this.quoteId.replace(/\D/g, '') || '0', 10);
+      }
+    } else {
+      quoteIdNum = parseInt(this.quoteId, 10) || 0;
+    }
 
     this.http.get(`http://localhost:8080/quote/quote-revision-details/${quoteIdNum}`, { headers }).subscribe({
       next: (res: any) => {
@@ -95,10 +106,11 @@ export class QuoteRevisionComponent implements OnInit {
           if (data.dealerOptions) this.dealerOptions = data.dealerOptions;
 
           // Populate products list
-          this.quotes = data.opportunities.map((opp: any) => ({
+          this.quotes = (data.opportunities || []).map((opp: any) => ({
             opportunityId: opp.opportunityId,
             productId: opp.productId,
             productName: opp.productName || 'Unknown Product',
+            productNameWithIcon: opp.productName || 'Unknown Product',
             description: opp.description || '',
             editableQuantity: opp.quantity || 1,
             mrp: opp.mrp || 0,
@@ -107,9 +119,7 @@ export class QuoteRevisionComponent implements OnInit {
             discountedValue: opp.discountedValue || 0,
             selected: true,
             showFreeSupply: false,
-            freeSupplyItems: [
-              { product: '', qty: '' }
-            ]
+            freeSupplyItems: []
           }));
         }
       },
@@ -150,17 +160,33 @@ export class QuoteRevisionComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/salesmanager/leads/edit', this.leadId || 5]);
+    if (this.leadId) {
+      this.router.navigate(['/salesmanager/leads/edit', this.leadId]);
+    } else {
+      window.history.back();
+    }
   }
 
-    onSubmit() {
+  onSubmit() {
     // 1. Calculate the total discount from all selected products in the table
     const totalProductDiscount = this.quotes
       .filter(q => q.selected)
       .reduce((sum, q) => sum + (parseFloat(q.editableDiscount) || 0), 0);
 
+    let quoteIdNum = 0;
+    if (this.quoteId && this.quoteId.includes('-')) {
+      const parts = this.quoteId.split('-');
+      if (parts.length >= 3 && !isNaN(Number(parts[2]))) {
+        quoteIdNum = parseInt(parts[2], 10);
+      } else {
+        quoteIdNum = parseInt(this.quoteId.replace(/\D/g, '') || '0', 10);
+      }
+    } else {
+      quoteIdNum = parseInt(this.quoteId, 10) || 0;
+    }
+
     const payload = {
-      quoteId: this.quoteId ? parseInt(this.quoteId.replace(/\D/g, '') || '5') : 5,
+      quoteId: quoteIdNum,
       billingInfoId: this.quoteForm.billingInfoId,
       dealerId: this.quoteForm.dealerId,
       dealerCommission: this.quoteForm.dealerCommission,
@@ -192,12 +218,17 @@ export class QuoteRevisionComponent implements OnInit {
         if (res && res.status === false) {
           alert('Failed to save quote revision: ' + (res.message || ''));
         } else {
-          this.router.navigate(['/salesmanager/leads/edit', this.leadId || 17], { queryParams: { success: 'true' } });
+          if (this.leadId) {
+            this.router.navigate(['/salesmanager/leads/edit', this.leadId], { queryParams: { success: 'true' } });
+          } else {
+            window.history.back();
+          }
         }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error saving quote revision:', err);
-        alert('Failed to save quote revision.');
+        const msg = err?.error?.message || err?.message || 'Unknown error';
+        alert('Failed to save quote revision: ' + msg);
       }
     });
   }

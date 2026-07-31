@@ -210,11 +210,14 @@
 
       <!-- ACTIONS -->
       <div class="form-actions">
+        <button type="button" class="btn btn-back" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>Back
+        </button>
         <button type="button" class="btn btn-approve" (click)="handleApprove()">
-          <i class="fa fa-check"></i>Approve
+          <i class="fas fa-check"></i>Approve
         </button>
         <button type="button" class="btn btn-reject" (click)="handleReject()">
-          <i class="fa fa-times"></i>Reject
+          <i class="fas fa-times"></i>Reject
         </button>
       </div>
 

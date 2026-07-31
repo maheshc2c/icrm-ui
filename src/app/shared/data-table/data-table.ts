@@ -95,9 +95,6 @@ export class DataTable
   @Input() showActions: boolean = true;
   @Input() showCheckboxColumn: boolean = false;
  
- 
-
- 
 
   /* ===== TOOLBAR EVENTS ===== */
 

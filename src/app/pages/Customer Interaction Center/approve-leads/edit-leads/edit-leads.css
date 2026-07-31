@@ -5,6 +5,8 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    margin-left: 240px; /* Offset to clear sidebar and align with pageheader */
+    width: calc(100% - 280px);
 }
 
 /* Card Container */
@@ -232,43 +234,56 @@ textarea.is-invalid {
     padding-top: 12px;
 }
 
-.btn {
-    padding: 12px 28px;
-    font-size: 15px;
-    font-weight: 600;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+.form-actions .btn {
+    padding: 12px 28px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    height: auto !important;
 }
 
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.15);
+.form-actions .btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-back {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.btn-back:hover {
+    background: #e2e8f0 !important;
+    color: #1e293b !important;
 }
 
 .btn-approve {
-    background: #e8f5e9;
-    color: #2e7d32;
+    background: #e8f5e9 !important;
+    color: #2e7d32 !important;
 }
 
 .btn-approve:hover {
-    background: #c8e6c9;
-    color: #1b5e20;
+    background: #c8e6c9 !important;
+    color: #1b5e20 !important;
 }
 
 .btn-reject {
-    background: #ffebee;
-    color: #c62828;
+    background: #ffebee !important;
+    color: #c62828 !important;
 }
 
 .btn-reject:hover {
-    background: #ffcdd2;
-    color: #b71c1c;
+    background: #ffcdd2 !important;
+    color: #b71c1c !important;
 }
 
 /* Modals */
@@ -651,4 +666,68 @@ textarea.is-invalid {
 
 ::ng-deep app-modal .close-btn:hover {
     opacity: 1;
+}
+
+/* ================= RESPONSIVE MEDIA QUERIES ================= */
+@media (max-width: 1024px) {
+    .main-content-container {
+        margin-left: 0;
+        width: 100%;
+        padding: 16px;
+    }
+    
+    .card-form-container {
+        padding: 24px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+    }
+    
+    .field-label {
+        flex: none;
+        width: 100%;
+        padding-top: 0;
+        margin-bottom: 4px;
+    }
+    
+    .field-wrap {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .customer-field {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px;
+    }
+    
+    .customer-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .radio-group {
+        gap: 16px;
+        padding: 5px 0;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
