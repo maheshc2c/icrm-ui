@@ -144,9 +144,9 @@ constructor() {
         icon: 'fas fa-gear',
         route: '/openleads',
         children: [
-          { label: 'General Settings', icon: 'fas fa-sliders', route: '/admin-users' },
-          { label: 'Margin Bands', icon: 'fas fa-chart-line', route: '/create-user' },
-          { label: 'incentivies Settings', icon: 'fas fa-coins', route: '/create-user' }
+          { label: 'General Settings', icon: 'fas fa-sliders', route: '/admin/general-settings' },
+          { label: 'Margin Bands', icon: 'fas fa-chart-line', route: '/admin/margin-bands' },
+          { label: 'Incentivies Settings', icon: 'fas fa-coins', route: '/admin/incentives-settings' }
 
         ]
       },

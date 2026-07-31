@@ -1,0 +1,115 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="main-content-container">
+    <div class="card-form-container">
+        
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="table-responsive">
+                <table class="table edit-margin-table">
+                    <thead>
+                        <!-- First Header Row: Grouped Columns -->
+                        <tr>
+                            <th rowspan="2" class="col-sno">S.No</th>
+                            <th rowspan="2" class="col-level">Level</th>
+                            <th colspan="4" class="text-center group-header">Variance %</th>
+                            <th colspan="4" class="text-center group-header">Net Margin %</th>
+                        </tr>
+                        <!-- Second Header Row: Sub-columns -->
+                        <tr>
+                            <th class="sub-header">Lower Limit</th>
+                            <th class="sub-header">Include Lower<br>Limit</th>
+                            <th class="sub-header">Upper Limit</th>
+                            <th class="sub-header">Include Upper<br>Limit</th>
+                            <th class="sub-header">Lower Limit</th>
+                            <th class="sub-header">Include Lower<br>Limit</th>
+                            <th class="sub-header">Upper Limit</th>
+                            <th class="sub-header">Include Upper<br>Limit</th>
+                        </tr>
+                    </thead>
+                    <tbody formArrayName="bands">
+                        <tr *ngFor="let band of bandsArray.controls; let i = index" [formGroupName]="i">
+                            <td>{{ band.get('sNo')?.value }}</td>
+                            <td>{{ band.get('level')?.value }}</td>
+                            
+                            <!-- Variance % Inputs -->
+                            <td>
+                                <input type="number" formControlName="varLowerLimit" class="form-control text-center">
+                            </td>
+                            <td class="text-center">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" formControlName="varIncludeLower">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <input type="number" formControlName="varUpperLimit" class="form-control text-center">
+                            </td>
+                            <td class="text-center">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" formControlName="varIncludeUpper">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+
+                            <!-- Net Margin % Inputs -->
+                            <td>
+                                <input type="number" formControlName="netLowerLimit" class="form-control text-center">
+                            </td>
+                            <td class="text-center">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" formControlName="netIncludeLower">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <input type="number" formControlName="netUpperLimit" class="form-control text-center">
+                            </td>
+                            <td class="text-center">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" formControlName="netIncludeUpper">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bottom Form Controls -->
+            <div class="bottom-controls">
+                <div class="control-group">
+                    <label class="control-label">Cost of Maintaining Warranty % <span class="req">*</span></label>
+                    <input type="number" formControlName="costOfMaintainingWarranty" class="form-control small-input">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Cost of Capital % <span class="req">*</span></label>
+                    <input type="number" formControlName="costOfCapital" class="form-control small-input">
+                </div>
+
+                <div class="control-group checkbox-group">
+                    <label class="control-label">Dealer Warranty</label>
+                    <label class="custom-checkbox small-checkbox">
+                        <input type="checkbox" formControlName="dealerWarranty">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Submit
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="onCancel()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>

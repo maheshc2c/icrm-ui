@@ -1,0 +1,50 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="main-content-container">
+    <div class="card-form-container">
+        <div class="margin-table-wrapper">
+            <table class="margin-table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>LEVEL</th>
+                        <th>VARIANCE %</th>
+                        <th>NET MARGIN %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let band of marginBands">
+                        <td>{{ band.sNo }}</td>
+                        <td>{{ band.level }}</td>
+                        <td>{{ band.variance }}</td>
+                        <td>{{ band.netMargin }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="margin-footer">
+            <div class="footer-details">
+                <div class="detail-item">
+                    <span class="detail-label">Cost of Maintaining Warranty :</span>
+                    <span class="detail-value">{{ costOfMaintainingWarranty }}%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Cost of Capital :</span>
+                    <span class="detail-value">{{ costOfCapital }}%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Dealer Warranty :</span>
+                    <span class="detail-value">{{ dealerWarrantyEnabled ? 'Enabled' : 'Disabled' }}</span>
+                </div>
+            </div>
+            <div class="action-item">
+                <button type="button" class="btn-edit" (click)="onEdit()">Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
