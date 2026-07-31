@@ -52,221 +52,223 @@
           <form (ngSubmit)="onSubmit(leadForm)">
 
             <!-- LOOP ALL FIELDS -->
-            <div class="company-field-row" *ngFor="let field of leadFields">
+            <ng-container *ngFor="let field of leadFields">
+              <div class="company-field-row" *ngIf="shouldShowField(field.name)">
 
-              <!-- LABEL -->
-              <label class="field-label-text">
-                {{ field.label }}
-                <span *ngIf="field.required" class="mandatory-star">*</span>
-              </label>
+                <!-- LABEL -->
+                <label class="field-label-text">
+                  {{ field.label }}
+                  <span *ngIf="field.required" class="mandatory-star">*</span>
+                </label>
 
-              <div class="field-input-area">
+                <div class="field-input-area">
 
-                <!-- If Customer field, render custom layout with action buttons -->
-                <ng-container *ngIf="field.name === 'customer'; else normalField">
-                  <div style="display: flex; gap: 8px; align-items: center;">
-                    <div class="custom-dropdown-container" style="flex: 1; position: relative;" [class.has-error]="errors[field.name]">
+                  <!-- If Customer field, render custom layout with action buttons -->
+                  <ng-container *ngIf="field.name === 'customer'; else normalField">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                      <div class="custom-dropdown-container" style="flex: 1; position: relative;" [class.has-error]="errors[field.name]">
+                        <div class="dropdown-trigger company-text-input" 
+                             [class.active]="openCustomerDropdown"
+                             [class.has-error]="errors[field.name]"
+                             (click)="toggleCustomerDropdown($event)"
+                             style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                          <span class="trigger-text" style="color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%;">
+                            {{ getCustomerLabel(leadForm.customer) || '-- Select --' }}
+                          </span>
+                          <i class="fas fa-chevron-down arrow-icon" style="color: #666; font-size: 12px;"></i>
+                        </div>
+
+                        <!-- DROPDOWN PANEL -->
+                        <div class="dropdown-panel" *ngIf="openCustomerDropdown" (click)="$event.stopPropagation()" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
+                          <div class="search-box-wrapper" style="padding: 8px; border-bottom: 1px solid #eee;">
+                            <input type="text" 
+                                   class="dropdown-search-input company-text-input" 
+                                   placeholder="Search..."
+                                   [value]="customerSearchTerm"
+                                   (input)="filterCustomerOptions($event)"
+                                   style="width: 100%; box-sizing: border-box; padding: 6px;">
+                            <div class="search-helper-text" style="font-size: 11px; color: #888; margin-top: 4px;">Please enter 1 or more characters</div>
+                          </div>
+
+                          <ul class="options-list" style="list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto;">
+                            <li class="option-item" 
+                                (click)="selectCustomerOption('')"
+                                style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
+                                onmouseover="this.style.backgroundColor='#f5f5f5'"
+                                onmouseout="this.style.backgroundColor='transparent'">
+                              -- Select --
+                            </li>
+                            <li class="option-item"
+                                *ngFor="let opt of filteredCustomerOptions"
+                                (click)="selectCustomerOption(opt.value)"
+                                style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
+                                onmouseover="this.style.backgroundColor='#f5f5f5'"
+                                onmouseout="this.style.backgroundColor='transparent'">
+                              {{ opt.label }}
+                            </li>
+                            <li class="no-results" *ngIf="filteredCustomerOptions?.length === 0" style="padding: 8px 12px; color: #888;">No results found</li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <!-- Customer details button next to customer dropdown -->
+                      <button 
+                        type="button" 
+                        class="btn" 
+                        style="background: #3182ce; color: white; border: none; border-radius: 4px; padding: 0; min-width: 32px; height: 32px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; pointer-events: auto;" 
+                        (click)="onCustomerDetails(leadForm.customer)"
+                        title="Customer Details">
+                        <i class="fa-solid fa-info"></i>
+                      </button>
+                      
+                      <!-- Customer installation base button next to customer dropdown -->
+                      <button 
+                        type="button" 
+                        class="btn" 
+                        style="background: #3182ce; color: white; border: none; border-radius: 4px; padding: 0; min-width: 32px; height: 32px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; pointer-events: auto;" 
+                        (click)="onCustomerAction2(leadForm.customer)"
+                        title="Customer Installation Base">
+                        <i class="fa-regular fa-folder-open"></i>
+                      </button>
+                    </div>
+                  </ng-container>
+
+                  <!-- Otherwise, render normal fields -->
+                  <ng-template #normalField>
+                    <!-- TEXT / NUMBER / EMAIL -->
+                    <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
+                      [type]="field.type" class="company-text-input" [class.has-error]="errors[field.name]" [placeholder]="field.placeholder || ''"
+                      [(ngModel)]="leadForm[field.name]" (ngModelChange)="onFieldChange({ name: field.name, value: $event })" [name]="field.name" />
+
+                    <!-- TEXTAREA -->
+                    <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [class.has-error]="errors[field.name]" [placeholder]="field.placeholder || ''"
+                      [(ngModel)]="leadForm[field.name]" (ngModelChange)="onFieldChange({ name: field.name, value: $event })" [name]="field.name">
+                    </textarea>
+
+                    <!-- SEARCHABLE DROPDOWN FOR CONTACT 1 -->
+                    <div *ngIf="field.type === 'select' && field.name === 'contact1'" class="custom-dropdown-container" style="flex: 1; position: relative;" [class.has-error]="errors[field.name]">
                       <div class="dropdown-trigger company-text-input" 
-                           [class.active]="openCustomerDropdown"
+                           [class.active]="openContact1Dropdown"
                            [class.has-error]="errors[field.name]"
-                           (click)="toggleCustomerDropdown($event)"
+                           (click)="toggleContact1Dropdown($event)"
                            style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
                         <span class="trigger-text" style="color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%;">
-                          {{ getCustomerLabel(leadForm.customer) || '-- Select --' }}
+                          {{ getContact1Label(leadForm.contact1) || '-- Select --' }}
                         </span>
                         <i class="fas fa-chevron-down arrow-icon" style="color: #666; font-size: 12px;"></i>
                       </div>
 
-                      <!-- DROPDOWN PANEL -->
-                      <div class="dropdown-panel" *ngIf="openCustomerDropdown" (click)="$event.stopPropagation()" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
+                      <div class="dropdown-panel" *ngIf="openContact1Dropdown" (click)="$event.stopPropagation()" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
                         <div class="search-box-wrapper" style="padding: 8px; border-bottom: 1px solid #eee;">
                           <input type="text" 
                                  class="dropdown-search-input company-text-input" 
                                  placeholder="Search..."
-                                 [value]="customerSearchTerm"
-                                 (input)="filterCustomerOptions($event)"
+                                 [value]="contact1SearchTerm"
+                                 (input)="filterContact1Options($event)"
                                  style="width: 100%; box-sizing: border-box; padding: 6px;">
                           <div class="search-helper-text" style="font-size: 11px; color: #888; margin-top: 4px;">Please enter 1 or more characters</div>
                         </div>
 
                         <ul class="options-list" style="list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto;">
                           <li class="option-item" 
-                              (click)="selectCustomerOption('')"
+                              (click)="selectContact1Option('')"
                               style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
                               onmouseover="this.style.backgroundColor='#f5f5f5'"
                               onmouseout="this.style.backgroundColor='transparent'">
                             -- Select --
                           </li>
                           <li class="option-item"
-                              *ngFor="let opt of filteredCustomerOptions"
-                              (click)="selectCustomerOption(opt.value)"
+                              *ngFor="let opt of filteredContact1Options"
+                              (click)="selectContact1Option(opt.value)"
                               style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
                               onmouseover="this.style.backgroundColor='#f5f5f5'"
                               onmouseout="this.style.backgroundColor='transparent'">
                             {{ opt.label }}
                           </li>
-                          <li class="no-results" *ngIf="filteredCustomerOptions?.length === 0" style="padding: 8px 12px; color: #888;">No results found</li>
+                          <li class="no-results" *ngIf="filteredContact1Options?.length === 0" style="padding: 8px 12px; color: #888;">No results found</li>
                         </ul>
                       </div>
                     </div>
-                    
-                    <!-- Customer details button next to customer dropdown -->
-                    <button 
-                      type="button" 
-                      class="btn" 
-                      style="background: #3182ce; color: white; border: none; border-radius: 4px; padding: 0; min-width: 32px; height: 32px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; pointer-events: auto;" 
-                      (click)="onCustomerDetails(leadForm.customer)"
-                      title="Customer Details">
-                      <i class="fa-solid fa-info"></i>
-                    </button>
-                    
-                    <!-- Customer installation base button next to customer dropdown -->
-                    <button 
-                      type="button" 
-                      class="btn" 
-                      style="background: #3182ce; color: white; border: none; border-radius: 4px; padding: 0; min-width: 32px; height: 32px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; pointer-events: auto;" 
-                      (click)="onCustomerAction2(leadForm.customer)"
-                      title="Customer Installation Base">
-                      <i class="fa-regular fa-folder-open"></i>
-                    </button>
-                  </div>
-                </ng-container>
 
-                <!-- Otherwise, render normal fields -->
-                <ng-template #normalField>
-                  <!-- TEXT / NUMBER / EMAIL -->
-                  <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
-                    [type]="field.type" class="company-text-input" [class.has-error]="errors[field.name]" [placeholder]="field.placeholder || ''"
-                    [(ngModel)]="leadForm[field.name]" (ngModelChange)="onFieldChange({ name: field.name, value: $event })" [name]="field.name" />
-
-                  <!-- TEXTAREA -->
-                  <textarea *ngIf="field.type === 'textarea'" class="company-textarea-input" [class.has-error]="errors[field.name]" [placeholder]="field.placeholder || ''"
-                    [(ngModel)]="leadForm[field.name]" (ngModelChange)="onFieldChange({ name: field.name, value: $event })" [name]="field.name">
-                  </textarea>
-
-                  <!-- SEARCHABLE DROPDOWN FOR CONTACT 1 -->
-                  <div *ngIf="field.type === 'select' && field.name === 'contact1'" class="custom-dropdown-container" style="flex: 1; position: relative;" [class.has-error]="errors[field.name]">
-                    <div class="dropdown-trigger company-text-input" 
-                         [class.active]="openContact1Dropdown"
-                         [class.has-error]="errors[field.name]"
-                         (click)="toggleContact1Dropdown($event)"
-                         style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
-                      <span class="trigger-text" style="color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%;">
-                        {{ getContact1Label(leadForm.contact1) || '-- Select --' }}
-                      </span>
-                      <i class="fas fa-chevron-down arrow-icon" style="color: #666; font-size: 12px;"></i>
-                    </div>
-
-                    <div class="dropdown-panel" *ngIf="openContact1Dropdown" (click)="$event.stopPropagation()" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
-                      <div class="search-box-wrapper" style="padding: 8px; border-bottom: 1px solid #eee;">
-                        <input type="text" 
-                               class="dropdown-search-input company-text-input" 
-                               placeholder="Search..."
-                               [value]="contact1SearchTerm"
-                               (input)="filterContact1Options($event)"
-                               style="width: 100%; box-sizing: border-box; padding: 6px;">
-                        <div class="search-helper-text" style="font-size: 11px; color: #888; margin-top: 4px;">Please enter 1 or more characters</div>
+                    <!-- SEARCHABLE DROPDOWN FOR CONTACT 2 -->
+                    <div *ngIf="field.type === 'select' && field.name === 'contact2'" class="custom-dropdown-container" style="flex: 1; position: relative;" [class.has-error]="errors[field.name]">
+                      <div class="dropdown-trigger company-text-input" 
+                           [class.active]="openContact2Dropdown"
+                           [class.has-error]="errors[field.name]"
+                           (click)="toggleContact2Dropdown($event)"
+                           style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                        <span class="trigger-text" style="color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%;">
+                          {{ getContact2Label(leadForm.contact2) || '-- Select --' }}
+                        </span>
+                        <i class="fas fa-chevron-down arrow-icon" style="color: #666; font-size: 12px;"></i>
                       </div>
 
-                      <ul class="options-list" style="list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto;">
-                        <li class="option-item" 
-                            (click)="selectContact1Option('')"
-                            style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
-                            onmouseover="this.style.backgroundColor='#f5f5f5'"
-                            onmouseout="this.style.backgroundColor='transparent'">
-                          -- Select --
-                        </li>
-                        <li class="option-item"
-                            *ngFor="let opt of filteredContact1Options"
-                            (click)="selectContact1Option(opt.value)"
-                            style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
-                            onmouseover="this.style.backgroundColor='#f5f5f5'"
-                            onmouseout="this.style.backgroundColor='transparent'">
-                          {{ opt.label }}
-                        </li>
-                        <li class="no-results" *ngIf="filteredContact1Options?.length === 0" style="padding: 8px 12px; color: #888;">No results found</li>
-                      </ul>
-                    </div>
-                  </div>
+                      <div class="dropdown-panel" *ngIf="openContact2Dropdown" (click)="$event.stopPropagation()" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
+                        <div class="search-box-wrapper" style="padding: 8px; border-bottom: 1px solid #eee;">
+                          <input type="text" 
+                                 class="dropdown-search-input company-text-input" 
+                                 placeholder="Search..."
+                                 [value]="contact2SearchTerm"
+                                 (input)="filterContact2Options($event)"
+                                 style="width: 100%; box-sizing: border-box; padding: 6px;">
+                          <div class="search-helper-text" style="font-size: 11px; color: #888; margin-top: 4px;">Please enter 1 or more characters</div>
+                        </div>
 
-                  <!-- SEARCHABLE DROPDOWN FOR CONTACT 2 -->
-                  <div *ngIf="field.type === 'select' && field.name === 'contact2'" class="custom-dropdown-container" style="flex: 1; position: relative;" [class.has-error]="errors[field.name]">
-                    <div class="dropdown-trigger company-text-input" 
-                         [class.active]="openContact2Dropdown"
-                         [class.has-error]="errors[field.name]"
-                         (click)="toggleContact2Dropdown($event)"
-                         style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
-                      <span class="trigger-text" style="color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%;">
-                        {{ getContact2Label(leadForm.contact2) || '-- Select --' }}
-                      </span>
-                      <i class="fas fa-chevron-down arrow-icon" style="color: #666; font-size: 12px;"></i>
-                    </div>
-
-                    <div class="dropdown-panel" *ngIf="openContact2Dropdown" (click)="$event.stopPropagation()" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
-                      <div class="search-box-wrapper" style="padding: 8px; border-bottom: 1px solid #eee;">
-                        <input type="text" 
-                               class="dropdown-search-input company-text-input" 
-                               placeholder="Search..."
-                               [value]="contact2SearchTerm"
-                               (input)="filterContact2Options($event)"
-                               style="width: 100%; box-sizing: border-box; padding: 6px;">
-                        <div class="search-helper-text" style="font-size: 11px; color: #888; margin-top: 4px;">Please enter 1 or more characters</div>
+                        <ul class="options-list" style="list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto;">
+                          <li class="option-item" 
+                              (click)="selectContact2Option('')"
+                              style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
+                              onmouseover="this.style.backgroundColor='#f5f5f5'"
+                              onmouseout="this.style.backgroundColor='transparent'">
+                            -- Select --
+                          </li>
+                          <li class="option-item"
+                              *ngFor="let opt of filteredContact2Options"
+                              (click)="selectContact2Option(opt.value)"
+                              style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
+                              onmouseover="this.style.backgroundColor='#f5f5f5'"
+                              onmouseout="this.style.backgroundColor='transparent'">
+                            {{ opt.label }}
+                          </li>
+                          <li class="no-results" *ngIf="filteredContact2Options?.length === 0" style="padding: 8px 12px; color: #888;">No results found</li>
+                        </ul>
                       </div>
-
-                      <ul class="options-list" style="list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto;">
-                        <li class="option-item" 
-                            (click)="selectContact2Option('')"
-                            style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
-                            onmouseover="this.style.backgroundColor='#f5f5f5'"
-                            onmouseout="this.style.backgroundColor='transparent'">
-                          -- Select --
-                        </li>
-                        <li class="option-item"
-                            *ngFor="let opt of filteredContact2Options"
-                            (click)="selectContact2Option(opt.value)"
-                            style="padding: 8px 12px; cursor: pointer; transition: background 0.2s;"
-                            onmouseover="this.style.backgroundColor='#f5f5f5'"
-                            onmouseout="this.style.backgroundColor='transparent'">
-                          {{ opt.label }}
-                        </li>
-                        <li class="no-results" *ngIf="filteredContact2Options?.length === 0" style="padding: 8px 12px; color: #888;">No results found</li>
-                      </ul>
                     </div>
-                  </div>
 
-                  <!-- STATIC DROPDOWN -->
-                  <select *ngIf="field.type === 'select' && field.name !== 'contact1' && field.name !== 'contact2'" 
-                    class="company-text-input" 
-                    [class.has-error]="errors[field.name]"
-                    [(ngModel)]="leadForm[field.name]"
-                    (ngModelChange)="onFieldChange({ name: field.name, value: $event })"
-                    [name]="field.name">
-                    <option value="">-- Select --</option>
-                    <option *ngFor="let opt of field.options" [value]="opt.value">
-                      {{ opt.label }}
-                    </option>
-                  </select>
-
-                  <!-- RADIO GROUP -->
-                  <div *ngIf="field.type === 'radio'" class="checkbox-group-container">
-                    <div *ngFor="let opt of field.options" class="checkbox-item">
-                      <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
-                        [(ngModel)]="leadForm[field.name]" [name]="field.name"
-                        (ngModelChange)="onFieldChange({ name: field.name, value: $event })"
-                        class="company-checkbox-input" />
-                      <label [for]="field.name + '_' + opt.value" class="checkbox-label">
+                    <!-- STATIC DROPDOWN -->
+                    <select *ngIf="field.type === 'select' && field.name !== 'contact1' && field.name !== 'contact2'" 
+                      class="company-text-input" 
+                      [class.has-error]="errors[field.name]"
+                      [(ngModel)]="leadForm[field.name]"
+                      (ngModelChange)="onFieldChange({ name: field.name, value: $event })"
+                      [name]="field.name">
+                      <option value="">-- Select --</option>
+                      <option *ngFor="let opt of field.options" [value]="opt.value">
                         {{ opt.label }}
-                      </label>
-                    </div>
-                  </div>
-                </ng-template>
+                      </option>
+                    </select>
 
-                <!-- VALIDATION ERROR -->
-                <div *ngIf="errors[field.name]" class="validation-error" style="color: #d32f2f; font-size: 12px; margin-top: 4px;">
-                  {{ errors[field.name] }}
+                    <!-- RADIO GROUP -->
+                    <div *ngIf="field.type === 'radio'" class="checkbox-group-container">
+                      <div *ngFor="let opt of field.options" class="checkbox-item">
+                        <input type="radio" [id]="field.name + '_' + opt.value" [value]="opt.value"
+                          [(ngModel)]="leadForm[field.name]" [name]="field.name"
+                          (ngModelChange)="onFieldChange({ name: field.name, value: $event })"
+                          class="company-checkbox-input" />
+                        <label [for]="field.name + '_' + opt.value" class="checkbox-label">
+                          {{ opt.label }}
+                        </label>
+                      </div>
+                    </div>
+                  </ng-template>
+
+                  <!-- VALIDATION ERROR -->
+                  <div *ngIf="errors[field.name]" class="validation-error" style="color: #d32f2f; font-size: 12px; margin-top: 4px;">
+                    {{ errors[field.name] }}
+                  </div>
                 </div>
               </div>
-            </div>
+            </ng-container>
 
             <!-- ACTION BUTTONS -->
             <div class="form-action-buttons" style="display: flex; justify-content: flex-start; gap: 12px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; margin-left: 204px;">
@@ -865,23 +867,95 @@
       <!-- Dealer Row -->
       <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Dealer <span style="color: red;">*</span></div>
       <div>
-        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.dealerId" [disabled]="!quoteForm.opportunityId">
-          <option value="">Select Dealer</option>
-          @for (dealer of quoteDealerOptions; track dealer.id) {
-            <option [value]="dealer.id">{{ dealer.name }}</option>
-          }
-        </select>
+        <div class="custom-dropdown-container" style="position: relative; width: 100%;">
+          <div class="dropdown-trigger" 
+               [class.active]="openQuoteDropdown === 'dealer'"
+               [class.disabled]="!quoteForm.opportunityId"
+               (click)="!quoteForm.opportunityId ? null : toggleQuoteDropdown('dealer', $event)"
+               style="height: 35px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; background: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s;">
+            <span class="selected-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333;">
+              {{ getQuoteDealerLabel() }}
+            </span>
+            <i class="fas fa-chevron-down dropdown-icon" style="font-size: 10px; color: #64748b; transition: transform 0.2s;" [style.transform]="openQuoteDropdown === 'dealer' ? 'rotate(180deg)' : 'none'"></i>
+          </div>
+
+          <div class="dropdown-menu" *ngIf="openQuoteDropdown === 'dealer'" (click)="$event.stopPropagation()"
+               style="position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
+            <div class="search-box-wrapper" style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+              <input type="text" 
+                     class="search-input" 
+                     placeholder="Search Dealer..."
+                     [(ngModel)]="quoteDealerSearchQuery"
+                     style="width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; outline: none;">
+            </div>
+            <div class="options-container" style="max-height: 150px; overflow-y: auto; padding: 4px 0;">
+              <div class="option-item" 
+                   (click)="selectQuoteDealer('')"
+                   style="padding: 6px 12px; font-size: 13px; cursor: pointer; color: #94a3b8;">
+                Select Dealer
+              </div>
+              <div class="option-item" 
+                   *ngFor="let opt of getFilteredQuoteDealers()"
+                   [class.selected]="quoteForm.dealerId == opt.id"
+                   (click)="selectQuoteDealer(opt.id)"
+                   style="padding: 6px 12px; font-size: 13px; cursor: pointer; color: #334155; transition: background 0.2s;"
+                   onmouseover="this.style.background='#f1f5f9'; this.style.color='#3b82f6'"
+                   onmouseout="this.style.background='transparent'; this.style.color='#334155'">
+                {{ opt.name }}
+              </div>
+              <div class="no-results" *ngIf="getFilteredQuoteDealers().length === 0" style="padding: 8px 12px; font-size: 13px; color: #94a3b8; text-align: center;">
+                No matches found
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Billing Through Row -->
       <div style="text-align: right; font-weight: 500; font-size: 13px; color: #333; padding-top: 8px;">Billing Through <span style="color: red;">*</span></div>
       <div>
-        <select class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;" [(ngModel)]="quoteForm.companyId" [disabled]="!quoteForm.opportunityId">
-          <option value="">Select Dealer</option>
-          @for (company of quoteCompanyOptions; track company.id) {
-            <option [value]="company.id">{{ company.name }}</option>
-          }
-        </select>
+        <div class="custom-dropdown-container" style="position: relative; width: 100%;">
+          <div class="dropdown-trigger" 
+               [class.active]="openQuoteDropdown === 'company'"
+               [class.disabled]="!quoteForm.opportunityId"
+               (click)="!quoteForm.opportunityId ? null : toggleQuoteDropdown('company', $event)"
+               style="height: 35px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; background: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s;">
+            <span class="selected-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333;">
+              {{ getQuoteCompanyLabel() }}
+            </span>
+            <i class="fas fa-chevron-down dropdown-icon" style="font-size: 10px; color: #64748b; transition: transform 0.2s;" [style.transform]="openQuoteDropdown === 'company' ? 'rotate(180deg)' : 'none'"></i>
+          </div>
+
+          <div class="dropdown-menu" *ngIf="openQuoteDropdown === 'company'" (click)="$event.stopPropagation()"
+               style="position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
+            <div class="search-box-wrapper" style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+              <input type="text" 
+                     class="search-input" 
+                     placeholder="Search..."
+                     [(ngModel)]="quoteCompanySearchQuery"
+                     style="width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; outline: none;">
+            </div>
+            <div class="options-container" style="max-height: 150px; overflow-y: auto; padding: 4px 0;">
+              <div class="option-item" 
+                   (click)="selectQuoteCompany('')"
+                   style="padding: 6px 12px; font-size: 13px; cursor: pointer; color: #94a3b8;">
+                Select Dealer
+              </div>
+              <div class="option-item" 
+                   *ngFor="let opt of getFilteredQuoteCompanies()"
+                   [class.selected]="quoteForm.companyId == opt.id"
+                   (click)="selectQuoteCompany(opt.id)"
+                   style="padding: 6px 12px; font-size: 13px; cursor: pointer; color: #334155; transition: background 0.2s;"
+                   onmouseover="this.style.background='#f1f5f9'; this.style.color='#3b82f6'"
+                   onmouseout="this.style.background='transparent'; this.style.color='#334155'">
+                {{ opt.name }}
+              </div>
+              <div class="no-results" *ngIf="getFilteredQuoteCompanies().length === 0" style="padding: 8px 12px; font-size: 13px; color: #94a3b8; text-align: center;">
+                No matches found
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

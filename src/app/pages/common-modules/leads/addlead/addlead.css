@@ -125,6 +125,9 @@
   column-gap: 24px;                /* ⬅️ reduced from 20px */
   margin-bottom: 20px;
 }
+.company-field-row[hidden] {
+  display: none !important;
+}
 /* ================= LABEL ================= */
 .field-label-text {
   text-align: right;        /* ✅ aligns text naturally */

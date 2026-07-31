@@ -136,31 +136,30 @@ export class OpportunitiesComponent implements OnInit {
     this.loadDropdownData();
   }
 
+  allContactsData: any[] = [];
+  allLeadsData: any[] = [];
+
   loadDropdownData(): void {
     // Load leads for dropdown
     this.leadService.getOpenLeads().subscribe((data: any) => {
       const leadField = this.oppFields.find(f => f.name === 'leadId');
       if (leadField) {
         const leadsArray = data.content || data || [];
-        leadField.options = leadsArray.map((l: any) => ({ label: l.customerName, value: l.leadId }));
+        this.allLeadsData = leadsArray;
+        leadField.options = leadsArray.map((l: any) => ({ label: l.customerName || `Lead ${l.leadId}`, value: l.leadId, raw: l }));
       }
     });
 
     // Load contacts for decision makers
     this.leadService.getContacts().subscribe(data => {
-      const dmFields = ['decisionMaker1', 'decisionMaker2', 'decisionMaker3', 'decisionMaker4', 'decisionMaker5'];
-      dmFields.forEach(fieldName => {
-        const field = this.oppFields.find(f => f.name === fieldName);
-        if (field) {
-          field.options = data.map(c => ({ label: `${c.contactFirstName} ${c.contactLastName || ''}`, value: c.contactId }));
-        }
-      });
+      this.allContactsData = data || [];
+      this.updateDecisionMakerOptions(this.allContactsData);
     });
 
     // Load relationships
     this.leadService.getRelationships().subscribe(data => {
       const field = this.oppFields.find(f => f.name === 'relationshipId');
-      if (field) {
+      if (field && data) {
         field.options = data.map(r => ({ label: r.relationshipName, value: r.relationshipId }));
       }
     });
@@ -190,8 +189,36 @@ export class OpportunitiesComponent implements OnInit {
     });
   }
 
+  private updateDecisionMakerOptions(contacts: any[]): void {
+    const dmFields = ['decisionMaker1', 'decisionMaker2', 'decisionMaker3', 'decisionMaker4', 'decisionMaker5'];
+    dmFields.forEach(fieldName => {
+      const field = this.oppFields.find(f => f.name === fieldName);
+      if (field) {
+        field.options = contacts.map(c => ({
+          label: `${c.contactFirstName || ''} ${c.contactLastName || ''}`.trim() || c.name || 'Unknown',
+          value: c.contactId || c.id
+        }));
+      }
+    });
+    this.oppFields = [...this.oppFields];
+  }
+
   /* ================= DYNAMIC FIELD CHANGE ================= */
   onFieldChange(fieldName: string, value: any): void {
+    if (fieldName === 'leadId' && value) {
+      const selectedLead = this.allLeadsData.find((l: any) => (l.leadId || l.id) == value);
+      const customerId = selectedLead ? (selectedLead.customerId || selectedLead.customer?.customerId) : null;
+      if (customerId && this.allContactsData.length > 0) {
+        const filtered = this.allContactsData.filter((c: any) => 
+          (c.customer && (c.customer.customerId == customerId || c.customer.id == customerId)) || 
+          c.customerId == customerId
+        );
+        this.updateDecisionMakerOptions(filtered.length > 0 ? filtered : this.allContactsData);
+      } else {
+        this.updateDecisionMakerOptions(this.allContactsData);
+      }
+    }
+
     if (fieldName === 'productCategoryId' && value) {
       // Clear out segment and product
       this.oppModel.productGroupId = '';
