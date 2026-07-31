@@ -61,8 +61,8 @@ export class Leadservice {
   }
 
   /* ================= UPDATE LEAD ================= */
-  updateLead(id: number, lead: LeadPayload): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/salesengineer/salesmanager/lead-update/${id}`, lead, {
+  updateLead(id: number, lead: any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/leads/${id}`, lead, {
       headers: this.getAuthHeaders()
     });
   }

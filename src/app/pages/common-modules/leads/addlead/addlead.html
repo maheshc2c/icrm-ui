@@ -34,9 +34,6 @@
             <button *ngIf="isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onDetails()">
               <i class="fa-solid fa-circle-info"></i> Details
             </button>
-            <button *ngIf="isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onBlockVisit()">
-              <i class="fa-regular fa-calendar-minus"></i> Block Visit
-            </button>
 
             <!-- Add buttons (shown in create/new mode) -->
             <button *ngIf="!isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onAddCustomer()">
