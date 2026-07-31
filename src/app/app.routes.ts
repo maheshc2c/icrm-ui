@@ -803,14 +803,20 @@ export const routes: Routes = [
       {
         path: 'plan-visit/add',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/add-visit/add-visit.component').then(m => m.AddVisitComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head', 'Global Head', 'National Sales Manager', 'Regional Sales Manager', 'Regional Branch Head', 'Sales Director', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'plan-visit',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/manage-visits.component').then(m => m.ManageVisitsComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head', 'Global Head', 'National Sales Manager', 'Regional Sales Manager', 'Regional Branch Head', 'Sales Director', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'plan-visit/edit/:id',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/edit-visit/edit-visit.component').then(m => m.EditVisitComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head', 'Global Head', 'National Sales Manager', 'Regional Sales Manager', 'Regional Branch Head', 'Sales Director', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       { path: 'plan-visits', redirectTo: 'plan-visit', pathMatch: 'full' },
       { path: 'plan-edit/:id', redirectTo: 'plan-visit/edit/:id', pathMatch: 'full' },
