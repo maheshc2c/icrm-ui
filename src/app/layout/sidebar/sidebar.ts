@@ -473,9 +473,9 @@ constructor() {
         {
           label: 'Plan Visit/Demo',
           icon: 'fas fa-calendar-check',
-          route: '/country-head/dashboard/plan-visit',
+          route: '/plan-visit',
           children: [
-            { label: 'Visit', icon: 'fas fa-route', route: '/country-head/dashboard/plan-visit' },
+            { label: 'Visit', icon: 'fas fa-route', route: '/plan-visit' },
             { label: 'Demo', icon: 'fas fa-suitcase', route: '/planDemo' }
           ]
         },
@@ -788,7 +788,7 @@ constructor() {
         icon: 'fas fa-map-marked-alt',
         route: '/plan-visit-demo',
         children: [
-          { label: 'Plan a Visit', icon: 'fas fa-walking', route: '/salesmanager/visit' },
+          { label: 'Plan a Visit', icon: 'fas fa-walking', route: '/plan-visit' },
           { label: 'Plan a Demo', icon: 'fas fa-laptop', route: '/planDemo' }
         ]
       },
