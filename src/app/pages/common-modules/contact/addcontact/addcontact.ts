@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Contactmodel } from '../../../../models/contactmodel';
 import { Form } from '../../../../shared/form/form';
@@ -22,7 +22,8 @@ export class Addcontact implements OnInit {
     private adminService: Adminservice,
     private route: ActivatedRoute,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private location: Location
   ) { }
  
   /* ================= HEADER ================= */
@@ -140,7 +141,7 @@ customerId: data.customerId,
          this.toastService.success(
     `Contact ${this.isEditMode ? 'updated' : 'created'} successfully`
   );
-        this.router.navigate(['contact']);
+        this.navigateBackToList();
       },
       error: err => {
   console.error('STATUS =>', err.status);
@@ -154,8 +155,29 @@ customerId: data.customerId,
     });
   }
  
+  navigateBackToList(): void {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    if (returnUrl) {
+      this.router.navigateByUrl(returnUrl);
+      return;
+    }
+
+    if (window.history.state && window.history.state.navigationId > 1) {
+      this.location.back();
+    } else {
+      const url = this.router.url;
+      if (url.includes('/edit/')) {
+        this.router.navigateByUrl(url.substring(0, url.indexOf('/edit/')));
+      } else if (url.includes('/add')) {
+        this.router.navigateByUrl(url.substring(0, url.indexOf('/add')));
+      } else {
+        this.router.navigate(['/contact']);
+      }
+    }
+  }
+
   onCancel(): void {
-    this.router.navigate(['/contact']);
+    this.navigateBackToList();
   }
  
   private loadSpecialities(): void {

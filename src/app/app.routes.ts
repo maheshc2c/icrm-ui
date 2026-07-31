@@ -1,4 +1,4 @@
-import { AdminDashboard } from './pages/Admin/admin-dashboard/admin-dashboard';
+ import { AdminDashboard } from './pages/Admin/admin-dashboard/admin-dashboard';
 import { Layout } from './layout/layout/layout';
 import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
@@ -99,7 +99,7 @@ export const routes: Routes = [
         path: 'admindashboard',
         component: AdminDashboard,
         canActivate: [authGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['ADMIN' , 'Admin'] }
       },
       {
         path: 'admin/delete-contract-note',
@@ -151,7 +151,28 @@ export const routes: Routes = [
         data: { roles: ['ADMIN'] }
       },
       {
-        path: 'upload-target/:id',
+        path: 'admin/general-settings',
+        loadComponent: () =>
+          import('./pages/Admin/general-settings/general-settings').then(m => m.GeneralSettingsComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/margin-bands',
+        loadComponent: () =>
+          import('./pages/Admin/margin-bands/margin-bands').then(m => m.MarginBandsComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+        path: 'admin/margin-bands/edit',
+        loadComponent: () =>
+          import('./pages/Admin/margin-bands/edit-margin-bands/edit-margin-bands').then(m => m.EditMarginBandsComponent),
+        canActivate: [authGuard],
+        data: { roles: ['ADMIN'] }
+      },
+      {
+         path: 'upload-target/:id',
         loadComponent: () =>
           import('./pages/Admin/target-role/upload-target/upload-target').then(m => m.UploadTargetComponent),
         canActivate: [authGuard],
@@ -229,6 +250,26 @@ export const routes: Routes = [
   path: 'financial-year-calendar',
   loadComponent: () =>
     import('./pages/Admin/financial-year/calender/financial-year-calender/financial-year-calender').then(m => m.FinancialYearCalender)
+},
+{
+  path: 'admin/incentives-settings',
+  loadComponent: () =>
+    import('./pages/Admin/incentives-settings/incentives-settings').then(m => m.IncentivesSettings)
+},
+{
+  path: 'admin/incentives-settings/view/:id',
+  loadComponent: () =>
+    import('./pages/Admin/incentives-settings/view-incentives/view-incentives').then(m => m.ViewIncentives)
+},
+{
+  path: 'admin/incentives-settings/add',
+  loadComponent: () =>
+    import('./pages/Admin/incentives-settings/add-incentives/add-incentives').then(m => m.AddIncentives)
+},
+{
+  path: 'add_incentive_settings',
+  loadComponent: () =>
+    import('./pages/Admin/incentives-settings/add-incentives/add-incentives').then(m => m.AddIncentives)
 },
 
 //UserLog
@@ -762,14 +803,20 @@ export const routes: Routes = [
       {
         path: 'plan-visit/add',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/add-visit/add-visit.component').then(m => m.AddVisitComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head', 'Global Head', 'National Sales Manager', 'Regional Sales Manager', 'Regional Branch Head', 'Sales Director', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'plan-visit',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/manage-visits.component').then(m => m.ManageVisitsComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head', 'Global Head', 'National Sales Manager', 'Regional Sales Manager', 'Regional Branch Head', 'Sales Director', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       {
         path: 'plan-visit/edit/:id',
         loadComponent: () => import('./pages/GlobalHead/manage-visits/edit-visit/edit-visit.component').then(m => m.EditVisitComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head', 'Global Head', 'National Sales Manager', 'Regional Sales Manager', 'Regional Branch Head', 'Sales Director', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
       },
       { path: 'plan-visits', redirectTo: 'plan-visit', pathMatch: 'full' },
       { path: 'plan-edit/:id', redirectTo: 'plan-visit/edit/:id', pathMatch: 'full' },

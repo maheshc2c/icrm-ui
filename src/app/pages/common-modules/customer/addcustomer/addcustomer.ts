@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Form } from '../../../../shared/form/form';
 import { Adminservice } from '../../../../service/adminservice';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,7 +25,8 @@ export class Addcustomer implements OnInit {
     private adminService: Adminservice,
     private router: Router,
     private route: ActivatedRoute,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private location: Location
   ) {}
  
   /* ================= HEADER ================= */
@@ -261,7 +262,7 @@ export class Addcustomer implements OnInit {
 
         if (!fullCustomer) {
           this.toastService.error('Customer not found');
-          this.router.navigate(['/customer']);
+          this.navigateBackToList();
           return;
         }
 
@@ -277,7 +278,7 @@ export class Addcustomer implements OnInit {
       },
       error: () => {
         this.toastService.error('Failed to load customer');
-        this.router.navigate(['/customer']);
+        this.navigateBackToList();
       }
     });
   }
@@ -381,7 +382,7 @@ export class Addcustomer implements OnInit {
       this.adminService.updateCustomer(this.customerId, updatePayload).subscribe({
         next: () => {
           this.toastService.success('Customer updated successfully');
-          this.router.navigate(['/customer']);
+          this.navigateBackToList();
         },
         error: (err: any) => {
           console.error('Update failed:', err);
@@ -394,7 +395,7 @@ export class Addcustomer implements OnInit {
       this.adminService.createCustomer(payload).subscribe({
         next: () => {
           this.toastService.success('Customer created successfully');
-          this.router.navigate(['/customer']);
+          this.navigateBackToList();
         },
         error: (err: any) => {
           console.error('Create failed:', err);
@@ -404,12 +405,33 @@ export class Addcustomer implements OnInit {
     }
   }
  
+  navigateBackToList(): void {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    if (returnUrl) {
+      this.router.navigateByUrl(returnUrl);
+      return;
+    }
+
+    if (window.history.state && window.history.state.navigationId > 1) {
+      this.location.back();
+    } else {
+      const url = this.router.url;
+      if (url.includes('/edit/')) {
+        this.router.navigateByUrl(url.substring(0, url.indexOf('/edit/')));
+      } else if (url.includes('/add')) {
+        this.router.navigateByUrl(url.substring(0, url.indexOf('/add')));
+      } else {
+        this.router.navigate(['/customer']);
+      }
+    }
+  }
+
   /* ================= CANCEL ================= */
   // onCancel(): void {
   //   this.router.navigate(['/admin/customer']);
   // }
   onCancel(): void {
-    this.router.navigate(['/customer']);
+    this.navigateBackToList();
   }
 }
  

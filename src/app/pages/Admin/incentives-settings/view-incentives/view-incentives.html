@@ -1,0 +1,81 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="view-incentive-container">
+  <div class="view-incentive-card">
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span class="detail-label">Financial Year :</span>
+        <span class="detail-value">{{ data?.financialYear }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Role :</span>
+        <span class="detail-value">{{ data?.role }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Quarter Incentive :</span>
+        <span class="detail-value">{{ data?.quarterIncentive }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Upper Cap :</span>
+        <span class="detail-value">{{ data?.upperCap }}</span>
+      </div>
+    </div>
+
+    <div class="grade-section">
+      <div class="grade-heading">{{ data?.section1 }}</div>
+      <div class="grade-grid">
+        <div class="grade-item">
+          <span class="grade-label">PP LL :</span>
+          <span class="grade-value">{{ data?.ppLL }}</span>
+        </div>
+        <div class="grade-item">
+          <span class="grade-label">PP UL :</span>
+          <span class="grade-value">{{ data?.ppUL }}</span>
+        </div>
+      </div>
+      <div class="grade-grid">
+        <div class="grade-item">
+          <span class="grade-label">SP LL :</span>
+          <span class="grade-value">{{ data?.spLL }}</span>
+        </div>
+        <div class="grade-item">
+          <span class="grade-label">SP UL :</span>
+          <span class="grade-value">{{ data?.spUL }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="grade-section" *ngIf="data?.section2 || data?.ppLL2 || data?.ppUL2 || data?.spLL2 || data?.spUL2">
+      <div class="grade-heading">{{ data?.section2 }}</div>
+      <div class="grade-grid">
+        <div class="grade-item">
+          <span class="grade-label">PP LL :</span>
+          <span class="grade-value">{{ data?.ppLL2 }}</span>
+        </div>
+        <div class="grade-item">
+          <span class="grade-label">PP UL :</span>
+          <span class="grade-value">{{ data?.ppUL2 }}</span>
+        </div>
+      </div>
+      <div class="grade-grid">
+        <div class="grade-item">
+          <span class="grade-label">SP LL :</span>
+          <span class="grade-value">{{ data?.spLL2 }}</span>
+        </div>
+        <div class="grade-item">
+          <span class="grade-label">SP UL :</span>
+          <span class="grade-value">{{ data?.spUL2 }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-footer">
+      <button class="btn-back" (click)="onBack()">
+        <i class="fas fa-reply"></i> Back
+      </button>
+    </div>
+  </div>
+</div>

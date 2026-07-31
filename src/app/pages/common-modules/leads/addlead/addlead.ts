@@ -1529,11 +1529,11 @@ export class AddleadComponent implements OnInit {
   }
 
   onAddCustomer() {
-    this.router.navigate(['/salesmanager/customer/add']);
+    this.router.navigate(['/salesmanager/customer/add'], { queryParams: { returnUrl: this.router.url } });
   }
 
   onAddContact() {
-    this.router.navigate(['/salesmanager/contact/add']);
+    this.router.navigate(['/salesmanager/contact/add'], { queryParams: { returnUrl: this.router.url } });
   }
 
   onCustomerDetails(customerId: any): void {
