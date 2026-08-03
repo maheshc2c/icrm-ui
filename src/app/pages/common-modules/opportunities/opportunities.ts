@@ -73,7 +73,7 @@ export class OpportunitiesComponent implements OnInit {
     { name: 'expectedOrderConclusion', label: 'Expected Order Conclusion Date', type: 'date', required: true },
     { name: 'status', label: 'Status', type: 'select', options: [], required: true },
     { name: 'expectedInvoicingDate', label: 'Expected Invoice Date', type: 'date' },
-    { name: 'competitors', label: 'Competitors', type: 'text' }
+    { name: 'competitors', label: 'Competitors', type: 'select', options: [], isSearchable: true }
   ];
 
   oppModel: any = {
@@ -311,6 +311,14 @@ export class OpportunitiesComponent implements OnInit {
         field.options = data.map(s => ({ value: s.stageId, label: s.stageName }));
       }
     });
+
+    // 6. Load Competitors from backend for Opp Form
+    this.leadService.getCompetitors().subscribe(data => {
+      const field = this.oppFields.find(f => f.name === 'competitors');
+      if (field && data) {
+        field.options = data.map(c => ({ value: c.competitorId || c.id, label: c.competitorName || c.name || 'Unknown' }));
+      }
+    });
   }
 
   onSearchChange(filters: any): void {
@@ -466,8 +474,8 @@ export class OpportunitiesComponent implements OnInit {
       demoRequirement: false,
       technicallyCleared: false,
       stageId: null,
-      competitorIds: [],
-      remarks1: this.oppModel.competitors || null,
+      competitorIds: toNullIfEmpty(this.oppModel.competitors) ? [Number(toNullIfEmpty(this.oppModel.competitors))] : [],
+      remarks1: null,
       remarks2: null
     };
 
@@ -547,7 +555,18 @@ export class OpportunitiesComponent implements OnInit {
           this.oppModel.decisionMaker5 = extractId(data.oppDecisionMaker5 || data.oppDecisionMaker5Id || data.decisionMaker5Id || data.DecisionMaker5Id || data.OppDecisionMaker5 || data.decisionMaker5 || data.DecisionMaker5 || data.contact5);
           this.oppModel.relationshipId = extractId(data.relationship || data.oppRelationshipId || data.OppRelationshipId || data.relationshipId || data.RelationshipId);
           this.oppModel.status = extractId(data.status || data.oppStatus || data.OppStatus || data.Status);
-          this.oppModel.competitors = data.oppRemarks1 || data.OppRemarks1 || data.competitors || data.Competitors || data.remarks1 || '';
+          this.oppModel.competitors = (() => {
+            if (data.competitors && Array.isArray(data.competitors) && data.competitors.length > 0) {
+              return String(data.competitors[0].competitorId || data.competitors[0].id || '');
+            }
+            if (data.competitorIds && Array.isArray(data.competitorIds) && data.competitorIds.length > 0) {
+              return String(data.competitorIds[0]);
+            }
+            if (data.remarks1 && !isNaN(Number(data.remarks1))) {
+              return String(data.remarks1);
+            }
+            return '';
+          })();
 
         // Load segments and products for the selected category/group
         if (this.oppModel.productCategoryId) {

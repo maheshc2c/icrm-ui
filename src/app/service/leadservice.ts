@@ -302,6 +302,12 @@ export class Leadservice {
     });
   }
 
+  getQuoteRevisionDetails(quoteId: number | string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/quote/quote-revision-details/${quoteId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   createContractNote(payload: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/contractnote`, payload, {
       headers: this.getAuthHeaders()
@@ -330,6 +336,12 @@ export class Leadservice {
     return this.http.get(`${this.baseUrl}/quote/quotes/${quoteId}/pdf`, {
       headers: this.getAuthHeaders(),
       responseType: 'blob'
+    });
+  }
+
+  getCompetitors(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/competitors-dropdown`, {
+      headers: this.getAuthHeaders()
     });
   }
 }

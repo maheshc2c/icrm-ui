@@ -178,7 +178,7 @@ export class AddleadComponent implements OnInit {
     { name: 'expectedInvoicingDate', label: 'Expected Invoice Date', type: 'date' },
     { name: 'status', label: 'Status', type: 'select', options: [], required: true },
     // Row 8
-    { name: 'competitors', label: 'Competitors', type: 'text' }
+    { name: 'competitors', label: 'Competitors', type: 'select', options: [], isSearchable: true, isMultiSelect: true }
   ];
 
   oppModel: any = {
@@ -917,14 +917,50 @@ export class AddleadComponent implements OnInit {
   }
 
   selectOppOption(field: any, opt: any) {
-    this.oppModel[field.name] = opt.value;
-    this.openOppDropdown = null;
-    this.oppSearchQueries[field.name] = ''; // clear search after selection
-    this.onOppFieldChange({ name: field.name, value: opt.value });
+    if (field.isMultiSelect) {
+      if (!Array.isArray(this.oppModel[field.name])) {
+        this.oppModel[field.name] = this.oppModel[field.name] ? [this.oppModel[field.name]] : [];
+      }
+      const arr: any[] = this.oppModel[field.name];
+      const valStr = String(opt.value);
+      const idx = arr.findIndex((v: any) => String(v) === valStr);
+      if (idx > -1) {
+        arr.splice(idx, 1);
+      } else {
+        arr.push(opt.value);
+      }
+      this.onOppFieldChange({ name: field.name, value: [...arr] });
+    } else {
+      this.oppModel[field.name] = opt.value;
+      this.openOppDropdown = null;
+      this.oppSearchQueries[field.name] = ''; // clear search after selection
+      this.onOppFieldChange({ name: field.name, value: opt.value });
+    }
+  }
+
+  isOppOptionSelected(field: any, opt: any): boolean {
+    const val = this.oppModel[field.name];
+    if (val === null || val === undefined || val === '') return false;
+    if (field.isMultiSelect) {
+      if (Array.isArray(val)) {
+        return val.some((v: any) => String(v) === String(opt.value));
+      }
+      return String(val) === String(opt.value);
+    }
+    return String(val) === String(opt.value);
   }
 
   getOppSelectedLabel(field: any): string {
     const value = this.oppModel[field.name];
+    if (field.isMultiSelect) {
+      if (!value || (Array.isArray(value) && value.length === 0)) return '-- Select --';
+      const arr = Array.isArray(value) ? value : [value];
+      const labels = arr.map((v: any) => {
+        const opt = field.options.find((o: any) => String(o.value) === String(v));
+        return opt ? opt.label : null;
+      }).filter(Boolean);
+      return labels.length > 0 ? labels.join(', ') : '-- Select --';
+    }
     if (value === null || value === undefined || value === '') return '-- Select --';
     const opt = field.options.find((o: any) => String(o.value) === String(value));
     return opt ? opt.label : '-- Select --';
@@ -1198,7 +1234,18 @@ export class AddleadComponent implements OnInit {
           decisionMaker3: extractId(fullOpp.oppDecisionMaker3 || fullOpp.oppDecisionMaker3Id || fullOpp.decisionMaker3Id || fullOpp.DecisionMaker3Id || fullOpp.OppDecisionMaker3 || fullOpp.decisionMaker3 || fullOpp.DecisionMaker3 || fullOpp.contact3),
           decisionMaker4: extractId(fullOpp.oppDecisionMaker4 || fullOpp.oppDecisionMaker4Id || fullOpp.decisionMaker4Id || fullOpp.DecisionMaker4Id || fullOpp.OppDecisionMaker4 || fullOpp.decisionMaker4 || fullOpp.DecisionMaker4 || fullOpp.contact4),
           decisionMaker5: extractId(fullOpp.oppDecisionMaker5 || fullOpp.oppDecisionMaker5Id || fullOpp.decisionMaker5Id || fullOpp.DecisionMaker5Id || fullOpp.OppDecisionMaker5 || fullOpp.decisionMaker5 || fullOpp.DecisionMaker5 || fullOpp.contact5),
-          competitors: fullOpp.oppRemarks1 || fullOpp.OppRemarks1 || fullOpp.competitors || fullOpp.Competitors || fullOpp.remarks || ''
+          competitors: (() => {
+            if (fullOpp.competitors && Array.isArray(fullOpp.competitors) && fullOpp.competitors.length > 0) {
+              return fullOpp.competitors.map((c: any) => c.competitorId || c.id).filter(Boolean);
+            }
+            if (fullOpp.competitorIds && Array.isArray(fullOpp.competitorIds) && fullOpp.competitorIds.length > 0) {
+              return fullOpp.competitorIds;
+            }
+            if (fullOpp.remarks1 && !isNaN(Number(fullOpp.remarks1))) {
+              return [Number(fullOpp.remarks1)];
+            }
+            return [];
+          })()
         };
 
         if (this.oppModel.productCategoryId) {
@@ -1284,6 +1331,21 @@ export class AddleadComponent implements OnInit {
     this.leadservice.getStatus().subscribe((data: any) => {
       const field = this.oppFields.find(f => f.name === 'status');
       if (field) field.options = data.map((d: any) => ({ label: d.oppName || d.OppName, value: d.oppStatusId || d.OppStatusId }));
+    });
+
+    // Competitors
+    this.leadservice.getCompetitors().subscribe({
+      next: (data: any[]) => {
+        const field = this.oppFields.find(f => f.name === 'competitors');
+        if (field && data) {
+          field.options = data.map((c: any) => ({
+            label: c.competitorName || c.name || 'Unknown',
+            value: c.competitorId || c.id
+          }));
+        }
+        this.oppFields = [...this.oppFields];
+      },
+      error: (err) => console.error("Failed to fetch competitors:", err)
     });
   }
 
@@ -1415,8 +1477,15 @@ export class AddleadComponent implements OnInit {
       demoRequirement: false,
       technicallyCleared: false,
       stageId: null,
-      competitorIds: [],
-      remarks1: Array.isArray(this.oppModel.competitors) ? this.oppModel.competitors.map((c: any) => c.competitorName || c.name || String(c)).join(', ') : (this.oppModel.competitors || null),
+      competitorIds: (() => {
+        const compVal = this.oppModel.competitors;
+        if (!compVal) return [];
+        if (Array.isArray(compVal)) {
+          return compVal.map((v: any) => Number(v)).filter((n: number) => !isNaN(n));
+        }
+        return !isNaN(Number(compVal)) ? [Number(compVal)] : [];
+      })(),
+      remarks1: null,
       remarks2: null
     };
 
@@ -1598,8 +1667,31 @@ export class AddleadComponent implements OnInit {
     return String(val).trim();
   }
 
+  revisionHistoryData: any = {
+    quoteRef: '',
+    opportunityDetails: '',
+    revisionHistory: []
+  };
+
   onQuoteRevisionInfo(row: any) {
-    this.showRevisionHistoryModal = true;
+    const numId = this.getNumericQuoteId(row);
+    if (numId > 0) {
+      this.leadservice.getQuoteRevisionDetails(numId).subscribe({
+        next: (res: any) => {
+          console.log('Quote Revision Details loaded:', res);
+          if (res && res.data) {
+            this.revisionHistoryData = res.data;
+          }
+          this.showRevisionHistoryModal = true;
+        },
+        error: (err: any) => {
+          console.error('Error loading revision history:', err);
+          this.showRevisionHistoryModal = true;
+        }
+      });
+    } else {
+      this.showRevisionHistoryModal = true;
+    }
   }
 
   onQuoteRevisionAdd(row: any) {
@@ -1699,7 +1791,21 @@ export class AddleadComponent implements OnInit {
     if (this.leadId) {
       this.leadservice.getQuotesByLead(this.leadId).subscribe({
         next: (data) => {
-          this.quotes = data || [];
+          this.quotes = (data || []).map((q: any) => {
+            let disc = q.discount;
+            if (typeof disc === 'string') {
+              const num = parseFloat(disc.replace('%', ''));
+              if (!isNaN(num)) {
+                disc = num.toFixed(2) + '%';
+              }
+            } else if (typeof disc === 'number') {
+              disc = disc.toFixed(2) + '%';
+            }
+            return {
+              ...q,
+              discount: disc
+            };
+          });
         },
         error: (err) => console.error('Failed to load quotes:', err)
       });
