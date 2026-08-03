@@ -7,6 +7,7 @@ import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { Adminservice } from '../../../service/adminservice';
 import { GeneralSettingsResponse } from '../../../models/general-settings.model';
+import { ToastService } from '../../../service/toast.service';
 
 @Component({
     standalone: true,
@@ -30,7 +31,11 @@ export class GeneralSettingsComponent implements OnInit {
 
     settingsForm!: FormGroup;
 
-    constructor(private fb: FormBuilder, private adminService: Adminservice) {}
+    constructor(
+        private readonly fb: FormBuilder,
+        private readonly adminService: Adminservice,
+        private readonly toastService: ToastService
+    ) {}
 
     ngOnInit(): void {
         this.initForm();
@@ -135,10 +140,12 @@ export class GeneralSettingsComponent implements OnInit {
         this.adminService.saveGeneralSettings(payload).subscribe({
             next: (response) => {
                 console.log('General settings saved successfully', response);
+                this.toastService.success('General settings updated successfully.');
                 this.loadData();
             },
             error: (error) => {
                 console.error('Failed to save general settings:', error);
+                this.toastService.error('Failed to save general settings.');
             }
         });
     }
