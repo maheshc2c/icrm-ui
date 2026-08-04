@@ -258,7 +258,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/regional-branch-head/so-number-entry/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/regional-branch-head/so-number-entry/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/regional-branch-head/dashboard' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -372,7 +372,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/so-number-entry/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/so-number-entry/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/regional-sales-manager-dashboard/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -467,7 +467,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/dashboard/opportunity/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/dashboard/opportunity/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/country-head/dashboard/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -558,7 +558,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/globalhead-dashboard/opportunity/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/globalhead-dashboard/opportunity/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/globalhead-dashboard/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -654,7 +654,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: `/opportunity/open` },
             { label: 'Closed', icon: 'fas fa-folder', route: `/opportunity/closed` },
-            { label: 'Funnel History', icon: 'fas fa-history', route: `/funnel-history` }
+            { label: 'Funnel History', icon: 'fas fa-history', route: `/OppurtunityStatus/FunnelHistory` }
           ]
         },
         {
@@ -780,7 +780,7 @@ constructor() {
         children: [
           { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
           { label: 'Closed', icon: 'fas fa-check-circle', route: '/salesmanager/closed-opportunities' },
-          { label: 'Funnel History', icon: 'fas fa-history', route: '/salesmanager/funnel-history' }
+          { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
         ]
       },
       {

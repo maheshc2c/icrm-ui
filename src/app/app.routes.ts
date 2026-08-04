@@ -99,7 +99,7 @@ export const routes: Routes = [
         path: 'admindashboard',
         component: AdminDashboard,
         canActivate: [authGuard],
-        data: { roles: ['ADMIN'] }
+        data: { roles: ['Admin'] }
       },
       {
         path: 'admin/delete-contract-note',
@@ -541,6 +541,12 @@ export const routes: Routes = [
   path: 'oppurtunity/close',
   loadComponent: () =>
     import('./pages/SalesDirector/oppurtunity/opp-close/opp-close').then(m => m.OppClose),
+},
+
+ {
+  path: 'OppurtunityStatus/FunnelHistory',
+  loadComponent: () =>
+    import('./pages/common-modules/opportunity-funnel-history-status/opportunity-funnel-history-status').then(m => m.OpportunityFunnelHistoryStatus),
 },
 
 

@@ -1,0 +1,31 @@
+<app-header></app-header>
+
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+    [title]="headerTitle"
+    [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [columns]="columns"
+   [rows]="rows"
+     [showAdd]="false"
+     [showEdit]="false"
+     [showDeleteButton]="false"
+     [showReset]="true"
+      [showActions]="false"
+     (reset)="onReset()"
+  [searchFields]="searchFields"
+  [totalElements]="totalElements"
+  [currentPage]="currentPage"
+  [pageSize]="pageSize"
+  (searchChange)="onSearchChange($event)"
+  (search)="onSearch()"
+  (reset)="onReset()"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
+      [showDownload]="true"
+    (download)="download()">
+</app-data-table>
+
