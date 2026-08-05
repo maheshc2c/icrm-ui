@@ -184,7 +184,10 @@ export class OpportunitiesComponent implements OnInit {
     this.leadService.getStatus().subscribe(data => {
       const field = this.oppFields.find(f => f.name === 'status');
       if (field && data) {
-        field.options = data.map(s => ({ label: s.oppName || s.OppName, value: s.oppStatusId || s.OppStatusId }));
+        field.options = data.map(s => {
+          const weight = s.oppWeight != null ? ` (${s.oppWeight}%)` : '';
+          return { label: (s.oppName || s.OppName || 'Status') + weight, value: s.oppStatusId || s.OppStatusId };
+        });
       }
     });
   }
@@ -256,7 +259,8 @@ export class OpportunitiesComponent implements OnInit {
           ...opp,
           product: opp.productAndCategory,
           lifeTime: opp.lifeTimeDays,
-          value: opp.value || (opp.qty ? opp.qty * 125000 : 0)
+          value: (opp.mrp && opp.qty) ? (opp.qty * opp.mrp) : (opp.value || (opp.qty ? opp.qty * 125000 : 0)),
+          probability: typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 50)
         }));
         this.filteredOpportunities = [...this.opportunities];
         this.totalElements = data.totalElements !== undefined ? data.totalElements : opps.length;

@@ -1330,7 +1330,12 @@ export class AddleadComponent implements OnInit {
     // Status
     this.leadservice.getStatus().subscribe((data: any) => {
       const field = this.oppFields.find(f => f.name === 'status');
-      if (field) field.options = data.map((d: any) => ({ label: d.oppName || d.OppName, value: d.oppStatusId || d.OppStatusId }));
+      if (field) {
+        field.options = data.map((d: any) => {
+          const weight = d.oppWeight != null ? ` (${d.oppWeight}%)` : '';
+          return { label: (d.oppName || d.OppName || 'Status') + weight, value: d.oppStatusId || d.OppStatusId };
+        });
+      }
     });
 
     // Competitors
@@ -1883,9 +1888,18 @@ export class AddleadComponent implements OnInit {
         next: (res: any) => {
           console.log('openAddQuoteModal: fetched opportunities:', res);
           const data = res?.data || res?.content || (Array.isArray(res) ? res : []);
-          this.quoteOpportunities = data || [];
+          const allOpps = data || [];
+          const existingOppIds = new Set(
+            (this.quotes || []).map((q: any) => q.opportunityId || q.opportunity_id).filter((id: any) => id != null)
+          );
+          this.quoteOpportunities = allOpps.filter((opp: any) => {
+            const oppId = opp.id || opp.opportunityId;
+            return !existingOppIds.has(oppId);
+          });
           if (this.quoteOpportunities.length > 0) {
             this.quoteForm.opportunityId = this.quoteOpportunities[0].id || this.quoteOpportunities[0].opportunityId;
+          } else {
+            this.quoteForm.opportunityId = '';
           }
           this.cdr.detectChanges();
         },
@@ -1938,14 +1952,19 @@ export class AddleadComponent implements OnInit {
     };
 
     this.leadservice.saveQuote(payload).subscribe({
-      next: (res) => {
-        this.toastService.success('Quote saved successfully!');
-        this.showAddQuoteModal = false;
-        this.loadQuotes();
+      next: (res: any) => {
+        if (res && res.status === false) {
+          this.toastService.error(res.message || 'Quote already exists for this opportunity.');
+        } else {
+          this.toastService.success('Quote saved successfully!');
+          this.showAddQuoteModal = false;
+          this.loadQuotes();
+        }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Failed to save quote:', err);
-        this.toastService.error('Failed to save quote');
+        const errMsg = err?.error?.message || 'Failed to save quote';
+        this.toastService.error(errMsg);
       }
     });
   }
