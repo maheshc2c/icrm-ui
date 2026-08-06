@@ -1,0 +1,118 @@
+<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+  <div class="level-indicator" *ngIf="currentLevel === 2">
+    <a href="javascript:void(0)" (click)="goToLevel1()">Level 1</a> 
+    <span class="separator">></span> 
+    <span class="active-level">Level 2 — {{ selectedCategory }}</span>
+  </div>
+
+  <div class="report-toolbar" [formGroup]="filterForm">
+    <div class="toolbar-field">
+      <label class="field-label">All Regions</label>
+      <select class="form-select" formControlName="region">
+        <option>All Regions</option>
+        <option>North</option>
+        <option>South</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">User</label>
+      <select class="form-select" formControlName="user">
+        <option>All Users</option>
+        <option>Sales Manager</option>
+        <option>Regional Sales Manager</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Segment</label>
+      <select class="form-select" formControlName="segment">
+        <option>All Segments</option>
+        <option>Enterprise</option>
+        <option>Retail</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field timeline-field">
+      <label class="field-label">Time Line</label>
+      <div class="timeline-toggle" role="tablist" aria-label="Timeline toggle">
+        <button
+          type="button"
+          class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Week'"
+          (click)="filterForm.get('timeline')?.setValue('Week')"
+        >
+          Week
+        </button>
+        <button
+          type="button"
+          class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Month'"
+          (click)="filterForm.get('timeline')?.setValue('Month')"
+        >
+          Month
+        </button>
+        <button
+          type="button"
+          class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Quarter'"
+          (click)="filterForm.get('timeline')?.setValue('Quarter')"
+        >
+          Quarter
+        </button>
+        <button
+          type="button"
+          class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Year'"
+          (click)="filterForm.get('timeline')?.setValue('Year')"
+        >
+          Year
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="chart-grid" *ngIf="currentLevel === 1">
+    <app-donut-chart-card
+      [title]="'By Reason — 2026-27'"
+      [total]="totalReason"
+      [legendItems]="reasonChart"
+      [colors]="['#5d7fe8', '#52b9b9', '#f0c24f', '#d981ee', '#f39d64', '#d9d9d9']"
+      (sliceClick)="onSliceClick($event, 'Reason')"
+    ></app-donut-chart-card>
+
+    <app-donut-chart-card
+      [title]="'By Competitor — 2026-27'"
+      [total]="totalCompetitor"
+      [legendItems]="competitorChart"
+      [colors]="['#5d7fe8', '#f0c24f', '#52b9b9', '#d981ee', '#f39d64', '#d9d9d9']"
+      (sliceClick)="onSliceClick($event, 'Competitor')"
+    ></app-donut-chart-card>
+  </section>
+
+  <div class="drilldown-view" *ngIf="currentLevel === 2">
+    <div class="drilldown-card">
+      <div class="drilldown-card__header">
+        <div class="drilldown-card__title-group">
+          <div class="drilldown-card__title">{{ selectedCategory }} — split by region ({{ selectedType }})</div>
+          <div class="drilldown-card__subtitle">Click a bar to view deals</div>
+        </div>
+        <button type="button" class="drilldown-card__menu" aria-label="More options">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      
+      <div class="drilldown-card__content">
+        <div class="drilldown-list">
+          <div class="drilldown-row" *ngFor="let row of drilldownRows">
+            <span class="drilldown-row__label">{{ row.label }}</span>
+            <div class="drilldown-row__bar-wrap">
+              <div class="drilldown-row__bar" [style.width.%]="row.fill" [style.background]="selectedColor"></div>
+            </div>
+            <span class="drilldown-row__value">{{ row.value }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-reports-layout>

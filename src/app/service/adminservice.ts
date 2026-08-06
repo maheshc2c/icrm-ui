@@ -108,6 +108,21 @@ getGeneralSettings() {
   );
 }
 
+getMarginBandConfig() {
+  return this.http.get(
+    `${this.baseUrl}/marginBand/marginConfig`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+updateMarginBandConfig(payload: any) {
+  return this.http.put(
+    `${this.baseUrl}/marginBand`,
+    payload,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
 saveGeneralSettings(payload: any) {
   return this.http.post(
     `${this.baseUrl}/user/save-general-settings`,
