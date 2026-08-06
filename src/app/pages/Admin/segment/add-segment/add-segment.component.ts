@@ -105,13 +105,27 @@ export class AddSegment implements OnInit {
         if (data.competitors[key] === true) {
           const numKey = Number(key);
           if (!isNaN(numKey)) {
-            selectedCompetitorIds.push(numKey);
-            const found = this.competitors.find(c => c.value === numKey);
-            if (found) selectedCompetitorNames.push(found.label);
+            if (!selectedCompetitorIds.includes(numKey)) {
+              selectedCompetitorIds.push(numKey);
+              const found = this.competitors.find(c => c.value === numKey);
+              if (found && !selectedCompetitorNames.includes(found.label)) {
+                selectedCompetitorNames.push(found.label);
+              }
+            }
           } else {
-            selectedCompetitorNames.push(key);
-            const found = this.competitors.find(c => c.label === key);
-            if (found && typeof found.value === 'number') selectedCompetitorIds.push(found.value);
+            const found = this.competitors.find(c => c.label === key || String(c.value) === key);
+            if (found && typeof found.value === 'number') {
+              if (!selectedCompetitorIds.includes(found.value)) {
+                selectedCompetitorIds.push(found.value);
+              }
+              if (!selectedCompetitorNames.includes(found.label)) {
+                selectedCompetitorNames.push(found.label);
+              }
+            } else {
+              if (!selectedCompetitorNames.includes(key)) {
+                selectedCompetitorNames.push(key);
+              }
+            }
           }
         }
       });
