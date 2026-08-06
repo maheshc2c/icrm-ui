@@ -1093,13 +1093,13 @@ downloadSubSystemExcel(payload: any) {
 
   getUserLogs(): Observable<UserlogModel[]> {
     return this.http.get<UserlogModel[]>(
-      `${this.baseUrl}/admin/report/latest-login`,
+      `${this.baseUrl}/auth/report/latest-login`,
       { headers: this.getAuthHeaders() }
     );
   }
   searchUserLogs(keyword: string): Observable<UserlogModel[]> {
     return this.http.get<UserlogModel[]>(
-      `${this.baseUrl}/admin/report/search`,
+      `${this.baseUrl}/auth/report/search`,
       {
         headers: this.getAuthHeaders(),
         params: { keyword } // adjust if backend uses different param
@@ -1109,7 +1109,7 @@ downloadSubSystemExcel(payload: any) {
 
   downloadUserLogExcel(data: UserlogModel[]): Observable<Blob> {
     return this.http.post(
-      `${this.baseUrl}/admin/loginHistory-excel`,
+      `${this.baseUrl}/auth/loginHistory-excel`,
       data,
       {
         headers: this.getAuthHeaders(),
