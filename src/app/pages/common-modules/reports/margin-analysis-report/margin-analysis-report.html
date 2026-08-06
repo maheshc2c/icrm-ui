@@ -1,0 +1,144 @@
+<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+  <div class="report-toolbar">
+    <div class="toolbar-field">
+      <label class="field-label">All Regions</label>
+      <select class="form-select" [(ngModel)]="selectedRegion">
+        <option>All Regions</option>
+        <option>North</option>
+        <option>South</option>
+        <option>East</option>
+        <option>West</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">From Date</label>
+      <input type="date" class="form-select" [(ngModel)]="fromDate" />
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">To Date</label>
+      <input type="date" class="form-select" [(ngModel)]="toDate" />
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Select Segment</label>
+      <select class="form-select" [(ngModel)]="selectedSegment">
+        <option>Select Segment</option>
+        <option>Enterprise</option>
+        <option>Retail</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Select Product</label>
+      <select class="form-select" [(ngModel)]="selectedProduct">
+        <option>Select Product</option>
+        <option>Oracle</option>
+        <option>SAP</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">All Users</label>
+      <select class="form-select" [(ngModel)]="selectedUser">
+        <option>All Users</option>
+        <option>Sales User</option>
+        <option>Manager</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Customer</label>
+      <input class="form-select" [(ngModel)]="selectedCustomer" />
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Dealer</label>
+      <input class="form-select" [(ngModel)]="selectedDealer" />
+    </div>
+
+    <div class="toolbar-actions">
+      <button type="button" class="btn-search" (click)="onSearch()" title="Search">
+        <i class="fas fa-search"></i>
+      </button>
+      <button type="button" class="btn-reset" (click)="resetFilters()" title="Reset">
+        <i class="fas fa-redo-alt"></i>
+      </button>
+      <button type="button" class="btn-export" title="Export">
+        <i class="fas fa-download"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="report-table-wrapper">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th style="width: 70px;">&nbsp;</th>
+          <th>Product Segment</th>
+          <th>Revenue (Lacs)</th>
+          <th>Gross Margin %</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let row of rows; let i = index">
+          <tr class="main-row" [ngClass]="{'even-row': i % 2 === 1}">
+            <td class="expand-cell" (click)="toggleRow(row)" style="cursor: pointer;">
+              {{ row.expanded ? '-' : '+' }}
+            </td>
+            <td>{{ row.segment }}</td>
+            <td>{{ row.revenue }}</td>
+            <td>{{ row.margin }}%</td>
+          </tr>
+          <tr *ngIf="row.expanded" class="sub-table-row">
+            <td colspan="4" class="p-0 border-0" style="padding: 0; border: none;">
+              <table class="sub-table">
+                <thead>
+                  <tr>
+                    <th style="width: 70px;">S.No</th>
+                    <th>Product Description</th>
+                    <th>Product Code</th>
+                    <th>Revenue (Lacs)</th>
+                    <th>Gross Margin %</th>
+                    <th>Qty</th>
+                    <th>ASP (Lacs)</th>
+                    <th>Unit DP (Lacs)</th>
+                    <th>Var %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let detail of row.details">
+                    <td>{{ detail.sno }}</td>
+                    <td>{{ detail.desc }}</td>
+                    <td>{{ detail.code }}</td>
+                    <td>{{ detail.revenue }}</td>
+                    <td>{{ detail.margin }}%</td>
+                    <td>{{ detail.qty }}</td>
+                    <td>{{ detail.asp }}</td>
+                    <td>{{ detail.unitDp }}</td>
+                    <td>{{ detail.var }}%</td>
+                  </tr>
+                  <tr class="sub-total-row">
+                    <td colspan="3" class="total-label text-center">Total</td>
+                    <td></td>
+                    <td></td>
+                    <td style="font-weight: bold;">{{ getSubTotalQty(row) }}</td>
+                    <td></td>
+                    <td></td>
+                    <td style="font-weight: bold;">{{ getSubTotalVar(row) }}%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+        <tr class="total-row">
+          <td colspan="2" class="total-label">Total</td>
+          <td>{{ totalRevenue }}</td>
+          <td>{{ totalMargin }}%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-reports-layout>

@@ -73,11 +73,23 @@
     border-bottom: none;
 }
 
-.margin-footer {
+/* .margin-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 18px 24px 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+} */
+
+.margin-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 18px;
+    padding-right: 24px;
+    padding-bottom: 24px;
+    padding-left: 280px;
     flex-wrap: wrap;
     gap: 12px;
 }

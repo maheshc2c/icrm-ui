@@ -75,7 +75,7 @@ export class EditMarginBandsComponent implements OnInit {
     private loadMarginConfig(): void {
         this.adminService.getMarginBandConfig().subscribe({
             next: (response: any) => {
-                const config = response?.data ?? {};
+                const config = response?.data ?? response ?? {};
                 const bands = Array.isArray(config.marginBands) ? config.marginBands : [];
 
                 this.bandsArray.clear();
@@ -87,7 +87,7 @@ export class EditMarginBandsComponent implements OnInit {
                 this.editForm.patchValue({
                     costOfMaintainingWarranty: this.normalizeNumber(config.costOfMaintainingWarranty),
                     costOfCapital: this.normalizeNumber(config.costOfCapital),
-                    dealerWarranty: this.isDealerWarrantyEnabled(config.dealerWarranty)
+                    dealerWarranty: this.normalizeDealerWarrantyValue(config.dealerWarranty)
                 });
             },
             error: (error: any) => {
@@ -107,16 +107,16 @@ export class EditMarginBandsComponent implements OnInit {
         const netRange = this.parseRange(band?.netMargin);
 
         return {
-            sNo: band?.sno ?? fallbackSNo,
+            sNo: band?.sno ?? band?.quoteApprovalId ?? fallbackSNo,
             level: band?.level ?? '',
-            varLowerLimit: varianceRange.lowerLimit,
-            varIncludeLower: varianceRange.includeLower,
-            varUpperLimit: varianceRange.upperLimit,
-            varIncludeUpper: varianceRange.includeUpper,
-            netLowerLimit: netRange.lowerLimit,
-            netIncludeLower: netRange.includeLower,
-            netUpperLimit: netRange.upperLimit,
-            netIncludeUpper: netRange.includeUpper
+            varLowerLimit: this.normalizeLimitValue(band?.gmLowerLimit) ?? varianceRange.lowerLimit,
+            varIncludeLower: this.normalizeMarginBandCheckValue(band?.gmLowerCheck ?? varianceRange.includeLower),
+            varUpperLimit: this.normalizeLimitValue(band?.gmUpperLimit) ?? varianceRange.upperLimit,
+            varIncludeUpper: this.normalizeMarginBandCheckValue(band?.gmUpperCheck ?? varianceRange.includeUpper),
+            netLowerLimit: this.normalizeLimitValue(band?.nmLowerLimit) ?? netRange.lowerLimit,
+            netIncludeLower: this.normalizeMarginBandCheckValue(band?.nmLowerCheck ?? netRange.includeLower),
+            netUpperLimit: this.normalizeLimitValue(band?.nmUpperLimit) ?? netRange.upperLimit,
+            netIncludeUpper: this.normalizeMarginBandCheckValue(band?.nmUpperCheck ?? netRange.includeUpper)
         };
     }
 
@@ -189,12 +189,45 @@ export class EditMarginBandsComponent implements OnInit {
     }
 
     private normalizeNumber(value: string | number | null | undefined): number {
-        const parsed = Number(String(value ?? '0').replace('%', '').trim());
+        const parsed = Number(String(value ?? '0').replace(/%/g, '').trim());
         return Number.isFinite(parsed) ? parsed : 0;
     }
 
-    private isDealerWarrantyEnabled(value: string | boolean | null | undefined): boolean {
-        return String(value ?? '').toLowerCase() === 'enabled' || value === true;
+    private normalizeLimitValue(value: string | number | null | undefined): number | null {
+        if (value === null || value === undefined || value === '') {
+            return null;
+        }
+
+        const parsed = Number(String(value).replace(/%/g, '').trim());
+        return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    private normalizeMarginBandCheckValue(value: string | number | boolean | null | undefined): boolean {
+        const normalized = String(value ?? '').trim().toLowerCase();
+
+        if (normalized === '1' || normalized === 'yes' || normalized === 'true' || value === true) {
+            return true;
+        }
+
+        if (normalized === '2' || normalized === 'no' || normalized === 'false' || value === false) {
+            return false;
+        }
+
+        return false;
+    }
+
+    private normalizeDealerWarrantyValue(value: string | number | boolean | null | undefined): boolean {
+        const normalized = String(value ?? '').trim().toLowerCase();
+
+        if (normalized === '1' || normalized === 'enabled' || normalized === 'true' || value === true) {
+            return true;
+        }
+
+        if (normalized === '2' || normalized === 'disabled' || normalized === 'false' || value === false) {
+            return false;
+        }
+
+        return false;
     }
 
     onSubmit(): void {
@@ -216,7 +249,7 @@ export class EditMarginBandsComponent implements OnInit {
             }),
             costOfMaintainingWarranty: Number(formValue.costOfMaintainingWarranty ?? 0),
             costOfCapital: Number(formValue.costOfCapital ?? 0),
-            dealerWarranty: formValue.dealerWarranty ? 1 : 0
+            dealerWarranty: formValue.dealerWarranty ? 1 : 2
         };
 
         this.adminService.updateMarginBandConfig(payload).subscribe({

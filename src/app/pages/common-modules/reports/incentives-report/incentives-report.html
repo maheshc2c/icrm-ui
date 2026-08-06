@@ -1,0 +1,68 @@
+<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+  <div class="report-toolbar">
+    <div class="toolbar-field">
+      <label class="field-label">Select Users</label>
+      <select class="form-select" [(ngModel)]="selectUsers">
+        <option>Select Users</option>
+        <option>Krishna T</option>
+        <option>Super User</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Quarter</label>
+      <select class="form-select" [(ngModel)]="quarter">
+        <option>Quarter1</option>
+        <option>Quarter2</option>
+        <option>Quarter3</option>
+        <option>Quarter4</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Financial Year</label>
+      <select class="form-select" [(ngModel)]="financialYear">
+        <option>2026-27</option>
+        <option>2025-26</option>
+        <option>2024-25</option>
+      </select>
+    </div>
+
+    <div class="toolbar-actions">
+      <button type="button" class="btn-search"><i class="fas fa-search"></i></button>
+      <button type="button" class="btn-download"><i class="fas fa-cloud-download-alt"></i></button>
+    </div>
+  </div>
+
+  <div class="report-title">Part1 Incentives For ( {{ financialYear }} - {{ quarter }} )</div>
+
+  <div class="report-table-wrapper">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Role</th>
+          <th>User</th>
+          <th>ERP Target (in Lakhs)</th>
+          <th>ERP Sales (in Lakhs)</th>
+          <th>Incentive Amount (In Rs)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of reports; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.role }}</td>
+          <td>{{ item.user }}</td>
+          <td>{{ item.erpTarget }}</td>
+          <td>{{ item.erpSales }}</td>
+          <td>{{ item.incentiveAmount }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</app-reports-layout>

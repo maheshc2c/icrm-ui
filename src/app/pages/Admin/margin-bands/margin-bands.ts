@@ -108,8 +108,18 @@ export class MarginBandsComponent implements OnInit {
         return normalized.endsWith('%') ? normalized.slice(0, -1) : normalized;
     }
 
-    private isDealerWarrantyEnabled(value: string | boolean | null | undefined): boolean {
-        return String(value ?? '').toLowerCase() === 'enabled' || value === true;
+    private isDealerWarrantyEnabled(value: string | number | boolean | null | undefined): boolean {
+        const normalized = String(value ?? '').trim().toLowerCase();
+
+        if (normalized === '1' || normalized === 'enabled' || normalized === 'true' || value === true) {
+            return true;
+        }
+
+        if (normalized === '2' || normalized === 'disabled' || normalized === 'false' || value === false) {
+            return false;
+        }
+
+        return false;
     }
 
     onSearch(): void {

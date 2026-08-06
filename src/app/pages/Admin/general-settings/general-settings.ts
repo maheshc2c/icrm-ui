@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Header } from '../../../layout/header/header';
 import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
@@ -30,11 +31,13 @@ export class GeneralSettingsComponent implements OnInit {
     ];
 
     settingsForm!: FormGroup;
+    isSaving = false;
 
     constructor(
         private readonly fb: FormBuilder,
         private readonly adminService: Adminservice,
-        private readonly toastService: ToastService
+        private readonly toastService: ToastService,
+        private readonly router: Router
     ) {}
 
     ngOnInit(): void {
@@ -131,10 +134,11 @@ export class GeneralSettingsComponent implements OnInit {
     }
 
     onSave(): void {
-        if (!this.settingsForm.valid) {
+        if (!this.settingsForm.valid || this.isSaving) {
             return;
         }
 
+        this.isSaving = true;
         const payload = this.buildSavePayload();
 
         this.adminService.saveGeneralSettings(payload).subscribe({
@@ -142,10 +146,12 @@ export class GeneralSettingsComponent implements OnInit {
                 console.log('General settings saved successfully', response);
                 this.toastService.success('General settings updated successfully.');
                 this.loadData();
+                this.isSaving = false;
             },
             error: (error) => {
                 console.error('Failed to save general settings:', error);
                 this.toastService.error('Failed to save general settings.');
+                this.isSaving = false;
             }
         });
     }
@@ -214,6 +220,6 @@ export class GeneralSettingsComponent implements OnInit {
 
     onCancel(): void {
         console.log('Cancel clicked');
-        this.loadData();
+        this.router.navigate(['/admindashboard']);
     }
 }
