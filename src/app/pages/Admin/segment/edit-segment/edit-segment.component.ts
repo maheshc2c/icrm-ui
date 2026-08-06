@@ -102,12 +102,26 @@ export class EditSegment implements OnInit {
             if (typeof c === 'object' && c !== null) {
               if (c.competitorId !== undefined && c.competitorId !== null) {
                 compsObj[c.competitorId] = true;
-              }
-              if (c.competitorName) {
-                compsObj[c.competitorName] = true;
+              } else if (c.competitorName) {
+                const found = this.competitors.find(comp => comp.label === c.competitorName);
+                if (found) {
+                  compsObj[found.value] = true;
+                } else {
+                  compsObj[c.competitorName] = true;
+                }
               }
             } else if (c !== undefined && c !== null) {
-              compsObj[c] = true;
+              const num = Number(c);
+              if (!isNaN(num)) {
+                compsObj[num] = true;
+              } else {
+                const found = this.competitors.find(comp => comp.label === c);
+                if (found) {
+                  compsObj[found.value] = true;
+                } else {
+                  compsObj[c] = true;
+                }
+              }
             }
           });
         } else if (segment.competitorIds && Array.isArray(segment.competitorIds) && segment.competitorIds.length > 0) {
@@ -116,7 +130,12 @@ export class EditSegment implements OnInit {
           });
         } else if (segment.competitorNames && Array.isArray(segment.competitorNames) && segment.competitorNames.length > 0) {
           segment.competitorNames.forEach((name: string) => {
-            compsObj[name] = true;
+            const found = this.competitors.find(comp => comp.label === name);
+            if (found) {
+              compsObj[found.value] = true;
+            } else {
+              compsObj[name] = true;
+            }
           });
         }
 
@@ -150,16 +169,26 @@ export class EditSegment implements OnInit {
         if (formData.competitors[key]) {
           const numKey = Number(key);
           if (!isNaN(numKey)) {
-            selectedCompetitorIds.push(numKey);
-            const found = this.competitors.find(c => c.value === numKey);
-            if (found) {
-              selectedCompetitorNames.push(found.label);
+            if (!selectedCompetitorIds.includes(numKey)) {
+              selectedCompetitorIds.push(numKey);
+              const found = this.competitors.find(c => c.value === numKey);
+              if (found && !selectedCompetitorNames.includes(found.label)) {
+                selectedCompetitorNames.push(found.label);
+              }
             }
           } else {
-            selectedCompetitorNames.push(key);
-            const found = this.competitors.find(c => c.label === key || c.value === key);
+            const found = this.competitors.find(c => c.label === key || String(c.value) === key);
             if (found && typeof found.value === 'number') {
-              selectedCompetitorIds.push(found.value);
+              if (!selectedCompetitorIds.includes(found.value)) {
+                selectedCompetitorIds.push(found.value);
+              }
+              if (!selectedCompetitorNames.includes(found.label)) {
+                selectedCompetitorNames.push(found.label);
+              }
+            } else {
+              if (!selectedCompetitorNames.includes(key)) {
+                selectedCompetitorNames.push(key);
+              }
             }
           }
         }
