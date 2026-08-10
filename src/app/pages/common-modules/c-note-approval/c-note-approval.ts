@@ -126,7 +126,7 @@ searchContractNotes(): void {
     pagination: {
       pageNumber: this.currentPage,
       pageSize: this.pageSize,
-      sortBy: 'contractNoteId',
+      sortBy: '',
       sortOrder: 'DESC'
     }
   };
@@ -141,13 +141,14 @@ searchContractNotes(): void {
 
       if (response?.status) {
 
-        // this.rows = response.data || [];
+        this.rows = response.data || [];
 
         this.rows = (response.data || []).map((item: any) => ({
   ...item,
   cnoteId: item.contractNoteId ?? item.cnoteId
 }));
-        this.fullRows = [...this.rows];
+        this.rows = response.data || [];
+this.fullRows = [...this.rows];
 
         this.totalElements = response.totalElements || 0;
         this.totalPages = response.totalPages || 0;
@@ -187,7 +188,7 @@ approveContractNote(row: any) {
 
   const payload = {
 
-    contractNoteId: row.contractNoteIdInternal,
+    contractNoteId: row.contractNoteId,
 
     action: 'APPROVE',
 

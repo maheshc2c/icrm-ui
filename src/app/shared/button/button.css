@@ -4,108 +4,72 @@
   box-sizing: border-box;
 }
 
-/* container in which toolbar sits (parent should be full width) */
 .filter-actions {
   display: flex;
-  gap: 8px;
-  margin: 0;
   align-items: center;
   justify-content: flex-end;
-  width: auto;
-  box-sizing: border-box;
-  padding: 0px;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
 }
 
 .toolbar-container {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  gap: 10px;
+  margin: 0;
   padding: 0;
 }
 
-/* BUTTON STYLE */
-.icon-actions .icon-btn {
-  width: 36px;
-  height: 36px;
+.icon-actions .icon-btn,
+.icon-actions .btn-submit,
+.icon-actions .btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  height: 38px;
+  border: 1px solid #e8dff7;
   border-radius: 12px;
-  background: #f5eaff;
-  border: 1px solid #eadcff;
-  color: #6d28d9;
-  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.12);
+  background: #f4ebff;
+  color: #7a4bc4;
+  box-shadow: 0 4px 10px rgba(122, 75, 196, 0.08);
   transition: all 0.2s ease;
   cursor: pointer;
   text-decoration: none;
 }
 
-/* HOVER EFFECT */
-.icon-actions .icon-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
-}
-
 .icon-actions .icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: #f5eaff;
-  border: 1px solid #eadcff;
-  color: #6d28d9;
-}
-/* Submit button styling */
-.icon-actions .btn-submit {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 36px;
-  padding: 0 20px;
-  border-radius: 12px;
-  border: none;
-  background: #f5eaff;
-  border: 1px solid #eadcff;
-  color: #6d28d9;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  cursor: pointer;
+  width: 38px;
+  min-width: 38px;
 }
 
-.icon-actions .btn-submit:hover {
-   transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
-}
-
-.icon-actions .btn-submit:active {
-  transform: translateY(0);
-}
-/* Bulk Upload button styling */
-.icon-actions .btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 12px;
-  border-radius: 12px;
-  background: #f5eaff;
-  border: 1px solid #eadcff;
-  color: #6d28d9;
-  font-weight: 500;
-  font-size: 14px;
-  box-shadow: 0 4px 10px rgba(109, 40, 217, 0.1);
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
+.icon-actions .icon-btn:hover,
+.icon-actions .btn-submit:hover,
 .icon-actions .btn-secondary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(104, 13, 173, 0.18);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(122, 75, 196, 0.12);
 }
 
-.icon-actions .btn-secondary i {
-  font-size: 15px;
+.icon-actions .btn-submit {
+  padding: 0 16px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.icon-actions .btn-secondary {
+  gap: 8px;
+  padding: 0 14px;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.icon-actions .btn-secondary i,
+.icon-actions .icon-btn i {
+  font-size: 14px;
+}
+
+.icon-actions .btn-submit:active,
+.icon-actions .btn-secondary:active,
+.icon-actions .icon-btn:active {
+  transform: translateY(0);
 }
