@@ -90,14 +90,19 @@
     <p class="mt-2 text-muted">Fetching Stock In Hand records...</p>
   </div>
 
-  <!-- Main Report Table Card (Pink Header, Full Width Spanning Edge-to-Edge) -->
+  <!-- Main Report Table Card (Pink Header, Pixel-Perfect Colgroup Alignment) -->
   <div class="table-card shadow-sm" *ngIf="!isLoading">
     <div class="table-responsive w-100">
       <table class="table sih-main-table w-100 align-middle mb-0">
+        <colgroup>
+          <col style="width: 60px;">
+          <col>
+          <col style="width: 250px;">
+        </colgroup>
         <thead class="sih-pink-header">
           <tr>
-            <th style="width: 50px;" class="text-center"></th>
-            <th class="sortable-header text-center ps-3" (click)="toggleSort('categoryName')">
+            <th class="text-center"></th>
+            <th class="sortable-header text-start ps-3" (click)="toggleSort('categoryName')">
               Category
               <i class="fas ms-1" [ngClass]="getSortIcon('categoryName')"></i>
             </th>
@@ -111,7 +116,7 @@
           <ng-container *ngFor="let cat of reportData?.categories">
             <!-- Level 1 Category Row -->
             <tr class="category-row">
-              <td class="text-center" style="width: 50px;">
+              <td class="text-center">
                 <button class="btn-expand-symbol" (click)="toggleCategoryExpand(cat.categoryId)">
                   <i class="fas" [ngClass]="isCategoryExpanded(cat.categoryId) ? 'fa-minus' : 'fa-plus'"></i>
                 </button>
@@ -125,9 +130,14 @@
               <tr *ngFor="let seg of cat.segments" class="segment-row-container">
                 <td colspan="3" class="p-0 border-0">
                   <table class="table sih-subtable w-100 align-middle mb-0">
+                    <colgroup>
+                      <col style="width: 60px;">
+                      <col>
+                      <col style="width: 250px;">
+                    </colgroup>
                     <tbody>
                       <tr class="segment-header-line">
-                        <td style="width: 50px;" class="text-center">
+                        <td class="text-center ps-2">
                           <button class="btn-expand-symbol btn-sm-expand" (click)="toggleSegmentExpand(seg.groupId)">
                             <i class="fas" [ngClass]="isSegmentExpanded(seg.groupId) ? 'fa-minus' : 'fa-plus'"></i>
                           </button>
@@ -146,9 +156,9 @@
                           <table class="table table-sm table-bordered product-item-table w-100 mb-0 bg-white shadow-xs">
                             <thead class="bg-secondary-soft">
                               <tr>
-                                <th style="width: 250px;">Product Code</th>
+                                <th style="width: 220px;">Product Code</th>
                                 <th>Description</th>
-                                <th class="text-end" style="width: 200px;">Quantity In Hand</th>
+                                <th class="text-end" style="width: 180px;">Quantity In Hand</th>
                               </tr>
                             </thead>
                             <tbody>
