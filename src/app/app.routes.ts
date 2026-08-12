@@ -112,6 +112,30 @@ export const routes: Routes = [
       }
     },
     {
+      path: 'reports/stock-in-hand',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/stock-in-hand-report/stock-in-hand-report').then(m => m.StockInHandReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'stock_in_hand_table',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/stock-in-hand-report/stock-in-hand-report').then(m => m.StockInHandReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
       path: 'reports/runrate-projection',
       loadComponent: () =>
         import('./pages/common-modules/reports/runrate-projection-report/runrate-projection-report').then(m => m.RunrateProjectionReportComponent),

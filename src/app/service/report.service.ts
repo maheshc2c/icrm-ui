@@ -329,6 +329,19 @@ export class ReportService {
       })
     );
   }
+
+  getStockInHandReport(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/stock-in-hand`, filter, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (!res.status) {
+          throw new Error(res.message || 'Failed to fetch stock in hand report');
+        }
+        return res.data;
+      })
+    );
+  }
 }
 
 

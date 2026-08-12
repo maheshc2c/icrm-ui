@@ -1,0 +1,171 @@
+<app-pageheader title="Stock In Hand Report" [breadcrumbs]="breadcrumbs"></app-pageheader>
+
+<div class="sih-page-content">
+  <!-- Summary Banner Card -->
+  <div class="summary-banner" *ngIf="reportData">
+    <div class="summary-item">
+      <div class="summary-icon bg-primary-soft">
+        <i class="fas fa-boxes text-primary"></i>
+      </div>
+      <div>
+        <span class="summary-label">Total Enterprise Stock in Hand</span>
+        <h3 class="summary-value">{{ reportData.totalStockQuantity | number:'1.2-2' }} <span class="unit-text">Units</span></h3>
+      </div>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-item">
+      <div class="summary-icon bg-info-soft">
+        <i class="far fa-calendar-alt text-info"></i>
+      </div>
+      <div>
+        <span class="summary-label">As On Date</span>
+        <h4 class="summary-date">{{ reportData.asOnDate ? (reportData.asOnDate | date:'dd-MMM-yyyy') : 'Live Stock' }}</h4>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <div class="filter-controls">
+      <!-- 1. Select Category Dropdown -->
+      <div class="dropdown-wrapper">
+        <div class="dropdown-trigger" (click)="toggleCategoryDropdown()" [class.active]="categoryDropdownOpen">
+          <span>{{ selectedCategoryLabel }}</span>
+          <i class="fas fa-chevron-down ms-2"></i>
+        </div>
+        <div class="dropdown-panel" *ngIf="categoryDropdownOpen">
+          <div class="dropdown-search">
+            <input type="text" placeholder="Search category..." [(ngModel)]="categorySearchQuery" (click)="$event.stopPropagation()">
+          </div>
+          <div class="dropdown-options">
+            <div class="dropdown-option" (click)="selectCategory(null)" [class.selected]="selectedCategoryId === null">
+              Select Category
+            </div>
+            <div class="dropdown-option" *ngFor="let c of filteredCategories" (click)="selectCategory(c.id)" [class.selected]="selectedCategoryId === c.id">
+              {{ c.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Select Segment / Group Dropdown -->
+      <div class="dropdown-wrapper">
+        <div class="dropdown-trigger" (click)="toggleGroupDropdown()" [class.active]="groupDropdownOpen">
+          <span>{{ selectedGroupLabel }}</span>
+          <i class="fas fa-chevron-down ms-2"></i>
+        </div>
+        <div class="dropdown-panel" *ngIf="groupDropdownOpen">
+          <div class="dropdown-search">
+            <input type="text" placeholder="Search segment..." [(ngModel)]="groupSearchQuery" (click)="$event.stopPropagation()">
+          </div>
+          <div class="dropdown-options">
+            <div class="dropdown-option" (click)="selectGroup(null)" [class.selected]="selectedGroupId === null">
+              Select Segment
+            </div>
+            <div class="dropdown-option" *ngFor="let g of filteredGroups" (click)="selectGroup(g.id)" [class.selected]="selectedGroupId === g.id">
+              {{ g.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Select Product Dropdown -->
+      <div class="dropdown-wrapper">
+        <div class="dropdown-trigger" (click)="toggleProductDropdown()" [class.active]="productDropdownOpen">
+          <span>{{ selectedProductLabel }}</span>
+          <i class="fas fa-chevron-down ms-2"></i>
+        </div>
+        <div class="dropdown-panel" *ngIf="productDropdownOpen">
+          <div class="dropdown-search">
+            <input type="text" placeholder="Search product..." [(ngModel)]="productSearchQuery" (click)="$event.stopPropagation()">
+          </div>
+          <div class="dropdown-options">
+            <div class="dropdown-option" (click)="selectProduct(null)" [class.selected]="selectedProductId === null">
+              Select Product
+            </div>
+            <div class="dropdown-option" *ngFor="let p of filteredProducts" (click)="selectProduct(p.id)" [class.selected]="selectedProductId === p.id">
+              {{ p.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reset Filters Button -->
+      <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()" *ngIf="selectedCategoryId || selectedGroupId || selectedProductId">
+        <i class="fas fa-undo me-1"></i> Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading Stock In Hand data...</span>
+    </div>
+    <p class="mt-2 text-muted">Calculating enterprise inventory stock quantities...</p>
+  </div>
+
+  <!-- 3-Level Accordion Tree View -->
+  <div class="accordion-tree-container" *ngIf="!isLoading">
+    <div *ngIf="!reportData?.categories || reportData?.categories?.length === 0" class="empty-state">
+      <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+      <p class="text-muted fw-semibold">No available stock in hand records found for the selected filters.</p>
+    </div>
+
+    <!-- Level 1: Categories -->
+    <div class="category-node" *ngFor="let cat of reportData?.categories">
+      <div class="category-header" (click)="toggleCategoryExpand(cat.categoryId)">
+        <div class="header-left">
+          <i class="fas" [ngClass]="isCategoryExpanded(cat.categoryId) ? 'fa-minus-square text-primary' : 'fa-plus-square text-secondary'"></i>
+          <span class="category-badge"><i class="fas fa-folder me-2"></i>{{ cat.categoryName }}</span>
+        </div>
+        <div class="header-right">
+          <span class="qty-label me-2">Category Stock:</span>
+          <span class="badge bg-primary fs-6 px-3 py-2">{{ cat.totalCategoryQuantity | number:'1.2-2' }} Units</span>
+        </div>
+      </div>
+
+      <!-- Level 2: Segments / Groups -->
+      <div class="segments-container" *ngIf="isCategoryExpanded(cat.categoryId)">
+        <div class="segment-node" *ngFor="let seg of cat.segments">
+          <div class="segment-header" (click)="toggleSegmentExpand(seg.groupId)">
+            <div class="header-left">
+              <i class="fas" [ngClass]="isSegmentExpanded(seg.groupId) ? 'fa-folder-open text-warning' : 'fa-folder text-warning'"></i>
+              <span class="segment-title">{{ seg.groupName }}</span>
+            </div>
+            <div class="header-right">
+              <span class="qty-label me-2">Segment Stock:</span>
+              <span class="badge bg-secondary fs-6 px-3 py-1">{{ seg.totalSegmentQuantity | number:'1.2-2' }} Units</span>
+            </div>
+          </div>
+
+          <!-- Level 3: Product Items Table -->
+          <div class="products-container" *ngIf="isSegmentExpanded(seg.groupId)">
+            <table class="table table-hover align-middle shadow-sm mb-0">
+              <thead class="product-table-header">
+                <tr>
+                  <th style="width: 80px;">ID</th>
+                  <th style="width: 250px;">Product Code</th>
+                  <th>Description</th>
+                  <th class="text-end" style="width: 180px;">Quantity In Hand</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let prod of seg.products">
+                  <td class="text-muted small">#{{ prod.productId }}</td>
+                  <td class="fw-semibold text-dark">
+                    <i class="fas fa-cube text-primary me-2"></i>{{ prod.productCode }}
+                  </td>
+                  <td class="text-secondary">{{ prod.description || '—' }}</td>
+                  <td class="text-end fw-bold text-success">
+                    {{ prod.quantity | number:'1.2-2' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
