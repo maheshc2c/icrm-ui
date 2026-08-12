@@ -90,7 +90,7 @@ export const routes: Routes = [
     {
       path: 'reports/fresh-business',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/fresh-business-report/fresh-business-report').then(m => m.FreshBusinessReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -114,7 +114,7 @@ export const routes: Routes = [
     {
       path: 'reports/runrate-projection',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/runrate-projection-report/runrate-projection-report').then(m => m.RunrateProjectionReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [

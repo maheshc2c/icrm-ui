@@ -263,5 +263,59 @@ export class ReportService {
       })
     );
   }
+
+  getFreshBusinessReport(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/fresh-business`, filter, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (!res.status) {
+          throw new Error(res.message || 'Failed to fetch fresh business report');
+        }
+        return res.data;
+      })
+    );
+  }
+
+  getFreshBusinessDrillDown(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/fresh-business/drilldown`, filter, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (!res.status) {
+          throw new Error(res.message || 'Failed to fetch fresh business drilldown');
+        }
+        return res.data;
+      })
+    );
+  }
+
+  getCategoriesForDropdown(): Observable<{ id: number; label: string }[]> {
+    return this.http.get<any>(`${this.baseUrl}/product/category`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        const categories = Array.isArray(res) ? res : (res?.data || res?.content || []);
+        return categories.map((c: any) => ({
+          id: c.categoryId ?? c.id,
+          label: c.categoryName || c.name || `Category ${c.categoryId}`
+        }));
+      })
+    );
+  }
+
+  getRunRateProjection(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/runrate-projection`, filter, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (!res.status) {
+          throw new Error(res.message || 'Failed to fetch run rate projection report');
+        }
+        return res.data;
+      })
+    );
+  }
 }
+
 
