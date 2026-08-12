@@ -184,7 +184,18 @@ export const routes: Routes = [
     {
       path: 'reports/outstanding',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/outstanding-report/outstanding-report').then(m => m.OutstandingReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'get_new_outstanding_report',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/outstanding-report/outstanding-report').then(m => m.OutstandingReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [

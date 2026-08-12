@@ -342,6 +342,19 @@ export class ReportService {
       responseType: 'blob'
     });
   }
+
+  getOutstandingUploadReport(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/outstanding-upload`, filter, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  downloadOutstandingUploadReport(filter: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/reports/outstanding-upload/download`, filter, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
 }
 
 
