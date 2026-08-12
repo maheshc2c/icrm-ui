@@ -301,6 +301,20 @@ export class StockInHandReportComponent implements OnInit {
     }
   }
 
+  openPageSizeDropdown = false;
+
+  togglePageSizeDropdown(event: MouseEvent) {
+    event.stopPropagation();
+    this.openPageSizeDropdown = !this.openPageSizeDropdown;
+  }
+
+  selectPageSize(size: number) {
+    this.pageSize = size;
+    this.openPageSizeDropdown = false;
+    this.pageNumber = 0;
+    this.fetchReportData();
+  }
+
   onPageSizeChange() {
     this.pageNumber = 0;
     this.fetchReportData();

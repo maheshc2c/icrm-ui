@@ -1,9 +1,9 @@
 <app-pageheader title="Stock In Hand Report" [breadcrumbs]="breadcrumbs"></app-pageheader>
 
 <div class="sih-page-content">
-  <!-- Filter Card -->
-  <div class="filter-card shadow-sm">
-    <div class="filter-controls">
+  <!-- Datatable Toolbar (Matching Customer, Segment, etc. without separate background card padding) -->
+  <div class="datatable-toolbar">
+    <div class="filter-dropdowns">
       <!-- 1. Select Category Dropdown -->
       <div class="dropdown-wrapper">
         <div class="dropdown-trigger" (click)="toggleCategoryDropdown()" [class.active]="categoryDropdownOpen">
@@ -66,19 +66,19 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- 4. Action Buttons -->
-      <div class="action-btn-group">
-        <button class="btn btn-blue-icon" (click)="applySearch()" title="Search">
-          <i class="fas fa-search"></i>
-        </button>
-        <button class="btn btn-blue-icon" (click)="resetFilters()" title="Reset Filters">
-          <i class="fas fa-sync-alt"></i>
-        </button>
-        <button class="btn btn-blue-icon" (click)="downloadExcel()" title="Export Excel">
-          <i class="fas fa-cloud-download-alt"></i>
-        </button>
-      </div>
+    <!-- Action Buttons -->
+    <div class="action-btn-group">
+      <button class="btn btn-blue-icon" (click)="applySearch()" title="Search">
+        <i class="fas fa-search"></i>
+      </button>
+      <button class="btn btn-blue-icon" (click)="resetFilters()" title="Reset Filters">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <button class="btn btn-blue-icon" (click)="downloadExcel()" title="Export Excel">
+        <i class="fas fa-cloud-download-alt"></i>
+      </button>
     </div>
   </div>
 
@@ -90,7 +90,7 @@
     <p class="mt-2 text-muted">Fetching Stock In Hand records...</p>
   </div>
 
-  <!-- Main Report Table Card (Matching Image 1 Structure with Pink Header Bars) -->
+  <!-- Main Report Table Card (Matching Image 1 with Pink Header Bars) -->
   <div class="table-card shadow-sm" *ngIf="!isLoading">
     <div class="table-responsive w-100">
       <!-- Level 1 Category Table -->
@@ -121,7 +121,7 @@
               <td class="text-end fw-bold text-dark pe-4">{{ cat.totalCategoryQuantity | number:'1.0-2' }}</td>
             </tr>
 
-            <!-- Level 2 Segment Sub-Table (Expanded under Category, Matching Image 1 Header Bar!) -->
+            <!-- Level 2 Segment Sub-Table (Expanded under Category) -->
             <tr *ngIf="isCategoryExpanded(cat.categoryId)">
               <td colspan="3" class="p-3 bg-light">
                 <table class="table sih-table w-100 align-middle mb-0 bg-white border">
@@ -146,7 +146,7 @@
                         <td class="text-end fw-bold text-dark pe-4">{{ seg.totalSegmentQuantity | number:'1.0-2' }}</td>
                       </tr>
 
-                      <!-- Level 3 Product Sub-Table (Expanded under Segment, Matching Image 1 Header Bar!) -->
+                      <!-- Level 3 Product Sub-Table (Expanded under Segment) -->
                       <tr *ngIf="isSegmentExpanded(seg.groupId)">
                         <td colspan="4" class="p-3 bg-white">
                           <table class="table sih-table w-100 align-middle mb-0 bg-white border">
@@ -184,33 +184,43 @@
         </tbody>
       </table>
     </div>
+  </div>
 
-    <!-- Pagination Footer -->
-    <div class="pagination-footer" *ngIf="totalElements > 0">
-      <div class="pagination-info text-muted">
-        Showing {{ getFromIndex() }} to {{ getToIndex() }} of {{ totalElements }} entries
+  <!-- Shared Application Pagination Container (Matching Customer, Segment, etc.) -->
+  <div class="pagination-container" *ngIf="totalElements > 0">
+    <div class="pagination-info">
+      Showing {{ getFromIndex() }} to {{ getToIndex() }} of {{ totalElements }} records
+    </div>
+
+    <div class="pagination-right">
+      <div class="pagination-controls">
+        <button (click)="goToPage(pageNumber - 1)" [disabled]="pageNumber === 0">
+          Prev
+        </button>
+
+        <button *ngFor="let p of getPagesArray()" [class.active]="p === pageNumber" (click)="goToPage(p)">
+          {{ p + 1 }}
+        </button>
+
+        <button (click)="goToPage(pageNumber + 1)" [disabled]="pageNumber >= totalPages - 1">
+          Next
+        </button>
       </div>
-      <div class="pagination-controls ms-auto">
-        <div class="page-size-selector me-3 d-inline-block">
-          <span class="text-muted me-2 small">Items per page:</span>
-          <select class="form-select form-select-sm d-inline-block width-auto" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
-            <option [ngValue]="10">10</option>
-            <option [ngValue]="25">25</option>
-            <option [ngValue]="50">50</option>
-            <option [ngValue]="100">100</option>
-          </select>
+
+      <!-- Custom Page Size Dropdown matching Data-Table -->
+      <div class="custom-dropdown-container page-size-dropdown">
+        <div class="dropdown-trigger" [class.active]="openPageSizeDropdown" (click)="togglePageSizeDropdown($event)">
+          <span class="trigger-text">{{ pageSize }}</span>
+          <i class="fas fa-chevron-down arrow-icon"></i>
         </div>
-        <ul class="pagination pagination-sm d-inline-flex mb-0">
-          <li class="page-item" [class.disabled]="pageNumber === 0">
-            <button class="page-link" (click)="goToPage(pageNumber - 1)">Previous</button>
-          </li>
-          <li class="page-item" *ngFor="let p of getPagesArray()" [class.active]="p === pageNumber">
-            <button class="page-link" (click)="goToPage(p)">{{ p + 1 }}</button>
-          </li>
-          <li class="page-item" [class.disabled]="pageNumber >= totalPages - 1">
-            <button class="page-link" (click)="goToPage(pageNumber + 1)">Next</button>
-          </li>
-        </ul>
+
+        <div class="dropdown-panel small-panel" *ngIf="openPageSizeDropdown">
+          <ul class="options-list">
+            <li class="option-item" *ngFor="let opt of [10, 25, 50, 100]" (click)="selectPageSize(opt)">
+              {{ opt }}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
