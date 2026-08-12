@@ -78,7 +78,7 @@ export const routes: Routes = [
     {
       path: 'reports/stock-in-hand',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/stock-in-hand-report/stock-in-hand-report').then(m => m.StockInHandReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
