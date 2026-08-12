@@ -75,6 +75,37 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onUserChange();
   }
 
+  // ─── Region dropdown ───────────────────────────────────────────────────────
+  selectedRegionId: number | null = null;
+  regions: { id: number; label: string }[] = [];
+  regionDropdownOpen = false;
+  regionSearchQuery = '';
+
+  get filteredRegions() {
+    if (!this.regionSearchQuery) return this.regions;
+    return this.regions.filter(r => r.label.toLowerCase().includes(this.regionSearchQuery.toLowerCase()));
+  }
+
+  get selectedRegionName() {
+    if (!this.selectedRegionId) return 'Select Region';
+    const r = this.regions.find(r => r.id === this.selectedRegionId);
+    return r ? r.label : 'Select Region';
+  }
+
+  toggleRegionDropdown() {
+    this.regionDropdownOpen = !this.regionDropdownOpen;
+    if (!this.regionDropdownOpen) {
+      this.regionSearchQuery = '';
+    }
+  }
+
+  selectRegion(id: number | null) {
+    this.selectedRegionId = id;
+    this.regionDropdownOpen = false;
+    this.regionSearchQuery = '';
+    this.loadReport();
+  }
+
   // ─── Period dropdowns ──────────────────────────────────────────────────────
   weekOptions: WeekOption[] = [];
   selectedWeek: WeekOption | null = null;
@@ -128,6 +159,7 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
     this.buildYearOptions();
     this.setDefaultSelections();
     this.loadUsers();
+    this.loadRegions();
   }
 
   ngAfterViewInit(): void {
@@ -254,6 +286,17 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  loadRegions(): void {
+    this.reportService.getRegionsForDropdown().subscribe({
+      next: (regions: any) => {
+        this.regions = regions;
+      },
+      error: () => {
+        this.regions = [];
+      }
+    });
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
   // View-time tab change
   // ─────────────────────────────────────────────────────────────────────────
@@ -298,6 +341,7 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
     return {
       userId:    this.selectedUserId || null,
+      regionId:  this.selectedRegionId || null,
       viewTime:  this.selectedViewTime,
       measure:   this.measure,
       startDate: startDate,

@@ -2,35 +2,38 @@
   <div class="report-toolbar">
     <div class="toolbar-field">
       <label class="field-label">Select Users</label>
-      <select class="form-select" [(ngModel)]="selectUsers">
-        <option>Select Users</option>
-        <option>Krishna T</option>
-        <option>Super User</option>
+      <select class="form-select" [(ngModel)]="selectedUserId">
+        <option [ngValue]="null">Select Users (All)</option>
+        <option *ngFor="let u of users" [value]="u.id">{{ u.label }}</option>
       </select>
     </div>
 
     <div class="toolbar-field">
       <label class="field-label">Quarter</label>
       <select class="form-select" [(ngModel)]="quarter">
-        <option>Quarter1</option>
-        <option>Quarter2</option>
-        <option>Quarter3</option>
-        <option>Quarter4</option>
+        <option value="Q1">Quarter1</option>
+        <option value="Q2">Quarter2</option>
+        <option value="Q3">Quarter3</option>
+        <option value="Q4">Quarter4</option>
       </select>
     </div>
 
     <div class="toolbar-field">
       <label class="field-label">Financial Year</label>
       <select class="form-select" [(ngModel)]="financialYear">
-        <option>2026-27</option>
-        <option>2025-26</option>
-        <option>2024-25</option>
+        <option value="2026-27">2026-27</option>
+        <option value="2025-26">2025-26</option>
+        <option value="2024-25">2024-25</option>
       </select>
     </div>
 
     <div class="toolbar-actions">
-      <button type="button" class="btn-search"><i class="fas fa-search"></i></button>
-      <button type="button" class="btn-download"><i class="fas fa-cloud-download-alt"></i></button>
+      <button type="button" class="btn-search" (click)="loadReport()" [disabled]="isLoading" title="Search">
+        <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+      </button>
+      <button type="button" class="btn-download" (click)="onDownload()" [disabled]="isDownloading" title="Download Excel">
+        <i class="fas" [ngClass]="isDownloading ? 'fa-spinner fa-spin' : 'fa-cloud-download-alt'"></i>
+      </button>
     </div>
   </div>
 
@@ -57,10 +60,13 @@
           <td>{{ item.erpSales }}</td>
           <td>{{ item.incentiveAmount }}</td>
         </tr>
+        <tr *ngIf="reports.length === 0 && !isLoading">
+          <td colspan="6" style="text-align: center; color: #777; padding: 20px;">No incentive data found for selected filters.</td>
+        </tr>
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="6" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0</td>
+          <td colspan="6" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ totalIncentives }}</td>
         </tr>
       </tfoot>
     </table>
