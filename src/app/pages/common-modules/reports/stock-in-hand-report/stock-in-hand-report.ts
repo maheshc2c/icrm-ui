@@ -14,7 +14,7 @@ import { Pageheader } from '../../../../shared/pageheader/pageheader';
 export class StockInHandReportComponent implements OnInit {
   breadcrumbs = [
     { label: 'Home', route: '/dashboard' },
-    { label: 'Stock In Hand' }
+    { label: 'Stock In Hand Report' }
   ];
 
   // Filter IDs
@@ -36,6 +36,15 @@ export class StockInHandReportComponent implements OnInit {
   categoryDropdownOpen = false;
   groupDropdownOpen = false;
   productDropdownOpen = false;
+
+  // Pagination & Sorting State (Using PaginationDTO fields)
+  pageNumber = 0;
+  pageSize = 10;
+  sortBy = 'categoryName';
+  sortOrder: 'ASC' | 'DESC' = 'ASC';
+
+  totalElements = 0;
+  totalPages = 0;
 
   // Accordion Expand States
   expandedCategories = new Set<number>();
@@ -136,13 +145,11 @@ export class StockInHandReportComponent implements OnInit {
     this.categoryDropdownOpen = false;
     this.categorySearchQuery = '';
 
-    // Re-fetch cascading products if category changes
+    // Re-fetch products for category
     this.reportService.getProductsForDropdown(id).subscribe({
       next: (res) => (this.products = res),
       error: (err) => console.error('Error fetching products:', err)
     });
-
-    this.fetchReportData();
   }
 
   selectGroup(id: number | null) {
@@ -150,13 +157,16 @@ export class StockInHandReportComponent implements OnInit {
     this.selectedProductId = null;
     this.groupDropdownOpen = false;
     this.groupSearchQuery = '';
-    this.fetchReportData();
   }
 
   selectProduct(id: number | null) {
     this.selectedProductId = id;
     this.productDropdownOpen = false;
     this.productSearchQuery = '';
+  }
+
+  applySearch() {
+    this.pageNumber = 0;
     this.fetchReportData();
   }
 
@@ -167,7 +177,23 @@ export class StockInHandReportComponent implements OnInit {
     this.categorySearchQuery = '';
     this.groupSearchQuery = '';
     this.productSearchQuery = '';
+    this.pageNumber = 0;
     this.fetchReportData();
+  }
+
+  toggleSort(column: string) {
+    if (this.sortBy === column) {
+      this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      this.sortBy = column;
+      this.sortOrder = 'ASC';
+    }
+    this.fetchReportData();
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortBy !== column) return 'fa-sort text-muted';
+    return this.sortOrder === 'ASC' ? 'fa-sort-up text-primary' : 'fa-sort-down text-primary';
   }
 
   fetchReportData() {
@@ -175,30 +201,62 @@ export class StockInHandReportComponent implements OnInit {
     const filter = {
       categoryId: this.selectedCategoryId,
       segmentId: this.selectedGroupId,
-      productId: this.selectedProductId
+      productId: this.selectedProductId,
+      pagination: {
+        pageNumber: this.pageNumber,
+        pageSize: this.pageSize,
+        sortBy: this.sortBy,
+        sortOrder: this.sortOrder
+      }
     };
 
     this.reportService.getStockInHandReport(filter).subscribe({
-      next: (data) => {
-        this.reportData = data;
-        this.isLoading = false;
+      next: (response) => {
+        if (response && response.status) {
+          this.reportData = response.data;
+          this.totalElements = response.totalElements || 0;
+          this.totalPages = response.totalPages || 0;
 
-        // Auto-expand all category and segment nodes by default for smooth UX
-        if (data && data.categories) {
-          data.categories.forEach((cat: any) => {
-            this.expandedCategories.add(cat.categoryId);
-            if (cat.segments) {
-              cat.segments.forEach((seg: any) => {
-                this.expandedSegments.add(seg.groupId);
-              });
-            }
-          });
+          // Auto-expand category and segment nodes for optimal UX
+          if (this.reportData && this.reportData.categories) {
+            this.reportData.categories.forEach((cat: any) => {
+              this.expandedCategories.add(cat.categoryId);
+              if (cat.segments) {
+                cat.segments.forEach((seg: any) => {
+                  this.expandedSegments.add(seg.groupId);
+                });
+              }
+            });
+          }
         }
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error fetching Stock In Hand report:', err);
         this.isLoading = false;
       }
+    });
+  }
+
+  downloadExcel() {
+    const filter = {
+      categoryId: this.selectedCategoryId,
+      segmentId: this.selectedGroupId,
+      productId: this.selectedProductId
+    };
+
+    this.reportService.downloadStockInHandReport(filter).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Stock_In_Hand_Report.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Error downloading Stock in Hand Excel:', err)
     });
   }
 
@@ -224,5 +282,35 @@ export class StockInHandReportComponent implements OnInit {
 
   isSegmentExpanded(groupId: number): boolean {
     return this.expandedSegments.has(groupId);
+  }
+
+  // Pagination Helper Methods
+  getFromIndex(): number {
+    if (this.totalElements === 0) return 0;
+    return this.pageNumber * this.pageSize + 1;
+  }
+
+  getToIndex(): number {
+    return Math.min((this.pageNumber + 1) * this.pageSize, this.totalElements);
+  }
+
+  getPagesArray(): number[] {
+    const pages: number[] = [];
+    for (let i = 0; i < this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  goToPage(page: number) {
+    if (page >= 0 && page < this.totalPages && page !== this.pageNumber) {
+      this.pageNumber = page;
+      this.fetchReportData();
+    }
+  }
+
+  onPageSizeChange() {
+    this.pageNumber = 0;
+    this.fetchReportData();
   }
 }
