@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../../../service/report.service';
-import { PageheaderComponent } from '../../../../shared/pageheader/pageheader';
-import * as Highcharts from 'highcharts';
+import { Pageheader } from '../../../../shared/pageheader/pageheader';
+
+declare var Highcharts: any;
 
 @Component({
   selector: 'app-target-vs-sales-report',
   standalone: true,
-  imports: [CommonModule, FormsModule, PageheaderComponent],
+  imports: [CommonModule, FormsModule, Pageheader],
   templateUrl: './target-vs-sales-report.html',
   styleUrls: ['./target-vs-sales-report.css']
 })
@@ -39,7 +40,7 @@ export class TargetVsSalesReportComponent implements OnInit, OnDestroy {
   isLoading = false;
   chartData: any = null;
   tableRows: any[] = [];
-  highchartsInstance: Highcharts.Chart | null = null;
+  highchartsInstance: any = null;
 
   constructor(private reportService: ReportService) {}
 
@@ -174,7 +175,7 @@ export class TargetVsSalesReportComponent implements OnInit, OnDestroy {
       stack: s.stack
     }));
 
-    const options: Highcharts.Options = {
+    const options: any = {
       chart: {
         type: 'column',
         backgroundColor: '#ffffff',
@@ -241,7 +242,7 @@ export class TargetVsSalesReportComponent implements OnInit, OnDestroy {
           dataLabels: {
             enabled: true,
             color: '#ffffff',
-            formatter: function() {
+            formatter: function(this: any) {
               return this.y && this.y > 0 ? this.y : '';
             },
             style: {
