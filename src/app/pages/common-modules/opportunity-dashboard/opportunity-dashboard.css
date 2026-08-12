@@ -1,0 +1,368 @@
+:host {
+  display: block;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  color: #333;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  margin-left: 280px;
+  margin-right: 20px;
+  max-width: calc(100% - 300px);
+}
+
+.controls-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.user-filter {
+  min-width: 280px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #334155;
+  background-color: #fff;
+}
+
+.group-filter, .timeline-filter {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.radio-label {
+  cursor: pointer;
+  margin-bottom: 0;
+  user-select: none;
+}
+
+.dashboard-row {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.chart-card {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.5rem;
+}
+
+.chart-header h3 {
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.chart-menu-container {
+  position: relative;
+}
+
+.chart-menu-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.chart-menu-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.chart-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  min-width: 180px;
+  padding: 4px 0;
+}
+
+.chart-dropdown-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  font-size: 0.8rem;
+  color: #334155;
+  cursor: pointer;
+}
+
+.chart-dropdown-menu button:hover {
+  background-color: #f1f5f9;
+  color: #1d4ed8;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 4px 0;
+}
+
+.chart-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 1. Funnel Diagram */
+.funnel-body {
+  justify-content: center;
+  align-items: center;
+}
+
+.funnel-diagram {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.funnel-stage {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 4px;
+}
+
+.cold-stage {
+  background-color: #3F51B5;
+  clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+}
+
+.warm-stage {
+  width: 70%;
+  background-color: #FF9800;
+  clip-path: polygon(0 0, 100% 0, 75% 100%, 25% 100%);
+}
+
+.hot-stage {
+  width: 45%;
+  background-color: #F44336;
+  clip-path: polygon(0 0, 100% 0, 60% 100%, 40% 100%);
+}
+
+/* Group & Column Bar Charts */
+.y-axis-title {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.group-bar-container {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  border-bottom: 2px solid #cbd5e1;
+  padding-bottom: 4px;
+  min-height: 160px;
+}
+
+.cat-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.stacked-bar {
+  width: 24px;
+  height: 140px;
+  background-color: #edf2f7;
+  display: flex;
+  flex-direction: column-reverse;
+  border-radius: 3px 3px 0 0;
+  overflow: hidden;
+}
+
+.bar-segment {
+  width: 100%;
+  transition: height 0.4s ease;
+}
+
+.cold-segment { background-color: #3F51B5; }
+.warm-segment { background-color: #FF9800; }
+.hot-segment { background-color: #F44336; }
+
+.side-bars {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 140px;
+}
+
+.won-bar {
+  width: 14px;
+  background-color: #3F51B5;
+  border-radius: 3px 3px 0 0;
+}
+
+.lost-bar {
+  width: 14px;
+  background-color: #FF9800;
+  border-radius: 3px 3px 0 0;
+}
+
+.single-bar-container {
+  height: 140px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.percent-bar {
+  width: 24px;
+  background-color: #3F51B5;
+  border-radius: 3px 3px 0 0;
+}
+
+.cat-label {
+  font-size: 0.75rem;
+  color: #475569;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.legend-row {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-box {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.cold-box { background-color: #3F51B5; }
+.warm-box { background-color: #FF9800; }
+.hot-box { background-color: #F44336; }
+.won-box { background-color: #3F51B5; }
+.lost-box { background-color: #FF9800; }
+
+/* Horizontal Bar Charts */
+.horizontal-bar-body {
+  justify-content: space-between;
+}
+
+.horizontal-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.hbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+}
+
+.cust-label {
+  width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #334155;
+}
+
+.hbar-track {
+  flex: 1;
+  background-color: #edf2f7;
+  height: 14px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.hbar-fill {
+  height: 100%;
+  background-color: #3F51B5;
+  transition: width 0.4s ease;
+}
+
+.hbar-value {
+  width: 30px;
+  text-align: right;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.no-data-msg {
+  text-align: center;
+  color: #94a3b8;
+  padding: 2rem 0;
+  font-size: 0.85rem;
+}
+
+.x-axis-title {
+  text-align: right;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
