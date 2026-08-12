@@ -217,17 +217,9 @@ export class StockInHandReportComponent implements OnInit {
           this.totalElements = response.totalElements || 0;
           this.totalPages = response.totalPages || 0;
 
-          // Auto-expand category and segment nodes for optimal UX
-          if (this.reportData && this.reportData.categories) {
-            this.reportData.categories.forEach((cat: any) => {
-              this.expandedCategories.add(cat.categoryId);
-              if (cat.segments) {
-                cat.segments.forEach((seg: any) => {
-                  this.expandedSegments.add(seg.groupId);
-                });
-              }
-            });
-          }
+          // Categories start collapsed with + icon matching Image 1
+          this.expandedCategories.clear();
+          this.expandedSegments.clear();
         }
         this.isLoading = false;
       },

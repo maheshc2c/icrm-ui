@@ -121,7 +121,7 @@
   font-weight: 600;
 }
 
-/* Action Blue Buttons (Matching Screenshot) */
+/* Action Blue Buttons (Matching Screenshot 1) */
 .action-btn-group {
   display: flex;
   align-items: center;
@@ -152,27 +152,32 @@
   box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
-/* Main Table Container & Header Bar */
+/* Table Card Container & Steel Blue Header Bar (Matching Image 1) */
 .table-card {
   background: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 4px;
+  padding: 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e9ecef;
+  border: 1px solid #ced4da;
+  overflow: hidden;
 }
 
-.sih-header-blue {
-  background-color: #f7d3cd !important;
-  color: #2d2d35 !important;
+.sih-steel-blue-header {
+  background-color: #5c87c1 !important;
 }
 
-.sih-header-blue th {
-  background-color: #f7d3cd !important;
-  color: #2d2d35 !important;
+.sih-steel-blue-header th {
+  background-color: #5c87c1 !important;
+  color: #ffffff !important;
   font-size: 14px;
   font-weight: 700;
-  padding: 14px 16px;
-  border-bottom: 1px solid #dfb8b3 !important;
+  padding: 12px 16px;
+  border: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sih-steel-blue-header th:last-child {
+  border-right: none;
 }
 
 .sortable-header {
@@ -181,11 +186,12 @@
 }
 
 .sortable-header:hover {
-  background-color: #f2c6bf !important;
+  background-color: #4a75af !important;
 }
 
+/* Level 1 Category Rows */
 .category-row {
-  border-bottom: 1px solid #edf2f7;
+  border-bottom: 1px solid #e9ecef;
   transition: background 0.15s ease;
 }
 
@@ -193,84 +199,47 @@
   background-color: #f8fafc;
 }
 
-.btn-toggle-expand {
+.btn-expand-symbol {
   background: transparent;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  width: 26px;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
+  border: none;
+  font-size: 13px;
   color: #495057;
   cursor: pointer;
-  transition: all 0.15s ease;
+  padding: 4px 8px;
+  transition: color 0.15s ease;
 }
 
-.btn-toggle-expand:hover {
-  background: #3b7ddd;
-  color: #ffffff;
-  border-color: #3b7ddd;
+.btn-expand-symbol:hover {
+  color: #3b7ddd;
 }
 
-.nested-cell-container {
-  padding: 0 !important;
+.btn-sm-expand {
+  font-size: 11px;
+}
+
+/* Subtable Level 2 & 3 */
+.sih-subtable {
+  background-color: #fafbfc;
+}
+
+.segment-header-line {
+  border-bottom: 1px solid #edf2f7;
   background-color: #f8fafc;
 }
 
-.nested-segments-wrapper {
-  padding: 12px 20px 12px 48px;
+.segment-header-line:hover {
+  background-color: #f1f5f9;
 }
 
-.segment-block {
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  background: #ffffff;
-  overflow: hidden;
+.product-wrapper-row {
+  background-color: #f1f5f9;
 }
 
-.segment-header-row {
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  background: #ffffff;
-  transition: background 0.15s ease;
-}
-
-.segment-header-row:hover {
-  background: #f1f5f9;
-}
-
-.segment-title {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #334155;
-}
-
-.segment-qty {
-  font-size: 13.5px;
-}
-
-.product-table-wrapper {
-  padding: 10px 16px 14px 16px;
-  background: #f8fafc;
-  border-top: 1px solid #edf2f7;
-}
-
-.product-subtable th {
+.product-item-table th {
   font-size: 12.5px;
-  color: #64748b;
   font-weight: 600;
-  background-color: #edf2f7;
-  padding: 8px 12px;
-}
-
-.product-subtable td {
-  padding: 8px 12px;
-  font-size: 13px;
+  color: #475569;
+  background-color: #e2e8f0;
 }
 
 /* Pagination Footer */
@@ -278,13 +247,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 12px;
-  border-top: 1px solid #edf2f7;
-}
-
-.pagination-controls {
-  display: flex;
-  align-items: center;
+  padding: 12px 20px;
+  background: #ffffff;
+  border-top: 1px solid #e9ecef;
 }
 
 .width-auto {
