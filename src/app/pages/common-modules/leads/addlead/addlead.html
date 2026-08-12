@@ -355,9 +355,11 @@
                   <button class="btn btn-sm btn-primary view-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionInfo(row)" title="View Revision">
                     <i class="fa-solid fa-info"></i>
                   </button>
-                  <button class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
-                    <i class="fa-solid fa-plus"></i>
-                  </button>
+                  @if (canAddRevision(row)) {
+                    <button class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  }
                 </div>
               </td>
               <td style="padding: 12px; border: 1px solid #dee2e6;">

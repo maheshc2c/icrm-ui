@@ -692,6 +692,26 @@ export const routes: Routes = [
 
 
 {
+        path: 'leads-dashboard',
+        loadComponent: () => import('./pages/common-modules/leads-dashboard/leads-dashboard').then(m => m.LeadsDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'dashboards/leads',
+        loadComponent: () => import('./pages/common-modules/leads-dashboard/leads-dashboard').then(m => m.LeadsDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'dashboards/opportunity',
+        loadComponent: () => import('./pages/common-modules/opportunity-dashboard/opportunity-dashboard').then(m => m.OpportunityDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'opportunity-dashboard',
+        loadComponent: () => import('./pages/common-modules/opportunity-dashboard/opportunity-dashboard').then(m => m.OpportunityDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
         path: 'sales-manager-dashboard',
         loadComponent: () => import('./pages/SalesManager/salesmanager-dashboard/salesmanager-dashboard').then(m => m.SalesManagerDashboard),
         canActivate: [authGuard],

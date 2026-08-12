@@ -643,8 +643,17 @@ export class AddleadComponent implements OnInit {
   private updateContactOptions(fieldName: string, data: any[]): void {
     const field = this.leadFields.find(f => f.name === fieldName);
     if (field) {
+      const uniqueContactsMap = new Map<string | number, any>();
+      (data || []).forEach((c: any) => {
+        const id = c.contactId || c.id;
+        if (id && !uniqueContactsMap.has(id)) {
+          uniqueContactsMap.set(id, c);
+        }
+      });
+      const uniqueList = Array.from(uniqueContactsMap.values());
+
       field.options = [
-        ...data.map((c: any) => ({
+        ...uniqueList.map((c: any) => ({
           label: `${c.contactFirstName || ''} ${c.contactLastName || ''}`.trim() || c.name || 'Unknown',
           value: c.contactId || c.id
         }))
@@ -1699,6 +1708,30 @@ export class AddleadComponent implements OnInit {
     }
   }
 
+  canAddRevision(row: any): boolean {
+    if (!row) return false;
+
+    // 1. Only show + on the latest revision of the quote
+    if (row.quoteRevisionId && row.maxQuoteRevisionId && row.quoteRevisionId !== row.maxQuoteRevisionId) {
+      return false;
+    }
+
+    const status = (row.quoteStatus || row.status || '').toString().toLowerCase();
+
+    // 2. If already converted to Contract Note, lost, or dropped, hide '+'
+    if (status.includes('contract note') || status.includes('lost') || status.includes('dropped')) {
+      return false;
+    }
+
+    // 3. If currently Pending approval, hide '+' (vanishes)
+    if (status.includes('pending')) {
+      return false;
+    }
+
+    // 4. If Rejected or Approved, show '+'
+    return true;
+  }
+
   onQuoteRevisionAdd(row: any) {
     const id = row.quoteId || row.id || this.leadId || '31';
     this.router.navigate(['/quoteRevision', id]);
@@ -1795,8 +1828,13 @@ export class AddleadComponent implements OnInit {
   loadQuotes(): void {
     if (this.leadId) {
       this.leadservice.getQuotesByLead(this.leadId).subscribe({
-        next: (data) => {
-          this.quotes = (data || []).map((q: any) => {
+        next: (res: any) => {
+          const list = Array.isArray(res) ? res : (res?.data || res?.content || []);
+          const latestOnly = list.filter((q: any) => 
+            !q.quoteRevisionId || !q.maxQuoteRevisionId || q.quoteRevisionId == q.maxQuoteRevisionId
+          );
+          const quotesToDisplay = latestOnly.length > 0 ? latestOnly : list;
+          this.quotes = quotesToDisplay.map((q: any) => {
             let disc = q.discount;
             if (typeof disc === 'string') {
               const num = parseFloat(disc.replace('%', ''));
@@ -1889,19 +1927,33 @@ export class AddleadComponent implements OnInit {
           console.log('openAddQuoteModal: fetched opportunities:', res);
           const data = res?.data || res?.content || (Array.isArray(res) ? res : []);
           const allOpps = data || [];
-          const existingOppIds = new Set(
-            (this.quotes || []).map((q: any) => q.opportunityId || q.opportunity_id).filter((id: any) => id != null)
-          );
-          this.quoteOpportunities = allOpps.filter((opp: any) => {
-            const oppId = opp.id || opp.opportunityId;
-            return !existingOppIds.has(oppId);
-          });
-          if (this.quoteOpportunities.length > 0) {
-            this.quoteForm.opportunityId = this.quoteOpportunities[0].id || this.quoteOpportunities[0].opportunityId;
+          const filterOpps = (quotesList: any[]) => {
+            const existingOppIds = new Set(
+              (quotesList || []).map((q: any) => Number(q.opportunityId || q.opportunity_id)).filter((id: any) => !isNaN(id) && id > 0)
+            );
+            this.quoteOpportunities = allOpps.filter((opp: any) => {
+              const oppId = Number(opp.id || opp.opportunityId);
+              return !existingOppIds.has(oppId);
+            });
+            if (this.quoteOpportunities.length > 0) {
+              this.quoteForm.opportunityId = this.quoteOpportunities[0].id || this.quoteOpportunities[0].opportunityId;
+            } else {
+              this.quoteForm.opportunityId = '';
+            }
+            this.cdr.detectChanges();
+          };
+
+          if (this.leadId) {
+            this.leadservice.getQuotesByLead(this.leadId).subscribe({
+              next: (qRes: any) => {
+                this.quotes = qRes || [];
+                filterOpps(this.quotes);
+              },
+              error: () => filterOpps(this.quotes || [])
+            });
           } else {
-            this.quoteForm.opportunityId = '';
+            filterOpps(this.quotes || []);
           }
-          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load opportunities for quote:', err)
       });
