@@ -102,7 +102,7 @@ export const routes: Routes = [
     {
       path: 'reports/target-vs-sales',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/target-vs-sales-report/target-vs-sales-report').then(m => m.TargetVsSalesReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [

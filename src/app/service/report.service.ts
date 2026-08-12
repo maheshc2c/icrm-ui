@@ -316,6 +316,19 @@ export class ReportService {
       })
     );
   }
+
+  getTargetVsSales(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/target-vs-sales`, filter, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (!res.status) {
+          throw new Error(res.message || 'Failed to fetch target vs sales report');
+        }
+        return res.data;
+      })
+    );
+  }
 }
 
 
