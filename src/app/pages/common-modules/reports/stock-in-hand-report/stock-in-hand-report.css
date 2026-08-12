@@ -121,7 +121,7 @@
   font-weight: 600;
 }
 
-/* Action Blue Buttons (Matching Screenshot 1) */
+/* Action Blue Buttons */
 .action-btn-group {
   display: flex;
   align-items: center;
@@ -152,32 +152,39 @@
   box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
-/* Table Card Container & Steel Blue Header Bar (Matching Image 1) */
+/* Table Card Container & Pink Header Bar */
 .table-card {
   background: #ffffff;
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   border: 1px solid #ced4da;
+  width: 100%;
   overflow: hidden;
 }
 
-.sih-steel-blue-header {
-  background-color: #5c87c1 !important;
+.sih-main-table {
+  width: 100% !important;
+  border-collapse: collapse;
 }
 
-.sih-steel-blue-header th {
-  background-color: #5c87c1 !important;
-  color: #ffffff !important;
+.sih-pink-header {
+  background-color: #f7d3cd !important;
+  width: 100% !important;
+}
+
+.sih-pink-header th {
+  background-color: #f7d3cd !important;
+  color: #2d2d35 !important;
   font-size: 14px;
   font-weight: 700;
-  padding: 12px 16px;
-  border: none;
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 14px 16px;
+  border-bottom: 1px solid #dfb8b3 !important;
+  border-right: 1px solid #dfb8b3 !important;
 }
 
-.sih-steel-blue-header th:last-child {
-  border-right: none;
+.sih-pink-header th:last-child {
+  border-right: none !important;
 }
 
 .sortable-header {
@@ -186,7 +193,7 @@
 }
 
 .sortable-header:hover {
-  background-color: #4a75af !important;
+  background-color: #f2c6bf !important;
 }
 
 /* Level 1 Category Rows */
@@ -220,6 +227,7 @@
 /* Subtable Level 2 & 3 */
 .sih-subtable {
   background-color: #fafbfc;
+  width: 100% !important;
 }
 
 .segment-header-line {
@@ -247,9 +255,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  padding: 14px 20px;
   background: #ffffff;
   border-top: 1px solid #e9ecef;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .width-auto {
