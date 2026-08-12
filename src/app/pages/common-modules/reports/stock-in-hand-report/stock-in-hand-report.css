@@ -152,7 +152,7 @@
   box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
-/* Table Card Container & Pink Header Bar */
+/* Table Card Container & Soft Pink Header Bars (Matching Image 1) */
 .table-card {
   background: #ffffff;
   border-radius: 6px;
@@ -163,9 +163,8 @@
   overflow: hidden;
 }
 
-.sih-main-table {
+.sih-table {
   width: 100% !important;
-  table-layout: fixed !important;
   border-collapse: collapse;
 }
 
@@ -177,9 +176,9 @@
 .sih-pink-header th {
   background-color: #f7d3cd !important;
   color: #2d2d35 !important;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
-  padding: 14px 16px;
+  padding: 12px 16px;
   border-bottom: 1px solid #dfb8b3 !important;
   border-right: 1px solid #dfb8b3 !important;
 }
@@ -197,13 +196,13 @@
   background-color: #f2c6bf !important;
 }
 
-/* Level 1 Category Rows */
-.category-row {
+/* Row Styling */
+.category-row, .segment-row {
   border-bottom: 1px solid #e9ecef;
   transition: background 0.15s ease;
 }
 
-.category-row:hover {
+.category-row:hover, .segment-row:hover {
   background-color: #f8fafc;
 }
 
@@ -219,37 +218,6 @@
 
 .btn-expand-symbol:hover {
   color: #3b7ddd;
-}
-
-.btn-sm-expand {
-  font-size: 11px;
-}
-
-/* Subtable Level 2 & 3 */
-.sih-subtable {
-  background-color: #fafbfc;
-  width: 100% !important;
-  table-layout: fixed !important;
-}
-
-.segment-header-line {
-  border-bottom: 1px solid #edf2f7;
-  background-color: #f8fafc;
-}
-
-.segment-header-line:hover {
-  background-color: #f1f5f9;
-}
-
-.product-wrapper-row {
-  background-color: #f1f5f9;
-}
-
-.product-item-table th {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #475569;
-  background-color: #e2e8f0;
 }
 
 /* Pagination Footer */
