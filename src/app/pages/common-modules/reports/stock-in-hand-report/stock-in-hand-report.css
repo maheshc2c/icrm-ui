@@ -22,7 +22,7 @@
   box-sizing: border-box;
 }
 
-/* Datatable Toolbar (Matching Customer, Segment, etc. without separate background card padding) */
+/* Datatable Toolbar (Matching Product List UI) */
 .datatable-toolbar {
   width: 100%;
   box-sizing: border-box;
@@ -34,22 +34,37 @@
   flex-wrap: nowrap;
 }
 
-.filter-dropdowns {
+.search-group {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 16px;
   flex-wrap: wrap;
+  flex: 1 1 auto;
+}
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+}
+
+.search-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 2px;
 }
 
 /* Custom Searchable Dropdowns */
 .dropdown-wrapper {
   position: relative;
-  min-width: 200px;
+  width: 100%;
 }
 
 .dropdown-trigger {
   background: #ffffff;
-  border: 1px solid #ced4da;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   padding: 8px 14px;
   font-size: 13.5px;
@@ -60,11 +75,22 @@
   justify-content: space-between;
   transition: all 0.2s ease;
   user-select: none;
+  height: 38px;
 }
 
 .dropdown-trigger:hover, .dropdown-trigger.active {
-  border-color: #3b7ddd;
-  box-shadow: 0 0 0 3px rgba(59, 125, 221, 0.15);
+  border-color: #7a4bc4;
+  box-shadow: 0 0 0 3px rgba(122, 75, 196, 0.15);
+}
+
+.trigger-text {
+  font-size: 13.5px;
+  color: #374151;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  color: #6b7280;
 }
 
 .dropdown-panel {
@@ -78,7 +104,7 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   z-index: 1050;
   padding: 8px 0;
-  min-width: 200px;
+  min-width: 220px;
 }
 
 .dropdown-search {
@@ -96,7 +122,7 @@
 }
 
 .dropdown-search input:focus {
-  border-color: #3b7ddd;
+  border-color: #7a4bc4;
 }
 
 .dropdown-options {
@@ -113,48 +139,57 @@
 }
 
 .dropdown-option:hover {
-  background-color: #f1f5f9;
-  color: #3b7ddd;
+  background-color: #f4ebff;
+  color: #7a4bc4;
 }
 
 .dropdown-option.selected {
-  background-color: #e8f1fd;
-  color: #3b7ddd;
+  background-color: #f4ebff;
+  color: #7a4bc4;
   font-weight: 600;
 }
 
-/* Action Blue Buttons */
-.action-btn-group {
+/* Action Icon Buttons (Matching Product List app-button icon-btn design) */
+.filter-actions.icon-actions {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-left: auto;
 }
 
-.btn-blue-icon {
-  background-color: #3b82f6;
-  color: #ffffff;
-  border: none;
-  border-radius: 20px;
-  width: 38px;
-  height: 38px;
-  display: flex;
+.icon-actions .icon-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
-  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+  height: 38px;
+  width: 38px;
+  min-width: 38px;
+  border: 1px solid #e8dff7;
+  border-radius: 12px;
+  background: #f4ebff;
+  color: #7a4bc4;
+  box-shadow: 0 4px 10px rgba(122, 75, 196, 0.08);
   transition: all 0.2s ease;
   cursor: pointer;
+  text-decoration: none;
 }
 
-.btn-blue-icon:hover {
-  background-color: #2563eb;
-  color: #ffffff;
+.icon-actions .icon-btn i {
+  font-size: 14px;
+}
+
+.icon-actions .icon-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 6px 14px rgba(122, 75, 196, 0.12);
+  background: #ede0ff;
+  color: #6b3ab7;
 }
 
-/* Table Card Container & Soft Pink Header Bars */
+.icon-actions .icon-btn:active {
+  transform: translateY(0);
+}
+
+/* Table Card Container & Soft Pink Header Bars (Matching Product List) */
 .table-card {
   background: #ffffff;
   border-radius: 6px;
@@ -178,11 +213,13 @@
 .sih-pink-header th {
   background-color: #f7d3cd !important;
   color: #2d2d35 !important;
-  font-size: 13.5px;
-  font-weight: 700;
-  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 14px 16px;
   border-bottom: 1px solid #dfb8b3 !important;
   border-right: 1px solid #dfb8b3 !important;
+  text-transform: uppercase;
 }
 
 .sih-pink-header th:last-child {
@@ -219,10 +256,10 @@
 }
 
 .btn-expand-symbol:hover {
-  color: #3b7ddd;
+  color: #7a4bc4;
 }
 
-/* Application Shared Pagination Styling (Matching Customer, Segment, etc.) */
+/* Application Shared Pagination Styling (Matching Product List) */
 .pagination-container {
   display: flex;
   justify-content: space-between;
@@ -339,7 +376,7 @@
 
 .option-item:hover {
   background: #f5f8fa;
-  color: #e74c3c;
+  color: #7a4bc4;
 }
 
 .loading-container {
