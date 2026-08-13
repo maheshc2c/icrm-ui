@@ -1,0 +1,93 @@
+<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+  <div class="report-toolbar" [formGroup]="filterForm">
+
+    <!-- Radio Buttons -->
+    <div class="radio-group">
+      <label class="radio-option">
+        <input type="radio" formControlName="reportType" value="product" />
+        <span class="radio-checkmark"></span>
+        By Product
+      </label>
+      <label class="radio-option">
+        <input type="radio" formControlName="reportType" value="region" />
+        <span class="radio-checkmark"></span>
+        By Region
+      </label>
+    </div>
+
+    <!-- Select Region -->
+    <div class="toolbar-field">
+      <select class="form-select" formControlName="region">
+        <option value="">Select Region</option>
+        <option value="North">North</option>
+        <option value="South">South</option>
+        <option value="East">East</option>
+        <option value="West">West</option>
+      </select>
+    </div>
+
+    <!-- Select Users -->
+    <div class="toolbar-field">
+      <select class="form-select" formControlName="user">
+        <option value="">Select Users</option>
+        <option value="Swaroop">Swaroop (C2CAS103)</option>
+      </select>
+    </div>
+
+    <!-- Dynamic Date Dropdown (hidden for Year) -->
+    <div class="toolbar-field" *ngIf="dateOptions.length > 0">
+      <select class="form-select" formControlName="date">
+        <option *ngFor="let opt of dateOptions" [value]="opt">{{ opt }}</option>
+      </select>
+    </div>
+
+    <!-- Timeline Toggle -->
+    <div class="toolbar-field timeline-field">
+      <div class="timeline-toggle" role="tablist">
+        <button
+          type="button"
+          class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Week'"
+          (click)="filterForm.get('timeline')?.setValue('Week')"
+        >Week</button>
+        <button
+          type="button"
+          class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Month'"
+          (click)="filterForm.get('timeline')?.setValue('Month')"
+        >Month</button>
+        <button
+          type="button"
+          class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Quarter'"
+          (click)="filterForm.get('timeline')?.setValue('Quarter')"
+        >Quarter</button>
+        <button
+          type="button"
+          class="timeline-option year-option"
+          [class.active-year]="filterForm.get('timeline')?.value === 'Year'"
+          (click)="filterForm.get('timeline')?.setValue('Year')"
+        >Year</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="chart-container">
+    <apx-chart
+      #chart
+      [title]="chartOptions.title!"
+      [series]="chartOptions.series!"
+      [chart]="chartOptions.chart!"
+      [xaxis]="chartOptions.xaxis!"
+      [yaxis]="chartOptions.yaxis!"
+      [dataLabels]="chartOptions.dataLabels!"
+      [plotOptions]="chartOptions.plotOptions!"
+      [stroke]="chartOptions.stroke!"
+      [colors]="chartOptions.colors!"
+      [legend]="chartOptions.legend!"
+      [grid]="chartOptions.grid!"
+      [tooltip]="chartOptions.tooltip!"
+    ></apx-chart>
+  </div>
+</app-reports-layout>

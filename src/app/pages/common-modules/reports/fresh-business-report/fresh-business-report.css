@@ -1,0 +1,149 @@
+:host {
+  display: block;
+}
+
+.report-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 10px 0 22px;
+  border-bottom: 1px solid #edf1f5;
+  margin-bottom: 24px;
+}
+
+/* Radio Buttons */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 110px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #2f3542;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-left: 28px;
+}
+
+.radio-option input[type="radio"] {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  accent-color: #2f7ad7;
+  cursor: pointer;
+}
+
+/* Toolbar Fields */
+.toolbar-field {
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+  min-width: 180px;
+  flex: 0 0 180px;
+}
+
+.timeline-field {
+  margin-left: auto;
+  width: 280px;
+  min-width: 280px;
+  flex: 0 0 280px;
+}
+
+.form-select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #d9dfe8;
+  border-radius: 8px;
+  padding: 8px 36px 8px 12px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E") no-repeat right 12px center;
+  background-size: 10px 6px;
+  appearance: none;
+  -webkit-appearance: none;
+  font-size: 14px;
+  color: #2f3542;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-select:focus {
+  border-color: #9b8adb;
+  box-shadow: 0 0 0 3px rgba(140, 117, 218, 0.12);
+}
+
+/* Timeline Toggle */
+.timeline-toggle {
+  display: flex;
+  width: 100%;
+  border: 1px solid #dfe6ef;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.timeline-option {
+  flex: 1 1 0;
+  min-height: 40px;
+  padding: 0 8px;
+  border: none;
+  border-right: 1px solid #dfe6ef;
+  background: transparent;
+  color: #4a5565;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.timeline-option:last-child {
+  border-right: none;
+}
+
+/* Week / Month / Quarter active = blue */
+.timeline-option.active {
+  background: #2f7ad7;
+  color: #fff;
+}
+
+/* Year active = green */
+.timeline-option.year-option.active-year {
+  background: #43a047;
+  color: #fff;
+}
+
+/* Chart Container */
+.chart-container {
+  background: #ffffff;
+  padding: 20px;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .toolbar-field,
+  .timeline-field {
+    width: 100%;
+    min-width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .timeline-field {
+    margin-left: 0;
+  }
+
+  .radio-group {
+    width: 100%;
+    flex-direction: row;
+  }
+}

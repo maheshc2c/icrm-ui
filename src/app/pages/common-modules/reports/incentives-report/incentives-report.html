@@ -1,10 +1,30 @@
 <app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
   <div class="report-toolbar">
-    <div class="toolbar-field">
+    <div class="toolbar-field custom-dropdown-container">
       <label class="field-label">Select Users</label>
-      <select class="form-select" [(ngModel)]="selectedUserId">
-        <option [ngValue]="null">Select Users (All)</option>
-        <option *ngFor="let u of users" [value]="u.id">{{ u.label }}</option>
+      <div class="custom-dropdown" [class.open]="isDropdownOpen">
+        <div class="dropdown-selected form-select" (click)="toggleDropdown()">
+          <span class="dropdown-text">{{ selectedUser ? selectedUser.name : 'Select Users' }}</span>
+        </div>
+        <div class="dropdown-list" *ngIf="isDropdownOpen">
+          <div class="dropdown-search">
+            <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()" />
+          </div>
+          <div class="dropdown-options">
+            <div class="dropdown-item" [class.active]="!selectedUser" (click)="selectUser(null)">Select Users</div>
+            <div class="dropdown-item" *ngFor="let user of filteredUsers" [class.active]="selectedUser?.id === user.id" (click)="selectUser(user)">
+              {{ user.name }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <div class="toolbar-field">
+      <label class="field-label">Financial Year</label>
+      <select class="form-select" [(ngModel)]="financialYear">
+        <option [ngValue]="null" disabled>Select Financial Year</option>
+        <option *ngFor="let fy of financialYears" [ngValue]="fy.fyName">{{ fy.fyName }}</option>
       </select>
     </div>
 
@@ -18,22 +38,9 @@
       </select>
     </div>
 
-    <div class="toolbar-field">
-      <label class="field-label">Financial Year</label>
-      <select class="form-select" [(ngModel)]="financialYear">
-        <option value="2026-27">2026-27</option>
-        <option value="2025-26">2025-26</option>
-        <option value="2024-25">2024-25</option>
-      </select>
-    </div>
-
     <div class="toolbar-actions">
-      <button type="button" class="btn-search" (click)="loadReport()" [disabled]="isLoading" title="Search">
-        <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
-      </button>
-      <button type="button" class="btn-download" (click)="onDownload()" [disabled]="isDownloading" title="Download Excel">
-        <i class="fas" [ngClass]="isDownloading ? 'fa-spinner fa-spin' : 'fa-cloud-download-alt'"></i>
-      </button>
+      <button type="button" class="btn-search" (click)="onSearch()"><i class="fas fa-search"></i></button>
+      <button type="button" class="btn-download" (click)="downloadIncentives()"><i class="fas fa-cloud-download-alt"></i></button>
     </div>
   </div>
 
@@ -53,7 +60,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of reports; let i = index">
-          <td>{{ i + 1 }}</td>
+          <td>{{ (currentPage * pageSize) + i + 1 }}</td>
           <td>{{ item.role }}</td>
           <td>{{ item.user }}</td>
           <td>{{ item.erpTarget }}</td>
@@ -66,9 +73,19 @@
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="6" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ totalIncentives }}</td>
+          <td colspan="6" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ getTotalIncentives() }}</td>
         </tr>
       </tfoot>
     </table>
+  </div>
+
+  <div class="pagination-controls" *ngIf="totalPages > 1">
+    <button class="btn-page" [disabled]="currentPage === 0" (click)="changePage(-1)">
+      <i class="fas fa-chevron-left"></i> Previous
+    </button>
+    <span class="page-info">Page {{ currentPage + 1 }} of {{ totalPages }} ({{ totalElements }} items)</span>
+    <button class="btn-page" [disabled]="currentPage >= totalPages - 1" (click)="changePage(1)">
+      Next <i class="fas fa-chevron-right"></i>
+    </button>
   </div>
 </app-reports-layout>

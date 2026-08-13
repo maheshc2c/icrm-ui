@@ -1,0 +1,110 @@
+<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+
+  <!-- Toolbar -->
+  <div class="report-toolbar" [formGroup]="filterForm">
+
+    <div class="toolbar-field">
+      <select class="form-select" formControlName="category">
+        <option value="">Select Category</option>
+        <option value="cat1">Category 1</option>
+        <option value="cat2">Category 2</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <select class="form-select" formControlName="product">
+        <option value="">Select Product</option>
+        <option value="oracle">Oracle</option>
+        <option value="sap">SAP</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <select class="form-select" formControlName="region">
+        <option value="">Select Region</option>
+        <option value="north">North</option>
+        <option value="south">South</option>
+        <option value="east">East</option>
+        <option value="west">West</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <select class="form-select" formControlName="user">
+        <option value="">Select Users</option>
+        <option value="user1">Swaroop (C2CAS103)</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <input type="text" class="form-input" formControlName="customRate" placeholder="Custom Rate" />
+    </div>
+
+    <!-- View Toggle -->
+    <div class="radio-group">
+      <label class="radio-option">
+        <input type="radio" name="viewMode" [(ngModel)]="viewMode" [ngModelOptions]="{standalone: true}" value="graph" />
+        <span>By Graph</span>
+      </label>
+      <label class="radio-option">
+        <input type="radio" name="viewMode" [(ngModel)]="viewMode" [ngModelOptions]="{standalone: true}" value="table" />
+        <span>By Table</span>
+      </label>
+    </div>
+
+  </div>
+
+  <!-- Graph View -->
+  <div class="chart-container" *ngIf="viewMode === 'graph'">
+    <apx-chart
+      #chart
+      [title]="chartOptions.title!"
+      [series]="chartOptions.series!"
+      [chart]="chartOptions.chart!"
+      [xaxis]="chartOptions.xaxis!"
+      [yaxis]="chartOptions.yaxis!"
+      [dataLabels]="chartOptions.dataLabels!"
+      [stroke]="chartOptions.stroke!"
+      [colors]="chartOptions.colors!"
+      [legend]="chartOptions.legend!"
+      [grid]="chartOptions.grid!"
+      [tooltip]="chartOptions.tooltip!"
+      [markers]="chartOptions.markers!"
+    ></apx-chart>
+  </div>
+
+  <!-- Table View -->
+  <div class="report-table-wrapper" *ngIf="viewMode === 'table'">
+    <div class="table-title">Run Rate Projection 2026-27</div>
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Open Opportunities</th>
+          <th>Closed Won</th>
+          <th>Min Conversion Rate</th>
+          <th>Max Conversion Rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of tableRows; let i = index" [class.even-row]="i % 2 === 1">
+          <td>{{ row.month }}</td>
+          <td>{{ row.openOpportunities }}</td>
+          <td>{{ row.closedWon }}</td>
+          <td>{{ row.minConversion }}</td>
+          <td>{{ row.maxConversion }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td><strong>Total</strong></td>
+          <td>{{ getTotalFor('openOpportunities') }}</td>
+          <td>{{ getTotalFor('closedWon') }}</td>
+          <td>{{ getTotalFor('minConversion') }}</td>
+          <td>{{ getTotalFor('maxConversion') }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</app-reports-layout>
