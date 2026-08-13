@@ -6,12 +6,31 @@ import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../models/breadcrumb';
 import { SearchFieldConfig } from '../../../shared/search/search';
+import { Adminservice } from '../../../service/adminservice';
 
 export interface MarginBand {
     sNo: number;
     level: string;
     variance: string;
     netMargin: string;
+}
+
+interface MarginBandConfigResponse {
+    status: boolean;
+    message: string;
+    data: {
+        marginBands: Array<{
+            sno: number;
+            level: string;
+            variance: string;
+            netMargin: string;
+        }>;
+        costOfMaintainingWarranty: string | number;
+        costOfCapital: string | number;
+        dealerWarranty: string | boolean;
+    };
+    totalElements: number | null;
+    totalPages: number | null;
 }
 
 @Component({
@@ -44,24 +63,63 @@ export class MarginBandsComponent implements OnInit {
         { key: 'level', label: 'Level', type: 'text', placeholder: 'Level' }
     ];
     
-    // Bottom summary static values
-    costOfMaintainingWarranty = 5;
-    costOfCapital = 20;
-    dealerWarrantyEnabled = true;
+    costOfMaintainingWarranty = '0';
+    costOfCapital = '0';
+    dealerWarrantyEnabled = false;
 
-    constructor(private router: Router) {}
+    constructor(
+        private readonly router: Router,
+        private readonly adminService: Adminservice
+    ) {}
 
     ngOnInit(): void {
-        this.loadStaticData();
+        this.loadMarginConfig();
     }
 
-    loadStaticData(): void {
-        this.marginBands = [
-            { sNo: 1, level: 'Auto approval', variance: '> 8', netMargin: '> 10' },
-            { sNo: 2, level: 'RBH', variance: '>= 0', netMargin: '8 - 10' },
-            { sNo: 3, level: 'NSM', variance: '-15 - -5', netMargin: '5 - 8' },
-            { sNo: 4, level: 'CH', variance: '< -15', netMargin: '< 5' }
-        ];
+    loadMarginConfig(): void {
+        this.adminService.getMarginBandConfig().subscribe({
+            next: (response: any) => {
+                const config = response?.data ?? {};
+                const bands = Array.isArray(config.marginBands) ? config.marginBands : [];
+
+                this.marginBands = bands.map((band: any) => ({
+                    sNo: band.sno,
+                    level: band.level,
+                    variance: band.variance,
+                    netMargin: band.netMargin
+                }));
+
+                this.costOfMaintainingWarranty = this.normalizeSummaryValue(config.costOfMaintainingWarranty);
+                this.costOfCapital = this.normalizeSummaryValue(config.costOfCapital);
+                this.dealerWarrantyEnabled = this.isDealerWarrantyEnabled(config.dealerWarranty);
+            },
+            error: (error) => {
+                console.error('Failed to load margin band config:', error);
+                this.marginBands = [];
+                this.costOfMaintainingWarranty = '0';
+                this.costOfCapital = '0';
+                this.dealerWarrantyEnabled = false;
+            }
+        });
+    }
+
+    private normalizeSummaryValue(value: string | number | null | undefined): string {
+        const normalized = String(value ?? '0');
+        return normalized.endsWith('%') ? normalized.slice(0, -1) : normalized;
+    }
+
+    private isDealerWarrantyEnabled(value: string | number | boolean | null | undefined): boolean {
+        const normalized = String(value ?? '').trim().toLowerCase();
+
+        if (normalized === '1' || normalized === 'enabled' || normalized === 'true' || value === true) {
+            return true;
+        }
+
+        if (normalized === '2' || normalized === 'disabled' || normalized === 'false' || value === false) {
+            return false;
+        }
+
+        return false;
     }
 
     onSearch(): void {

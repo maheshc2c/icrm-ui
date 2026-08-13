@@ -1,0 +1,90 @@
+<app-pageheader
+  [title]="title"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<div class="reports-shell">
+  <div class="reports-card">
+    <div class="report-toolbar">
+      <div class="toolbar-field custom-dropdown-container">
+        <label class="field-label">Select Users</label>
+        <div class="dropdown-trigger" [class.active]="dropdownOpen" (click)="toggleDropdown()">
+          <span class="trigger-text">{{ selectedUserLabel }}</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+
+        <div class="dropdown-panel" *ngIf="dropdownOpen">
+          <div class="search-box-wrapper">
+            <input
+              type="text"
+              class="dropdown-search-input"
+              placeholder="Search user..."
+              [(ngModel)]="searchQuery"
+              (click)="$event.stopPropagation()"
+            />
+          </div>
+          <ul class="options-list">
+            <li class="option-item" (click)="onUserSelect(null)">Select Users</li>
+            <li class="option-item" *ngFor="let user of filteredUsers" (click)="onUserSelect(user.id)">
+              {{ user.label }}
+            </li>
+            <li class="no-results" *ngIf="filteredUsers.length === 0">No users found</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="toolbar-field">
+        <label class="field-label">Quarter</label>
+        <select class="form-select" [(ngModel)]="selectedQuarter">
+          <option>Quarter1</option>
+          <option>Quarter2</option>
+          <option>Quarter3</option>
+          <option>Quarter4</option>
+        </select>
+      </div>
+
+      <div class="toolbar-field">
+        <label class="field-label">Financial Year</label>
+        <select class="form-select" [(ngModel)]="selectedFinancialYear">
+          <option>2026-27</option>
+          <option>2025-26</option>
+          <option>2024-25</option>
+        </select>
+      </div>
+
+      <div class="toolbar-actions">
+        <button type="button" class="btn-search" *ngIf="showSearchButton" (click)="onSearch()">
+          <i class="fas fa-search"></i>
+        </button>
+        <button type="button" class="btn-download" *ngIf="showExportButton" (click)="onExport()">
+          <i class="fas fa-cloud-download-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="report-title" *ngIf="tableTitle">{{ tableTitle }}</div>
+    <div class="report-subtitle" *ngIf="tableSubTitle">{{ tableSubTitle }}</div>
+
+    <div class="report-table-wrapper">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th *ngFor="let column of columns" [attr.style]="'text-align:' + (column.align || 'center') + ';'">
+              {{ column.label }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows; let i = index">
+            <td *ngFor="let column of columns" [attr.style]="'text-align:' + (column.align || 'center') + ';'">
+              {{ row[column.key] }}
+            </td>
+          </tr>
+          <tr *ngIf="rows.length === 0">
+            <td [attr.colspan]="columns.length" class="empty-state">No data found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

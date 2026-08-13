@@ -1,0 +1,74 @@
+<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+  <div class="report-toolbar">
+    <div class="toolbar-field">
+      <label class="field-label">Select Users</label>
+      <select class="form-select" [(ngModel)]="selectedUserId">
+        <option [ngValue]="null">Select Users (All)</option>
+        <option *ngFor="let u of users" [value]="u.id">{{ u.label }}</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Quarter</label>
+      <select class="form-select" [(ngModel)]="quarter">
+        <option value="Q1">Quarter1</option>
+        <option value="Q2">Quarter2</option>
+        <option value="Q3">Quarter3</option>
+        <option value="Q4">Quarter4</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Financial Year</label>
+      <select class="form-select" [(ngModel)]="financialYear">
+        <option value="2026-27">2026-27</option>
+        <option value="2025-26">2025-26</option>
+        <option value="2024-25">2024-25</option>
+      </select>
+    </div>
+
+    <div class="toolbar-actions">
+      <button type="button" class="btn-search" (click)="loadReport()" [disabled]="isLoading" title="Search">
+        <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+      </button>
+      <button type="button" class="btn-download" (click)="onDownload()" [disabled]="isDownloading" title="Download Excel">
+        <i class="fas" [ngClass]="isDownloading ? 'fa-spinner fa-spin' : 'fa-cloud-download-alt'"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="report-title">Part1 Incentives For ( {{ financialYear }} - {{ quarter }} )</div>
+
+  <div class="report-table-wrapper">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Role</th>
+          <th>User</th>
+          <th>ERP Target (in Lakhs)</th>
+          <th>ERP Sales (in Lakhs)</th>
+          <th>Incentive Amount (In Rs)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of reports; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.role }}</td>
+          <td>{{ item.user }}</td>
+          <td>{{ item.erpTarget }}</td>
+          <td>{{ item.erpSales }}</td>
+          <td>{{ item.incentiveAmount }}</td>
+        </tr>
+        <tr *ngIf="reports.length === 0 && !isLoading">
+          <td colspan="6" style="text-align: center; color: #777; padding: 20px;">No incentive data found for selected filters.</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ totalIncentives }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</app-reports-layout>

@@ -46,26 +46,177 @@ export const routes: Routes = [
       canActivate: [authGuard],
       data: {
         roles: [
-          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
-          'Regional Sales Manager', 'Regional Branch Head',
-          'Country Head', 'National Sales Manager', 'Global Head',
-          'Sales Director', 'ADMIN'
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
         ]
       }
     },
     {
-      path: 'funnel-report',
+      path: 'reports/opportunity-lost',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/opportunity-lost-dashboard/opportunity-lost-dashboard.component').then(m => m.OpportunityLostDashboardComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/open-orders',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/open-orders-report/open-orders-report.component').then(m => m.OpenOrdersReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/stock-in-hand',
       loadComponent: () =>
         import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
-          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
-          'Regional Sales Manager', 'Regional Branch Head',
-          'Country Head', 'National Sales Manager', 'Global Head',
-          'Sales Director', 'ADMIN'
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
         ]
       }
+    },
+    {
+      path: 'reports/fresh-business',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/target-vs-sales',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/runrate-projection',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/incentives',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/incentives-report/incentives-report').then(m => m.IncentivesReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/margin-analysis',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/margin-analysis-report/margin-analysis-report').then(m => m.MarginAnalysisReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Regional Branch Head', 'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/margin-analysis-c-note',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/margin-analysis-report/margin-analysis-report').then(m => m.MarginAnalysisReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Regional Branch Head', 'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/outstanding',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'funnel-report',
+      redirectTo: '/reports/funnel',
+      pathMatch: 'full'
+    },
+    {
+      path: 'opportunity-lost',
+      redirectTo: '/reports/opportunity-lost',
+      pathMatch: 'full'
+    },
+    {
+      path: 'open-order-reports',
+      redirectTo: '/reports/open-orders',
+      pathMatch: 'full'
+    },
+    {
+      path: 'stock-in-hand-report',
+      redirectTo: '/reports/stock-in-hand',
+      pathMatch: 'full'
+    },
+    {
+      path: 'fresh-business',
+      redirectTo: '/reports/fresh-business',
+      pathMatch: 'full'
+    },
+    {
+      path: 'target-sales-report',
+      redirectTo: '/reports/target-vs-sales',
+      pathMatch: 'full'
+    },
+    {
+      path: 'runrate-projection',
+      redirectTo: '/reports/runrate-projection',
+      pathMatch: 'full'
+    },
+    {
+      path: 'margin-analysis',
+      redirectTo: '/reports/margin-analysis',
+      pathMatch: 'full'
+    },
+    {
+      path: 'reports/margin-analysis-c-note',
+      redirectTo: '/reports/margin-analysis-c-note',
+      pathMatch: 'full'
+    },
+    {
+      path: 'outstanding-report',
+      redirectTo: '/reports/outstanding',
+      pathMatch: 'full'
     }
   ]
 },

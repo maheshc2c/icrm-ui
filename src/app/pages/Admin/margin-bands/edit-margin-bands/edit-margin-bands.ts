@@ -6,6 +6,8 @@ import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../../models/breadcrumb';
+import { Adminservice } from '../../../../service/adminservice';
+import { ToastService } from '../../../../service/toast.service';
 
 @Component({
     standalone: true,
@@ -31,13 +33,15 @@ export class EditMarginBandsComponent implements OnInit {
     editForm!: FormGroup;
 
     constructor(
-        private fb: FormBuilder,
-        private router: Router
+        private readonly fb: FormBuilder,
+        private readonly router: Router,
+        private readonly adminService: Adminservice,
+        private readonly toastService: ToastService
     ) {}
 
     ngOnInit(): void {
         this.initForm();
-        this.loadStaticData();
+        this.loadMarginConfig();
     }
 
     initForm(): void {
@@ -53,44 +57,212 @@ export class EditMarginBandsComponent implements OnInit {
         return this.editForm.get('bands') as FormArray;
     }
 
-    createBandGroup(band: any): FormGroup {
+    private createBandGroup(band: any): FormGroup {
         return this.fb.group({
-            sNo: [band.sNo],
-            level: [band.level],
-            varLowerLimit: [band.varLowerLimit],
-            varIncludeLower: [band.varIncludeLower],
-            varUpperLimit: [band.varUpperLimit],
-            varIncludeUpper: [band.varIncludeUpper],
-            netLowerLimit: [band.netLowerLimit],
-            netIncludeLower: [band.netIncludeLower],
-            netUpperLimit: [band.netUpperLimit],
-            netIncludeUpper: [band.netIncludeUpper]
+            sNo: [band.sNo ?? band.sno ?? 0],
+            level: [band.level ?? ''],
+            varLowerLimit: [band.varLowerLimit ?? null],
+            varIncludeLower: [band.varIncludeLower ?? false],
+            varUpperLimit: [band.varUpperLimit ?? null],
+            varIncludeUpper: [band.varIncludeUpper ?? false],
+            netLowerLimit: [band.netLowerLimit ?? null],
+            netIncludeLower: [band.netIncludeLower ?? false],
+            netUpperLimit: [band.netUpperLimit ?? null],
+            netIncludeUpper: [band.netIncludeUpper ?? false]
         });
     }
 
-    loadStaticData(): void {
-        const staticBands = [
-            { sNo: 1, level: 'Auto approval', varLowerLimit: 8, varIncludeLower: false, varUpperLimit: null, varIncludeUpper: false, netLowerLimit: 10, netIncludeLower: false, netUpperLimit: null, netIncludeUpper: false },
-            { sNo: 2, level: 'RBH', varLowerLimit: 0, varIncludeLower: true, varUpperLimit: null, varIncludeUpper: false, netLowerLimit: 8, netIncludeLower: true, netUpperLimit: 10, netIncludeUpper: true },
-            { sNo: 3, level: 'NSM', varLowerLimit: -15, varIncludeLower: true, varUpperLimit: -5, varIncludeUpper: true, netLowerLimit: 5, netIncludeLower: true, netUpperLimit: 8, netIncludeUpper: true },
-            { sNo: 4, level: 'CH', varLowerLimit: null, varIncludeLower: false, varUpperLimit: -15, varIncludeUpper: false, netLowerLimit: null, netIncludeLower: false, netUpperLimit: 5, netIncludeUpper: false }
-        ];
+    private loadMarginConfig(): void {
+        this.adminService.getMarginBandConfig().subscribe({
+            next: (response: any) => {
+                const config = response?.data ?? response ?? {};
+                const bands = Array.isArray(config.marginBands) ? config.marginBands : [];
 
-        staticBands.forEach(band => {
-            this.bandsArray.push(this.createBandGroup(band));
-        });
+                this.bandsArray.clear();
+                bands.forEach((band: any, index: number) => {
+                    const parsedBand = this.mapBandFromApi(band, index + 1);
+                    this.bandsArray.push(this.createBandGroup(parsedBand));
+                });
 
-        this.editForm.patchValue({
-            costOfMaintainingWarranty: 5,
-            costOfCapital: 20,
-            dealerWarranty: true
+                this.editForm.patchValue({
+                    costOfMaintainingWarranty: this.normalizeNumber(config.costOfMaintainingWarranty),
+                    costOfCapital: this.normalizeNumber(config.costOfCapital),
+                    dealerWarranty: this.normalizeDealerWarrantyValue(config.dealerWarranty)
+                });
+            },
+            error: (error: any) => {
+                console.error('Failed to load margin band config:', error);
+                this.bandsArray.clear();
+                this.editForm.patchValue({
+                    costOfMaintainingWarranty: 0,
+                    costOfCapital: 0,
+                    dealerWarranty: false
+                });
+            }
         });
+    }
+
+    private mapBandFromApi(band: any, fallbackSNo: number): any {
+        const varianceRange = this.parseRange(band?.variance);
+        const netRange = this.parseRange(band?.netMargin);
+
+        return {
+            sNo: band?.sno ?? band?.quoteApprovalId ?? fallbackSNo,
+            level: band?.level ?? '',
+            varLowerLimit: this.normalizeLimitValue(band?.gmLowerLimit) ?? varianceRange.lowerLimit,
+            varIncludeLower: this.normalizeMarginBandCheckValue(band?.gmLowerCheck ?? varianceRange.includeLower),
+            varUpperLimit: this.normalizeLimitValue(band?.gmUpperLimit) ?? varianceRange.upperLimit,
+            varIncludeUpper: this.normalizeMarginBandCheckValue(band?.gmUpperCheck ?? varianceRange.includeUpper),
+            netLowerLimit: this.normalizeLimitValue(band?.nmLowerLimit) ?? netRange.lowerLimit,
+            netIncludeLower: this.normalizeMarginBandCheckValue(band?.nmLowerCheck ?? netRange.includeLower),
+            netUpperLimit: this.normalizeLimitValue(band?.nmUpperLimit) ?? netRange.upperLimit,
+            netIncludeUpper: this.normalizeMarginBandCheckValue(band?.nmUpperCheck ?? netRange.includeUpper)
+        };
+    }
+
+    private parseRange(value: string | number | null | undefined): {
+        lowerLimit: number | null;
+        includeLower: boolean;
+        upperLimit: number | null;
+        includeUpper: boolean;
+    } {
+        const normalized = String(value ?? '').trim().replace(/%/g, '').trim();
+
+        if (!normalized) {
+            return {
+                lowerLimit: null,
+                includeLower: false,
+                upperLimit: null,
+                includeUpper: false
+            };
+        }
+
+        const operatorLower = normalized.startsWith('>=') || normalized.startsWith('>');
+        const operatorUpper = normalized.startsWith('<=') || normalized.startsWith('<');
+
+        const numbers = normalized.match(/-?\d+(?:\.\d+)?/g)?.map(Number) ?? [];
+        const lowerLimit = numbers[0] ?? null;
+        const upperLimit = numbers[1] ?? null;
+
+        if (normalized.includes(' - ')) {
+            return {
+                lowerLimit: numbers[0] ?? null,
+                includeLower: true,
+                upperLimit: numbers[1] ?? null,
+                includeUpper: true
+            };
+        }
+
+        if (normalized.startsWith('>=')) {
+            return {
+                lowerLimit,
+                includeLower: true,
+                upperLimit: null,
+                includeUpper: false
+            };
+        }
+
+        if (normalized.startsWith('>')) {
+            return {
+                lowerLimit,
+                includeLower: false,
+                upperLimit: null,
+                includeUpper: false
+            };
+        }
+
+        if (normalized.startsWith('<=') || normalized.startsWith('<')) {
+            return {
+                lowerLimit: null,
+                includeLower: false,
+                upperLimit: lowerLimit,
+                includeUpper: operatorUpper || normalized.includes('<=')
+            };
+        }
+
+        return {
+            lowerLimit,
+            includeLower: operatorLower,
+            upperLimit,
+            includeUpper: false
+        };
+    }
+
+    private normalizeNumber(value: string | number | null | undefined): number {
+        const parsed = Number(String(value ?? '0').replace(/%/g, '').trim());
+        return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    private normalizeLimitValue(value: string | number | null | undefined): number | null {
+        if (value === null || value === undefined || value === '') {
+            return null;
+        }
+
+        const parsed = Number(String(value).replace(/%/g, '').trim());
+        return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    private normalizeMarginBandCheckValue(value: string | number | boolean | null | undefined): boolean {
+        const normalized = String(value ?? '').trim().toLowerCase();
+
+        if (normalized === '1' || normalized === 'yes' || normalized === 'true' || value === true) {
+            return true;
+        }
+
+        if (normalized === '2' || normalized === 'no' || normalized === 'false' || value === false) {
+            return false;
+        }
+
+        return false;
+    }
+
+    private normalizeDealerWarrantyValue(value: string | number | boolean | null | undefined): boolean {
+        const normalized = String(value ?? '').trim().toLowerCase();
+
+        if (normalized === '1' || normalized === 'enabled' || normalized === 'true' || value === true) {
+            return true;
+        }
+
+        if (normalized === '2' || normalized === 'disabled' || normalized === 'false' || value === false) {
+            return false;
+        }
+
+        return false;
     }
 
     onSubmit(): void {
-        console.log('Submitted values:', this.editForm.value);
-        // Navigate back to the view page after submit
-        this.router.navigate(['/admin/margin-bands']);
+        const formValue = this.editForm.value;
+        const payload = {
+            marginBands: this.bandsArray.controls.map((control: any, index: number) => {
+                const band = control.value;
+                return {
+                    quoteApprovalId: band.sNo ?? index + 1,
+                    gmLowerLimit: band.varLowerLimit ?? null,
+                    gmLowerCheck: band.varIncludeLower ? 1 : 2,
+                    gmUpperLimit: band.varUpperLimit ?? null,
+                    gmUpperCheck: band.varIncludeUpper ? 1 : 2,
+                    nmLowerLimit: band.netLowerLimit ?? null,
+                    nmLowerCheck: band.netIncludeLower ? 1 : 2,
+                    nmUpperLimit: band.netUpperLimit ?? null,
+                    nmUpperCheck: band.netIncludeUpper ? 1 : 2
+                };
+            }),
+            costOfMaintainingWarranty: Number(formValue.costOfMaintainingWarranty ?? 0),
+            costOfCapital: Number(formValue.costOfCapital ?? 0),
+            dealerWarranty: formValue.dealerWarranty ? 1 : 2
+        };
+
+        this.adminService.updateMarginBandConfig(payload).subscribe({
+            next: (response: unknown) => {
+                console.log('Margin bands updated successfully:', response);
+                this.toastService.success('Margin bands updated successfully.');
+                this.router.navigate(['/admin/margin-bands']);
+            },
+            error: (error: unknown) => {
+                console.error('Failed to update margin bands:', error);
+                this.toastService.error('Failed to update margin bands. Please try again.');
+            }
+        });
     }
 
     onCancel(): void {
