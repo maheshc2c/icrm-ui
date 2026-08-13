@@ -31,10 +31,10 @@
     <div class="toolbar-field">
       <label class="field-label">Quarter</label>
       <select class="form-select" [(ngModel)]="quarter">
-        <option>Quarter1</option>
-        <option>Quarter2</option>
-        <option>Quarter3</option>
-        <option>Quarter4</option>
+        <option value="Q1">Quarter1</option>
+        <option value="Q2">Quarter2</option>
+        <option value="Q3">Quarter3</option>
+        <option value="Q4">Quarter4</option>
       </select>
     </div>
 
@@ -66,6 +66,9 @@
           <td>{{ item.erpTarget }}</td>
           <td>{{ item.erpSales }}</td>
           <td>{{ item.incentiveAmount }}</td>
+        </tr>
+        <tr *ngIf="reports.length === 0 && !isLoading">
+          <td colspan="6" style="text-align: center; color: #777; padding: 20px;">No incentive data found for selected filters.</td>
         </tr>
       </tbody>
       <tfoot>

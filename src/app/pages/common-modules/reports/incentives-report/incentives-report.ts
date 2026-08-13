@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http'
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { ReportsLayoutComponent } from '../reports-layout/reports-layout';
 import { AuthService } from '../../../../service/auth-service';
+import { ReportService, IncentiveFilterRequest } from '../../../../service/report.service';
 
 @Component({
   selector: 'app-incentives-report',

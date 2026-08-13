@@ -221,6 +221,20 @@ export const routes: Routes = [
   ]
 },
 {
+      path: 'reports/open-orders',
+      loadComponent: () =>
+        import('./pages/common-modules/open-orders/open-orders').then(m => m.OpenOrders),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
+    },
+{
   path: 'quoteRevision/:id',
   loadComponent: () =>
     import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
@@ -738,6 +752,12 @@ export const routes: Routes = [
   path: 'oppurtunity/close',
   loadComponent: () =>
     import('./pages/SalesDirector/oppurtunity/opp-close/opp-close').then(m => m.OppClose),
+},
+
+ {
+  path: 'OppurtunityStatus/FunnelHistory',
+  loadComponent: () =>
+    import('./pages/common-modules/opportunity-funnel-history-status/opportunity-funnel-history-status').then(m => m.OpportunityFunnelHistoryStatus),
 },
 
 

@@ -30,6 +30,27 @@
       </div>
     </div>
 
+    <!-- Region selector (Searchable Dropdown) -->
+    <div class="filter-control custom-dropdown-container">
+      <div class="dropdown-trigger" [class.active]="regionDropdownOpen" (click)="toggleRegionDropdown()">
+        <span class="trigger-text">{{ selectedRegionName }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      
+      <div class="dropdown-panel" *ngIf="regionDropdownOpen">
+        <div class="search-box-wrapper">
+          <input type="text" class="dropdown-search-input" placeholder="Search region..." [(ngModel)]="regionSearchQuery" (click)="$event.stopPropagation()">
+        </div>
+        <ul class="options-list">
+          <li class="option-item" (click)="selectRegion(null)">Select Region (All)</li>
+          <li class="option-item" *ngFor="let r of filteredRegions" (click)="selectRegion(r.id)">
+            {{ r.label }}
+          </li>
+          <li class="no-results" *ngIf="filteredRegions.length === 0">No regions found</li>
+        </ul>
+      </div>
+    </div>
+
     <!-- Right-aligned filters -->
     <div style="display: flex; gap: 12px; align-items: center; margin-left: auto;">
       <!-- Period selector (week / month / quarter – no dropdown for year) -->

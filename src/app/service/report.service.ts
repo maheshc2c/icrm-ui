@@ -61,6 +61,22 @@ export interface FunnelReportTableResponseDto {
   results: any[];
 }
 
+export interface IncentiveFilterRequest {
+  fromDate?: string | null;
+  toDate?: string | null;
+  financialYearId?: number | null;
+  regionId?: number | null;
+  userId?: number | null;
+  roleId?: number | null;
+  quarter?: string | null;
+  pagination?: {
+    pageNumber?: number;
+    pageSize?: number;
+    sortBy?: string;
+    sortOrder?: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -153,6 +169,96 @@ export class ReportService {
           id: u.id ?? u.userId,
           label: [u.firstName, u.lastName].filter(Boolean).join(' ').trim()
                   + (u.username ? ` (${u.username})` : '')
+        }));
+      })
+    );
+  }
+
+  getIncentivesReport(filter: IncentiveFilterRequest): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/incentives/filter`, filter, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  downloadIncentivesReport(filter: IncentiveFilterRequest): Observable<Blob> {
+    const token = this.auth.getToken();
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post(`${this.baseUrl}/reports/incentives/download`, filter, {
+      headers: headers,
+      responseType: 'blob'
+    });
+  }
+
+  getRegionsForDropdown(): Observable<{ id: number; label: string }[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/location/locations?territoryLevelId=4`,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      map((locations: any[]) => {
+        if (!Array.isArray(locations)) return [];
+        return locations.map((loc: any) => ({
+          id: loc.locationId ?? loc.id,
+          label: loc.locationName ?? loc.name
+        }));
+      })
+    );
+  }
+
+  getMarginAnalysisReport(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/margin-analysis`, filter, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  downloadMarginAnalysisReport(filter: any): Observable<Blob> {
+    const token = this.auth.getToken();
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.post(`${this.baseUrl}/reports/margin-analysis/download`, filter, {
+      headers: headers,
+      responseType: 'blob'
+    });
+  }
+
+  getSegmentsForDropdown(): Observable<{ id: number; label: string }[]> {
+    return this.http.get<any>(`${this.baseUrl}/product/group?name=`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        const groups = Array.isArray(res) ? res : (res?.content || res?.data || []);
+        return groups.map((g: any) => ({
+          id: g.groupId ?? g.id,
+          label: g.groupName || g.name || `Segment ${g.groupId}`
+        }));
+      })
+    );
+  }
+
+  getProductsForDropdown(groupId?: number | null): Observable<{ id: number; label: string }[]> {
+    const payload: any = {
+      pagination: {
+        pageNumber: 0,
+        pageSize: 500,
+        sortBy: 'productId',
+        sortOrder: 'ASC'
+      }
+    };
+    if (groupId) {
+      payload.groupId = groupId;
+    }
+    return this.http.post<any>(`${this.baseUrl}/product/search`, payload, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        const products = Array.isArray(res) ? res : (res?.content || res?.data || []);
+        return products.map((p: any) => ({
+          id: p.productId ?? p.id,
+          label: p.productName || p.productDescription || p.name || `Product ${p.productId}`
         }));
       })
     );

@@ -6,14 +6,17 @@
 <div class="content-area">
     <div class="dashboard-wrapper">
         <div class="dashboard-content">
+
             <!-- First Row: 3 Sections -->
             <div class="section-row">
+
                 <!-- Leads Section -->
                 <div class="section-block">
                     <div class="section-header-title">
                         <i class="fa-solid fa-user-md"></i>
                         <span>Leads</span>
                     </div>
+
                     <div class="section-cards">
                         <div class="dashboard-card leads-new-card" routerLink="/countryhead/leads/new">
                             <div class="card-icon leads-new-bg">
@@ -23,6 +26,7 @@
                                 <h3>New</h3>
                             </div>
                         </div>
+
                         <div class="dashboard-card leads-open-card" routerLink="/countryhead/leads/open">
                             <div class="card-icon leads-open-bg">
                                 <i class="fa-solid fa-folder-open"></i>
@@ -31,6 +35,7 @@
                                 <h3>Open</h3>
                             </div>
                         </div>
+
                         <div class="dashboard-card leads-close-card" routerLink="/countryhead/leads/closed">
                             <div class="card-icon leads-close-bg">
                                 <i class="fa-solid fa-folder"></i>
@@ -44,13 +49,13 @@
 
                 <!-- Calendar Section -->
                 <div class="section-block">
-
                     <div class="section-header-title">
                         <i class="fa-solid fa-calendar-alt"></i>
                         <span>Calendar</span>
                     </div>
+
                     <div class="section-cards">
-                        <a href="View Calendar.html">
+                        <a routerLink="View Calendar.html">
                             <div class="dashboard-card calendar-card">
                                 <div class="card-icon calendar-bg">
                                     <i class="fa-solid fa-calendar"></i>
@@ -69,6 +74,7 @@
                         <i class="fa-solid fa-file-alt"></i>
                         <span>TargetVsActual</span>
                     </div>
+
                     <div class="section-cards">
                         <div class="dashboard-card target-card">
                             <div class="card-icon target-bg">
@@ -80,16 +86,19 @@
                         </div>
                     </div>
                 </div>
+
             </div>
 
-            <!-- Second Row: 3 Sections -->
+            <!-- Second Row -->
             <div class="section-row">
-                <!-- Opportunities Section -->
+
+                <!-- Opportunities -->
                 <div class="section-block">
                     <div class="section-header-title">
                         <i class="fa-solid fa-edit"></i>
                         <span>Opportunities</span>
                     </div>
+
                     <div class="section-cards">
                         <div class="dashboard-card opportunities-open-card">
                             <div class="card-icon opportunities-open-bg">
@@ -99,6 +108,7 @@
                                 <h3>Open</h3>
                             </div>
                         </div>
+
                         <div class="dashboard-card opportunities-close-card">
                             <div class="card-icon opportunities-close-bg">
                                 <i class="fa-solid fa-folder"></i>
@@ -110,12 +120,13 @@
                     </div>
                 </div>
 
-                <!-- Plan Section -->
+                <!-- Plan -->
                 <div class="section-block">
                     <div class="section-header-title">
                         <i class="fa-solid fa-calendar-check"></i>
                         <span>Plan</span>
                     </div>
+
                     <div class="section-cards">
                         <div class="dashboard-card plan-visit-card" routerLink="/plan-visit">
                             <div class="card-icon plan-visit-bg">
@@ -133,18 +144,20 @@
                                 <h3>Demo</h3>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
-                <!-- Marketing Section -->
+                <!-- Marketing -->
                 <div class="section-block">
                     <div class="section-header-title">
                         <i class="fa-solid fa-file-alt"></i>
                         <span>Marketing</span>
                     </div>
+
                     <div class="section-cards">
                         <div class="dashboard-card marketing-documents-card"
-                            routerLink="/country-head/marketing-document">
+                             routerLink="/country-head/marketing-document">
                             <div class="card-icon marketing-documents-bg">
                                 <i class="fa-solid fa-file"></i>
                             </div>
@@ -154,8 +167,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
 
         </div>
 
@@ -165,31 +178,41 @@
                 <i class="fa-solid fa-exclamation-triangle"></i>
                 <span>Alerts</span>
             </div>
+
             <div class="alerts-list">
                 <div class="alert-item">
                     <a href="#">Leads assigned today (0)</a>
                 </div>
+
                 <div class="alert-item">
                     <a href="#">Pending Quote approvals (0)</a>
                 </div>
+
                 <div class="alert-item">
                     <a href="#">Purchase Order approvals (0)</a>
                 </div>
+
                 <div class="alert-item">
                     <a href="#">Old Quote approvals (0)</a>
                 </div>
+
                 <div class="alert-item">
                     <strong>Pending Tasks:</strong>
                 </div>
+
                 <div class="alert-item">
                     <a href="#">Opportunity date Review - (0)</a>
                 </div>
+
                 <div class="alert-item">
                     <a href="#">Demo Feedback - (0)</a>
                 </div>
+
                 <div class="alert-item">
                     <a href="#">Visit Feedback - (0)</a>
                 </div>
             </div>
         </div>
+
     </div>
+</div>
