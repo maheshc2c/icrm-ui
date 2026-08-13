@@ -20,10 +20,7 @@ export class PurchaseOrderTracking implements OnInit {
 
   headerTitle = 'Purchase Order Tracking';
 
-  headerBreadcrumbs = [
-    { label: 'Home', route: '/country-head' },
-    { label: 'Purchase Order Tracking' }
-  ];
+  headerBreadcrumbs: any[] = [];
 
   searchModel = {
     poId: '',
@@ -66,8 +63,44 @@ export class PurchaseOrderTracking implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      this.updateBreadcrumbs();
       this.loadQuotes();
     }
+  }
+
+  updateBreadcrumbs(): void {
+    const role = localStorage.getItem('role');
+    let homeRoute = '/';
+    switch (role) {
+      case 'Country Head':
+        homeRoute = '/country-head';
+        break;
+      case 'Sales Engineer':
+      case 'Sales Manager':
+      case 'SALES_MANAGER':
+      case 'SALESMANAGER':
+        homeRoute = '/sales-manager-dashboard';
+        break;
+      case 'Global Head':
+        homeRoute = '/globalhead-dashboard';
+        break;
+      case 'National Sales Manager':
+        homeRoute = '/national-sales-manager-dashboard';
+        break;
+      case 'Regional Branch Head':
+        homeRoute = '/regional-branch-head-dashboard';
+        break;
+      case 'Regional Sales Manager':
+        homeRoute = '/regional-sales-manager-dashboard';
+        break;
+      case 'Sales Director':
+        homeRoute = '/sddashboard';
+        break;
+    }
+    this.headerBreadcrumbs = [
+      { label: 'Home', route: homeRoute },
+      { label: 'Purchase Order Tracking' }
+    ];
   }
 
   loadQuotes(): void {

@@ -32,6 +32,7 @@ export interface SegmentDto {
   description?: string;
   groupDescription?: string;
   competitorNames?: string[];
+  competitorIds?: number[];
   groupRank?: number;
   groupWeight?: number;
   groupStatus?: number;

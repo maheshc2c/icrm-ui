@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { Form } from '../../../../shared/form/form';
 import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
@@ -47,25 +48,22 @@ export class AddSegment implements OnInit {
  
   /* ================= LOAD DROPDOWN DATA ================= */
   private loadDropdownData(): void {
-    // 1. Fetch Categories
-    this.segmentService.getCategories().subscribe({
-      next: (data) => {
-        this.businessCategories = data.map(cat => ({ label: cat.categoryName, value: cat.categoryId }));
-        this.updateFormFields(); // Refresh fields with new data
-      },
-      error: (err) => console.error('Failed to load categories', err)
-    });
- 
-    // 2. Fetch Competitors
-    this.segmentService.getCompetitors().subscribe({
-      next: (data) => {
-        this.competitors = data.map(comp => ({
-          label: comp.competitorName,
-          value: comp.competitorName
+    forkJoin({
+      categories: this.segmentService.getCategories(),
+      competitors: this.segmentService.getCompetitors()
+    }).subscribe({
+      next: (res) => {
+        this.businessCategories = (res.categories || []).map(cat => ({
+          label: cat.categoryName,
+          value: cat.categoryId
         }));
-        this.updateFormFields(); // Refresh fields with new data
+        this.competitors = (res.competitors || []).map(comp => ({
+          label: comp.competitorName,
+          value: comp.competitorId
+        }));
+        this.updateFormFields();
       },
-      error: (err) => console.error('Failed to load competitors', err)
+      error: (err) => console.error('Failed to load dropdown data', err)
     });
   }
  
@@ -93,28 +91,53 @@ export class AddSegment implements OnInit {
       { name: 'businessCategory', label: 'Business Category Name', placeholder: 'Select business category', type: 'select', required: true, options: this.businessCategories },
       { name: 'segmentName', label: 'Segment Name', placeholder: 'Enter segment name', type: 'text', required: true },
       { name: 'segmentDescription', label: 'Segment Description', placeholder: 'Enter segment description', type: 'textarea', required: false },
-      { name: 'competitors', label: 'Competitors', type: 'checkbox', required: false, options: this.competitors }
+      { name: 'competitors', label: 'Competitors', placeholder: '-- Select Competitors --', type: 'checkbox', required: false, options: this.competitors }
     ];
   }
  
   /* ================= SAVE ================= */
   saveSegment(data: any): void {
-    // Convert checkbox object to array of selected competitor names
-    const selectedCompetitors: string[] = [];
+    const selectedCompetitorIds: number[] = [];
+    const selectedCompetitorNames: string[] = [];
+
     if (data.competitors && typeof data.competitors === 'object') {
       Object.keys(data.competitors).forEach(key => {
         if (data.competitors[key] === true) {
-          selectedCompetitors.push(key);
+          const numKey = Number(key);
+          if (!isNaN(numKey)) {
+            if (!selectedCompetitorIds.includes(numKey)) {
+              selectedCompetitorIds.push(numKey);
+              const found = this.competitors.find(c => c.value === numKey);
+              if (found && !selectedCompetitorNames.includes(found.label)) {
+                selectedCompetitorNames.push(found.label);
+              }
+            }
+          } else {
+            const found = this.competitors.find(c => c.label === key || String(c.value) === key);
+            if (found && typeof found.value === 'number') {
+              if (!selectedCompetitorIds.includes(found.value)) {
+                selectedCompetitorIds.push(found.value);
+              }
+              if (!selectedCompetitorNames.includes(found.label)) {
+                selectedCompetitorNames.push(found.label);
+              }
+            } else {
+              if (!selectedCompetitorNames.includes(key)) {
+                selectedCompetitorNames.push(key);
+              }
+            }
+          }
         }
       });
     }
  
-    // Map form data to DTO matching backend GroupDto structure
     const payload: SegmentDto = {
-      categoryId: data.businessCategory,
+      categoryId: Number(data.businessCategory),
       groupName: data.segmentName,
       description: data.segmentDescription || '',
-      competitorNames: selectedCompetitors.length > 0 ? selectedCompetitors : undefined,
+      groupDescription: data.segmentDescription || '',
+      competitorIds: selectedCompetitorIds.length > 0 ? selectedCompetitorIds : undefined,
+      competitorNames: selectedCompetitorNames.length > 0 ? selectedCompetitorNames : undefined,
       groupStatus: 1
     };
  

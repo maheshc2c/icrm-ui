@@ -20,24 +20,33 @@
  
 /* ================= SHARED WIDTH COLUMN ================= */
  
-.datatable-toolbar,
-.content-wrapper {
+.datatable-toolbar {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
   margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 0px;
 }
  
 /* ================= TOOLBAR ================= */
 .datatable-toolbar {
     display: flex;
     align-items: flex-end;
+    justify-content: space-between;
     gap: 12px;
     flex-wrap: nowrap;
 }
  
 .datatable-toolbar app-search {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
+    min-width: 0;
 }
  
 .datatable-toolbar app-button {
@@ -202,6 +211,28 @@
 .reject-btn:hover {
   background: #ffcdd2;
   color: #b71c1c;
+}
+
+/* Assign */
+.assign-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.assign-btn:hover {
+  background: #bbdefb;
+  color: #0d47a1;
+}
+
+/* Upload */
+.upload-btn {
+  background: #e0f2f1;
+  color: #00796b;
+}
+
+.upload-btn:hover {
+  background: #b2dfdb;
+  color: #004d40;
 }
  
 /* ================= NO RECORDS FOUND (MATCHES TABLE DESIGN) ================= */

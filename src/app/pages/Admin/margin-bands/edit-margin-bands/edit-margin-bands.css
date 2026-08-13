@@ -1,0 +1,242 @@
+/* Container styling */
+.main-content-container {
+    padding: 24px;
+    min-height: calc(100vh - 160px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.card-form-container {
+    background: hsl(0, 0%, 100%);
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    width: 100%;
+    max-width: 960px;
+    padding: 32px;
+    margin-left: auto;
+}
+
+/* Table styling */
+.table-responsive {
+    overflow-x: auto;
+    margin-bottom: 40px;
+}
+
+/* .margin-table-wrapper {
+    padding: 24px 24px 0;
+    padding-left: 280px;
+} */
+
+.edit-margin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 2px 0;
+    border: 1px solid #e5e7eb;
+    background-clip: padding-box;
+}
+
+.edit-margin-table th {
+   background: #ffd0ca !important;
+    backdrop-filter: blur(8px) !important;
+    text-transform: uppercase;
+    color: #495057 !important;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #ffd0ca;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-clip: padding-box;
+}
+
+.edit-margin-table th.group-header {
+    border-bottom: 1px solid white;
+}
+
+.edit-margin-table th.sub-header {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.edit-margin-table td {
+    padding: 8px 10px;
+    border: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+.col-sno { width: 60px; }
+.col-level { width: 120px; }
+
+.text-center {
+    text-align: center;
+}
+
+/* Form Controls */
+.form-control {
+    width: 100%;
+    /* padding: 8px; */
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+    height: 36px;
+}
+
+.form-control:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Custom Checkbox (Large Blue) */
+.custom-checkbox {
+    display: inline-block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    font-size: 22px;
+    user-select: none;
+}
+
+.custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 28px;
+    width: 28px;
+    background-color: white;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.custom-checkbox:hover input ~ .checkmark {
+    border-color: #3b82f6;
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.custom-checkbox .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+/* Small Checkbox */
+.small-checkbox {
+    padding-left: 20px;
+    margin-bottom: 18px;
+}
+.small-checkbox .checkmark {
+    height: 18px;
+    width: 18px;
+    border-radius: 3px;
+}
+.small-checkbox .checkmark:after {
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 9px;
+    border-width: 0 2px 2px 0;
+}
+
+/* Bottom Controls */
+.bottom-controls {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.checkbox-group {
+    align-items: center;
+}
+
+.control-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4b5563;
+    white-space: nowrap;
+}
+
+.small-input {
+    width: 80px;
+}
+
+.req {
+    color: #ef4444;
+}
+
+/* Buttons */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.btn {
+    padding: 8px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: #4b92f7;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #3b82f6;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}

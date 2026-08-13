@@ -16,6 +16,7 @@ import { UserlogModel } from '../models/userlog-model';
 import { ChannelPartnerModel } from '../models/channel-partner-model';
 import { Segment, SegmentDto } from '../models/segment';
 import { DiscountQuoteModel } from '../models/discountqoute-model';
+import { GeneralSettingsResponse } from '../models/general-settings.model';
 
 
 @Injectable({
@@ -96,6 +97,58 @@ getCompetitors(
 getCompetitorById(id: number) {
   return this.http.get(
     `${this.baseUrl}/product/competitor/${id}`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+getGeneralSettings() {
+  return this.http.get<GeneralSettingsResponse>(
+    `${this.baseUrl}/user/general-settings`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+saveGeneralSettings(payload: any) {
+  return this.http.post(
+    `${this.baseUrl}/user/save-general-settings`,
+    payload,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+getRolesSearchDropdown() {
+  return this.http.get<any>(
+    `${this.baseUrl}/user/rolessearch-dropdown`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+getFinancialYearsDropdown() {
+  return this.http.get<any>(
+    `${this.baseUrl}/user/financialyears-dropdown`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+getIncentivesList(payload: any) {
+  return this.http.post<any>(
+    `${this.baseUrl}/user/incentives-list`,
+    payload,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+getIncentiveById(id: number) {
+  return this.http.get<any>(
+    `${this.baseUrl}/user/incentive/${id}`,
+    { headers: this.getAuthHeaders() }
+  );
+}
+
+saveIncentive(payload: any) {
+  return this.http.post<any>(
+    `${this.baseUrl}/user/save-incentive`,
+    payload,
     { headers: this.getAuthHeaders() }
   );
 }
@@ -1040,13 +1093,13 @@ downloadSubSystemExcel(payload: any) {
 
   getUserLogs(): Observable<UserlogModel[]> {
     return this.http.get<UserlogModel[]>(
-      `${this.baseUrl}/admin/report/latest-login`,
+      `${this.baseUrl}/auth/report/latest-login`,
       { headers: this.getAuthHeaders() }
     );
   }
   searchUserLogs(keyword: string): Observable<UserlogModel[]> {
     return this.http.get<UserlogModel[]>(
-      `${this.baseUrl}/admin/report/search`,
+      `${this.baseUrl}/auth/report/search`,
       {
         headers: this.getAuthHeaders(),
         params: { keyword } // adjust if backend uses different param
@@ -1056,7 +1109,7 @@ downloadSubSystemExcel(payload: any) {
 
   downloadUserLogExcel(data: UserlogModel[]): Observable<Blob> {
     return this.http.post(
-      `${this.baseUrl}/admin/loginHistory-excel`,
+      `${this.baseUrl}/auth/loginHistory-excel`,
       data,
       {
         headers: this.getAuthHeaders(),

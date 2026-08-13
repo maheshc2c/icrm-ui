@@ -48,6 +48,7 @@ export class AddProduct implements OnInit {
 
   /* ================= LOAD DROPDOWN DATA ================= */
   /* ================= LOAD DROPDOWN DATA ================= */
+  /* ================= LOAD DROPDOWN DATA ================= */
   private loadDropdownData(): void {
     // 1. Lead categories
     this.productService.getCategoriesFull().subscribe({
@@ -148,7 +149,7 @@ export class AddProduct implements OnInit {
         console.log('Filtering segments for category:', selectedCategoryName);
         this.productService.searchGroups(selectedCategoryName).subscribe({
           next: (data) => {
-            let filtered = (data && data.length > 0) ? data : this.allSegments.filter(g => 
+            let filtered = (data && data.length > 0) ? data : this.allSegments.filter(g =>
               g.productCategory?.categoryName?.toLowerCase() === selectedCategoryName.toLowerCase() ||
               g.category?.categoryName?.toLowerCase() === selectedCategoryName.toLowerCase()
             );
@@ -179,7 +180,6 @@ export class AddProduct implements OnInit {
 
       // Reset Sub System dropdown options
       this.updateFieldOptions('productSubSystem', []);
-
       if (selectedSegmentName) {
         console.log('Fetching sub-systems for segment:', selectedSegmentName);
         this.productService.getSubCategoriesFull(selectedSegmentName).subscribe({
@@ -211,13 +211,13 @@ export class AddProduct implements OnInit {
     const selectedGroup = this.segments.find(s => s.groupName === data.productSegment);
     const selectedType = this.productTypes.find(t => t.typeName === data.productType);
     const selectedSubSys = this.subSystems.find(s => s.subcategoryName === data.productSubSystem);
-
+ 
     const payload = {
       ...data,
       groupId: selectedGroup ? selectedGroup.groupId : null,
       productTypeId: selectedType ? selectedType.productTypeId : null,
       subCategoryId: selectedSubSys ? selectedSubSys.subCategoryId : null,
-      
+     
       productSecondaryName: data.productCode,
       productFeatures: data.productTechnicalSpecifications,
       productScope: data.productScopeOfSupply,

@@ -25,14 +25,24 @@ export class Leadservice {
   }
 
   /* ================= GET ALL LEADS (OPEN) ================= */
-  getOpenLeads(page: number = 0, size: number = 1000): Observable<any> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+  getOpenLeads(page: number = 0, size: number = 10, searchData: any = {}): Observable<any> {
+    const payload = {
+      leadId: searchData.leadId ? Number(searchData.leadId) : null,
+      customerId: searchData.customerId ? Number(searchData.customerId) : null,
+      customerName: searchData.customerName || searchData.customer || null,
+      status: searchData.status ? Number(searchData.status) : null,
+      startDate: searchData.startDate || null,
+      endDate: searchData.endDate || null,
+      pagination: {
+        pageNumber: page,
+        pageSize: size,
+        sortBy: 'leadCreatedTime',
+        sortOrder: 'DESC'
+      }
+    };
 
-    return this.http.get<any>(`${this.baseUrl}/salesengineer/salesmanager/leads-open`, {
-      headers: this.getAuthHeaders(),
-      params: params
+    return this.http.post<any>(`${this.baseUrl}/leads/search`, payload, {
+      headers: this.getAuthHeaders()
     });
   }
 
@@ -44,15 +54,15 @@ export class Leadservice {
   }
 
   /* ================= GET LEAD BY ID ================= */
-  getLeadById(id: number): Observable<LeadPayload> {
-    return this.http.get<LeadPayload>(`${this.baseUrl}/salesengineer/salesmanager/lead/${id}`, {
+  getLeadById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/leads/${id}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   /* ================= UPDATE LEAD ================= */
-  updateLead(id: number, lead: LeadPayload): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/salesengineer/salesmanager/lead-update/${id}`, lead, {
+   updateLead(id: number, lead: any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/leads/${id}`, lead, {
       headers: this.getAuthHeaders()
     });
   }
@@ -95,7 +105,7 @@ export class Leadservice {
 
   /* ================= DOWNLOAD EXCEL ================= */
   downloadLeadsExcel(data: any[]): Observable<Blob> {
-    return this.http.post(`${this.baseUrl}/salesengineer/salesmanager/leads-excel`, data, {
+    return this.http.post(`${this.baseUrl}/leads/leads-excel`, data, {
       headers: this.getAuthHeaders(),
       responseType: 'blob'
     });
@@ -305,13 +315,13 @@ export class Leadservice {
   }
 
   getBillingOptions(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/billing`, {
+    return this.http.get<any[]>(`${this.baseUrl}/quote/billing`, {
       headers: this.getAuthHeaders()
     });
   }
 
   getCompanyOptions(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/salesengineer/company`, {
+    return this.http.get<any[]>(`${this.baseUrl}/quote/company`, {
       headers: this.getAuthHeaders()
     });
   }

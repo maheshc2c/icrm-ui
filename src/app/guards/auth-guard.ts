@@ -18,8 +18,10 @@ export const authGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  const userRole = localStorage.getItem('role');
-  const allowedRoles = route.data?.['roles'] as string[];
+  const userRole = localStorage.getItem('role')?.trim();
+  const allowedRoles = (route.data?.['roles'] as string[] | undefined)
+    ?.map(role => role?.trim())
+    .filter(Boolean);
 
   if (allowedRoles && allowedRoles.length > 0) {
     if (!userRole) {

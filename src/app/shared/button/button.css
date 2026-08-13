@@ -8,21 +8,20 @@
 .filter-actions {
   display: flex;
   gap: 8px;
-  /* let parent control alignment; avoid hard-coded large margins */
   margin: 0;
   align-items: center;
-  justify-content: flex-end; /* put toolbar to the right */
-  width: 100%;
+  justify-content: flex-end;
+  width: auto;
   box-sizing: border-box;
-  padding: 0px; /* optional */
+  padding: 0px;
 }
 
-/* If you need an additional wrapper, don't shift with margin-left */
 .toolbar-container {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   padding: 0;
 }
 

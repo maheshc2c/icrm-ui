@@ -27,7 +27,7 @@ export class Userlog {
 
   /* ================= HEADER ================= */
 
-  headerTitle = 'User Login History';
+  headerTitle = 'Manage User Logs';
 
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
@@ -61,23 +61,38 @@ export class Userlog {
   private loadUserLogs(): void {
     this.adminservice.getUserLogs().subscribe({
       next: (logs: UserlogModel[]) => {
-
         this.fullRows = logs;
 
-        this.rows = logs.map((l, index) => ({
-          sno: index + 1,
-          name: l.name,
-          role: l.role,
-          employeeId: l.employeeId,
-          branch: l.branch,
-          loginTime: l.loginTime,
-          lastActive: l.lastActive,
-          ipAddress: l.ipAddress,
-          browser: l.browser
-        }));
+        // Dynamically populate role search field options from loaded logs
+        const uniqueRoles = Array.from(new Set(logs.map(l => l.role).filter(Boolean)));
+        const roleOptions = uniqueRoles.map(role => ({ label: role, value: role }));
+        const roleField = this.searchFields.find(f => f.key === 'role');
+        if (roleField) {
+          roleField.options = roleOptions;
+        }
+
+        this.resetRows();
       },
       error: err => console.error('Load error:', err)
     });
+  }
+
+  private resetRows(): void {
+    this.mapRows(this.fullRows);
+  }
+
+  private mapRows(logs: UserlogModel[]): void {
+    this.rows = logs.map((l, index) => ({
+      sno: index + 1,
+      name: l.name,
+      role: l.role,
+      employeeId: l.employeeId,
+      branch: l.branch,
+      loginTime: l.loginTime,
+      lastActive: l.lastActive,
+      ipAddress: l.ipAddress,
+      browser: l.browser
+    }));
   }
 
   /* ================= DOWNLOAD ================= */
@@ -113,37 +128,101 @@ export class Userlog {
 
   searchFields: SearchFieldConfig[] = [
     {
+      key: 'role',
+      label: 'Role ',
+      dependsOn: '',
+      placeholder: 'Select Role',
+      type: 'select',
+      options: []
+    },
+
+    {
       key: 'name',
-      label: 'User Name',
-      placeholder: 'Search user',
+      label: 'Name',
+      placeholder: 'search name',
       type: 'text'
-    }
+    },
+
+    {
+      key: 'employeeId',
+      label: 'Employee ID',
+      placeholder: 'Search employee ID',
+      type: 'text'
+    },
+
+   {
+    key: 'fromDate',
+    label: 'From Date',
+    placeholder: 'Select from date',
+    type: 'date'
+   },
+   
+   {
+    key: 'toDate',
+    label: 'To Date',
+    placeholder: 'Select to date',
+    type: 'date'
+   }
   ];
 
   onSearch(keyword: string) {
-
     if (!keyword?.trim()) {
-      this.loadUserLogs();
+      this.resetRows();
+      return;
+    }
+    const kw = keyword.toLowerCase().trim();
+    const filtered = this.fullRows.filter(l => 
+      (l.name && l.name.toLowerCase().includes(kw)) ||
+      (l.role && l.role.toLowerCase().includes(kw)) ||
+      (l.employeeId && l.employeeId.toLowerCase().includes(kw)) ||
+      (l.branch && l.branch.toLowerCase().includes(kw)) ||
+      (l.ipAddress && l.ipAddress.toLowerCase().includes(kw)) ||
+      (l.browser && l.browser.toLowerCase().includes(kw))
+    );
+    this.mapRows(filtered);
+  }
+
+  onSearchChange(filters: any) {
+    if (!filters || Object.keys(filters).length === 0) {
+      this.resetRows();
       return;
     }
 
-    this.adminservice.searchUserLogs(keyword)
-      .subscribe({
-        next: logs => {
-          this.rows = logs.map((l, index) => ({
-            sno: index + 1,
-            name: l.name,
-            role: l.role,
-            employeeId: l.employeeId,
-            branch: l.branch,
-            loginTime: l.loginTime,
-            lastActive: l.lastActive,
-            ipAddress: l.ipAddress,
-            browser: l.browser
-          }));
-        },
-        error: err => console.error(err)
+    let filtered = [...this.fullRows];
+
+    if (filters.role) {
+      filtered = filtered.filter(l => l.role && l.role.trim().toLowerCase() === filters.role.trim().toLowerCase());
+    }
+
+    if (filters.name) {
+      filtered = filtered.filter(l => l.name && l.name.toLowerCase().includes(filters.name.toLowerCase()));
+    }
+
+    if (filters.employeeId) {
+      filtered = filtered.filter(l => l.employeeId && l.employeeId.toLowerCase().includes(filters.employeeId.toLowerCase()));
+    }
+
+    if (filters.fromDate) {
+      filtered = filtered.filter(l => {
+        if (!l.loginTime) return false;
+        const logDateStr = l.loginTime.substring(0, 10);
+        return logDateStr >= filters.fromDate;
       });
+    }
+
+    if (filters.toDate) {
+      filtered = filtered.filter(l => {
+        if (!l.loginTime) return false;
+        const logDateStr = l.loginTime.substring(0, 10);
+        return logDateStr <= filters.toDate;
+      });
+    }
+
+    this.mapRows(filtered);
+  }
+
+  onReset() {
+    this.resetRows();
   }
 
   // Add

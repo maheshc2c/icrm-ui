@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Form } from '../../../../shared/form/form';
 import { Header } from '../../../../layout/header/header';
@@ -124,7 +124,7 @@ export class AddcontactComponent implements OnInit {
     private contactService: Contactservice,
     private customerService: Customerservice,
     private adminService: Adminservice,
-    
+    private location: Location
   ) { }
 
   ngOnInit(): void {
@@ -297,7 +297,7 @@ export class AddcontactComponent implements OnInit {
         next: (response: any) => {
           console.log('Contact updated:', response);
           alert('Contact updated successfully!');
-          this.router.navigate(['/salesmanager/contact']);
+          this.navigateBackToList();
         },
         error: (err: any) => {
           console.error('Update failed:', err);
@@ -310,6 +310,7 @@ export class AddcontactComponent implements OnInit {
         next: (response: any) => {
           console.log('Contact created successfully:', response);
           alert('Contact created successfully!');
+          this.navigateBackToList();
         },
         error: (err: any) => {
           console.error('Create failed:', err);
@@ -320,7 +321,21 @@ export class AddcontactComponent implements OnInit {
   }
 
   /* ================= CANCEL ================= */
+  navigateBackToList(): void {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+    if (returnUrl) {
+      this.router.navigateByUrl(returnUrl);
+      return;
+    }
+
+    if (window.history.state && window.history.state.navigationId > 1) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/salesmanager/contact']);
+    }
+  }
+
   onCancel(): void {
-    this.router.navigate(['/salesmanager/contact']);
+    this.navigateBackToList();
   }
 }
