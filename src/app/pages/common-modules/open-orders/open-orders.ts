@@ -218,7 +218,13 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     const fyEnd       = new Date(fyStartYear + 1, 2, 31);
 
     const monthNames = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
-    this.months = monthNames.map((name, i) => {
+    // this.months = monthNames.map((name, i) => {
+    const currentFyMonth = (today.getMonth() - 3 + 12) % 12;
+
+this.months = monthNames
+  .slice(0, currentFyMonth + 1)
+  .map((name, i) => {
+    
       const mStart = new Date(fyStartYear + (i >= 9 ? 1 : 0), (3 + i) % 12, 1);
       const mEnd   = new Date(mStart.getFullYear(), mStart.getMonth() + 1, 0);
       return { label: `${name}-${String(mStart.getFullYear()).slice(2)}`, value: i + 1,
@@ -226,23 +232,66 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     });
 
     const qLabels = ['Q1 (Apr–Jun)', 'Q2 (Jul–Sep)', 'Q3 (Oct–Dec)', 'Q4 (Jan–Mar)'];
-    this.quarters = qLabels.map((label, i) => {
+    // this.quarters = qLabels.map((label, i) => {
+
+    const currentQuarter = Math.floor(currentFyMonth / 3);
+    
+    this.quarters = qLabels
+    .slice(0, currentQuarter + 1)
+    .map((label, i) => {
       const qStart = new Date(fyStart); qStart.setMonth(3 + i * 3);
       const qEnd   = new Date(qStart);  qEnd.setMonth(qStart.getMonth() + 3); qEnd.setDate(qEnd.getDate() - 1);
       return { label, value: i + 1, fromDate: this.toIsoDate(qStart), toDate: this.toIsoDate(qEnd) };
     });
 
+    // this.weeks = [];
+    // let wStart = new Date(fyStart);
+    // let weekNo = 1;
+    // while (wStart <= fyEnd) {
+    //   const wEnd = new Date(wStart); wEnd.setDate(wEnd.getDate() + 6);
+    //   this.weeks.push({
+    //     label: `Week ${weekNo} (${this.fmtDate(wStart)})`, value: weekNo,
+    //     fromDate: this.toIsoDate(wStart), toDate: this.toIsoDate(wEnd > fyEnd ? fyEnd : wEnd)
+    //   });
+    //   wStart.setDate(wStart.getDate() + 7); weekNo++;
+    // }
+
     this.weeks = [];
-    let wStart = new Date(fyStart);
-    let weekNo = 1;
-    while (wStart <= fyEnd) {
-      const wEnd = new Date(wStart); wEnd.setDate(wEnd.getDate() + 6);
-      this.weeks.push({
-        label: `Week ${weekNo} (${this.fmtDate(wStart)})`, value: weekNo,
-        fromDate: this.toIsoDate(wStart), toDate: this.toIsoDate(wEnd > fyEnd ? fyEnd : wEnd)
-      });
-      wStart.setDate(wStart.getDate() + 7); weekNo++;
-    }
+
+// First day of current month
+const currentMonthStart = new Date(
+  today.getFullYear(),
+  today.getMonth(),
+  1
+);
+
+// Last day of current month
+const currentMonthEnd = new Date(
+  today.getFullYear(),
+  today.getMonth() + 1,
+  0
+);
+
+let weekNo = 1;
+let wStart = new Date(currentMonthStart);
+
+while (wStart <= currentMonthEnd) {
+
+  const wEnd = new Date(wStart);
+  wEnd.setDate(wEnd.getDate() + 6);
+
+  this.weeks.push({
+    label: `Week ${weekNo} (${this.fmtDate(wStart)})`,
+    value: weekNo,
+    fromDate: this.toIsoDate(wStart),
+    toDate: this.toIsoDate(
+      wEnd > currentMonthEnd ? currentMonthEnd : wEnd
+    )
+  });
+
+  weekNo++;
+  wStart.setDate(wStart.getDate() + 7);
+}
 
     this.years = [{
       label: `FY ${fyStartYear}-${String(fyStartYear + 1).slice(2)}`, value: 1,
