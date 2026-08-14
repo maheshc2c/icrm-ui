@@ -26,6 +26,7 @@ export class CNoteMarginReportComponent implements OnInit {
   toDate = '';
   selectedSegmentId: number | null = null;
   selectedProductId: number | null = null;
+  customerName = '';
 
   // Dropdown options
   regions: { id: number; label: string }[] = [];
@@ -98,6 +99,7 @@ export class CNoteMarginReportComponent implements OnInit {
       toDate: this.toDate || null,
       segmentId: this.selectedSegmentId ? Number(this.selectedSegmentId) : null,
       productId: this.selectedProductId ? Number(this.selectedProductId) : null,
+      customerName: this.customerName || null,
       pagination: {
         pageNumber: this.currentPage - 1,
         pageSize: this.pageSize,
@@ -152,6 +154,7 @@ export class CNoteMarginReportComponent implements OnInit {
     this.toDate = '';
     this.selectedSegmentId = null;
     this.selectedProductId = null;
+    this.customerName = '';
     this.currentPage = 1;
     this.loadReportData();
   }
@@ -165,7 +168,8 @@ export class CNoteMarginReportComponent implements OnInit {
       fromDate: this.fromDate || null,
       toDate: this.toDate || null,
       segmentId: this.selectedSegmentId ? Number(this.selectedSegmentId) : null,
-      productId: this.selectedProductId ? Number(this.selectedProductId) : null
+      productId: this.selectedProductId ? Number(this.selectedProductId) : null,
+      customerName: this.customerName || null
     };
 
     this.reportService.downloadCNoteMarginAnalysisReport(filter).subscribe({

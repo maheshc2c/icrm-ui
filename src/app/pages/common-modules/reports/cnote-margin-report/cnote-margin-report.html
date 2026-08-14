@@ -42,6 +42,12 @@
         </select>
       </div>
 
+      <!-- Customer / SO Search -->
+      <div class="filter-item">
+        <label class="search-label">Customer / SO No</label>
+        <input type="text" class="form-select" placeholder="Search customer or SO..." [(ngModel)]="customerName" (keyup.enter)="onSearch()" />
+      </div>
+
       <!-- From Date -->
       <div class="filter-item">
         <label class="search-label">From Date</label>
