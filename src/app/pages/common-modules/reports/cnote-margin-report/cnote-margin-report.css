@@ -76,39 +76,71 @@
   box-shadow: 0 0 0 3px rgba(122, 75, 196, 0.1);
 }
 
-/* Lavender Icon Action Buttons */
-.icon-actions {
+/* Action Buttons Toolbar */
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-action {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.icon-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background-color: #f4ebff;
-  border: 1px solid #e8dff7;
-  color: #7a4bc4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
   cursor: pointer;
+  border: 1px solid transparent;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.icon-btn:hover {
-  background-color: #7a4bc4;
+.btn-action:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Blue Primary Search Button */
+.btn-search {
+  background-color: #3b82f6;
   color: #ffffff;
-  border-color: #7a4bc4;
+  border-color: #2563eb;
+}
+
+.btn-search:hover:not(:disabled) {
+  background-color: #2563eb;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
   transform: translateY(-1px);
 }
 
-.icon-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
+/* Reset Button */
+.btn-reset {
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border-color: #d1d5db;
+}
+
+.btn-reset:hover {
+  background-color: #e5e7eb;
+  color: #1f2937;
+  transform: translateY(-1px);
+}
+
+/* Emerald Download Excel Button */
+.btn-download {
+  background-color: #10b981;
+  color: #ffffff;
+  border-color: #059669;
+}
+
+.btn-download:hover:not(:disabled) {
+  background-color: #059669;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+  transform: translateY(-1px);
 }
 
 /* Loading State */

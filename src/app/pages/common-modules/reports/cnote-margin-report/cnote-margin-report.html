@@ -62,16 +62,21 @@
 
     </div>
 
-    <!-- Lavender Round Action Icon Buttons -->
-    <div class="icon-actions">
-      <button class="icon-btn" (click)="onSearch()" [disabled]="isLoading" title="Search">
+    <!-- Search & Download Action Buttons -->
+    <div class="toolbar-actions">
+      <button type="button" class="btn-action btn-search" (click)="onSearch()" [disabled]="isLoading" title="Search">
         <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+        <span>Search</span>
       </button>
-      <button class="icon-btn" (click)="resetFilters()" title="Reset Filters">
+
+      <button type="button" class="btn-action btn-reset" (click)="resetFilters()" title="Reset Filters">
         <i class="fas fa-sync-alt"></i>
+        <span>Reset</span>
       </button>
-      <button class="icon-btn" (click)="onDownload()" [disabled]="isDownloading" title="Download Excel">
-        <i class="fas" [ngClass]="isDownloading ? 'fa-spinner fa-spin' : 'fa-download'"></i>
+
+      <button type="button" class="btn-action btn-download" (click)="onDownload()" [disabled]="isDownloading" title="Download Excel Report">
+        <i class="fas" [ngClass]="isDownloading ? 'fa-spinner fa-spin' : 'fa-cloud-download-alt'"></i>
+        <span>Download Excel</span>
       </button>
     </div>
   </div>
