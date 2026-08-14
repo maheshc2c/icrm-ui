@@ -47,19 +47,19 @@ export const routes: Routes = [
       data: {
         roles: [
           'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
-          'National Sales Manager', 'Country Head'
+          'National Sales Manager', 'Country Head', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'
         ]
       }
     },
     {
       path: 'reports/opportunity-lost',
       loadComponent: () =>
-        import('./pages/common-modules/reports/opportunity-lost-dashboard/opportunity-lost-dashboard.component').then(m => m.OpportunityLostDashboardComponent),
+        import('./pages/Reports/opportunity-lost-report/opportunity-lost-report').then(m => m.OpportunityLostReport),
       canActivate: [authGuard],
       data: {
         roles: [
           'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
-          'National Sales Manager', 'Country Head'
+          'National Sales Manager', 'Country Head', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'
         ]
       }
     },

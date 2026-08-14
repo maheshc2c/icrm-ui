@@ -622,7 +622,7 @@ constructor() {
             { label: 'Funnel Report', icon: 'fas fa-chart-line', route: `/funnel-report` },
             { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: `/margin-analysis` },
             { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: `/reports/margin-analysis-c-note` },
-            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: `/opportunity-lost` },
+            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/reports/opportunity-lost' },
             { label: 'Open Orders', icon: 'fas fa-box-open', route: `/open-order-reports` },
             { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: `/stock-in-hand-report` },
             { label: 'Fresh Business', icon: 'fas fa-briefcase', route: `/fresh-business` },
