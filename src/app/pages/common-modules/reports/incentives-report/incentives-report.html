@@ -31,10 +31,11 @@
     <div class="toolbar-field">
       <label class="field-label">Quarter</label>
       <select class="form-select" [(ngModel)]="quarter">
-        <option value="Q1">Quarter1</option>
-        <option value="Q2">Quarter2</option>
-        <option value="Q3">Quarter3</option>
-        <option value="Q4">Quarter4</option>
+        <option [ngValue]="null" disabled>Select Quarter</option>
+        <option value="Quarter1">Quarter1</option>
+        <option value="Quarter2">Quarter2</option>
+        <option value="Quarter3">Quarter3</option>
+        <option value="Quarter4">Quarter4</option>
       </select>
     </div>
 
@@ -79,13 +80,20 @@
     </table>
   </div>
 
-  <div class="pagination-controls" *ngIf="totalPages > 1">
-    <button class="btn-page" [disabled]="currentPage === 0" (click)="changePage(-1)">
-      <i class="fas fa-chevron-left"></i> Previous
-    </button>
-    <span class="page-info">Page {{ currentPage + 1 }} of {{ totalPages }} ({{ totalElements }} items)</span>
-    <button class="btn-page" [disabled]="currentPage >= totalPages - 1" (click)="changePage(1)">
-      Next <i class="fas fa-chevron-right"></i>
-    </button>
+  <div class="pagination-container" *ngIf="totalElements > 0">
+    <div class="pagination-info">
+      Showing {{ (currentPage * pageSize) + 1 }} to {{ (currentPage + 1) * pageSize > totalElements ? totalElements : (currentPage + 1) * pageSize }} of {{ totalElements }} records
+    </div>
+    <div class="pagination-actions">
+      <button class="btn-prev" [disabled]="currentPage === 0" (click)="changePage(-1)">Prev</button>
+      <button class="btn-page active">{{ currentPage + 1 }}</button>
+      <button class="btn-next" [disabled]="currentPage >= totalPages - 1" (click)="changePage(1)">Next</button>
+      <select class="form-select page-size" [(ngModel)]="pageSize" (change)="onSearch()">
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="20">20</option>
+        <option [ngValue]="30">30</option>
+        <option [ngValue]="50">50</option>
+      </select>
+    </div>
   </div>
 </app-reports-layout>

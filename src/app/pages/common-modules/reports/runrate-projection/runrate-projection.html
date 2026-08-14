@@ -5,34 +5,29 @@
 
     <div class="toolbar-field">
       <select class="form-select" formControlName="category">
-        <option value="">Select Category</option>
-        <option value="cat1">Category 1</option>
-        <option value="cat2">Category 2</option>
+        <option [ngValue]="null">Select Category</option>
+        <option *ngFor="let cat of categories" [ngValue]="cat.categoryId || cat.id">{{ cat.categoryName || cat.name }}</option>
       </select>
     </div>
 
     <div class="toolbar-field">
       <select class="form-select" formControlName="product">
-        <option value="">Select Product</option>
-        <option value="oracle">Oracle</option>
-        <option value="sap">SAP</option>
+        <option [ngValue]="null">Select Product</option>
+        <option *ngFor="let prod of products" [ngValue]="prod.productId || prod.id">{{ prod.productName || prod.name }}</option>
       </select>
     </div>
 
     <div class="toolbar-field">
       <select class="form-select" formControlName="region">
-        <option value="">Select Region</option>
-        <option value="north">North</option>
-        <option value="south">South</option>
-        <option value="east">East</option>
-        <option value="west">West</option>
+        <option [ngValue]="null">Select Region</option>
+        <option *ngFor="let reg of regions" [ngValue]="reg.locationId || reg.id">{{ reg.locationName || reg.name }}</option>
       </select>
     </div>
 
     <div class="toolbar-field">
       <select class="form-select" formControlName="user">
-        <option value="">Select Users</option>
-        <option value="user1">Swaroop (C2CAS103)</option>
+        <option [ngValue]="null">Select Users</option>
+        <option *ngFor="let u of users" [ngValue]="u.userId || u.id">{{ u.name || u.firstName }}</option>
       </select>
     </div>
 
@@ -44,13 +39,20 @@
     <div class="radio-group">
       <label class="radio-option">
         <input type="radio" name="viewMode" [(ngModel)]="viewMode" [ngModelOptions]="{standalone: true}" value="graph" />
+        <span class="custom-radio"></span>
         <span>By Graph</span>
       </label>
       <label class="radio-option">
         <input type="radio" name="viewMode" [(ngModel)]="viewMode" [ngModelOptions]="{standalone: true}" value="table" />
+        <span class="custom-radio"></span>
         <span>By Table</span>
       </label>
     </div>
+
+    <!-- Download button (shown in table view) -->
+    <button type="button" class="btn-download" *ngIf="viewMode === 'table'" title="Download" (click)="onDownloadTable()">
+      <i class="fas fa-cloud-download-alt"></i>
+    </button>
 
   </div>
 
@@ -75,33 +77,38 @@
 
   <!-- Table View -->
   <div class="report-table-wrapper" *ngIf="viewMode === 'table'">
-    <div class="table-title">Run Rate Projection 2026-27</div>
+    <div class="table-title">{{ currentTitle }}</div>
     <table class="report-table">
       <thead>
         <tr>
+          <th>Sno</th>
           <th>Month</th>
-          <th>Open Opportunities</th>
-          <th>Closed Won</th>
-          <th>Min Conversion Rate</th>
-          <th>Max Conversion Rate</th>
+          <th>Funnel (Lacs)</th>
+          <th>Closed Won(Lacs)</th>
+          <th>Conversion Rate %</th>
+          <th>{{ minRateLabel }}</th>
+          <th>{{ maxRateLabel }}</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let row of tableRows; let i = index" [class.even-row]="i % 2 === 1">
+          <td>{{ row.sno }}</td>
           <td>{{ row.month }}</td>
-          <td>{{ row.openOpportunities }}</td>
+          <td>{{ row.funnel }}</td>
           <td>{{ row.closedWon }}</td>
+          <td>{{ row.conversionRate }}</td>
           <td>{{ row.minConversion }}</td>
           <td>{{ row.maxConversion }}</td>
         </tr>
       </tbody>
       <tfoot>
         <tr class="total-row">
-          <td><strong>Total</strong></td>
-          <td>{{ getTotalFor('openOpportunities') }}</td>
+          <td colspan="2"><strong>Total</strong></td>
+          <td>{{ getTotalFor('funnel') }}</td>
           <td>{{ getTotalFor('closedWon') }}</td>
-          <td>{{ getTotalFor('minConversion') }}</td>
-          <td>{{ getTotalFor('maxConversion') }}</td>
+          <td>--</td>
+          <td>{{ getTotalFor('rawMinConversion') || '--' }}</td>
+          <td>{{ getTotalFor('rawMaxConversion') || '--' }}</td>
         </tr>
       </tfoot>
     </table>
