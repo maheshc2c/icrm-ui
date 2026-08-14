@@ -66,16 +66,26 @@
         </div>
       </div>
       <div class="chart-body funnel-body">
-        <div class="funnel-diagram">
-          <div class="funnel-stage cold-stage">
-            <span class="stage-label">Cold ({{ funnelStages[0]?.value || 0 }})</span>
-          </div>
-          <div class="funnel-stage warm-stage">
-            <span class="stage-label">Warm ({{ funnelStages[1]?.value || 0 }})</span>
-          </div>
-          <div class="funnel-stage hot-stage">
-            <span class="stage-label">Hot ({{ funnelStages[2]?.value || 0 }})</span>
-          </div>
+        <div class="funnel-container-wrapper">
+          <svg viewBox="0 0 400 240" class="funnel-svg-graphic" preserveAspectRatio="xMidYMid meet">
+            <!-- Top Stage: HOT (Red) -->
+            <g class="funnel-stage-group hot-stage">
+              <polygon points="20,10 380,10 295,85 105,85" fill="#e54b4b" class="funnel-polygon" />
+              <text x="200" y="52" fill="#ffffff" font-size="15" font-weight="700" text-anchor="middle" class="stage-label">Hot ({{ getHotValue() }})</text>
+            </g>
+
+            <!-- Middle Stage: WARM (Yellow/Orange) -->
+            <g class="funnel-stage-group warm-stage">
+              <polygon points="105,86 295,86 230,152 170,152" fill="#e5a638" class="funnel-polygon" />
+              <text x="200" y="123" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle" class="stage-label">Warm ({{ getWarmValue() }})</text>
+            </g>
+
+            <!-- Bottom Stage: COLD (Blue) -->
+            <g class="funnel-stage-group cold-stage">
+              <polygon points="170,153 230,153 230,225 170,225" fill="#4c8bf5" class="funnel-polygon" />
+              <text x="200" y="193" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle" class="stage-label">Cold ({{ getColdValue() }})</text>
+            </g>
+          </svg>
         </div>
       </div>
     </div>

@@ -160,41 +160,33 @@
   align-items: center;
 }
 
-.funnel-diagram {
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.funnel-stage {
+.funnel-container-wrapper {
   width: 100%;
-  height: 48px;
+  max-width: 420px;
+  height: 250px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 0.85rem;
-  border-radius: 4px;
+  margin: auto;
 }
 
-.cold-stage {
-  background-color: #3F51B5;
-  clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+.funnel-svg-graphic {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.warm-stage {
-  width: 70%;
-  background-color: #FF9800;
-  clip-path: polygon(0 0, 100% 0, 75% 100%, 25% 100%);
+.funnel-stage-group {
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
-.hot-stage {
-  width: 45%;
-  background-color: #F44336;
-  clip-path: polygon(0 0, 100% 0, 60% 100%, 40% 100%);
+.funnel-stage-group:hover .funnel-polygon {
+  filter: brightness(1.12);
+}
+
+.funnel-polygon {
+  transition: filter 0.2s ease;
 }
 
 /* Group & Column Bar Charts */
