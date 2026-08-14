@@ -1,0 +1,99 @@
+<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+  <div class="report-toolbar">
+    <div class="toolbar-field custom-dropdown-container">
+      <label class="field-label">Select Users</label>
+      <div class="custom-dropdown" [class.open]="isDropdownOpen">
+        <div class="dropdown-selected form-select" (click)="toggleDropdown()">
+          <span class="dropdown-text">{{ selectedUser ? selectedUser.name : 'Select Users' }}</span>
+        </div>
+        <div class="dropdown-list" *ngIf="isDropdownOpen">
+          <div class="dropdown-search">
+            <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()" />
+          </div>
+          <div class="dropdown-options">
+            <div class="dropdown-item" [class.active]="!selectedUser" (click)="selectUser(null)">Select Users</div>
+            <div class="dropdown-item" *ngFor="let user of filteredUsers" [class.active]="selectedUser?.id === user.id" (click)="selectUser(user)">
+              {{ user.name }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <div class="toolbar-field">
+      <label class="field-label">Financial Year</label>
+      <select class="form-select" [(ngModel)]="financialYear">
+        <option [ngValue]="null" disabled>Select Financial Year</option>
+        <option *ngFor="let fy of financialYears" [ngValue]="fy.fyName">{{ fy.fyName }}</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Quarter</label>
+      <select class="form-select" [(ngModel)]="quarter">
+        <option [ngValue]="null" disabled>Select Quarter</option>
+        <option value="Quarter1">Quarter1</option>
+        <option value="Quarter2">Quarter2</option>
+        <option value="Quarter3">Quarter3</option>
+        <option value="Quarter4">Quarter4</option>
+      </select>
+    </div>
+
+    <div class="toolbar-actions">
+      <button type="button" class="btn-search" (click)="onSearch()"><i class="fas fa-search"></i></button>
+      <button type="button" class="btn-download" (click)="downloadIncentives()"><i class="fas fa-cloud-download-alt"></i></button>
+    </div>
+  </div>
+
+  <div class="report-title">Part1 Incentives For ( {{ financialYear }} - {{ quarter }} )</div>
+
+  <div class="report-table-wrapper">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Role</th>
+          <th>User</th>
+          <th>ERP Target (in Lakhs)</th>
+          <th>ERP Sales (in Lakhs)</th>
+          <th>Incentive Amount (In Rs)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of reports; let i = index">
+          <td>{{ (currentPage * pageSize) + i + 1 }}</td>
+          <td>{{ item.role }}</td>
+          <td>{{ item.user }}</td>
+          <td>{{ item.erpTarget }}</td>
+          <td>{{ item.erpSales }}</td>
+          <td>{{ item.incentiveAmount }}</td>
+        </tr>
+        <tr *ngIf="reports.length === 0 && !isLoading">
+          <td colspan="6" style="text-align: center; color: #777; padding: 20px;">No incentive data found for selected filters.</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ getTotalIncentives() }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="pagination-container" *ngIf="totalElements > 0">
+    <div class="pagination-info">
+      Showing {{ (currentPage * pageSize) + 1 }} to {{ (currentPage + 1) * pageSize > totalElements ? totalElements : (currentPage + 1) * pageSize }} of {{ totalElements }} records
+    </div>
+    <div class="pagination-actions">
+      <button class="btn-prev" [disabled]="currentPage === 0" (click)="changePage(-1)">Prev</button>
+      <button class="btn-page active">{{ currentPage + 1 }}</button>
+      <button class="btn-next" [disabled]="currentPage >= totalPages - 1" (click)="changePage(1)">Next</button>
+      <select class="form-select page-size" [(ngModel)]="pageSize" (change)="onSearch()">
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="20">20</option>
+        <option [ngValue]="30">30</option>
+        <option [ngValue]="50">50</option>
+      </select>
+    </div>
+  </div>
+</app-reports-layout>

@@ -1,0 +1,143 @@
+<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+
+  <!-- Top row: By Product/Region + By Graph/Table radios -->
+  <div class="top-radio-bar">
+    <div class="radio-group">
+      <label class="radio-option">
+        <input type="radio" name="reportType" [(ngModel)]="reportType" value="product" />
+        <span>By Product</span>
+      </label>
+      <label class="radio-option">
+        <input type="radio" name="reportType" [(ngModel)]="reportType" value="region" />
+        <span>By Region</span>
+      </label>
+    </div>
+
+    <div class="radio-group">
+      <label class="radio-option">
+        <input type="radio" name="viewMode" [(ngModel)]="viewMode" value="graph" />
+        <span>By Graph</span>
+      </label>
+      <label class="radio-option">
+        <input type="radio" name="viewMode" [(ngModel)]="viewMode" value="table" />
+        <span>By Table</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="report-toolbar" [formGroup]="filterForm">
+
+    <div class="toolbar-field">
+      <select class="form-select" formControlName="region">
+        <option value="">Select Region</option>
+        <option value="north">North</option>
+        <option value="south">South</option>
+        <option value="east">East</option>
+        <option value="west">West</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <select class="form-select" formControlName="user">
+        <option value="">Select Users</option>
+        <option value="user1">Swaroop (C2CAS103)</option>
+        <option value="user2">Neelam Chavan</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field" *ngIf="dateOptions.length > 0">
+      <select class="form-select" formControlName="date">
+        <option *ngFor="let opt of dateOptions" [value]="opt">
+          {{ filterForm.get('timeline')?.value === 'Week' && opt.includes('(') ? opt.split('(')[0].trim() : opt }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Timeline Toggle -->
+    <div class="toolbar-field timeline-field">
+      <div class="timeline-toggle" role="tablist">
+        <button type="button" class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Week'"
+          (click)="filterForm.get('timeline')?.setValue('Week')">Week</button>
+        <button type="button" class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Month'"
+          (click)="filterForm.get('timeline')?.setValue('Month')">Month</button>
+        <button type="button" class="timeline-option"
+          [class.active]="filterForm.get('timeline')?.value === 'Quarter'"
+          (click)="filterForm.get('timeline')?.setValue('Quarter')">Quarter</button>
+        <button type="button" class="timeline-option year-btn"
+          [class.active-year]="filterForm.get('timeline')?.value === 'Year'"
+          (click)="filterForm.get('timeline')?.setValue('Year')">Year</button>
+      </div>
+    </div>
+
+    <!-- Download button (shown in table view) -->
+    <button class="btn-download" *ngIf="viewMode === 'table'" title="Download">
+      <i class="fas fa-cloud-download-alt"></i>
+    </button>
+
+  </div>
+
+  <!-- Graph View -->
+  <div class="chart-container" *ngIf="viewMode === 'graph'">
+    <apx-chart
+      #chart
+      [title]="chartOptions.title!"
+      [series]="chartOptions.series!"
+      [chart]="chartOptions.chart!"
+      [xaxis]="chartOptions.xaxis!"
+      [yaxis]="chartOptions.yaxis!"
+      [dataLabels]="chartOptions.dataLabels!"
+      [plotOptions]="chartOptions.plotOptions!"
+      [stroke]="chartOptions.stroke!"
+      [colors]="chartOptions.colors!"
+      [legend]="chartOptions.legend!"
+      [grid]="chartOptions.grid!"
+      [tooltip]="chartOptions.tooltip!"
+    ></apx-chart>
+  </div>
+
+  <!-- Table View -->
+  <div class="report-table-wrapper" *ngIf="viewMode === 'table'">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Backlog</th>
+          <th>Current Target</th>
+          <th>Cumm Target</th>
+          <th>Current Sales</th>
+          <th>Open Orders</th>
+          <th>Pending</th>
+          <th>Funnel Opp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of tableRows; let i = index" [class.even-row]="i % 2 === 1">
+          <td>{{ row.category }}</td>
+          <td>{{ row.backlog }}</td>
+          <td>{{ row.currentTarget }}</td>
+          <td>{{ row.cummTarget }}</td>
+          <td>{{ row.currentSales }}</td>
+          <td>{{ row.openOrders }}</td>
+          <td>{{ row.pending }}</td>
+          <td>{{ row.funnelOpp }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td><strong>Total</strong></td>
+          <td>{{ getTotalFor('backlog') }}</td>
+          <td>{{ getTotalFor('currentTarget') }}</td>
+          <td>{{ getTotalFor('cummTarget') }}</td>
+          <td>{{ getTotalFor('currentSales') }}</td>
+          <td>{{ getTotalFor('openOrders') }}</td>
+          <td>{{ getTotalFor('pending') }}</td>
+          <td>{{ getTotalFor('funnelOpp') }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</app-reports-layout>

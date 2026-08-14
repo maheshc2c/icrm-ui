@@ -126,7 +126,7 @@ searchContractNotes(): void {
     pagination: {
       pageNumber: this.currentPage,
       pageSize: this.pageSize,
-      sortBy: 'contractNoteId',
+      sortBy: '',
       sortOrder: 'DESC'
     }
   };
@@ -141,13 +141,13 @@ searchContractNotes(): void {
 
       if (response?.status) {
 
-        // this.rows = response.data || [];
+        this.rows = response.data || [];
 
         this.rows = (response.data || []).map((item: any) => ({
   ...item,
   cnoteId: item.contractNoteId ?? item.cnoteId
 }));
-        this.fullRows = [...this.rows];
+this.fullRows = [...this.rows];
 
         this.totalElements = response.totalElements || 0;
         this.totalPages = response.totalPages || 0;
@@ -187,7 +187,7 @@ approveContractNote(row: any) {
 
   const payload = {
 
-    contractNoteId: row.contractNoteIdInternal,
+    contractNoteId: row.contractNoteId,
 
     action: 'APPROVE',
 
@@ -264,9 +264,14 @@ onReset(): void {
 //download
 
 onDownloadRow(row: any) {
-  if (!row.cnoteId) {
+  const id = row.contractNoteId;
+
+  if (!id) {
+    console.error("Contract Note Id not found", row);
     return;
   }
+
+  this.downloadContractNote(id);
 
   this.cicService.downloadContractNotePdf(parseInt(row.cnoteId)).subscribe({
     next: (blob: Blob) => {
@@ -289,22 +294,23 @@ downloadContractNote(cnoteId: number): void {
 
     next: (blob: Blob) => {
 
-      const url = window.URL.createObjectURL(blob);
+      const file = new Blob([blob], { type: 'application/pdf' });
 
-      const a = document.createElement('a');
+      const url = window.URL.createObjectURL(file);
 
-      a.href = url;
-      a.download = `contract_note_${cnoteId}.pdf`;
+      const link = document.createElement('a');
 
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      link.href = url;
+      link.download = `Contract_Note_${cnoteId}.pdf`;
+
+      link.click();
 
       window.URL.revokeObjectURL(url);
+
     },
 
-    error: err => {
-      console.error(err);
+    error: (err) => {
+      console.error('Download failed', err);
     }
 
   });

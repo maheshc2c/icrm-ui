@@ -218,17 +218,17 @@ constructor() {
           icon: 'fas fa-chart-bar',
           route: '/regional-branch-head-dashboard',
           children: [
-            { label: 'Funnel Report', icon: 'fas fa-chart-line', route: '/dashboard' },
-            { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: '/regional-branch-head/margin-analysis' },
-            { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: '/regional-branch-head/reports/margin-analysis-c-note' },
-            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/regional-branch-head/opportunity-lost' },
-            { label: 'Open Orders', icon: 'fas fa-box-open', route: '/regional-branch-head/open-order-reports' },
-            { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/regional-branch-head/stock-in-hand-report' },
-            { label: 'Fresh Business', icon: 'fas fa-briefcase', route: '/regional-branch-head/fresh-business' },
-            { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/regional-branch-head/target-sales-report' },
-            { label: 'Runrate Projection', icon: 'fas fa-chart-area', route: '/regional-branch-head/runrate-projection' },
-            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: '/regional-branch-head/incentives' },
-            { label: 'Outstanding Report', icon: 'fas fa-file-invoice-dollar', route: '/regional-branch-head/outstanding-report' },
+            { label: 'Funnel Report', icon: 'fas fa-chart-line', route: '/reports/funnel' },
+            { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: '/reports/margin-analysis' },
+            { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: '/reports/margin-analysis-c-note' },
+            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/reports/opportunity-lost' },
+            { label: 'Open Orders', icon: 'fas fa-box-open', route: '/reports/open-orders' },
+            { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/reports/stock-in-hand' },
+            { label: 'Fresh Business', icon: 'fas fa-briefcase', route: '/reports/fresh-business' },
+            { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/reports/target-vs-sales' },
+            { label: 'Runrate Projection', icon: 'fas fa-chart-area', route: '/reports/runrate-projection' },
+            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: '/reports/incentives' },
+            { label: 'Outstanding Report', icon: 'fas fa-file-invoice-dollar', route: '/reports/outstanding' },
           ]
         },
         {
@@ -258,7 +258,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/regional-branch-head/so-number-entry/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/regional-branch-head/so-number-entry/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/regional-branch-head/dashboard' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -337,17 +337,17 @@ constructor() {
           icon: 'fas fa-chart-bar',
           route: '/regional-sales-manager-dashboard',
           children: [
-            { label: 'Funnel Report', icon: 'fas fa-chart-line', route: '/regional-sales-manager-dashboard/funnel-report' },
-            { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: '/regional-sales-manager-dashboard/margin-analysis' },
-            { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: '/regional-sales-manager-dashboard/reports/margin-analysis-c-note' },
-            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/regional-sales-manager-dashboard/opportunity-lost' },
-            { label: 'Open Orders', icon: 'fas fa-box-open', route: '/regional-sales-manager-dashboard/open-order-reports' },
-            { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/regional-sales-manager-dashboard/stock-in-hand-report' },
-            { label: 'Fresh Business', icon: 'fas fa-briefcase', route: '/regional-sales-manager-dashboard/fresh-business' },
-            { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/regional-sales-manager-dashboard/target-sales-report' },
-            { label: 'Runrate Projection', icon: 'fas fa-chart-area', route: '/regional-sales-manager-dashboard/runrate-projection' },
-            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: '/regional-sales-manager-dashboard/incentives' },
-            { label: 'Outstanding Report', icon: 'fas fa-file-invoice-dollar', route: '/country-head/outstanding-report' },
+            { label: 'Funnel Report', icon: 'fas fa-chart-line', route: '/reports/funnel' },
+            { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: '/reports/margin-analysis' },
+            { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: '/reports/margin-analysis-c-note' },
+            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/reports/opportunity-lost' },
+            { label: 'Open Orders', icon: 'fas fa-box-open', route: '/reports/open-orders' },
+            { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/reports/stock-in-hand' },
+            { label: 'Fresh Business', icon: 'fas fa-briefcase', route: '/reports/fresh-business' },
+            { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/reports/target-vs-sales' },
+            { label: 'Runrate Projection', icon: 'fas fa-chart-area', route: '/reports/runrate-projection' },
+            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: '/reports/incentives' },
+            { label: 'Outstanding Report', icon: 'fas fa-file-invoice-dollar', route: '/reports/outstanding' },
           ]
         },
         {
@@ -372,7 +372,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/so-number-entry/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/so-number-entry/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/regional-sales-manager-dashboard/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -432,17 +432,17 @@ constructor() {
           icon: 'fas fa-chart-bar',
           route: '/country-head/dashboard',
           children: [
-            { label: 'Funnel Report', icon: 'fas fa-chart-line', route: '/country-head/dashboard/funnel-report' },
-            { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: '/country-head/dashboard/margin-analysis' },
-            { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: '/country-head/dashboard/reports/margin-analysis-c-note' },
-            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/country-head/dashboard/opportunity-lost' },
-            { label: 'Open Orders', icon: 'fas fa-box-open', route: '/country-head/dashboard/open-order-reports' },
-            { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/country-head/dashboard/stock-in-hand-report' },
-            { label: 'Fresh Business', icon: 'fas fa-briefcase', route: '/country-head/dashboard/fresh-business' },
-            { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/country-head/dashboard/target-sales-report' },
-            { label: 'Runrate Projection', icon: 'fas fa-chart-area', route: '/country-head/dashboard/runrate-projection' },
-            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: '/country-head/dashboard/incentives' },
-            { label: 'Outstanding Report', icon: 'fas fa-file-invoice-dollar', route: '/country-head/dashboard/outstanding-report' },
+            { label: 'Funnel Report', icon: 'fas fa-chart-line', route: '/reports/funnel' },
+            { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: '/reports/margin-analysis' },
+            { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: '/reports/margin-analysis-c-note' },
+            { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/reports/opportunity-lost' },
+            { label: 'Open Orders', icon: 'fas fa-box-open', route: '/reports/open-orders' },
+            { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/reports/stock-in-hand' },
+            { label: 'Fresh Business', icon: 'fas fa-briefcase', route: '/reports/fresh-business' },
+            { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/reports/target-vs-sales' },
+            { label: 'Runrate Projection', icon: 'fas fa-chart-area', route: '/reports/runrate-projection' },
+            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: '/reports/incentives' },
+            { label: 'Outstanding Report', icon: 'fas fa-file-invoice-dollar', route: '/reports/outstanding' },
           ]
         },
         {
@@ -467,7 +467,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/dashboard/opportunity/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/dashboard/opportunity/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/country-head/dashboard/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -558,7 +558,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/globalhead-dashboard/opportunity/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/globalhead-dashboard/opportunity/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/globalhead-dashboard/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -623,12 +623,12 @@ constructor() {
             { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: `/margin-analysis` },
             { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: `/reports/margin-analysis-c-note` },
             { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: `/opportunity-lost` },
-            { label: 'Open Orders', icon: 'fas fa-box-open', route: `/open-order-reports` },
+            { label: 'Open Orders', icon: 'fas fa-box-open', route: `/reports/open-orders` },
             { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: `/stock-in-hand-report` },
             { label: 'Fresh Business', icon: 'fas fa-briefcase', route: `/fresh-business` },
             { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: `/target-sales-report` },
             { label: 'Runrate Projection', icon: 'fas fa-chart-area', route: `/runrate-projection` },
-            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: `/incentives` },
+            { label: 'Incentives', icon: 'fas fa-money-bill-wave', route: '/reports/incentives' },
             { label: 'Outstanding Report', icon: 'fas fa-file-invoice-dollar', route: `/outstanding-report` },
           ]
         },
@@ -654,7 +654,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: `/opportunity/open` },
             { label: 'Closed', icon: 'fas fa-folder', route: `/opportunity/closed` },
-            { label: 'Funnel History', icon: 'fas fa-history', route: `/funnel-history` }
+            { label: 'Funnel History', icon: 'fas fa-history', route: `/OppurtunityStatus/FunnelHistory` }
           ]
         },
         {
@@ -749,7 +749,7 @@ constructor() {
         route: '/reports',
         children: [
           { label: 'Funnel Report', icon: 'fas fa-filter', route: '/reports/funnel' },
-          { label: 'Opportunity List', icon: 'fas fa-list', route: '/reports/opportunity-list' },
+          { label: 'Opportunity Lost', icon: 'fas fa-list', route: '/reports/opportunity-lost' },
           { label: 'Open Orders', icon: 'fas fa-folder-open', route: '/reports/open-orders' },
           { label: 'Stock In Hand', icon: 'fas fa-boxes', route: '/reports/stock-in-hand' },
           { label: 'Fresh Business report', icon: 'fas fa-chart-line', route: '/reports/fresh-business' },
@@ -780,7 +780,7 @@ constructor() {
         children: [
           { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
           { label: 'Closed', icon: 'fas fa-check-circle', route: '/salesmanager/closed-opportunities' },
-          { label: 'Funnel History', icon: 'fas fa-history', route: '/salesmanager/funnel-history' }
+          { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
         ]
       },
       {
@@ -844,12 +844,12 @@ constructor() {
       children: [
           { label: 'Funnel Report', icon: 'fas fa-filter', route: '/' },
           { label: 'Oppurtunity Lost', icon: 'fas fa-face-frown', route: '/' },
-          { label: 'Open Orders', icon: 'fas fa-box-open', route: '/' },
+          { label: 'Open Orders', icon: 'fas fa-box-open', route: '/reports/open-orders' },
           { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/' },
           { label: 'Fresh Business Report', icon: 'fas fa-seedling', route: '/' },
           { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/' },
           { label: 'Runrate Projection', icon: 'fas fa-gauge-high', route: '/' },
-          { label: 'Incentives report', icon: 'fas fa-coins', route: '/' },
+          { label: 'Incentives report', icon: 'fas fa-coins', route: '/reports/incentives' },
         ]
     },
     {

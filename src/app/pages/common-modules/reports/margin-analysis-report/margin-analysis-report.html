@@ -1,0 +1,141 @@
+<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+  <div class="report-toolbar">
+    <div class="toolbar-field">
+      <label class="field-label">All Regions</label>
+      <select class="form-select" [(ngModel)]="selectedRegionId">
+        <option [ngValue]="null">All Regions</option>
+        <option *ngFor="let r of regions" [value]="r.id">{{ r.label }}</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">From Date</label>
+      <input type="date" class="form-select" [(ngModel)]="fromDate" />
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">To Date</label>
+      <input type="date" class="form-select" [(ngModel)]="toDate" />
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Select Segment</label>
+      <select class="form-select" [(ngModel)]="selectedSegmentId" (change)="onSegmentChange()">
+        <option [ngValue]="null">Select Segment</option>
+        <option *ngFor="let s of segments" [value]="s.id">{{ s.label }}</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Select Product</label>
+      <select class="form-select" [(ngModel)]="selectedProductId">
+        <option [ngValue]="null">Select Product</option>
+        <option *ngFor="let p of products" [value]="p.id">{{ p.label }}</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">All Users</label>
+      <select class="form-select" [(ngModel)]="selectedUserId">
+        <option [ngValue]="null">All Users</option>
+        <option *ngFor="let u of users" [value]="u.id">{{ u.label }}</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Customer</label>
+      <input class="form-select" placeholder="Customer" [(ngModel)]="selectedCustomer" />
+    </div>
+
+    <div class="toolbar-field">
+      <label class="field-label">Dealer</label>
+      <input class="form-select" placeholder="Dealer" [(ngModel)]="selectedDealer" />
+    </div>
+
+    <div class="toolbar-actions">
+      <button type="button" class="btn-search" (click)="onSearch()" [disabled]="isLoading" title="Search">
+        <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+      </button>
+      <button type="button" class="btn-reset" (click)="resetFilters()" title="Reset">
+        <i class="fas fa-redo-alt"></i>
+      </button>
+      <button type="button" class="btn-export" (click)="onDownload()" [disabled]="isDownloading" title="Export Excel">
+        <i class="fas" [ngClass]="isDownloading ? 'fa-spinner fa-spin' : 'fa-download'"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="report-table-wrapper">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th style="width: 70px;">&nbsp;</th>
+          <th>Product Segment</th>
+          <th>Revenue (Lacs)</th>
+          <th>Gross Margin %</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let row of rows; let i = index">
+          <tr class="main-row" [ngClass]="{'even-row': i % 2 === 1}">
+            <td class="expand-cell" (click)="toggleRow(row)" style="cursor: pointer;">
+              {{ row.expanded ? '-' : '+' }}
+            </td>
+            <td>{{ row.segment }}</td>
+            <td>{{ row.revenue }}</td>
+            <td>{{ row.margin }}%</td>
+          </tr>
+          <tr *ngIf="row.expanded" class="sub-table-row">
+            <td colspan="4" class="p-0 border-0" style="padding: 0; border: none;">
+              <table class="sub-table">
+                <thead>
+                  <tr>
+                    <th style="width: 70px;">S.No</th>
+                    <th>Product Description</th>
+                    <th>Product Code</th>
+                    <th>Revenue (Lacs)</th>
+                    <th>Gross Margin %</th>
+                    <th>Qty</th>
+                    <th>ASP (Lacs)</th>
+                    <th>Unit DP (Lacs)</th>
+                    <th>Var %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let detail of row.details">
+                    <td>{{ detail.sno }}</td>
+                    <td>{{ detail.desc }}</td>
+                    <td>{{ detail.code }}</td>
+                    <td>{{ detail.revenue }}</td>
+                    <td>{{ detail.margin }}%</td>
+                    <td>{{ detail.qty }}</td>
+                    <td>{{ detail.asp }}</td>
+                    <td>{{ detail.unitDp }}</td>
+                    <td>{{ detail.var }}%</td>
+                  </tr>
+                  <tr class="sub-total-row">
+                    <td colspan="3" class="total-label text-center">Total</td>
+                    <td></td>
+                    <td></td>
+                    <td style="font-weight: bold;">{{ getSubTotalQty(row) }}</td>
+                    <td></td>
+                    <td></td>
+                    <td style="font-weight: bold;">{{ getSubTotalVar(row) }}%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+        <tr *ngIf="rows.length === 0 && !isLoading">
+          <td colspan="4" style="text-align: center; color: #777; padding: 20px;">No margin analysis data found for selected filters.</td>
+        </tr>
+        <tr class="total-row" *ngIf="rows.length > 0">
+          <td colspan="2" class="total-label">Total</td>
+          <td>{{ totalRevenue }}</td>
+          <td>{{ totalMargin }}%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-reports-layout>

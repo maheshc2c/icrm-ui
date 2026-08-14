@@ -61,8 +61,8 @@ export class Leadservice {
   }
 
   /* ================= UPDATE LEAD ================= */
-  updateLead(id: number, lead: LeadPayload): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/salesengineer/salesmanager/lead-update/${id}`, lead, {
+   updateLead(id: number, lead: any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/leads/${id}`, lead, {
       headers: this.getAuthHeaders()
     });
   }
@@ -343,5 +343,31 @@ export class Leadservice {
     return this.http.get<any[]>(`${this.baseUrl}/opportunity/competitors-dropdown`, {
       headers: this.getAuthHeaders()
     });
+  }
+
+  /* ================= OPPORTUNITY FUNNEL HISTORY ================= */
+  searchOpportunityFunnelHistory(payload: any): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/opportunity/funnel-history/search`,
+      payload,
+      {
+        headers: this.getAuthHeaders()
+      }
+    );
+  }
+
+  downloadOpportunityFunnelHistory(payload: any) {
+    const token = localStorage.getItem('token');
+
+    return this.http.post(
+      `${this.baseUrl}/opportunity/downloadFunnelHistory`,
+      payload,
+      {
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${token}`
+        }),
+        responseType: 'blob'
+      }
+    );
   }
 }

@@ -18,5 +18,7 @@
   [showAdd]="false"
   [showImport]="true"
   (search)="onSearch($event)"
+  (searchChange)="onSearchChange($event)"
+  (reset)="onReset()"
   (download)="onImport()">
 </app-data-table>
