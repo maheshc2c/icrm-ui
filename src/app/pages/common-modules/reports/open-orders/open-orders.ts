@@ -10,10 +10,11 @@ import {
   CustomerRow,
   ProductRow
 } from './open-orders-service';
-import { Breadcrumb } from '../../../models/breadcrumb';
-import { Pageheader } from '../../../shared/pageheader/pageheader';
-import { Sidebar } from "../../../layout/sidebar/sidebar";
-import { Header } from "../../../layout/header/header";
+import { Pageheader } from '../../../../shared/pageheader/pageheader';
+import { Sidebar } from '../../../../layout/sidebar/sidebar';
+import { Header } from '../../../../layout/header/header';
+import { Breadcrumb } from '../../../../models/breadcrumb';
+
 
 // Highcharts is loaded from CDN via index.html
 declare var Highcharts: any;
@@ -21,8 +22,14 @@ declare var Highcharts: any;
 // ─── Period option type ───────────────────────────────────────────────────────
 
 interface PeriodOption {
+  id?:       number;   // Optional id for database-backed periods (weeks/months)
   label:    string;
-  value:    number;
+  value:    number;   // Keep as number for month/quarter compatibility
+  weekNo?:  number;   // Week number for weeks (1-based counter)
+  monthNo?: number;   // Month number for months (financial year month_no)
+  yearNo?:  number;    // Year number for months
+  phpValue?: string;  // PHP format value for weeks: "YYYY-MM-DDtoYYYY-MM-DD"
+  monthValue?: string; // PHP format value for months: "month_notoyear_no"
   fromDate: string;
   toDate:   string;
 }
@@ -115,8 +122,10 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
   // ─────────────────────────────────────────────────────────────────────────
 
   ngOnInit(): void {
+    this.loadRegions();  // Load regions first
+    this.loadWeeks();    // Load actual financial year weeks from database
+    this.loadMonths();   // Load actual financial year months from database
     this.buildPeriodOptions();
-    this.loadRegions();  // NEW: load regions first
     this.loadUsers();
   }
 
@@ -207,6 +216,133 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  private loadWeeks(): void {
+    console.log('=== Loading weeks from backend ===');
+    this.openOrdersService.getWeeksForDropdown().subscribe({
+      next: (weeks) => {
+        console.log('Weeks received from backend:', weeks);
+        this.weeks = weeks.map(w => ({ 
+          id: Number(w.id), 
+          label: w.label, 
+          value: w.weekNo ?? Number(w.id), // Use weekNo for numeric value
+          weekNo: w.weekNo, // Week number for display
+          phpValue: w.value, // PHP format value: "YYYY-MM-DDtoYYYY-MM-DD"
+          fromDate: w.fromDate,
+          toDate: w.toDate
+        })) as PeriodOption[];
+        console.log('Processed weeks:', this.weeks);
+        // Set default selected week to the current week (first week in list)
+        if (this.weeks.length > 0) {
+          this.selectedWeek = this.weeks[0];
+          console.log('Selected week:', this.selectedWeek);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading weeks from backend:', error);
+        console.warn('Could not load weeks dropdown, falling back to programmatic calculation');
+        // Fallback to programmatic calculation if API fails
+        this.buildProgrammaticWeeks();
+      }
+    });
+  }
+
+  private loadMonths(): void {
+    this.openOrdersService.getMonthsForDropdown().subscribe({
+      next: (months) => {
+        this.months = months.map(m => ({ 
+          id: Number(m.id), 
+          label: m.label, 
+          value: m.monthNo ?? Number(m.id), // Use monthNo for numeric value
+          monthNo: m.monthNo, // Month number for display
+          yearNo: m.yearNo, // Year number
+          monthValue: m.value, // PHP format value: "month_notoyear_no"
+          fromDate: m.fromDate,
+          toDate: m.toDate
+        })) as PeriodOption[];
+        // Set default selected month to the current month
+        if (this.months.length > 0) {
+          this.selectedMonth = this.months[this.months.length - 1]; // Select the last (current) month
+        }
+      },
+      error: () => {
+        console.warn('Could not load months dropdown, falling back to programmatic calculation');
+        // Fallback to programmatic calculation if API fails
+        this.buildProgrammaticMonths();
+      }
+    });
+  }
+
+  private buildProgrammaticWeeks(): void {
+    console.log('=== Building programmatic weeks for current month ===');
+    const today = new Date();
+    console.log('Current date:', today);
+    const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    const currentMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    console.log('Month start:', currentMonthStart, 'Month end:', currentMonthEnd);
+    
+    let weekNo = 1;
+    let wStart = new Date(currentMonthStart);
+    
+    this.weeks = [] as PeriodOption[];
+    while (wStart <= currentMonthEnd) {
+      const wEnd = new Date(wStart);
+      wEnd.setDate(wEnd.getDate() + 6);
+      
+      this.weeks.push({
+        label: `Week ${weekNo} (${this.fmtDate(wStart)})`,
+        value: weekNo,
+        weekNo: weekNo,
+        phpValue: `${this.toIsoDate(wStart)}to${this.toIsoDate(wEnd > currentMonthEnd ? currentMonthEnd : wEnd)}`,
+        fromDate: this.toIsoDate(wStart),
+        toDate: this.toIsoDate(wEnd > currentMonthEnd ? currentMonthEnd : wEnd)
+      });
+      
+      weekNo++;
+      wStart.setDate(wStart.getDate() + 7);
+    }
+    
+    console.log('Programmatic weeks built:', this.weeks);
+    
+    if (this.weeks.length > 0) {
+      this.selectedWeek = this.weeks[0];
+      console.log('Selected programmatic week:', this.selectedWeek);
+    }
+  }
+
+  private buildProgrammaticMonths(): void {
+    const today = new Date();
+    const fyStartYear = today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear() - 1;
+    const fyStart = new Date(fyStartYear, 3, 1);
+    const fyEnd = new Date(fyStartYear + 1, 2, 31);
+    
+    const monthNames = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
+    const currentFyMonth = (today.getMonth() - 3 + 12) % 12;
+    
+    this.months = monthNames
+      .slice(0, currentFyMonth + 1)
+      .map((name, i) => {
+        const mStart = new Date(fyStartYear + (i >= 9 ? 1 : 0), (3 + i) % 12, 1);
+        const mEnd = new Date(fyStartYear + (i >= 9 ? 1 : 0), (3 + i) % 12 + 1, 0);
+        const fyMonthNo = i + 1;
+        const year = mStart.getFullYear();
+        
+        return {
+          id: i + 1,
+          label: `${name}-${year.toString().slice(-2)}`,
+          value: fyMonthNo,
+          monthNo: fyMonthNo,
+          yearNo: year,
+          monthValue: `${fyMonthNo}to${year}`,
+          fromDate: this.toIsoDate(mStart),
+          toDate: this.toIsoDate(mEnd)
+        };
+      });
+    
+    if (this.months.length > 0) {
+      this.selectedMonth = this.months[this.months.length - 1]; // Select current month
+    }
+  }
+
   // ─────────────────────────────────────────────────────────────────────────
   // Period Options
   // ─────────────────────────────────────────────────────────────────────────
@@ -217,92 +353,28 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     const fyStart     = new Date(fyStartYear, 3, 1);
     const fyEnd       = new Date(fyStartYear + 1, 2, 31);
 
-    const monthNames = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
-    // this.months = monthNames.map((name, i) => {
-    const currentFyMonth = (today.getMonth() - 3 + 12) % 12;
-
-this.months = monthNames
-  .slice(0, currentFyMonth + 1)
-  .map((name, i) => {
-    
-      const mStart = new Date(fyStartYear + (i >= 9 ? 1 : 0), (3 + i) % 12, 1);
-      const mEnd   = new Date(mStart.getFullYear(), mStart.getMonth() + 1, 0);
-      return { label: `${name}-${String(mStart.getFullYear()).slice(2)}`, value: i + 1,
-               fromDate: this.toIsoDate(mStart), toDate: this.toIsoDate(mEnd) };
-    });
+    // Months are now loaded from database via loadMonths() method
+    // This ensures month boundaries match the actual financial year setup
 
     const qLabels = ['Q1 (Apr–Jun)', 'Q2 (Jul–Sep)', 'Q3 (Oct–Dec)', 'Q4 (Jan–Mar)'];
-    // this.quarters = qLabels.map((label, i) => {
-
+    const currentFyMonth = (today.getMonth() - 3 + 12) % 12;
     const currentQuarter = Math.floor(currentFyMonth / 3);
     
     this.quarters = qLabels
-    .slice(0, currentQuarter + 1)
-    .map((label, i) => {
-      const qStart = new Date(fyStart); qStart.setMonth(3 + i * 3);
-      const qEnd   = new Date(qStart);  qEnd.setMonth(qStart.getMonth() + 3); qEnd.setDate(qEnd.getDate() - 1);
-      return { label, value: i + 1, fromDate: this.toIsoDate(qStart), toDate: this.toIsoDate(qEnd) };
-    });
-
-    // this.weeks = [];
-    // let wStart = new Date(fyStart);
-    // let weekNo = 1;
-    // while (wStart <= fyEnd) {
-    //   const wEnd = new Date(wStart); wEnd.setDate(wEnd.getDate() + 6);
-    //   this.weeks.push({
-    //     label: `Week ${weekNo} (${this.fmtDate(wStart)})`, value: weekNo,
-    //     fromDate: this.toIsoDate(wStart), toDate: this.toIsoDate(wEnd > fyEnd ? fyEnd : wEnd)
-    //   });
-    //   wStart.setDate(wStart.getDate() + 7); weekNo++;
-    // }
-
-    this.weeks = [];
-
-// First day of current month
-const currentMonthStart = new Date(
-  today.getFullYear(),
-  today.getMonth(),
-  1
-);
-
-// Last day of current month
-const currentMonthEnd = new Date(
-  today.getFullYear(),
-  today.getMonth() + 1,
-  0
-);
-
-let weekNo = 1;
-let wStart = new Date(currentMonthStart);
-
-while (wStart <= currentMonthEnd) {
-
-  const wEnd = new Date(wStart);
-  wEnd.setDate(wEnd.getDate() + 6);
-
-  this.weeks.push({
-    label: `Week ${weekNo} (${this.fmtDate(wStart)})`,
-    value: weekNo,
-    fromDate: this.toIsoDate(wStart),
-    toDate: this.toIsoDate(
-      wEnd > currentMonthEnd ? currentMonthEnd : wEnd
-    )
-  });
-
-  weekNo++;
-  wStart.setDate(wStart.getDate() + 7);
-}
+      .slice(0, currentQuarter + 1)
+      .map((label, i) => {
+        const qStart = new Date(fyStart); qStart.setMonth(3 + i * 3);
+        const qEnd   = new Date(qStart);  qEnd.setMonth(qStart.getMonth() + 3); qEnd.setDate(qEnd.getDate() - 1);
+        return { label, value: i + 1, fromDate: this.toIsoDate(qStart), toDate: this.toIsoDate(qEnd) };
+      });
 
     this.years = [{
       label: `FY ${fyStartYear}-${String(fyStartYear + 1).slice(2)}`, value: 1,
       fromDate: this.toIsoDate(fyStart), toDate: this.toIsoDate(fyEnd)
     }];
 
-    const fyMonthIdx = (today.getMonth() - 3 + 12) % 12;
-    this.selectedMonth   = this.months[fyMonthIdx] || this.months[0];
-    this.selectedQuarter = this.quarters[Math.floor(fyMonthIdx / 3)] || this.quarters[0];
-    this.selectedWeek    = this.weeks[0];
-    this.selectedYear    = this.years[0];
+    this.selectedQuarter = this.quarters[Math.floor(currentFyMonth / 3)] || this.quarters[0];
+    this.selectedYear = this.years[0];
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -357,10 +429,64 @@ while (wStart <= currentMonthEnd) {
       viewTime: vt 
     };
     switch (vt) {
-      case 'w': f.duration = this.selectedWeek?.value ?? null; f.durationText = this.selectedWeek?.label ?? null;
-                f.fromDate = this.selectedWeek?.fromDate ?? null; f.toDate = this.selectedWeek?.toDate ?? null; break;
-      case 'm': f.duration = this.selectedMonth?.value ?? null; f.durationText = this.selectedMonth?.label ?? null;
-                f.fromDate = this.selectedMonth?.fromDate ?? null; f.toDate = this.selectedMonth?.toDate ?? null; break;
+      case 'w': 
+        // Handle week value - use phpValue for date parsing, weekNo for duration
+        let weekValue: string | null = this.selectedWeek?.phpValue ?? null;
+        let weekDuration: number | null = this.selectedWeek?.weekNo ?? this.selectedWeek?.value ?? null;
+        
+        if (weekValue && weekValue.includes('to')) {
+          // Parse PHP format: "YYYY-MM-DDtoYYYY-MM-DD"
+          const dates = weekValue.split('to');
+          if (dates.length === 2) {
+            f.fromDate = dates[0];
+            f.toDate = dates[1];
+          }
+        } else {
+          // Fallback to fromDate/toDate from the option
+          f.fromDate = this.selectedWeek?.fromDate ?? null;
+          f.toDate = this.selectedWeek?.toDate ?? null;
+        }
+        
+        f.duration = weekDuration; 
+        f.durationText = this.selectedWeek?.label ?? null;
+        break;
+        
+      case 'm': 
+        // Handle month value - use monthValue for date parsing, monthNo for duration
+        let monthValue: string | null = this.selectedMonth?.monthValue ?? null;
+        let monthDuration: number | null = this.selectedMonth?.monthNo ?? this.selectedMonth?.value ?? null;
+        
+        if (monthValue && monthValue.includes('to')) {
+          // Parse PHP format: "month_notoyear_no"
+          const parts = monthValue.split('to');
+          if (parts.length === 2) {
+            const monthNo = parseInt(parts[0]);
+            const yearNo = parseInt(parts[1]);
+            // Convert financial year month_no to calendar month
+            let calendarMonth: number;
+            let calendarYear: number;
+            if (monthNo >= 1 && monthNo <= 9) {
+              calendarMonth = monthNo + 3; // April=1 => May=4
+              calendarYear = yearNo;
+            } else {
+              calendarMonth = monthNo - 9; // Oct=10 => Jan=1
+              calendarYear = yearNo + 1;
+            }
+            const mStart = new Date(calendarYear, calendarMonth - 1, 1);
+            const mEnd = new Date(calendarYear, calendarMonth, 0);
+            f.fromDate = this.toIsoDate(mStart);
+            f.toDate = this.toIsoDate(mEnd);
+          }
+        } else {
+          // Fallback to fromDate/toDate from the option
+          f.fromDate = this.selectedMonth?.fromDate ?? null;
+          f.toDate = this.selectedMonth?.toDate ?? null;
+        }
+        
+        f.duration = monthDuration; 
+        f.durationText = this.selectedMonth?.label ?? null;
+        break;
+        
       case 'q': f.duration = this.selectedQuarter?.value ?? null; f.durationText = this.selectedQuarter?.label ?? null;
                 f.fromDate = this.selectedQuarter?.fromDate ?? null; f.toDate = this.selectedQuarter?.toDate ?? null; break;
       case 'y': f.duration = 1; f.durationText = this.selectedYear?.label ?? null;
@@ -424,7 +550,8 @@ while (wStart <= currentMonthEnd) {
       data: s.data ?? [],
       color: s.color,
       stack: s.stack,
-      borderWidth: 0,
+      borderWidth: 1,
+      borderColor: '#ffffff',
       cursor: 'pointer',
       point: {
         events: {
@@ -447,25 +574,31 @@ while (wStart <= currentMonthEnd) {
           spacingBottom: 20,
           height: 440
         },
-        title: { text: this.chartTitle, style: { fontSize: '15px', fontWeight: '600', color: '#2c3e50' } },
+        title: { text: this.chartTitle, style: { fontSize: '18px', fontWeight: '700', color: '#2c3e50' } },
         xAxis: {
           categories,
-          title: { text: data.xAxisLabel, style: { color: '#555' } },
-          labels: { rotation: -35, align: 'right', style: { fontSize: '11px', color: '#555' } },
+          title: { text: data.xAxisLabel, style: { color: '#333', fontWeight: '500' } },
+          labels: { rotation: -35, align: 'right', style: { fontSize: '12px', color: '#333', fontWeight: '400' } },
           crosshair: true,
           lineColor: '#ccc'
         },
         yAxis: {
-          title: { text: 'Value in Lakhs (₹)', style: { color: '#555' } },
+          title: { text: 'Value in Lakhs (₹)', style: { color: '#333', fontWeight: '500' } },
           gridLineColor: '#e8e8e8',
-          min: 0
+          min: 0,
+          labels: { style: { color: '#333', fontWeight: '400' } }
         },
         legend: {
           enabled: true,
           align: 'center',
           verticalAlign: 'top',
-          itemStyle: { fontWeight: '500', fontSize: '12px' },
-          symbolRadius: 4
+          layout: 'horizontal',
+          itemStyle: { fontWeight: '600', fontSize: '14px', color: '#333' },
+          itemHoverStyle: { color: '#000' },
+          symbolRadius: 5,
+          symbolWidth: 15,
+          symbolHeight: 15,
+          margin: 20
         },
         tooltip: {
           shared: true,
@@ -473,9 +606,28 @@ while (wStart <= currentMonthEnd) {
           backgroundColor: 'rgba(255,255,255,0.97)',
           borderColor: '#ddd',
           shadow: true,
-          valueDecimals: 2
+          valueDecimals: 2,
+          style: { fontSize: '13px', fontWeight: '500' }
         },
-        plotOptions: { column: { stacking: 'normal', dataLabels: { enabled: false } } },
+        plotOptions: { 
+          column: { 
+            stacking: 'normal',
+            borderWidth: 1,
+            borderColor: '#ffffff',
+            dataLabels: {
+              enabled: true,
+              style: { 
+                fontSize: '12px', 
+                fontWeight: '700',
+                color: '#ffffff',
+                textOutline: '1px #000000'
+              },
+              formatter: function(this: any): string {
+                return this.y !== null && this.y > 0 ? this.y.toFixed(2) : '';
+              }
+            }
+          } 
+        },
         exporting: { enabled: true },
         credits: { enabled: false },
         series
