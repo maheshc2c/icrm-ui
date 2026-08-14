@@ -144,6 +144,11 @@ export class CNoteMarginReportComponent implements OnInit {
     this.totalPages = 0;
   }
 
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadReportData();
+  }
+
   onSort(column: string): void {
     if (this.sortBy === column) {
       this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
