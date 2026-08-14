@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { ReportService } from '../../../service/report.service';
-import { LostGroupDto, LostRegionDto, LostProductDto } from '../../../models/opportunity-lost.model';
-import { Pageheader } from '../../../shared/pageheader/pageheader';
-import { Breadcrumb } from '../../../models/breadcrumb';
-import { Segment } from '../../../models/segment';
+import { ReportService } from '../../../../service/report.service';
+import { LostGroupDto, LostRegionDto, LostProductDto } from '../../../../models/opportunity-lost.model';
+import { Pageheader } from '../../../../shared/pageheader/pageheader';
+import { Breadcrumb } from '../../../../models/breadcrumb';
+import { Segment } from '../../../../models/segment';
 
 @Component({
   selector: 'app-opportunity-lost-report',
