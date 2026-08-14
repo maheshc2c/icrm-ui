@@ -67,7 +67,7 @@ export class AssignTargetComponent implements OnInit {
     ) { }
 
     generateFinancialYears(): string[] {
-        const years = [];
+        const years: string[] = [];
         const startYear = 2017;
         for (let year = startYear; year <= 2040; year++) {
             const nextYearStr = (year + 1).toString().substring(2);

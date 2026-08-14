@@ -302,6 +302,12 @@ export class Leadservice {
     });
   }
 
+  getQuoteRevisionDetails(quoteId: number | string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/quote/quote-revision-details/${quoteId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   createContractNote(payload: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/contractnote`, payload, {
       headers: this.getAuthHeaders()
@@ -331,5 +337,37 @@ export class Leadservice {
       headers: this.getAuthHeaders(),
       responseType: 'blob'
     });
+  }
+
+  getCompetitors(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/competitors-dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= OPPORTUNITY FUNNEL HISTORY ================= */
+  searchOpportunityFunnelHistory(payload: any): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/opportunity/funnel-history/search`,
+      payload,
+      {
+        headers: this.getAuthHeaders()
+      }
+    );
+  }
+
+  downloadOpportunityFunnelHistory(payload: any) {
+    const token = localStorage.getItem('token');
+
+    return this.http.post(
+      `${this.baseUrl}/opportunity/downloadFunnelHistory`,
+      payload,
+      {
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${token}`
+        }),
+        responseType: 'blob'
+      }
+    );
   }
 }

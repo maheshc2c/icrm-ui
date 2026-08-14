@@ -78,19 +78,19 @@ export const routes: Routes = [
     {
       path: 'reports/stock-in-hand',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/SalesManager/reports/stock-in-hand/stock-in-hand').then(m => m.StockInHandComponent),
       canActivate: [authGuard],
       data: {
         roles: [
           'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
-          'National Sales Manager', 'Country Head'
+          'National Sales Manager', 'Country Head', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'
         ]
       }
     },
     {
       path: 'reports/fresh-business',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/fresh-business-report/fresh-business-report').then(m => m.FreshBusinessReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -102,7 +102,7 @@ export const routes: Routes = [
     {
       path: 'reports/target-vs-sales',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/target-vs-sales-report/target-vs-sales-report').then(m => m.TargetVsSalesReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -112,9 +112,33 @@ export const routes: Routes = [
       }
     },
     {
+      path: 'reports/stock-in-hand',
+      loadComponent: () =>
+        import('./pages/SalesManager/reports/stock-in-hand/stock-in-hand').then(m => m.StockInHandComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'
+        ]
+      }
+    },
+    {
+      path: 'stock_in_hand_table',
+      loadComponent: () =>
+        import('./pages/SalesManager/reports/stock-in-hand/stock-in-hand').then(m => m.StockInHandComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'
+        ]
+      }
+    },
+    {
       path: 'reports/runrate-projection',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/runrate-projection-report/runrate-projection-report').then(m => m.RunrateProjectionReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -160,7 +184,18 @@ export const routes: Routes = [
     {
       path: 'reports/outstanding',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/outstanding-report/outstanding-report').then(m => m.OutstandingReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'get_new_outstanding_report',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/outstanding-report/outstanding-report').then(m => m.OutstandingReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -220,6 +255,20 @@ export const routes: Routes = [
     }
   ]
 },
+{
+      path: 'reports/open-orders',
+      loadComponent: () =>
+        import('./pages/common-modules/open-orders/open-orders').then(m => m.OpenOrders),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+          'Regional Sales Manager', 'Regional Branch Head',
+          'Country Head', 'National Sales Manager', 'Global Head',
+          'Sales Director', 'ADMIN'
+        ]
+      }
+    },
 {
   path: 'quoteRevision/:id',
   loadComponent: () =>
@@ -740,6 +789,12 @@ export const routes: Routes = [
     import('./pages/SalesDirector/oppurtunity/opp-close/opp-close').then(m => m.OppClose),
 },
 
+ {
+  path: 'OppurtunityStatus/FunnelHistory',
+  loadComponent: () =>
+    import('./pages/common-modules/opportunity-funnel-history-status/opportunity-funnel-history-status').then(m => m.OpportunityFunnelHistoryStatus),
+},
+
 
 // {
 //   path: 'salesdirector/addleads/addcontact',
@@ -843,6 +898,26 @@ export const routes: Routes = [
 
 
 {
+        path: 'leads-dashboard',
+        loadComponent: () => import('./pages/common-modules/leads-dashboard/leads-dashboard').then(m => m.LeadsDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'dashboards/leads',
+        loadComponent: () => import('./pages/common-modules/leads-dashboard/leads-dashboard').then(m => m.LeadsDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'dashboards/opportunity',
+        loadComponent: () => import('./pages/common-modules/opportunity-dashboard/opportunity-dashboard').then(m => m.OpportunityDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'opportunity-dashboard',
+        loadComponent: () => import('./pages/common-modules/opportunity-dashboard/opportunity-dashboard').then(m => m.OpportunityDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
         path: 'sales-manager-dashboard',
         loadComponent: () => import('./pages/SalesManager/salesmanager-dashboard/salesmanager-dashboard').then(m => m.SalesManagerDashboard),
         canActivate: [authGuard],

@@ -1,0 +1,462 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   open-orders.css
+   Open Order Report – styles matching the funnel-report card pattern.
+════════════════════════════════════════════════════════════════════════════ */
+
+:host {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Page header override ────────────────────────────────────────────── */
+::ng-deep .page-header {
+  background: #fff !important;
+  padding: 1.25rem 2rem !important;
+  margin: 0 0 20px 0 !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  width: calc(100% - 280px) !important;
+  margin-left: 255px !important;
+  border-bottom: 1px solid #edf2f7 !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 100px !important;
+  margin-top: -40px !important;
+}
+
+/* ─── Page wrapper ────────────────────────────────────────────────────── */
+.oo-page-content {
+  margin-left: 255px;
+  width: calc(100% - 280px);
+  margin-top: 0;
+  padding: 20px 24px;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+}
+
+/* ─── Filter bar ──────────────────────────────────────────────────────── */
+.oo-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-control {
+  flex-shrink: 0;
+}
+
+.filter-select {
+  padding: 6px 32px 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23555'/%3E%3C/svg%3E") no-repeat right 10px center;
+  background-size: 10px 6px;
+  appearance: none;
+  -webkit-appearance: none;
+  font-size: 13px;
+  color: #0c0c0c;
+  min-width: 160px;
+  cursor: pointer;
+  height: 34px;
+  transition: border-color 0.2s;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
+}
+
+.oo-right-filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* ─── View-time tabs ──────────────────────────────────────────────────── */
+.view-time-tabs {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tab-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: #fff;
+  color: #0a0a0a;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border-right: 1px solid #ccc;
+  height: 34px;
+  line-height: 1;
+}
+
+.tab-btn:last-child { border-right: none; }
+.tab-btn:hover      { background: #eaf4fb; color: #2980b9; }
+.tab-btn.active     { background: #3498db; color: #fff; }
+
+/* ─── Chart card ──────────────────────────────────────────────────────── */
+.oo-chart-card {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 20px 24px 24px;
+  min-height: 460px;
+  position: relative;
+}
+
+/* ─── Loading overlay ─────────────────────────────────────────────────── */
+.oo-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #0c0b0b;
+  font-size: 24px;
+  background: rgba(255,255,255,0.8);
+  z-index: 10;
+  border-radius: 6px;
+}
+
+.oo-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #3498db;
+  border-radius: 50%;
+  animation: ooSpin 0.8s linear infinite;
+}
+
+@keyframes ooSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Error state ─────────────────────────────────────────────────────── */
+.oo-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  gap: 12px;
+  color: #c0392b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.oo-error-state i { font-size: 32px; color: #e74c3c; }
+
+.oo-retry-btn {
+  padding: 6px 18px;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: 4px;
+  transition: background 0.2s;
+}
+
+.oo-retry-btn:hover { background: #2980b9; }
+
+/* ─── Highcharts container ────────────────────────────────────────────── */
+#open-order-chart1-container {
+  width: 100%;
+  min-height: 440px;
+}
+
+/* ═════════════════════ CUSTOM USER DROPDOWN ═════════════════════════════ */
+
+.custom-dropdown-container {
+  position: relative;
+  width: 220px;
+  margin-left: 25px; /* moves dropdown slightly to the right */
+}
+
+.dropdown-trigger {
+  width: 100%;
+  height: 34px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.dropdown-trigger.active {
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+.trigger-text {
+  font-size: 13px;
+  color: #111111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  color: #999;
+  transition: transform 0.2s;
+}
+
+.dropdown-trigger.active .arrow-icon { transform: rotate(180deg); }
+
+.dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0 0 4px 4px;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  margin-top: -1px;
+  box-sizing: border-box;
+}
+
+.search-box-wrapper {
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  box-sizing: border-box;
+}
+
+.dropdown-search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.dropdown-search-input:focus { border-color: #3498db; }
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.option-item {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #161515;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.option-item:hover { background: #f5f8fa; color: #3498db; }
+
+.no-results {
+  padding: 15px;
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .oo-page-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 12px;
+  }
+
+  .oo-filter-bar { gap: 8px; }
+  .filter-select { min-width: 130px; }
+  .tab-btn       { padding: 6px 10px; font-size: 12px; }
+
+  #open-order-chart1-container { min-height: 280px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Drill-down sections (Chart 2 & Chart 3)
+════════════════════════════════════════════════════════════════════════════ */
+
+/* Drill hint below chart1 */
+.oo-drill-hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+}
+.oo-drill-hint i { margin-right: 4px; }
+
+/* Drill-down card appears below chart1 */
+.oo-drilldown-card {
+  margin-top: 20px;
+  min-height: unset;
+}
+
+/* ─── Drill-down card header ────────────────────────────────────────────── */
+.oo-drilldown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.oo-drilldown-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.bc-root {
+  color: #3498db;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.bc-root:hover { color: #2980b9; text-decoration: underline; }
+
+.bc-sep { font-size: 10px; color: #bbb; }
+
+.bc-current {
+  color: #17212b;
+  font-weight: 600;
+}
+
+.bc-status-badge {
+  background: #eaf4fb;
+  color: #2980b9;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.oo-close-btn {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #888;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+.oo-close-btn:hover { background: #fdecea; color: #e74c3c; border-color: #e74c3c; }
+
+/* ─── Chart2 container ───────────────────────────────────────────────────── */
+#open-order-chart2-container {
+  width: 100%;
+  min-height: 420px;
+}
+
+/* ─── Tables wrapper (Chart 3) ───────────────────────────────────────────── */
+.oo-tables-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+@media (max-width: 900px) {
+  .oo-tables-wrapper { grid-template-columns: 1fr; }
+}
+
+.oo-table-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.oo-table-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+.oo-table-title i { color: #3498db; }
+
+.oo-count-badge {
+  background: #3498db;
+  color: #fff;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.oo-table-scroll {
+  overflow-x: auto;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.oo-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.oo-data-table th {
+  background: #f8f9fa;
+  color: #555;
+  font-weight: 600;
+  padding: 9px 12px;
+  text-align: left;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.oo-data-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #444;
+  vertical-align: middle;
+}
+
+.oo-data-table tbody tr:last-child td { border-bottom: none; }
+
+.oo-data-table tbody tr:hover td { background: #f8fbff; }
+
+.oo-data-table .text-right { text-align: right; }
+
+.oo-no-data {
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
+  padding: 24px 0;
+  margin: 0;
+}

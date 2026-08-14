@@ -1,0 +1,133 @@
+<app-pageheader title="Target Vs Sales Report" [breadcrumbs]="breadcrumbs"></app-pageheader>
+
+<div class="tvs-page-content">
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <div class="filter-controls">
+      <!-- 1. Select Region Dropdown -->
+      <div class="dropdown-wrapper">
+        <div class="dropdown-trigger" (click)="toggleRegionDropdown()" [class.active]="regionDropdownOpen">
+          <span>{{ selectedRegionLabel }}</span>
+          <i class="fas fa-chevron-down ms-2"></i>
+        </div>
+        <div class="dropdown-panel" *ngIf="regionDropdownOpen">
+          <div class="dropdown-search">
+            <input type="text" placeholder="Search region..." [(ngModel)]="regionSearchQuery" (click)="$event.stopPropagation()">
+          </div>
+          <div class="dropdown-options">
+            <div class="dropdown-option" (click)="selectRegion(null)" [class.selected]="selectedRegionId === null">
+              Select Region
+            </div>
+            <div class="dropdown-option" *ngFor="let r of filteredRegions" (click)="selectRegion(r.id)" [class.selected]="selectedRegionId === r.id">
+              {{ r.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Select Users Dropdown -->
+      <div class="dropdown-wrapper">
+        <div class="dropdown-trigger" (click)="toggleUserDropdown()" [class.active]="userDropdownOpen">
+          <span>{{ selectedUserLabel }}</span>
+          <i class="fas fa-chevron-down ms-2"></i>
+        </div>
+        <div class="dropdown-panel" *ngIf="userDropdownOpen">
+          <div class="dropdown-search">
+            <input type="text" placeholder="Search users..." [(ngModel)]="userSearchQuery" (click)="$event.stopPropagation()">
+          </div>
+          <div class="dropdown-options">
+            <div class="dropdown-option" (click)="selectUser(null)" [class.selected]="selectedUserId === null">
+              Select Users
+            </div>
+            <div class="dropdown-option" *ngFor="let u of filteredUsers" (click)="selectUser(u.id)" [class.selected]="selectedUserId === u.id">
+              {{ u.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Time Horizon Tabs (Week, Month, Quarter, Year) -->
+      <div class="horizon-tabs">
+        <button type="button" class="tab-btn" [class.active]="selectedVtime === 'w'" (click)="setVtime('w')">Week</button>
+        <button type="button" class="tab-btn" [class.active]="selectedVtime === 'm'" (click)="setVtime('m')">Month</button>
+        <button type="button" class="tab-btn" [class.active]="selectedVtime === 'q'" (click)="setVtime('q')">Quarter</button>
+        <button type="button" class="tab-btn" [class.active]="selectedVtime === 'y'" (click)="setVtime('y')">Year</button>
+      </div>
+
+      <!-- 4. View Mode Radio Buttons (By Graph / By Table) -->
+      <div class="view-radio-group">
+        <label class="radio-label">
+          <input type="radio" name="viewMode" value="graph" [(ngModel)]="viewMode" (change)="onViewModeChange()">
+          <span class="radio-custom"></span>
+          By Graph
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="viewMode" value="table" [(ngModel)]="viewMode" (change)="onViewModeChange()">
+          <span class="radio-custom"></span>
+          By Table
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading Target Vs Sales data...</span>
+    </div>
+    <p class="mt-2 text-muted">Calculating Target Vs Sales metrics...</p>
+  </div>
+
+  <!-- Content Container -->
+  <div class="report-content" *ngIf="!isLoading">
+    <!-- GRAPH VIEW -->
+    <div class="chart-card" [hidden]="viewMode !== 'graph'">
+      <div id="targetVsSalesChart" class="highcharts-container"></div>
+    </div>
+
+    <!-- TABLE VIEW -->
+    <div class="table-card" *ngIf="viewMode === 'table'">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm">
+          <thead class="table-header">
+            <tr>
+              <th>Category</th>
+              <th>Group / Segment</th>
+              <th class="text-end">Previous Target</th>
+              <th class="text-end">Previous Sales</th>
+              <th class="text-end">Backlog</th>
+              <th class="text-end">Current Target</th>
+              <th class="text-end">Current Sales</th>
+              <th class="text-end">Open Orders</th>
+              <th class="text-end text-danger">Hot</th>
+              <th class="text-end text-warning">Warm</th>
+              <th class="text-end text-primary">Cold</th>
+              <th class="text-end fw-bold">Pending</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of tableRows">
+              <td class="fw-semibold">{{ row.categoryName }}</td>
+              <td>{{ row.groupName }}</td>
+              <td class="text-end">{{ row.previousTarget | number:'1.2-2' }}</td>
+              <td class="text-end">{{ row.previousSales | number:'1.2-2' }}</td>
+              <td class="text-end text-success fw-semibold">{{ row.backlog | number:'1.2-2' }}</td>
+              <td class="text-end fw-semibold" style="color: #d4a017;">{{ row.currentTarget | number:'1.2-2' }}</td>
+              <td class="text-end fw-semibold" style="color: #9B27B0;">{{ row.currentSales | number:'1.2-2' }}</td>
+              <td class="text-end fw-semibold" style="color: #795548;">{{ row.openOrders | number:'1.2-2' }}</td>
+              <td class="text-end text-danger fw-semibold">{{ row.hot | number:'1.2-2' }}</td>
+              <td class="text-end text-warning fw-semibold">{{ row.warm | number:'1.2-2' }}</td>
+              <td class="text-end text-primary fw-semibold">{{ row.cold | number:'1.2-2' }}</td>
+              <td class="text-end fw-bold text-dark">{{ row.pending | number:'1.2-2' }}</td>
+            </tr>
+            <tr *ngIf="tableRows.length === 0">
+              <td colspan="12" class="text-center py-4 text-muted">
+                No target vs sales records found for the selected filter criteria.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

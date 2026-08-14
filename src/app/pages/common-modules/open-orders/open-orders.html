@@ -1,0 +1,264 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  title="Open Order Report"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<div class="oo-page-content">
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       Filter Bar
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="oo-filter-bar">
+
+    <!-- Region dropdown (only for certain roles) -->
+    <div class="filter-control custom-dropdown-container" *ngIf="showRegionDropdown">
+      <div class="dropdown-trigger" [class.active]="regionDropdownOpen" (click)="regionDropdownOpen = !regionDropdownOpen">
+        <span class="trigger-text">{{ selectedRegionName }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      <div class="dropdown-panel" *ngIf="regionDropdownOpen">
+        <ul class="options-list">
+          <li class="option-item" (click)="clearRegion()">All Regions</li>
+          <li class="option-item"
+              *ngFor="let r of regions"
+              (click)="selectRegion(r)">{{ r.label }}</li>
+          <li class="no-results" *ngIf="regions.length === 0">No regions found</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- User searchable dropdown -->
+    <div class="filter-control custom-dropdown-container">
+      <div class="dropdown-trigger" [class.active]="dropdownOpen" (click)="dropdownOpen = !dropdownOpen">
+        <span class="trigger-text">{{ selectedUserName }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      <div class="dropdown-panel" *ngIf="dropdownOpen">
+        <div class="search-box-wrapper">
+          <input
+            type="text"
+            class="dropdown-search-input"
+            placeholder="Search user..."
+            [(ngModel)]="searchQuery"
+            (click)="$event.stopPropagation()">
+        </div>
+        <ul class="options-list">
+          <li class="option-item" (click)="clearUser()">All Users</li>
+          <li class="option-item"
+              *ngFor="let u of filteredUsers"
+              (click)="selectUser(u)">{{ u.label }}</li>
+          <li class="no-results" *ngIf="filteredUsers.length === 0">No users found</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right filters -->
+    <div class="oo-right-filters">
+
+      <!-- Period sub-selector -->
+      <div class="filter-control" *ngIf="selectedViewTime !== 'y' && selectedViewTime !== 'a'">
+        <select *ngIf="selectedViewTime === 'w'" id="ooWeekSelect"
+          class="filter-select" [(ngModel)]="selectedWeek" (ngModelChange)="onPeriodChange()">
+          <option *ngFor="let w of weeks" [ngValue]="w">{{ w.label }}</option>
+        </select>
+        <select *ngIf="selectedViewTime === 'm'" id="ooMonthSelect"
+          class="filter-select" [(ngModel)]="selectedMonth" (ngModelChange)="onPeriodChange()">
+          <option *ngFor="let m of months" [ngValue]="m">{{ m.label }}</option>
+        </select>
+        <select *ngIf="selectedViewTime === 'q'" id="ooQuarterSelect"
+          class="filter-select" [(ngModel)]="selectedQuarter" (ngModelChange)="onPeriodChange()">
+          <option *ngFor="let q of quarters" [ngValue]="q">{{ q.label }}</option>
+        </select>
+      </div>
+
+      <!-- View-time tabs -->
+      <div class="view-time-tabs">
+        <button id="ooTabWeek"    class="tab-btn" [class.active]="selectedViewTime === 'w'"
+          (click)="selectedViewTime = 'w'; onViewTimeChange()">Week</button>
+        <button id="ooTabMonth"   class="tab-btn" [class.active]="selectedViewTime === 'm'"
+          (click)="selectedViewTime = 'm'; onViewTimeChange()">Month</button>
+        <button id="ooTabQuarter" class="tab-btn" [class.active]="selectedViewTime === 'q'"
+          (click)="selectedViewTime = 'q'; onViewTimeChange()">Quarter</button>
+        <button id="ooTabYear"    class="tab-btn" [class.active]="selectedViewTime === 'y'"
+          (click)="selectedViewTime = 'y'; onViewTimeChange()">Year</button>
+        <button id="ooTabAll"     class="tab-btn" [class.active]="selectedViewTime === 'a'"
+          (click)="selectedViewTime = 'a'; onViewTimeChange()">All</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       Chart 1 – Category-wise Open Orders
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="oo-chart-card">
+    <div class="oo-loading-overlay" *ngIf="isLoading">
+      <div class="oo-spinner"></div>
+      <p>Loading chart data…</p>
+    </div>
+    <div class="oo-error-state" *ngIf="hasError && !isLoading">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ errorMessage || 'Failed to load chart. Please try again.' }}</p>
+      <button class="oo-retry-btn" (click)="loadChart()">Retry</button>
+    </div>
+    <div
+      id="open-order-chart1-container"
+      class="oo-chart-container"
+      [class.oo-chart-ready]="!isLoading && !hasError">
+    </div>
+    <p class="oo-drill-hint" *ngIf="!isLoading && !hasError">
+      <i class="fas fa-hand-pointer"></i> Click a bar to drill down by segment
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       Chart 2 – Segment-wise drill-down
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="oo-chart-card oo-drilldown-card" *ngIf="chart2Visible">
+
+    <!-- Card header -->
+    <div class="oo-drilldown-header">
+      <div class="oo-drilldown-breadcrumb">
+        <span class="bc-root" (click)="closeChart2()">Categories</span>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">{{ chart2Context?.categoryName }}</span>
+        <span class="bc-status-badge">{{ chart2Context?.seriesName }}</span>
+      </div>
+      <button class="oo-close-btn" (click)="closeChart2()" title="Close drill-down">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="oo-loading-overlay" *ngIf="chart2Loading">
+      <div class="oo-spinner"></div>
+      <p>Loading segment data…</p>
+    </div>
+
+    <!-- Error -->
+    <div class="oo-error-state" *ngIf="chart2Error && !chart2Loading">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ chart2ErrorMsg }}</p>
+      <button class="oo-retry-btn"
+        (click)="onChart1BarClick(chart2Context!)">Retry</button>
+    </div>
+
+    <!-- Chart -->
+    <div
+      id="open-order-chart2-container"
+      class="oo-chart-container"
+      [class.oo-chart-ready]="!chart2Loading && !chart2Error">
+    </div>
+
+    <p class="oo-drill-hint" *ngIf="!chart2Loading && !chart2Error">
+      <i class="fas fa-hand-pointer"></i> Click a segment bar to view customers & products
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       Chart 3 – Customer & Product tables
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="oo-chart-card oo-drilldown-card" *ngIf="chart3Visible">
+
+    <!-- Card header -->
+    <div class="oo-drilldown-header">
+      <div class="oo-drilldown-breadcrumb">
+        <span class="bc-root" (click)="closeChart2()">Categories</span>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-root" (click)="closeChart3()">{{ chart2Context?.categoryName }}</span>
+        <i class="fas fa-chevron-right bc-sep"></i>
+        <span class="bc-current">{{ chart3Context?.segmentName }}</span>
+        <span class="bc-status-badge">{{ chart2Context?.seriesName }}</span>
+      </div>
+      <button class="oo-close-btn" (click)="closeChart3()" title="Close tables">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="oo-loading-overlay" *ngIf="chart3Loading">
+      <div class="oo-spinner"></div>
+      <p>Loading customer & product data…</p>
+    </div>
+
+    <!-- Error -->
+    <div class="oo-error-state" *ngIf="chart3Error && !chart3Loading">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>{{ chart3ErrorMsg }}</p>
+    </div>
+
+    <!-- Tables -->
+    <div class="oo-tables-wrapper" *ngIf="!chart3Loading && !chart3Error">
+
+      <!-- Customer Table -->
+      <div class="oo-table-section">
+        <h4 class="oo-table-title">
+          <i class="fas fa-building"></i> Customers
+          <span class="oo-count-badge">{{ chart3Customers.length }}</span>
+        </h4>
+        <div class="oo-table-scroll">
+          <table class="oo-data-table" *ngIf="chart3Customers.length > 0; else noCustomers">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Location</th>
+                <th class="text-right">Value (₹ L)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of chart3Customers; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ c.name }}</td>
+                <td>{{ c.location }}</td>
+                <td class="text-right">{{ c.totalOrders | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noCustomers>
+            <p class="oo-no-data">No customer data for this selection.</p>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Product Table -->
+      <div class="oo-table-section">
+        <h4 class="oo-table-title">
+          <i class="fas fa-box"></i> Products
+          <span class="oo-count-badge">{{ chart3Products.length }}</span>
+        </h4>
+        <div class="oo-table-scroll">
+          <table class="oo-data-table" *ngIf="chart3Products.length > 0; else noProducts">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th>Description</th>
+                <th>Segment</th>
+                <th class="text-right">Qty</th>
+                <th class="text-right">Value (₹ L)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of chart3Products; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ p.productName }}</td>
+                <td>{{ p.productDescription }}</td>
+                <td>{{ p.segmentName }}</td>
+                <td class="text-right">{{ p.qty | number:'1.0-0' }}</td>
+                <td class="text-right">{{ p.totalOrders | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #noProducts>
+            <p class="oo-no-data">No product data for this selection.</p>
+          </ng-template>
+        </div>
+      </div>
+
+    </div><!-- /oo-tables-wrapper -->
+  </div><!-- /chart3 card -->
+
+</div><!-- /oo-page-content -->

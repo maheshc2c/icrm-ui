@@ -1,0 +1,236 @@
+<app-pageheader title="Stock In Hand Report" [breadcrumbs]="breadcrumbs"></app-pageheader>
+
+<div class="sih-page-content">
+  <!-- Datatable Toolbar (Matching Product List UI) -->
+  <div class="datatable-toolbar">
+    <div class="search-group">
+      <!-- 1. Category Field -->
+      <div class="search-field">
+        <label class="search-label">Category</label>
+        <div class="dropdown-wrapper">
+          <div class="dropdown-trigger" (click)="toggleCategoryDropdown()" [class.active]="categoryDropdownOpen">
+            <span class="trigger-text">{{ selectedCategoryLabel }}</span>
+            <i class="fas fa-chevron-down arrow-icon"></i>
+          </div>
+          <div class="dropdown-panel" *ngIf="categoryDropdownOpen">
+            <div class="dropdown-search">
+              <input type="text" placeholder="Search category..." [(ngModel)]="categorySearchQuery" (click)="$event.stopPropagation()">
+            </div>
+            <div class="dropdown-options">
+              <div class="dropdown-option" (click)="selectCategory(null)" [class.selected]="selectedCategoryId === null">
+                Select Category
+              </div>
+              <div class="dropdown-option" *ngFor="let c of filteredCategories" (click)="selectCategory(c.id)" [class.selected]="selectedCategoryId === c.id">
+                {{ c.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Segment Field -->
+      <div class="search-field">
+        <label class="search-label">Segment</label>
+        <div class="dropdown-wrapper">
+          <div class="dropdown-trigger" (click)="toggleGroupDropdown()" [class.active]="groupDropdownOpen">
+            <span class="trigger-text">{{ selectedGroupLabel }}</span>
+            <i class="fas fa-chevron-down arrow-icon"></i>
+          </div>
+          <div class="dropdown-panel" *ngIf="groupDropdownOpen">
+            <div class="dropdown-search">
+              <input type="text" placeholder="Search segment..." [(ngModel)]="groupSearchQuery" (click)="$event.stopPropagation()">
+            </div>
+            <div class="dropdown-options">
+              <div class="dropdown-option" (click)="selectGroup(null)" [class.selected]="selectedGroupId === null">
+                Select Segment
+              </div>
+              <div class="dropdown-option" *ngFor="let g of filteredGroups" (click)="selectGroup(g.id)" [class.selected]="selectedGroupId === g.id">
+                {{ g.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Product Field -->
+      <div class="search-field">
+        <label class="search-label">Product</label>
+        <div class="dropdown-wrapper">
+          <div class="dropdown-trigger" (click)="toggleProductDropdown()" [class.active]="productDropdownOpen">
+            <span class="trigger-text">{{ selectedProductLabel }}</span>
+            <i class="fas fa-chevron-down arrow-icon"></i>
+          </div>
+          <div class="dropdown-panel" *ngIf="productDropdownOpen">
+            <div class="dropdown-search">
+              <input type="text" placeholder="Search product..." [(ngModel)]="productSearchQuery" (click)="$event.stopPropagation()">
+            </div>
+            <div class="dropdown-options">
+              <div class="dropdown-option" (click)="selectProduct(null)" [class.selected]="selectedProductId === null">
+                Select Product
+              </div>
+              <div class="dropdown-option" *ngFor="let p of filteredProducts" (click)="selectProduct(p.id)" [class.selected]="selectedProductId === p.id">
+                {{ p.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Icon Buttons (Matching Product List app-button icon-btn design) -->
+    <div class="filter-actions icon-actions">
+      <button class="icon-btn" (click)="applySearch()" title="Search">
+        <i class="fas fa-search"></i>
+      </button>
+      <button class="icon-btn" (click)="downloadExcel()" title="Download Excel">
+        <i class="fas fa-cloud-download-alt"></i>
+      </button>
+      <button class="icon-btn" (click)="resetFilters()" title="Refresh">
+        <i class="fas fa-sync"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading Stock In Hand data...</span>
+    </div>
+    <p class="mt-2 text-muted">Fetching Stock In Hand records...</p>
+  </div>
+
+  <!-- Main Report Table Card (Matching Product List Soft Header Styling) -->
+  <div class="table-card shadow-sm" *ngIf="!isLoading">
+    <div class="table-responsive w-100">
+      <!-- Level 1 Category Table -->
+      <table class="table sih-table w-100 align-middle mb-0">
+        <thead class="sih-pink-header">
+          <tr>
+            <th style="width: 50px;" class="text-center"></th>
+            <th class="text-center sortable-header" (click)="toggleSort('categoryName')">
+              CATEGORY
+              <i class="fas ms-1" [ngClass]="getSortIcon('categoryName')"></i>
+            </th>
+            <th class="text-end sortable-header pe-4" style="width: 250px;" (click)="toggleSort('quantity')">
+              QUANTITY
+              <i class="fas ms-1" [ngClass]="getSortIcon('quantity')"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let cat of reportData?.categories">
+            <!-- Level 1 Row -->
+            <tr class="category-row">
+              <td class="text-center" style="width: 50px;">
+                <button class="btn-expand-symbol" (click)="toggleCategoryExpand(cat.categoryId)">
+                  <i class="fas" [ngClass]="isCategoryExpanded(cat.categoryId) ? 'fa-minus' : 'fa-plus'"></i>
+                </button>
+              </td>
+              <td class="fw-semibold text-dark ps-3">{{ cat.categoryName }}</td>
+              <td class="text-end fw-bold text-dark pe-4">{{ cat.totalCategoryQuantity | number:'1.0-2' }}</td>
+            </tr>
+
+            <!-- Level 2 Segment Sub-Table (Expanded under Category) -->
+            <tr *ngIf="isCategoryExpanded(cat.categoryId)">
+              <td colspan="3" class="p-3 bg-light">
+                <table class="table sih-table w-100 align-middle mb-0 bg-white border">
+                  <thead class="sih-pink-header">
+                    <tr>
+                      <th style="width: 50px;" class="text-center"></th>
+                      <th style="width: 60px;" class="text-center">S.NO</th>
+                      <th class="text-center">SEGMENT</th>
+                      <th class="text-end pe-4" style="width: 250px;">QUANTITY</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let seg of cat.segments; let i = index">
+                      <tr class="segment-row">
+                        <td class="text-center" style="width: 50px;">
+                          <button class="btn-expand-symbol" (click)="toggleSegmentExpand(seg.groupId)">
+                            <i class="fas" [ngClass]="isSegmentExpanded(seg.groupId) ? 'fa-minus' : 'fa-plus'"></i>
+                          </button>
+                        </td>
+                        <td class="text-center fw-semibold text-muted">{{ i + 1 }}</td>
+                        <td class="fw-semibold text-dark ps-3">{{ seg.groupName }}</td>
+                        <td class="text-end fw-bold text-dark pe-4">{{ seg.totalSegmentQuantity | number:'1.0-2' }}</td>
+                      </tr>
+
+                      <!-- Level 3 Product Sub-Table (Expanded under Segment) -->
+                      <tr *ngIf="isSegmentExpanded(seg.groupId)">
+                        <td colspan="4" class="p-3 bg-white">
+                          <table class="table sih-table w-100 align-middle mb-0 bg-white border">
+                            <thead class="sih-pink-header">
+                              <tr>
+                                <th style="width: 60px;" class="text-center">S.NO</th>
+                                <th class="text-center">PRODUCT</th>
+                                <th class="text-center">DESCRIPTION</th>
+                                <th class="text-end pe-4" style="width: 250px;">QUANTITY</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let prod of seg.products; let pIdx = index">
+                                <td class="text-center text-muted">{{ pIdx + 1 }}</td>
+                                <td class="fw-semibold text-dark ps-3">{{ prod.productCode }}</td>
+                                <td class="text-secondary text-center">{{ prod.description || prod.productCode }}</td>
+                                <td class="text-end fw-bold text-success pe-4">{{ prod.quantity | number:'1.0-2' }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </ng-container>
+
+          <tr *ngIf="!reportData?.categories || reportData?.categories?.length === 0">
+            <td colspan="3" class="text-center py-4 text-muted">
+              No stock in hand records found for the selected criteria.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Application Shared Pagination Container (Matching Product List UI) -->
+  <div class="pagination-container" *ngIf="totalElements > 0">
+    <div class="pagination-info">
+      Showing {{ getFromIndex() }} to {{ getToIndex() }} of {{ totalElements }} records
+    </div>
+
+    <div class="pagination-right">
+      <div class="pagination-controls">
+        <button (click)="goToPage(pageNumber - 1)" [disabled]="pageNumber === 0">
+          Prev
+        </button>
+
+        <button *ngFor="let p of getPagesArray()" [class.active]="p === pageNumber" (click)="goToPage(p)">
+          {{ p + 1 }}
+        </button>
+
+        <button (click)="goToPage(pageNumber + 1)" [disabled]="pageNumber >= totalPages - 1">
+          Next
+        </button>
+      </div>
+
+      <!-- Custom Page Size Dropdown matching Product List -->
+      <div class="custom-dropdown-container page-size-dropdown">
+        <div class="dropdown-trigger" [class.active]="openPageSizeDropdown" (click)="togglePageSizeDropdown($event)">
+          <span class="trigger-text">{{ pageSize }}</span>
+          <i class="fas fa-chevron-down arrow-icon"></i>
+        </div>
+
+        <div class="dropdown-panel small-panel" *ngIf="openPageSizeDropdown">
+          <ul class="options-list">
+            <li class="option-item" *ngFor="let opt of [10, 25, 50, 100]" (click)="selectPageSize(opt)">
+              {{ opt }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

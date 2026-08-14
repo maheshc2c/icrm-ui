@@ -258,7 +258,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/regional-branch-head/so-number-entry/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/regional-branch-head/so-number-entry/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/regional-branch-head/dashboard' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -372,7 +372,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/so-number-entry/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/so-number-entry/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/regional-sales-manager-dashboard/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -467,7 +467,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/dashboard/opportunity/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/dashboard/opportunity/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/country-head/dashboard/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -558,7 +558,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/globalhead-dashboard/opportunity/open' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/globalhead-dashboard/opportunity/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/globalhead-dashboard/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -623,7 +623,7 @@ constructor() {
             { label: 'Margin Analysis', icon: 'fas fa-chart-pie', route: `/margin-analysis` },
             { label: 'Margin Analysis (C-Note)', icon: 'fas fa-chart-pie', route: `/reports/margin-analysis-c-note` },
             { label: 'Opportunity Lost', icon: 'fas fa-chart-bar', route: '/reports/opportunity-lost' },
-            { label: 'Open Orders', icon: 'fas fa-box-open', route: `/open-order-reports` },
+            { label: 'Open Orders', icon: 'fas fa-box-open', route: `/reports/open-orders` },
             { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: `/stock-in-hand-report` },
             { label: 'Fresh Business', icon: 'fas fa-briefcase', route: `/fresh-business` },
             { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: `/target-sales-report` },
@@ -654,7 +654,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: `/opportunity/open` },
             { label: 'Closed', icon: 'fas fa-folder', route: `/opportunity/closed` },
-            { label: 'Funnel History', icon: 'fas fa-history', route: `/funnel-history` }
+            { label: 'Funnel History', icon: 'fas fa-history', route: `/OppurtunityStatus/FunnelHistory` }
           ]
         },
         {
@@ -780,7 +780,7 @@ constructor() {
         children: [
           { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
           { label: 'Closed', icon: 'fas fa-check-circle', route: '/salesmanager/closed-opportunities' },
-          { label: 'Funnel History', icon: 'fas fa-history', route: '/salesmanager/funnel-history' }
+          { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
         ]
       },
       {
@@ -844,7 +844,7 @@ constructor() {
       children: [
           { label: 'Funnel Report', icon: 'fas fa-filter', route: '/' },
           { label: 'Oppurtunity Lost', icon: 'fas fa-face-frown', route: '/' },
-          { label: 'Open Orders', icon: 'fas fa-box-open', route: '/' },
+          { label: 'Open Orders', icon: 'fas fa-box-open', route: '/reports/open-orders' },
           { label: 'Stock In Hand', icon: 'fas fa-warehouse', route: '/' },
           { label: 'Fresh Business Report', icon: 'fas fa-seedling', route: '/' },
           { label: 'Target Vs Sales', icon: 'fas fa-bullseye', route: '/' },
