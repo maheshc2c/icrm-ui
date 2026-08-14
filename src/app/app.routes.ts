@@ -173,7 +173,18 @@ export const routes: Routes = [
     {
       path: 'reports/margin-analysis-c-note',
       loadComponent: () =>
-        import('./pages/common-modules/reports/margin-analysis-report/margin-analysis-report').then(m => m.MarginAnalysisReportComponent),
+        import('./pages/common-modules/reports/cnote-margin-report/cnote-margin-report').then(m => m.CNoteMarginReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Regional Branch Head', 'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'cnote_margin_analysis',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/cnote-margin-report/cnote-margin-report').then(m => m.CNoteMarginReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
