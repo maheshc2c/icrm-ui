@@ -1,0 +1,165 @@
+<app-pageheader title="Outstanding Report" [breadcrumbs]="breadcrumbs"></app-pageheader>
+
+<div class="sih-page-content">
+  <!-- Datatable Toolbar (Matching Product List UI) -->
+  <div class="datatable-toolbar">
+    <div class="search-group">
+      <!-- 1. Select Region Dropdown -->
+      <div class="search-field">
+        <label class="search-label">Region</label>
+        <div class="dropdown-wrapper">
+          <div class="dropdown-trigger" (click)="toggleRegionDropdown()" [class.active]="regionDropdownOpen">
+            <span class="trigger-text">{{ selectedRegionLabel }}</span>
+            <i class="fas fa-chevron-down arrow-icon"></i>
+          </div>
+          <div class="dropdown-panel" *ngIf="regionDropdownOpen">
+            <div class="dropdown-options">
+              <div class="dropdown-option" (click)="selectRegion(null)" [class.selected]="selectedRegionId === null">
+                Select Region
+              </div>
+              <div class="dropdown-option" *ngFor="let r of regions" (click)="selectRegion(r.id)" [class.selected]="selectedRegionId === r.id">
+                {{ r.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Select Month Dropdown -->
+      <div class="search-field">
+        <label class="search-label">Month</label>
+        <div class="dropdown-wrapper">
+          <div class="dropdown-trigger" (click)="toggleMonthDropdown()" [class.active]="monthDropdownOpen">
+            <span class="trigger-text">{{ selectedMonthLabel }}</span>
+            <i class="fas fa-chevron-down arrow-icon"></i>
+          </div>
+          <div class="dropdown-panel" *ngIf="monthDropdownOpen">
+            <div class="dropdown-options">
+              <div class="dropdown-option" *ngFor="let m of months" (click)="selectMonth(m.id)" [class.selected]="selectedMonthId === m.id">
+                {{ m.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Select Year Dropdown -->
+      <div class="search-field">
+        <label class="search-label">Year</label>
+        <div class="dropdown-wrapper">
+          <div class="dropdown-trigger" (click)="toggleYearDropdown()" [class.active]="yearDropdownOpen">
+            <span class="trigger-text">{{ selectedYearId }}</span>
+            <i class="fas fa-chevron-down arrow-icon"></i>
+          </div>
+          <div class="dropdown-panel" *ngIf="yearDropdownOpen">
+            <div class="dropdown-options">
+              <div class="dropdown-option" *ngFor="let y of years" (click)="selectYear(y)" [class.selected]="selectedYearId === y">
+                {{ y }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Icon Buttons (Matching Product List app-button icon-btn design) -->
+    <div class="filter-actions icon-actions">
+      <button class="icon-btn" (click)="applySearch()" title="Search">
+        <i class="fas fa-search"></i>
+      </button>
+      <button class="icon-btn" (click)="downloadExcel()" title="Download Excel">
+        <i class="fas fa-cloud-download-alt"></i>
+      </button>
+      <button class="icon-btn" (click)="resetFilters()" title="Refresh">
+        <i class="fas fa-sync"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading Outstanding Report data...</span>
+    </div>
+    <p class="mt-2 text-muted">Fetching Outstanding Report records...</p>
+  </div>
+
+  <!-- Main Report Table Card (Matching Product List Soft Header Styling) -->
+  <div class="table-card shadow-sm" *ngIf="!isLoading">
+    <div class="table-responsive w-100">
+      <table class="table sih-table w-100 align-middle mb-0">
+        <thead class="sih-pink-header">
+          <tr>
+            <th style="width: 80px;" class="text-center">S.NO</th>
+            <th class="text-center">REGION</th>
+            <th class="text-end">OUTSTANDING AMOUNT (L)</th>
+            <th class="text-end">COLLECTIONS PLANNED FOR THE MONTH (L)</th>
+            <th class="text-end pe-4">MTD COLLECTIONS (L)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of reportData?.results; let i = index">
+            <td class="text-center text-muted fw-semibold">{{ item.sno || (i + 1) }}</td>
+            <td class="text-center fw-semibold text-dark">{{ item.regionName }}</td>
+            <td class="text-end fw-bold text-dark">{{ item.otAmount | number:'1.2-2' }}</td>
+            <td class="text-end fw-bold text-primary">{{ item.collectionsPlanned | number:'1.2-2' }}</td>
+            <td class="text-end fw-bold text-success pe-4">{{ item.actualCollections | number:'1.2-2' }}</td>
+          </tr>
+
+          <!-- Grand Summary Row -->
+          <tr class="summary-total-row" *ngIf="reportData?.results?.length > 0">
+            <td colspan="2" class="text-center fw-bold text-dark">TOTAL</td>
+            <td class="text-end fw-bold text-dark fs-6">{{ reportData?.totalOutstandingAmount | number:'1.2-2' }}</td>
+            <td class="text-end fw-bold text-primary fs-6">{{ reportData?.totalCollectionsPlanned | number:'1.2-2' }}</td>
+            <td class="text-end fw-bold text-success fs-6 pe-4">{{ reportData?.totalActualCollections | number:'1.2-2' }}</td>
+          </tr>
+
+          <tr *ngIf="!reportData?.results || reportData?.results?.length === 0">
+            <td colspan="5" class="text-center py-4 text-muted">
+              No records found.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Application Shared Pagination Container (Matching Product List UI) -->
+  <div class="pagination-container" *ngIf="totalElements > 0">
+    <div class="pagination-info">
+      Showing {{ getFromIndex() }} to {{ getToIndex() }} of {{ totalElements }} records
+    </div>
+
+    <div class="pagination-right">
+      <div class="pagination-controls">
+        <button (click)="goToPage(pageNumber - 1)" [disabled]="pageNumber === 0">
+          Prev
+        </button>
+
+        <button *ngFor="let p of getPagesArray()" [class.active]="p === pageNumber" (click)="goToPage(p)">
+          {{ p + 1 }}
+        </button>
+
+        <button (click)="goToPage(pageNumber + 1)" [disabled]="pageNumber >= totalPages - 1">
+          Next
+        </button>
+      </div>
+
+      <!-- Custom Page Size Dropdown -->
+      <div class="custom-dropdown-container page-size-dropdown">
+        <div class="dropdown-trigger" [class.active]="openPageSizeDropdown" (click)="togglePageSizeDropdown($event)">
+          <span class="trigger-text">{{ pageSize }}</span>
+          <i class="fas fa-chevron-down arrow-icon"></i>
+        </div>
+
+        <div class="dropdown-panel small-panel" *ngIf="openPageSizeDropdown">
+          <ul class="options-list">
+            <li class="option-item" *ngFor="let opt of [10, 25, 50, 100]" (click)="selectPageSize(opt)">
+              {{ opt }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

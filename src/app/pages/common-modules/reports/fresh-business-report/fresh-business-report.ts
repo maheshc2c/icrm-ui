@@ -1,282 +1,305 @@
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NgApexchartsModule, ChartComponent, ApexOptions } from 'ng-apexcharts';
-import { ReportsLayoutComponent } from '../reports-layout/reports-layout';
+import { FormsModule } from '@angular/forms';
+import { ReportService } from '../../../../service/report.service';
 import { Breadcrumb } from '../../../../models/breadcrumb';
+import { Pageheader } from '../../../../shared/pageheader/pageheader';
 
-export type ChartOptions = {
-  series: ApexOptions['series'];
-  chart: ApexOptions['chart'];
-  xaxis: ApexOptions['xaxis'];
-  yaxis: ApexOptions['yaxis'];
-  plotOptions: ApexOptions['plotOptions'];
-  dataLabels: ApexOptions['dataLabels'];
-  stroke: ApexOptions['stroke'];
-  colors: ApexOptions['colors'];
-  legend: ApexOptions['legend'];
-  grid: ApexOptions['grid'];
-  tooltip: ApexOptions['tooltip'];
-  title: ApexOptions['title'];
-};
+declare var Highcharts: any;
 
 @Component({
   selector: 'app-fresh-business-report',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ReportsLayoutComponent,
-    NgApexchartsModule
-  ],
+  imports: [CommonModule, FormsModule, Pageheader],
   templateUrl: './fresh-business-report.html',
   styleUrls: ['./fresh-business-report.css']
 })
-export class FreshBusinessReportComponent implements OnInit {
-  @ViewChild('chart') chart!: ChartComponent;
-  public chartOptions!: Partial<ChartOptions>;
+export class FreshBusinessReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  title = 'Fresh Business Report';
   breadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/dashboard' },
     { label: 'Fresh Business Report' }
   ];
 
-  filterForm!: FormGroup;
-  timelineOptions = ['Week', 'Month', 'Quarter', 'Year'];
-  dateOptions: string[] = [];
+  // Filter state
+  measure: number = 1;               // 1 = By Product, 2 = By Region
+  selectedViewTime: string = 'y';    // w | m | q | y
+  selectedUserId: number | null = null;
+  selectedRegionId: number | null = null;
 
-  // Mock data per timeline — each entry: { name, freshBusiness, repeatBusiness, freshPct, repeatPct }
-  mockData: Record<string, Record<string, any[]>> = {
-    product: {
-      Week: [
-        { name: 'Oracle', freshBusiness: 0, repeatBusiness: 7.5, freshPct: 0, repeatPct: 100 }
-      ],
-      Month: [
-        { name: 'Oracle', freshBusiness: 0, repeatBusiness: 7.5, freshPct: 0, repeatPct: 100 }
-      ],
-      Quarter: [
-        { name: 'Oracle', freshBusiness: 0, repeatBusiness: 9, freshPct: 0, repeatPct: 100 },
-        { name: 'SAP',    freshBusiness: 0, repeatBusiness: 7.2, freshPct: 0, repeatPct: 100 }
-      ],
-      Year: [
-        { name: 'Oracle', freshBusiness: 6.84, repeatBusiness: 12,  freshPct: 36.31, repeatPct: 63.69 },
-        { name: 'SAP',    freshBusiness: 0,    repeatBusiness: 7.21, freshPct: 0,     repeatPct: 100 }
-      ]
-    },
-    region: {
-      Week: [
-        { name: 'South2', freshBusiness: 0, repeatBusiness: 7.5, freshPct: 0, repeatPct: 100 }
-      ],
-      Month: [
-        { name: 'South2', freshBusiness: 0, repeatBusiness: 7.5, freshPct: 0, repeatPct: 100 }
-      ],
-      Quarter: [
-        { name: 'South2', freshBusiness: 0, repeatBusiness: 16.2, freshPct: 0, repeatPct: 100 }
-      ],
-      Year: [
-        { name: 'South2', freshBusiness: 6.84, repeatBusiness: 19.21, freshPct: 26.26, repeatPct: 73.74 }
-      ]
-    }
-  };
+  // Dropdowns data
+  users: { id: number; label: string }[] = [];
+  regions: { id: number; label: string }[] = [];
 
-  constructor(private fb: FormBuilder) {
-    this.initChart();
-  }
+  dropdownOpen = false;
+  searchQuery = '';
+  regionDropdownOpen = false;
+  regionSearchQuery = '';
+
+  loading = false;
+  currentLevel = 1; // 1 = Main, 2 = Drilldown
+  selectedCategory: string = '';
+  customersList: any[] = [];
+
+  private chart: any = null;
+
+  constructor(private reportService: ReportService, private elementRef: ElementRef) {}
 
   ngOnInit(): void {
-    this.filterForm = this.fb.group({
-      reportType: ['product'],
-      region: [''],
-      user: [''],
-      date: [''],
-      timeline: ['Week']
-    });
-
-    this.updateDateOptions(this.filterForm.value.timeline);
-    this.updateChartData();
-
-    this.filterForm.valueChanges.subscribe(() => {
-      this.updateDateOptions(this.filterForm.value.timeline);
-      this.updateChartData();
-    });
+    this.loadDropdowns();
   }
 
-  updateDateOptions(timeline: string): void {
-    const currentDate = this.filterForm?.get('date')?.value;
-    if (timeline === 'Week') {
-      this.dateOptions = ['Week1 (2026-07-25 to 2026-07-31)', 'Week4 (2026-08-08 to 2026-08-14)'];
-      if (!currentDate || !this.dateOptions.includes(currentDate)) {
-        this.filterForm?.get('date')?.setValue(this.dateOptions[1], { emitEvent: false });
-      }
-    } else if (timeline === 'Month') {
-      this.dateOptions = ['Jul-26', 'Aug-26', 'Sep-26'];
-      if (!currentDate || !this.dateOptions.includes(currentDate)) {
-        this.filterForm?.get('date')?.setValue(this.dateOptions[1], { emitEvent: false });
-      }
-    } else if (timeline === 'Quarter') {
-      this.dateOptions = ['Quarter1', 'Quarter2', 'Quarter3', 'Quarter4'];
-      if (!currentDate || !this.dateOptions.includes(currentDate)) {
-        this.filterForm?.get('date')?.setValue(this.dateOptions[1], { emitEvent: false });
-      }
-    } else {
-      this.dateOptions = [];
-      this.filterForm?.get('date')?.setValue('', { emitEvent: false });
+  ngAfterViewInit(): void {
+    this.fetchReportData();
+  }
+
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy();
     }
   }
 
-  initChart(): void {
-    this.chartOptions = {
-      series: [],
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.dropdownOpen = false;
+      this.regionDropdownOpen = false;
+    }
+  }
+
+  loadDropdowns() {
+    this.reportService.getUsersForDropdown().subscribe({
+      next: (res) => (this.users = res),
+      error: (err) => console.error('Error fetching users:', err)
+    });
+
+    this.reportService.getRegionsForDropdown().subscribe({
+      next: (res) => (this.regions = res),
+      error: (err) => console.error('Error fetching regions:', err)
+    });
+  }
+
+  get filteredUsers() {
+    if (!this.searchQuery) return this.users;
+    return this.users.filter(u => u.label.toLowerCase().includes(this.searchQuery.toLowerCase()));
+  }
+
+  get selectedUserLabel() {
+    if (!this.selectedUserId) return 'Select User';
+    const u = this.users.find(u => u.id === this.selectedUserId);
+    return u ? u.label : 'Select User';
+  }
+
+  get filteredRegions() {
+    if (!this.regionSearchQuery) return this.regions;
+    return this.regions.filter(r => r.label.toLowerCase().includes(this.regionSearchQuery.toLowerCase()));
+  }
+
+  get selectedRegionLabel() {
+    if (!this.selectedRegionId) return 'Select Region';
+    const r = this.regions.find(r => r.id === this.selectedRegionId);
+    return r ? r.label : 'Select Region';
+  }
+
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+    if (this.dropdownOpen) {
+      this.regionDropdownOpen = false;
+    } else {
+      this.searchQuery = '';
+    }
+  }
+
+  selectUser(id: number | null) {
+    this.selectedUserId = id;
+    this.dropdownOpen = false;
+    this.searchQuery = '';
+    this.onFilterChange();
+  }
+
+  toggleRegionDropdown() {
+    this.regionDropdownOpen = !this.regionDropdownOpen;
+    if (this.regionDropdownOpen) {
+      this.dropdownOpen = false;
+    } else {
+      this.regionSearchQuery = '';
+    }
+  }
+
+  selectRegion(id: number | null) {
+    this.selectedRegionId = id;
+    this.regionDropdownOpen = false;
+    this.regionSearchQuery = '';
+    this.onFilterChange();
+  }
+
+  setViewTime(time: string) {
+    this.selectedViewTime = time;
+    this.onFilterChange();
+  }
+
+  onFilterChange() {
+    this.currentLevel = 1;
+    this.customersList = [];
+    this.fetchReportData();
+  }
+
+  resetDrilldown() {
+    this.currentLevel = 1;
+    this.customersList = [];
+    this.fetchReportData();
+  }
+
+  fetchReportData() {
+    this.loading = true;
+    const filter = {
+      measure: this.measure,
+      viewTime: this.selectedViewTime,
+      userId: this.selectedUserId,
+      regionId: this.selectedRegionId
+    };
+
+    this.reportService.getFreshBusinessReport(filter).subscribe({
+      next: (data) => {
+        this.loading = false;
+        this.renderChart(data);
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error loading fresh business report:', err);
+      }
+    });
+  }
+
+  fetchDrilldownData(categoryName: string) {
+    this.loading = true;
+    this.selectedCategory = categoryName;
+
+    const filter = {
+      measure: this.measure,
+      viewTime: this.selectedViewTime,
+      userId: this.selectedUserId,
+      regionId: this.selectedRegionId,
+      category: categoryName
+    };
+
+    this.reportService.getFreshBusinessDrillDown(filter).subscribe({
+      next: (data) => {
+        this.loading = false;
+        this.currentLevel = 2;
+        this.customersList = data.customers || [];
+        this.renderChart(data);
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error loading fresh business drilldown:', err);
+      }
+    });
+  }
+
+  renderChart(data: any) {
+    if (typeof Highcharts === 'undefined') {
+      console.warn('Highcharts script is not loaded');
+      return;
+    }
+
+    const categories = data.xAxisCategories || data.xaxisCategories || [];
+    const yTitle = data.yAxisTitle || data.yaxisTitle || 'Value in Lakhs';
+
+    const seriesData = (data.series || []).map((s: any) => {
+      const color = s.name === 'Fresh Business' ? '#D23641' : '#663399';
+      return {
+        name: s.name,
+        data: s.data,
+        color: color
+      };
+    });
+
+    const options: any = {
       chart: {
-        type: 'bar',
-        height: 420,
-        stacked: false,
-        toolbar: {
-          show: true,
-          tools: {
-            download: true,
-            selection: false,
-            zoom: false,
-            zoomin: false,
-            zoomout: false,
-            pan: false,
-            reset: false
-          }
-        }
+        type: 'column',
+        backgroundColor: 'transparent'
       },
       title: {
-        text: '',
-        align: 'center',
-        style: {
-          fontSize: '16px',
-          fontWeight: '500',
-          color: '#3f4254'
-        }
+        text: data.chartTitle || 'Fresh & Repeat Business report',
+        style: { fontSize: '18px', fontWeight: 'bold', color: '#333333' }
       },
-      colors: ['#e53935', '#5e35b1'],
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: '40%',
-          dataLabels: { position: 'top' }
-        }
-      },
-      dataLabels: {
-        enabled: true,
-        style: {
-          fontSize: '11px',
-          colors: ['#666']
-        },
-        formatter: function (val: number) {
-          if (val === 0) return '0';
-          return val.toString();
-        },
-        offsetY: -20
-      },
-      stroke: {
-        width: 2,
-        colors: ['transparent']
-      },
-      xaxis: {
-        categories: [],
-        title: {
-          text: '',
-        },
+      xAxis: {
+        categories: categories,
         labels: {
-          style: { colors: '#6b7280', fontSize: '12px' },
-          // Multi-line labels rendered via formatter
-          formatter: (val: string) => val
-        },
-        axisBorder: { show: true, color: '#dfe6ef' },
-        axisTicks: { show: true, color: '#dfe6ef' }
-      },
-      yaxis: {
-        title: {
-          text: 'Value in Lakhs',
-          style: { color: '#6b7280', fontWeight: '500' }
-        },
-        labels: {
-          style: { colors: '#6b7280', fontSize: '12px' }
-        }
-      },
-      tooltip: {
-        shared: true,
-        intersect: false,
-        y: {
-          formatter: (val: number, opts: any) => {
-            const seriesName: string = opts?.w?.globals?.seriesNames?.[opts?.seriesIndex] ?? '';
-            return `${seriesName}: ${val} Lacs`;
+          useHTML: true,
+          style: {
+            fontSize: '12px',
+            color: '#666666',
+            textAlign: 'center'
           }
+        }
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: yTitle,
+          style: { color: '#666666', fontWeight: '600' }
+        },
+        labels: {
+          style: { color: '#666666' }
         }
       },
       legend: {
-        position: 'top',
-        horizontalAlign: 'right',
-        markers: { size: 8 },
-        itemMargin: { horizontal: 10, vertical: 0 }
+        align: 'right',
+        verticalAlign: 'top',
+        layout: 'horizontal',
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#e2e8f0',
+        shadow: false
       },
-      grid: {
-        borderColor: '#f1f5f9',
-        yaxis: { lines: { show: true } },
-        xaxis: { lines: { show: false } }
-      }
-    };
-  }
-
-  updateChartData(): void {
-    const reportType = this.filterForm?.get('reportType')?.value || 'product';
-    const timeline = this.filterForm?.get('timeline')?.value || 'Week';
-
-    // Pick dataset based on reportType and current timeline
-    const data: any[] = this.mockData[reportType]?.[timeline] ?? [];
-
-    // Build x-axis categories as multi-line arrays for apexcharts
-    const categories = data.map(d => [
-      d.name,
-      `F-(${d.freshPct} %)`,
-      `R-(${d.repeatPct} %)`
-    ]);
-
-    const freshSeries = data.map(d => d.freshBusiness);
-    const repeatSeries = data.map(d => d.repeatBusiness);
-
-    if (this.chartOptions) {
-      this.chartOptions = {
-        ...this.chartOptions,
-        series: [
-          { name: 'Fresh Business', data: freshSeries },
-          { name: 'Repeat Business', data: repeatSeries }
-        ],
-        colors: ['#e53935', '#5e35b1'],
-        xaxis: {
-          ...this.chartOptions.xaxis,
-          categories: categories
-        },
-        title: {
-          ...this.chartOptions.title,
-          text: this.getChartTitle()
+      tooltip: {
+        useHTML: true,
+        headerFormat: '<span style="font-size:12px;font-weight:bold">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                     '<td style="padding:0"><b>{point.y:.2f} Lakhs</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useMutationObserver: true
+      },
+      plotOptions: {
+        column: {
+          grouping: true,
+          borderWidth: 0,
+          dataLabels: {
+            enabled: true,
+            formatter: function(this: any) {
+              return this.y > 0 ? this.y : null;
+            },
+            style: {
+              fontWeight: 'bold',
+              color: '#333333'
+            }
+          },
+          cursor: 'pointer',
+          point: {
+            events: {
+              click: (event: any) => {
+                if (this.currentLevel === 1) {
+                  let category = event.point.category;
+                  if (category && category.includes('<br>')) {
+                    category = category.split('<br>')[0].trim();
+                  }
+                  this.fetchDrilldownData(category);
+                }
+              }
+            }
+          }
         }
-      };
+      },
+      series: seriesData,
+      credits: { enabled: false }
+    };
+
+    if (this.chart) {
+      this.chart.destroy();
     }
-  }
-
-  getChartTitle(): string {
-    const reportType = this.filterForm?.get('reportType')?.value || 'product';
-    const timeline = this.filterForm?.get('timeline')?.value || 'Week';
-    const groupLabel = reportType === 'product' ? 'By Segment' : 'By Region';
-
-    if (timeline === 'Year') {
-      return `Fresh & Repeat Business report ${groupLabel} 2026-27`;
-    }
-
-    let val = this.filterForm?.get('date')?.value || '';
-
-    // For Week, strip the date range and keep only "Week4" etc.
-    if (timeline === 'Week' && val.includes('(')) {
-      val = val.split('(')[0].trim();
-    }
-
-    return `Fresh & Repeat Business report ${groupLabel} ( ${val} )`;
+    this.chart = Highcharts.chart('freshBusinessChart', options);
   }
 }

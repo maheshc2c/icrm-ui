@@ -78,7 +78,7 @@ export const routes: Routes = [
     {
       path: 'reports/stock-in-hand',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/stock-in-hand-report/stock-in-hand-report').then(m => m.StockInHandReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -102,7 +102,31 @@ export const routes: Routes = [
     {
       path: 'reports/target-vs-sales',
       loadComponent: () =>
-        import('./pages/common-modules/reports/target-vs-sales/target-vs-sales').then(m => m.TargetVsSalesComponent),
+        import('./pages/common-modules/reports/target-vs-sales-report/target-vs-sales-report').then(m => m.TargetVsSalesReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/stock-in-hand',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/stock-in-hand-report/stock-in-hand-report').then(m => m.StockInHandReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'stock_in_hand_table',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/stock-in-hand-report/stock-in-hand-report').then(m => m.StockInHandReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -114,7 +138,7 @@ export const routes: Routes = [
     {
       path: 'reports/runrate-projection',
       loadComponent: () =>
-        import('./pages/common-modules/reports/runrate-projection/runrate-projection').then(m => m.RunrateProjectionComponent),
+        import('./pages/common-modules/reports/runrate-projection-report/runrate-projection-report').then(m => m.RunrateProjectionReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -160,7 +184,18 @@ export const routes: Routes = [
     {
       path: 'reports/outstanding',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/outstanding-report/outstanding-report').then(m => m.OutstandingReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'get_new_outstanding_report',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/outstanding-report/outstanding-report').then(m => m.OutstandingReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [

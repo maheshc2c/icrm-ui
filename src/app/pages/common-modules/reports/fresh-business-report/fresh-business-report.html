@@ -1,93 +1,124 @@
-<app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
-  <div class="report-toolbar" [formGroup]="filterForm">
+<app-pageheader title="Fresh Business Report" [breadcrumbs]="breadcrumbs"></app-pageheader>
 
-    <!-- Radio Buttons -->
-    <div class="radio-group">
-      <label class="radio-option">
-        <input type="radio" formControlName="reportType" value="product" />
-        <span class="radio-checkmark"></span>
-        By Product
+<div class="fresh-page-content">
+
+  <!-- Filter Bar -->
+  <div class="fresh-filter-bar">
+
+    <!-- Radio Controls: By Product / By Region -->
+    <div class="radio-group-container">
+      <label class="radio-label">
+        <input type="radio" name="measureOpt" [value]="1" [(ngModel)]="measure" (change)="onFilterChange()">
+        <span class="radio-custom"></span>
+        <span class="radio-text">By Product</span>
       </label>
-      <label class="radio-option">
-        <input type="radio" formControlName="reportType" value="region" />
-        <span class="radio-checkmark"></span>
-        By Region
+      <label class="radio-label">
+        <input type="radio" name="measureOpt" [value]="2" [(ngModel)]="measure" (change)="onFilterChange()">
+        <span class="radio-custom"></span>
+        <span class="radio-text">By Region</span>
       </label>
     </div>
 
-    <!-- Select Region -->
-    <div class="toolbar-field">
-      <select class="form-select" formControlName="region">
-        <option value="">Select Region</option>
-        <option value="North">North</option>
-        <option value="South">South</option>
-        <option value="East">East</option>
-        <option value="West">West</option>
-      </select>
-    </div>
-
-    <!-- Select Users -->
-    <div class="toolbar-field">
-      <select class="form-select" formControlName="user">
-        <option value="">Select Users</option>
-        <option value="Swaroop">Swaroop (C2CAS103)</option>
-      </select>
-    </div>
-
-    <!-- Dynamic Date Dropdown (hidden for Year) -->
-    <div class="toolbar-field" *ngIf="dateOptions.length > 0">
-      <select class="form-select" formControlName="date">
-        <option *ngFor="let opt of dateOptions" [value]="opt">{{ opt }}</option>
-      </select>
-    </div>
-
-    <!-- Timeline Toggle -->
-    <div class="toolbar-field timeline-field">
-      <div class="timeline-toggle" role="tablist">
-        <button
-          type="button"
-          class="timeline-option"
-          [class.active]="filterForm.get('timeline')?.value === 'Week'"
-          (click)="filterForm.get('timeline')?.setValue('Week')"
-        >Week</button>
-        <button
-          type="button"
-          class="timeline-option"
-          [class.active]="filterForm.get('timeline')?.value === 'Month'"
-          (click)="filterForm.get('timeline')?.setValue('Month')"
-        >Month</button>
-        <button
-          type="button"
-          class="timeline-option"
-          [class.active]="filterForm.get('timeline')?.value === 'Quarter'"
-          (click)="filterForm.get('timeline')?.setValue('Quarter')"
-        >Quarter</button>
-        <button
-          type="button"
-          class="timeline-option year-option"
-          [class.active-year]="filterForm.get('timeline')?.value === 'Year'"
-          (click)="filterForm.get('timeline')?.setValue('Year')"
-        >Year</button>
+    <!-- Select Region Searchable Dropdown -->
+    <div class="filter-control custom-dropdown-container">
+      <div class="dropdown-trigger" [class.active]="regionDropdownOpen" (click)="toggleRegionDropdown()">
+        <span class="trigger-text">{{ selectedRegionLabel }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      
+      <div class="dropdown-panel" *ngIf="regionDropdownOpen">
+        <div class="search-box-wrapper">
+          <input type="text" class="dropdown-search-input" placeholder="Search region..." [(ngModel)]="regionSearchQuery" (click)="$event.stopPropagation()">
+        </div>
+        <ul class="options-list">
+          <li class="option-item" (click)="selectRegion(null)">Select Region</li>
+          <li class="option-item" *ngFor="let r of filteredRegions" (click)="selectRegion(r.id)">
+            {{ r.label }}
+          </li>
+          <li class="no-results" *ngIf="filteredRegions.length === 0">No regions found</li>
+        </ul>
       </div>
     </div>
 
+    <!-- Select Users Searchable Dropdown -->
+    <div class="filter-control custom-dropdown-container">
+      <div class="dropdown-trigger" [class.active]="dropdownOpen" (click)="toggleDropdown()">
+        <span class="trigger-text">{{ selectedUserLabel }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      
+      <div class="dropdown-panel" *ngIf="dropdownOpen">
+        <div class="search-box-wrapper">
+          <input type="text" class="dropdown-search-input" placeholder="Search user..." [(ngModel)]="searchQuery" (click)="$event.stopPropagation()">
+        </div>
+        <ul class="options-list">
+          <li class="option-item" (click)="selectUser(null)">Select Users</li>
+          <li class="option-item" *ngFor="let u of filteredUsers" (click)="selectUser(u.id)">
+            {{ u.label }}
+          </li>
+          <li class="no-results" *ngIf="filteredUsers.length === 0">No users found</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- View-Time Tabs (Week, Month, Quarter, Year) -->
+    <div class="view-time-tabs" style="margin-left: auto;">
+      <button class="tab-btn" [class.active]="selectedViewTime === 'w'" (click)="setViewTime('w')">Week</button>
+      <button class="tab-btn" [class.active]="selectedViewTime === 'm'" (click)="setViewTime('m')">Month</button>
+      <button class="tab-btn" [class.active]="selectedViewTime === 'q'" (click)="setViewTime('q')">Quarter</button>
+      <button class="tab-btn" [class.active]="selectedViewTime === 'y'" (click)="setViewTime('y')">Year</button>
+    </div>
+
   </div>
 
-  <div class="chart-container">
-    <apx-chart
-      #chart
-      [title]="chartOptions.title!"
-      [series]="chartOptions.series!"
-      [chart]="chartOptions.chart!"
-      [xaxis]="chartOptions.xaxis!"
-      [yaxis]="chartOptions.yaxis!"
-      [dataLabels]="chartOptions.dataLabels!"
-      [plotOptions]="chartOptions.plotOptions!"
-      [stroke]="chartOptions.stroke!"
-      [colors]="chartOptions.colors!"
-      [legend]="chartOptions.legend!"
-      [grid]="chartOptions.grid!"
-      [tooltip]="chartOptions.tooltip!"
-    ></apx-chart>
+  <!-- Chart Card -->
+  <div class="fresh-chart-card">
+    
+    <!-- Back Button for Drilldown -->
+    <div *ngIf="currentLevel === 2" class="mb-3">
+      <button class="back-btn" (click)="resetDrilldown()">
+        <i class="fas fa-arrow-left"></i> Back to Main Chart
+      </button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="chart-loading">
+      <div class="spinner"></div>
+      <span>Loading Fresh Business Report data...</span>
+    </div>
+
+    <!-- Highcharts Container -->
+    <div [hidden]="loading" id="freshBusinessChart" class="chart-container"></div>
+
+    <!-- Customer List Table for Level 2 -->
+    <div *ngIf="currentLevel === 2 && customersList.length > 0" class="data-table-container">
+      <h5 class="table-title">
+        <i class="fas fa-users me-2"></i> Customer Details for {{ selectedCategory }}
+      </h5>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width: 70px;">S.No</th>
+            <th>Customer Name</th>
+            <th class="text-center">Business Type</th>
+            <th class="text-end">Total Order Value (Lakhs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of customersList; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td style="font-weight: 600;">{{ c.customerName }}</td>
+            <td class="text-center">
+              <span class="badge-type" [class.fresh]="c.businessType === 'Fresh'" [class.repeat]="c.businessType === 'Repeat'">
+                {{ c.businessType }}
+              </span>
+            </td>
+            <td class="text-end" style="font-weight: 700;">{{ c.totalOrders | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
-</app-reports-layout>
+
+</div>
