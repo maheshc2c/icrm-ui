@@ -44,12 +44,14 @@ export class CNoteMarginReportComponent implements OnInit {
   isLoading = false;
   isDownloading = false;
 
-  // Pagination state
+  // Pagination & Sorting state
   currentPage = 1;
   pageSize = 10;
   totalRecords = 0;
   totalPages = 0;
   pageSizeOptions = [10, 25, 50, 100];
+  sortBy = 'cnoteId';
+  sortOrder = 'DESC';
 
   constructor(private reportService: ReportService) {}
 
@@ -103,8 +105,8 @@ export class CNoteMarginReportComponent implements OnInit {
       pagination: {
         pageNumber: this.currentPage - 1,
         pageSize: this.pageSize,
-        sortBy: 'cnoteId',
-        sortOrder: 'DESC'
+        sortBy: this.sortBy,
+        sortOrder: this.sortOrder
       }
     };
 
@@ -142,7 +144,13 @@ export class CNoteMarginReportComponent implements OnInit {
     this.totalPages = 0;
   }
 
-  onSearch(): void {
+  onSort(column: string): void {
+    if (this.sortBy === column) {
+      this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      this.sortBy = column;
+      this.sortOrder = 'ASC';
+    }
     this.currentPage = 1;
     this.loadReportData();
   }

@@ -169,6 +169,22 @@
   white-space: nowrap;
 }
 
+.report-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.report-table th.sortable:hover {
+  background-color: #f1beb6;
+}
+
+.report-table th i {
+  margin-left: 6px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
 .report-table td {
   padding: 10px 14px;
   border-bottom: 1px solid #f3f4f6;

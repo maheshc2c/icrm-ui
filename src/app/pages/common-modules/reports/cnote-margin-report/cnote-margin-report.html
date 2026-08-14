@@ -89,26 +89,60 @@
         <thead>
           <tr>
             <th class="text-center" style="width: 50px;">S.No</th>
-            <th>C-Note ID</th>
-            <th>Type</th>
-            <th>Customer Name</th>
-            <th>Sales Engineer</th>
-            <th>SO Number</th>
+            <th class="sortable" (click)="onSort('cnoteId')">
+              C-Note ID
+              <i class="fas" [ngClass]="sortBy === 'cnoteId' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('cnoteTypeLabel')">
+              Type
+              <i class="fas" [ngClass]="sortBy === 'cnoteTypeLabel' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('customerName')">
+              Customer Name
+              <i class="fas" [ngClass]="sortBy === 'customerName' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('salesEngineer')">
+              Sales Engineer
+              <i class="fas" [ngClass]="sortBy === 'salesEngineer' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('soNumber')">
+              SO Number
+              <i class="fas" [ngClass]="sortBy === 'soNumber' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('cnoteCreatedTime')">
+              C-Note Date
+              <i class="fas" [ngClass]="sortBy === 'cnoteCreatedTime' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
             <th>Product Details</th>
             <th>Region</th>
-            <th class="text-end">Order Value (₹)</th>
-            <th class="text-end">NSP (₹)</th>
+            <th class="text-end sortable" (click)="onSort('orderValue')">
+              Order Value (₹)
+              <i class="fas" [ngClass]="sortBy === 'orderValue' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="text-end sortable" (click)="onSort('netSellingPrice')">
+              NSP (₹)
+              <i class="fas" [ngClass]="sortBy === 'netSellingPrice' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
             <th class="text-end">Basic Price (₹)</th>
             <th class="text-end">Discount %</th>
             <th class="text-end">Warranty Cost (₹)</th>
             <th class="text-end">Finance Cost (₹)</th>
             <th class="text-end">Commission (₹)</th>
             <th class="text-end">Free Supply Cost (₹)</th>
-            <th class="text-end">Gross Margin (₹)</th>
+            <th class="text-end sortable" (click)="onSort('grossMargin')">
+              Gross Margin (₹)
+              <i class="fas" [ngClass]="sortBy === 'grossMargin' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
             <th class="text-end">Gross Margin %</th>
-            <th class="text-end">Net Margin (₹)</th>
+            <th class="text-end sortable" (click)="onSort('netMargin')">
+              Net Margin (₹)
+              <i class="fas" [ngClass]="sortBy === 'netMargin' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
             <th class="text-end">Net Margin %</th>
-            <th class="text-center">Status</th>
+            <th class="text-center sortable" (click)="onSort('orderStatusLabel')">
+              Status
+              <i class="fas" [ngClass]="sortBy === 'orderStatusLabel' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
           </tr>
         </thead>
         <tbody>
