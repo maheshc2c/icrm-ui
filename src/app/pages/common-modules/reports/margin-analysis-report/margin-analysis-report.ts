@@ -131,8 +131,12 @@ export class MarginAnalysisReportComponent implements OnInit {
     });
   }
 
-  toggleRow(row: any): void {
-    row.expanded = !row.expanded;
+   toggleRow(row: any): void {
+    const isCurrentlyExpanded = row.expanded;
+    // Collapse all rows first
+    this.rows.forEach(r => r.expanded = false);
+    // Expand the clicked row only if it wasn't already expanded
+    row.expanded = !isCurrentlyExpanded;
   }
 
   getSubTotalQty(row: any): number {

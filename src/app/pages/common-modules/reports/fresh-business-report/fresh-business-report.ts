@@ -67,28 +67,27 @@ export class FreshBusinessReportComponent implements OnInit, AfterViewInit, OnDe
     }
   }
 
-  loadDropdowns(): void {
+  loadDropdowns() {
     this.reportService.getUsersForDropdown().subscribe({
       next: (res) => (this.users = res),
-      error: (err) => console.error('Error fetching users for dropdown', err)
+      error: (err) => console.error('Error fetching users:', err)
     });
 
     this.reportService.getRegionsForDropdown().subscribe({
       next: (res) => (this.regions = res),
-      error: (err) => console.error('Error fetching regions for dropdown', err)
+      error: (err) => console.error('Error fetching regions:', err)
     });
   }
 
-  // Filter getters
   get filteredUsers() {
     if (!this.searchQuery) return this.users;
     return this.users.filter(u => u.label.toLowerCase().includes(this.searchQuery.toLowerCase()));
   }
 
-  get selectedUserName() {
-    if (!this.selectedUserId) return 'Select Users';
+  get selectedUserLabel() {
+    if (!this.selectedUserId) return 'Select User';
     const u = this.users.find(u => u.id === this.selectedUserId);
-    return u ? u.label : 'Select Users';
+    return u ? u.label : 'Select User';
   }
 
   get filteredRegions() {
@@ -96,7 +95,7 @@ export class FreshBusinessReportComponent implements OnInit, AfterViewInit, OnDe
     return this.regions.filter(r => r.label.toLowerCase().includes(this.regionSearchQuery.toLowerCase()));
   }
 
-  get selectedRegionName() {
+  get selectedRegionLabel() {
     if (!this.selectedRegionId) return 'Select Region';
     const r = this.regions.find(r => r.id === this.selectedRegionId);
     return r ? r.label : 'Select Region';
@@ -105,7 +104,7 @@ export class FreshBusinessReportComponent implements OnInit, AfterViewInit, OnDe
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
     if (this.dropdownOpen) {
-      this.regionDropdownOpen = false; // Close region dropdown
+      this.regionDropdownOpen = false;
     } else {
       this.searchQuery = '';
     }
@@ -121,7 +120,7 @@ export class FreshBusinessReportComponent implements OnInit, AfterViewInit, OnDe
   toggleRegionDropdown() {
     this.regionDropdownOpen = !this.regionDropdownOpen;
     if (this.regionDropdownOpen) {
-      this.dropdownOpen = false; // Close user dropdown
+      this.dropdownOpen = false;
     } else {
       this.regionSearchQuery = '';
     }

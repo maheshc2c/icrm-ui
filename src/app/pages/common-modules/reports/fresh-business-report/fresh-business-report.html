@@ -22,7 +22,7 @@
     <!-- Select Region Searchable Dropdown -->
     <div class="filter-control custom-dropdown-container">
       <div class="dropdown-trigger" [class.active]="regionDropdownOpen" (click)="toggleRegionDropdown()">
-        <span class="trigger-text">{{ selectedRegionName }}</span>
+        <span class="trigger-text">{{ selectedRegionLabel }}</span>
         <i class="fas fa-chevron-down arrow-icon"></i>
       </div>
       
@@ -43,7 +43,7 @@
     <!-- Select Users Searchable Dropdown -->
     <div class="filter-control custom-dropdown-container">
       <div class="dropdown-trigger" [class.active]="dropdownOpen" (click)="toggleDropdown()">
-        <span class="trigger-text">{{ selectedUserName }}</span>
+        <span class="trigger-text">{{ selectedUserLabel }}</span>
         <i class="fas fa-chevron-down arrow-icon"></i>
       </div>
       
