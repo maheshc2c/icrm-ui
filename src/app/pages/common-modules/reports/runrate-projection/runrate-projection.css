@@ -59,7 +59,29 @@
 }
 
 .form-input::placeholder {
-  color: #9ca3af;
+  color: #2f3542;
+}
+
+/* Download button */
+.btn-download {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #7a4bc4 0%, #7a4bc4 100%);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(61, 122, 231, 0.18);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-download:hover {
+  background: #1a5fb4;
 }
 
 /* Radio Group */
@@ -71,20 +93,63 @@
 }
 
 .radio-option {
-  display: flex;
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
   font-size: 14px;
   color: #2f3542;
-  cursor: pointer;
   user-select: none;
+  min-height: 20px;
 }
 
 .radio-option input[type="radio"] {
-  width: 16px;
-  height: 16px;
-  accent-color: #2f7ad7;
+  position: absolute;
+  opacity: 0;
   cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-radio {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-option:hover .custom-radio {
+  border-color: #7a4bc4;
+}
+
+.radio-option input[type="radio"]:checked ~ .custom-radio {
+  background-color: #9b8adb;
+  border-color: #7a4bc4;
+}
+
+.custom-radio::after {
+  content: "";
+  display: none;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+.radio-option input[type="radio"]:checked ~ .custom-radio::after {
+  display: block;
 }
 
 /* Chart Container */
@@ -117,12 +182,12 @@
 }
 
 .report-table th {
-  background: #f5d0ce;
-  color: #1b2430;
+  background: #f7d3cd;
+  color: black;
   font-weight: 600;
-  padding: 10px 14px;
+  padding: 11px 14px;
   text-align: center;
-  border: 1px solid #e8d0ce;
+  border: 1px solid #f9fbff;
 }
 
 .report-table td {

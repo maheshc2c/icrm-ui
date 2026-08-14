@@ -22,7 +22,7 @@ export class IncentivesReportComponent implements OnInit {
   ];
 
   selectedUser: any = null;
-  quarter = 'Quarter1';
+  quarter: string | null = null;
   financialYear: string | null = null;
 
   users: any[] = [];
@@ -36,9 +36,11 @@ export class IncentivesReportComponent implements OnInit {
 
   // Pagination state
   currentPage = 0;
-  pageSize = 5;
+  pageSize = 10;
   totalPages = 0;
   totalElements = 0;
+
+  isLoading = false;
 
   constructor(private http: HttpClient, private auth: AuthService, private eRef: ElementRef) {}
 
@@ -98,7 +100,7 @@ export class IncentivesReportComponent implements OnInit {
       'Quarter3': 'Q3',
       'Quarter4': 'Q4'
     };
-    const apiQuarter = quarterMap[this.quarter] || 'Q1';
+    const apiQuarter = this.quarter ? (quarterMap[this.quarter] || 'Q1') : 'Q1';
 
     const body = {
       financialYearId: financialYearId,
@@ -112,8 +114,10 @@ export class IncentivesReportComponent implements OnInit {
       }
     };
 
+    this.isLoading = true;
     this.http.post<any>('http://localhost:8080/reports/incentives/filter', body, { headers }).subscribe({
       next: (response) => {
+        this.isLoading = false;
         if (response.status) {
           if (response.data) {
             this.reports = response.data.map((item: any) => ({
@@ -130,6 +134,7 @@ export class IncentivesReportComponent implements OnInit {
         }
       },
       error: (err) => {
+        this.isLoading = false;
         console.error('Error fetching incentives:', err);
       }
     });
@@ -170,7 +175,7 @@ export class IncentivesReportComponent implements OnInit {
       'Quarter3': 'Q3',
       'Quarter4': 'Q4'
     };
-    const apiQuarter = quarterMap[this.quarter] || 'Q1';
+    const apiQuarter = this.quarter ? (quarterMap[this.quarter] || 'Q1') : 'Q1';
 
     let fromDate = `${startYear}-04-01`;
     let toDate = `${startYear}-06-30`;

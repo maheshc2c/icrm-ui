@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RunrateProjectionComponent } from './runrate-projection';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('RunrateProjectionComponent', () => {
   let component: RunrateProjectionComponent;
@@ -8,7 +9,7 @@ describe('RunrateProjectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RunrateProjectionComponent, ReactiveFormsModule, FormsModule]
+      imports: [RunrateProjectionComponent, ReactiveFormsModule, FormsModule, HttpClientTestingModule]
     })
     .compileComponents();
 
@@ -21,62 +22,38 @@ describe('RunrateProjectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have 12 financial year months', () => {
-    expect(component.months.length).toBe(12);
-  });
-
-  it('should start with Apr-26', () => {
-    expect(component.months[0]).toBe('Apr-26');
-  });
-
-  it('should end with Mar-27', () => {
-    expect(component.months[11]).toBe('Mar-27');
-  });
-
   it('should default to graph view', () => {
     expect(component.viewMode).toBe('graph');
   });
 
-  it('should return default dataset when no filter is selected', () => {
-    const ds = component.getActiveDataset();
-    expect(ds).toEqual(component.mockDatasets['default']);
-  });
+  it('should process API response correctly', () => {
+    const mockData = {
+      xaxisLabel: 'Run Rate Projection 2026–27',
+      xaxisCategory: ['Apr-26<br>(72.9%)', 'May-26<br>(0.0%)'],
+      chartSeries: [
+        { name: 'Max Conversion Rate(98.0%)', data: [0.0, 0.0], color: '#097054' },
+        { name: 'Open Opportunities', data: [13.5, 0.0], color: '#6599FF' }
+      ],
+      tableRows: [
+        { monthName: 'Apr-26', newOppVal: 13.5, newSaleVal: 9.84, conversionRate: 72.89, maxConVal: 0.0, minConVal: 0.0 },
+        { monthName: 'May-26', newOppVal: 0.0, newSaleVal: 0.0, conversionRate: 0.0, maxConVal: 0.0, minConVal: 0.0 }
+      ]
+    };
 
-  it('should return north dataset when north region is selected', () => {
-    component.filterForm.get('region')?.setValue('north');
-    const ds = component.getActiveDataset();
-    expect(ds).toEqual(component.mockDatasets['north']);
-  });
+    component.processApiResponse(mockData);
 
-  it('should return oracle dataset when oracle product is selected', () => {
-    component.filterForm.get('product')?.setValue('oracle');
-    const ds = component.getActiveDataset();
-    expect(ds).toEqual(component.mockDatasets['oracle']);
-  });
-
-  it('should generate correct chart title for East region', () => {
-    component.filterForm.get('region')?.setValue('east');
-    const title = component.getChartTitle();
-    expect(title).toBe('East Wise Run Rate Projection 2026-27');
-  });
-
-  it('should generate correct chart title for Oracle product', () => {
-    component.filterForm.get('product')?.setValue('oracle');
-    const title = component.getChartTitle();
-    expect(title).toBe('Oracle Run Rate Projection 2026-27');
-  });
-
-  it('should generate default chart title when no filter selected', () => {
-    const title = component.getChartTitle();
-    expect(title).toBe('Run Rate Projection 2026-27');
+    expect(component.currentTitle).toBe('Run Rate Projection 2026–27');
+    expect(component.tableRows.length).toBe(2);
+    expect(component.tableRows[0].month).toBe('April');
+    expect(component.tableRows[0].funnel).toBe(13.5);
   });
 
   it('should calculate getTotalFor correctly', () => {
-    const total = component.getTotalFor('closedWon');
-    expect(typeof total).toBe('number');
-  });
-
-  it('should build table rows with 12 entries', () => {
-    expect(component.tableRows.length).toBe(12);
+    component.tableRows = [
+      { funnel: 10, closedWon: 5 },
+      { funnel: 20, closedWon: 15 }
+    ];
+    expect(component.getTotalFor('funnel')).toBe(30);
+    expect(component.getTotalFor('closedWon')).toBe(20);
   });
 });
