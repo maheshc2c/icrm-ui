@@ -358,6 +358,7 @@ export class Leadservice {
 
   downloadOpportunityFunnelHistory(payload: any) {
     const token = localStorage.getItem('token');
+
     return this.http.post(
       `${this.baseUrl}/opportunity/downloadFunnelHistory`,
       payload,
