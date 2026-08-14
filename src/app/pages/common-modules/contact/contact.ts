@@ -11,6 +11,7 @@ import { ToastService } from '../../../service/toast.service';
 import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 import { CommonModule } from '@angular/common';
 
+
   @Component({
     selector: 'app-contact',
     imports: [Pageheader, Header, DataTable, Sidebar, CommonModule ],
@@ -107,17 +108,16 @@ private loadContact(): void {
     
 
         this.rows = response.content.map((c: any, index: number) => ({
-
   sno: ((this.currentPage - 1) * this.pageSize) + index + 1,
 
-  contactId: c.contactId,
+  contactId: c.id,
 
   // displayed
-  contactFirstName: c.contactFirstName,
-  customerName: c.customer?.customerName ?? '',
-  specialityName: c.speciality?.specialityName ?? '',
-  contactEmail: c.contactEmail,
-  contactMobileNo: c.contactMobileNo,
+   contactFirstName: c.name,
+  customerName: c.customerName,
+  specialityName: c.specialityName,
+   contactEmail: c.email,
+  contactMobileNo: c.mobile,
 
   // hidden for edit
   contactSalutation: c.contactSalutation,
@@ -237,12 +237,12 @@ onSearch(filters: any) {
       this.rows = contacts.map((c: any, index: number) => ({
         sno: index + 1,
 
-        contactId: c.contactId,
-        contactFirstName: c.contactFirstName,
-        customerName: c.customer?.customerName ?? '',
-        specialityName: c.speciality?.specialityName ?? '',
-        contactEmail: c.contactEmail,
-        contactMobileNo: c.contactMobileNo,
+        contactId: c.id,
+        contactFirstName: c.name,
+        customerName: c.customerName,
+        specialityName: c.specialityName,
+        contactEmail: c.email,
+        contactMobileNo: c.mobile,
 
         contactSalutation: c.contactSalutation,
         contactLastName: c.contactLastName,

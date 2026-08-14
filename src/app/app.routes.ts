@@ -63,18 +63,7 @@ export const routes: Routes = [
         ]
       }
     },
-    {
-      path: 'reports/open-orders',
-      loadComponent: () =>
-        import('./pages/common-modules/reports/open-orders-report/open-orders-report.component').then(m => m.OpenOrdersReportComponent),
-      canActivate: [authGuard],
-      data: {
-        roles: [
-          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
-          'National Sales Manager', 'Country Head'
-        ]
-      }
-    },
+    
     {
       path: 'reports/stock-in-hand',
       loadComponent: () =>
@@ -214,11 +203,6 @@ export const routes: Routes = [
       pathMatch: 'full'
     },
     {
-      path: 'open-order-reports',
-      redirectTo: '/reports/open-orders',
-      pathMatch: 'full'
-    },
-    {
       path: 'stock-in-hand-report',
       redirectTo: '/reports/stock-in-hand',
       pathMatch: 'full'
@@ -256,9 +240,9 @@ export const routes: Routes = [
   ]
 },
 {
-      path: 'reports/open-orders',
+      path: 'reports/OpenOrders',
       loadComponent: () =>
-        import('./pages/common-modules/open-orders/open-orders').then(m => m.OpenOrders),
+        import('./pages/common-modules/reports/open-orders/open-orders').then(m => m.OpenOrders),
       canActivate: [authGuard],
       data: {
         roles: [

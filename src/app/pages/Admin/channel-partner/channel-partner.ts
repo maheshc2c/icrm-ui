@@ -10,6 +10,8 @@ import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { DataTable } from '../../../shared/data-table/data-table';
 import { ChannelPartnerModel } from '../../../models/channel-partner-model';
+import { ToastService } from '../../../service/toast.service';
+import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
 
 @Component({
   selector: 'app-channel-partner',
@@ -21,7 +23,9 @@ export class ChannelPartner implements OnInit {
   constructor(
     private adminservice: Adminservice,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+      private toastService: ToastService,
+        private confirmService: ConfirmDialogService
   ) {}
 
   headerTitle = 'Manage Channel Partner';
@@ -104,19 +108,47 @@ totalElements = 0;
     this.router.navigate(['/channelpartner/edit', Number(row.channelPartnerId)]);
   }
 
-  onDelete(row: any) {
+onDelete(row: any) {
 
-  const status = row.status == 1 ? 0 : 1;
+  const isActive = row.status === 1;
 
-  this.adminservice
+  this.confirmService.confirm({
+    title: 'Confirm',
+    message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this Channel Partner?`,
+    confirmText: isActive ? 'Deactivate' : 'Activate'
+  }).then((confirmed) => {
+
+    if (!confirmed) {
+      return;
+    }
+
+    const status = isActive ? 0 : 1;
+
+    this.adminservice
       .changeChannelPartnerStatus(row.channelPartnerId, status)
       .subscribe({
 
-        next: () => this.loadChannelPartners(),
+        next: () => {
 
-        error: err => console.error(err)
+          this.toastService.success(
+            `Channel Partner ${isActive ? 'deactivated' : 'activated'} successfully`
+          );
+
+          this.loadChannelPartners(this.pageNumber, this.pageSize);
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+          this.toastService.error(
+            `Failed to ${isActive ? 'deactivate' : 'activate'} Channel Partner`
+          );
+        }
 
       });
+
+  });
 
 }
 
