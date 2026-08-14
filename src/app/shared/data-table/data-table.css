@@ -676,14 +676,20 @@
 
 .status-badge.active{
 
-    background:#5cb85c;
-    color:#fff;
+    background:#5cb85c !important;
+    color:#fff !important;
+}
+
+.status-badge.partial{
+
+    background: linear-gradient(90deg, #5cb85c 50%, #ececec 50%) !important;
+    color:#111 !important;
 }
 
 .status-badge.inactive{
 
-    background:#ececec;
-    color:#666;
+    background:#ececec !important;
+    color:#666 !important;
 }
  
  
