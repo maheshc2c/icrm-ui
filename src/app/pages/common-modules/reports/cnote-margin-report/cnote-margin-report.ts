@@ -3,21 +3,22 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { Pageheader } from '../../../../shared/pageheader/pageheader';
+import { DataTable } from '../../../../shared/data-table/data-table';
+import { SearchFieldConfig } from '../../../../shared/search/search';
 import { ReportService } from '../../../../service/report.service';
+import { Header } from '../../../../layout/header/header';
+import { Sidebar } from '../../../../layout/sidebar/sidebar';
 
 @Component({
   selector: 'app-cnote-margin-report',
   standalone: true,
-  imports: [CommonModule, FormsModule, Pageheader],
+  imports: [CommonModule, FormsModule, Pageheader, DataTable, Header, Sidebar],
   templateUrl: './cnote-margin-report.html',
   styleUrls: ['./cnote-margin-report.css']
 })
 export class CNoteMarginReportComponent implements OnInit {
-
-  breadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/dashboard' },
-    { label: 'C-Note Margin Analysis Report' }
-  ];
+  title = 'C-Note Margin Analysis Report';
+  breadcrumbs: Breadcrumb[] = [];
 
   // Filter models
   selectedRegionId: number | null = null;
@@ -28,13 +29,36 @@ export class CNoteMarginReportComponent implements OnInit {
   selectedProductId: number | null = null;
   customerName = '';
 
-  // Dropdown options
-  regions: { id: number; label: string }[] = [];
-  users: { id: number; label: string }[] = [];
-  segments: { id: number; label: string }[] = [];
-  products: { id: number; label: string }[] = [];
+  lastSegmentId: number | null = null;
 
-  // Table state
+  // Dropdown option arrays
+  regions: any[] = [];
+  users: any[] = [];
+  segments: any[] = [];
+  products: any[] = [];
+
+  // DataTable filter field configurations
+  searchFields: SearchFieldConfig[] = [
+    { key: 'regionId', label: '', type: 'select', placeholder: 'All Regions', options: [] },
+    { key: 'userId', label: '', type: 'select', placeholder: 'All Users', options: [] },
+    { key: 'fromDate', label: '', type: 'date', placeholder: 'From Date' },
+    { key: 'toDate', label: '', type: 'date', placeholder: 'To Date' },
+    { key: 'segmentId', label: '', type: 'select', placeholder: 'Select Segment', options: [] },
+    { key: 'productId', label: '', type: 'select', placeholder: 'Select Product', options: [] }
+  ];
+
+  // DataTable column configurations
+  columns = [
+    { header: 'C-Note ID', field: 'cnoteId', type: 'text' },
+    { header: 'Type', field: 'cnoteTypeLabel' },
+    { header: 'Customer Name', field: 'customerName' },
+    { header: 'Sales Engineer', field: 'salesEngineer' },
+    { header: 'SO Number', field: 'soNumber' },
+    { header: 'C-Note Date', field: 'cnoteCreatedTime' },
+    { header: 'Product Details', field: 'productDetails', type: 'html' }
+  ];
+
+  // Table rows and summary
   items: any[] = [];
   totalOrderValue = 0;
   totalNetSellingPrice = 0;
@@ -44,49 +68,96 @@ export class CNoteMarginReportComponent implements OnInit {
   isLoading = false;
   isDownloading = false;
 
-  // Pagination & Sorting state
+  // Pagination state
   currentPage = 1;
   pageSize = 10;
   totalRecords = 0;
   totalPages = 0;
-  pageSizeOptions = [10, 25, 50, 100];
   sortBy = 'cnoteId';
   sortOrder = 'DESC';
 
   constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
+    this.setDynamicHomeRoute();
     this.loadDropdowns();
     this.loadReportData();
   }
 
+  setDynamicHomeRoute(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      let homeRoute = '/dashboard';
+
+      if (role === 'SUPERADMIN') {
+        homeRoute = '/superadmindashboard';
+      } else if (role === 'Admin') {
+        homeRoute = '/admindashboard';
+      } else if (role === 'Regional Branch Head') {
+        homeRoute = '/regional-branch-head-dashboard';
+      } else if (role === 'Regional Sales Manager') {
+        homeRoute = '/regional-sales-manager-dashboard';
+      } else if (role === 'Country Head') {
+        homeRoute = '/country-head';
+      } else if (role === 'Sales Engineer' || role === 'SALES_MANAGER' || role === 'SALESMANAGER' || role === 'Sales Manager') {
+        homeRoute = '/sales-manager-dashboard';
+      } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
+        homeRoute = '/adminmarketingdashboard';
+      }
+
+      this.breadcrumbs = [
+        { label: 'Home', route: homeRoute },
+        { label: 'C-Note Margin Analysis Report' }
+      ];
+    }
+  }
+
   loadDropdowns(): void {
     this.reportService.getRegionsForDropdown().subscribe({
-      next: (data) => (this.regions = data),
+      next: (data) => {
+        this.regions = data;
+        const regionField = this.searchFields.find(f => f.key === 'regionId');
+        if (regionField) {
+          regionField.options = [{ label: 'All Regions', value: null }, ...data.map(r => ({ label: r.label, value: r.id }))];
+        }
+      },
       error: (err) => console.error('Error loading regions', err)
     });
 
     this.reportService.getUsersForDropdown().subscribe({
-      next: (data) => (this.users = data),
+      next: (data) => {
+        this.users = data;
+        const userField = this.searchFields.find(f => f.key === 'userId');
+        if (userField) {
+          userField.options = [{ label: 'All Users', value: null }, ...data.map(u => ({ label: u.label, value: u.id }))];
+        }
+      },
       error: (err) => console.error('Error loading users', err)
     });
 
     this.reportService.getSegmentsForDropdown().subscribe({
-      next: (data) => (this.segments = data),
+      next: (data) => {
+        this.segments = data;
+        const segmentField = this.searchFields.find(f => f.key === 'segmentId');
+        if (segmentField) {
+          segmentField.options = [{ label: 'Select Segment', value: null }, ...data.map(s => ({ label: s.label, value: s.id }))];
+        }
+      },
       error: (err) => console.error('Error loading segments', err)
     });
 
     this.loadProducts();
   }
 
-  onSegmentChange(): void {
-    this.selectedProductId = null;
-    this.loadProducts(this.selectedSegmentId);
-  }
-
   loadProducts(groupId?: number | null): void {
     this.reportService.getProductsForDropdown(groupId).subscribe({
-      next: (data) => (this.products = data),
+      next: (data) => {
+        this.products = data;
+        const productField = this.searchFields.find(f => f.key === 'productId');
+        if (productField) {
+          productField.options = [{ label: 'Select Product', value: null }, ...data.map(p => ({ label: p.label, value: p.id }))];
+        }
+      },
       error: (err) => console.error('Error loading products', err)
     });
   }
@@ -115,7 +186,22 @@ export class CNoteMarginReportComponent implements OnInit {
         this.isLoading = false;
         if (res && res.status && res.data) {
           const data = res.data;
-          this.items = data.results || [];
+          this.items = (data.results || []).map((item: any) => ({
+            ...item,
+            orderValue: item.marginMetrics?.orderValue,
+            netSellingPrice: item.marginMetrics?.netSellingPrice,
+            basicPrice: item.marginMetrics?.basicPrice,
+            discountPercentage: item.marginMetrics?.discountPercentage,
+            costOfWarranty: item.marginMetrics?.costOfWarranty,
+            costOfFinance: item.marginMetrics?.costOfFinance,
+            costOfDealerCommission: item.marginMetrics?.costOfDealerCommission,
+            costOfFreeSupply: item.marginMetrics?.costOfFreeSupply,
+            grossMargin: item.marginMetrics?.grossMargin,
+            grossMarginPercentage: item.marginMetrics?.grossMarginPercentage,
+            netMargin: item.marginMetrics?.netMargin,
+            netMarginPercentage: item.marginMetrics?.netMarginPercentage
+          }));
+
           this.totalOrderValue = data.totalOrderValue || 0;
           this.totalNetSellingPrice = data.totalNetSellingPrice || 0;
           this.totalGrossMargin = data.totalGrossMargin || 0;
@@ -144,30 +230,36 @@ export class CNoteMarginReportComponent implements OnInit {
     this.totalPages = 0;
   }
 
-  onSearch(): void {
-    this.currentPage = 1;
-    this.loadReportData();
-  }
-
-  onSort(column: string): void {
-    if (this.sortBy === column) {
-      this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
-    } else {
-      this.sortBy = column;
-      this.sortOrder = 'ASC';
-    }
-    this.currentPage = 1;
-    this.loadReportData();
-  }
-
-  resetFilters(): void {
-    this.selectedRegionId = null;
-    this.selectedUserId = null;
-    this.fromDate = '';
-    this.toDate = '';
-    this.selectedSegmentId = null;
-    this.selectedProductId = null;
+  onSearchChange(event: any): void {
+    if (!event) return;
+    this.selectedRegionId = event.regionId ? Number(event.regionId) : null;
+    this.selectedSegmentId = event.segmentId ? Number(event.segmentId) : null;
+    this.selectedProductId = event.productId ? Number(event.productId) : null;
+    this.selectedUserId = event.userId ? Number(event.userId) : null;
     this.customerName = '';
+    this.fromDate = event.fromDate || '';
+    this.toDate = event.toDate || '';
+
+    // Handle dependent loading for segments to products
+    if (event.segmentId !== this.lastSegmentId) {
+      this.lastSegmentId = event.segmentId;
+      this.selectedProductId = null;
+      const productField = this.searchFields.find(f => f.key === 'productId');
+      if (productField) productField.options = [];
+      this.loadProducts(this.selectedSegmentId);
+    }
+
+    this.currentPage = 1;
+    this.loadReportData();
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadReportData();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
     this.currentPage = 1;
     this.loadReportData();
   }
@@ -204,55 +296,12 @@ export class CNoteMarginReportComponent implements OnInit {
     });
   }
 
-  // Pagination Controls
-  get startRecord(): number {
-    if (this.totalRecords === 0) return 0;
-    return (this.currentPage - 1) * this.pageSize + 1;
-  }
-
-  get endRecord(): number {
-    return Math.min(this.currentPage * this.pageSize, this.totalRecords);
-  }
-
-  get visiblePages(): number[] {
-    const pages: number[] = [];
-    const maxVisible = 5;
-    let start = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
-    let end = Math.min(this.totalPages, start + maxVisible - 1);
-
-    if (end - start + 1 < maxVisible) {
-      start = Math.max(1, end - maxVisible + 1);
-    }
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    return pages;
-  }
-
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
-      this.currentPage = page;
-      this.loadReportData();
-    }
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.loadReportData();
-    }
-  }
-
-  prevPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.loadReportData();
-    }
-  }
-
-  onPageSizeChange(): void {
-    this.currentPage = 1;
-    this.loadReportData();
+  get summaryData() {
+    return {
+      totalOrderValue: this.totalOrderValue,
+      totalNetSellingPrice: this.totalNetSellingPrice,
+      totalGrossMargin: this.totalGrossMargin,
+      totalNetMargin: this.totalNetMargin
+    };
   }
 }

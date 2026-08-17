@@ -3,7 +3,7 @@
   <ng-container *ngFor="let field of fields">
     <div class="search-field">
 
-      <label class="search-label">{{ field.label }}</label>
+      <label class="search-label" *ngIf="field.label">{{ field.label }}</label>
 
     <!-- 🔹 INPUT FIELD -->
     <input
