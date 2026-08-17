@@ -906,6 +906,15 @@ getContactsPaged(
   );
 }
 
+getContactById(contactId: number) {
+  return this.http.get<any>(
+    `${this.baseUrl}/contact/${contactId}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
+
 toggleContactStatus(id: number) {
   return this.http.delete(
     `${this.baseUrl}/contact/${id}`,
