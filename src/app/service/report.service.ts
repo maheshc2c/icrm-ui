@@ -459,4 +459,18 @@ export class ReportService {
       { headers, params }
     );
   }
+
+  // ================= C-NOTE MARGIN ANALYSIS METHODS =================
+  getCNoteMarginAnalysisReport(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/margin-analysis-c-note`, filter, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  downloadCNoteMarginAnalysisReport(filter: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/reports/margin-analysis-c-note/download`, filter, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
 }
