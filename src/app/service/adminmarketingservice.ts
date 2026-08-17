@@ -54,10 +54,13 @@ export class adminMarketingservice {
 
 
 // ================= GET ALL Speciality =================
-  getSpecialities(): Observable<SpecialityModel[]> {
-    return this.http.get<SpecialityModel[]>(
-      `${this.baseUrl}/adminMarketing/view-Speciality`, // 
-      { headers: this.getAuthHeaders() }
+  getSpecialities(name: string = ''): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/contact/speciality`,
+      {
+        headers: this.getAuthHeaders(),
+        params: { name }
+      }
     );
   }
 
@@ -317,6 +320,31 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
     );
   }
 
+  searchCampaignsPaged(payload: any): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/user/managecampaign/search`,
+      payload,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  downloadCampaignsReport(payload: any): Observable<Blob> {
+    return this.http.post(
+      `${this.baseUrl}/user/managecampaign/download`,
+      payload,
+      {
+        headers: this.getAuthHeaders(),
+        responseType: 'blob'
+      }
+    ) as Observable<Blob>;
+  }
+
+  getCampaignById(campaignId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/user/managecampaign/${campaignId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   // ================= SEARCH CAMPAIGN =================
   searchCampaign(name: string): Observable<Campaign[]> {
     return this.http.get<Campaign[]>(
@@ -334,7 +362,7 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
   }
 
   getGeos(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/geos-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=2`, {
       headers: this.getAuthHeaders()
     }).pipe(
       catchError(() => of([]))
@@ -358,7 +386,7 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
 
   // Location dropdowns - matching backend endpoints
   getCountries(geoId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${geoId}/countries-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=3&parentId=${geoId}`, {
       headers: this.getAuthHeaders()
     }).pipe(
       catchError(() => of([]))
@@ -366,7 +394,7 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
   }
 
   getRegions(countryId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${countryId}/regions-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=4&parentId=${countryId}`, {
       headers: this.getAuthHeaders()
     }).pipe(
       catchError(() => of([]))
@@ -374,7 +402,7 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
   }
 
   getStates(regionId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${regionId}/states-dropdown`, { headers: this.getAuthHeaders() }).pipe(
+    return this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=5&parentId=${regionId}`, { headers: this.getAuthHeaders() }).pipe(
       catchError((err) => {
         return of([]);
       })
@@ -382,7 +410,7 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
   }
 
   getDistricts(stateId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${stateId}/districts-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=6&parentId=${stateId}`, {
       headers: this.getAuthHeaders()
     }).pipe(
       catchError(() => of([]))
@@ -390,16 +418,25 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
   }
 
   getCities(districtId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/adminMarketing/locations/${districtId}/cities-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=7&parentId=${districtId}`, {
       headers: this.getAuthHeaders()
     }).pipe(
       catchError(() => of([]))
     );
   }
 
-  createCampaign(payload: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/adminMarketing/create-campaign`, payload, {
+  getCampaignContacts(locationId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/user/managecampaign/contacts/${locationId}`, {
       headers: this.getAuthHeaders()
+    }).pipe(
+      catchError(() => of({ status: true, data: [] }))
+    );
+  }
+
+  createCampaign(formData: FormData): Observable<any> {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+    return this.http.post(`${this.baseUrl}/user/managecampaign`, formData, {
+      headers: { Authorization: `Bearer ${token}` }
     }).pipe(
       tap(() => this.triggerRefresh())
     );
@@ -527,20 +564,20 @@ updateContact(id: number, data: Partial<Contactmodel>): Observable<any> {
   }
 
   // ================= CAMPAIGN ACTIVATION/DEACTIVATION =================
-  deactivateCampaign(id: number) {
-    return this.http.put(
-      `${this.baseUrl}/adminMarketing/deactivate-campaign/${id}`,
+  toggleCampaignStatus(id: number): Observable<any> {
+    return this.http.patch(
+      `${this.baseUrl}/user/managecampaign/status/${id}`,
       {},
       { headers: this.getAuthHeaders() }
     );
   }
 
-  activateCampaign(id: number) {
-    return this.http.put(
-      `${this.baseUrl}/adminMarketing/activate-campaign/${id}`,
-      {},
-      { headers: this.getAuthHeaders() }
-    );
+  deactivateCampaign(id: number): Observable<any> {
+    return this.toggleCampaignStatus(id);
+  }
+
+  activateCampaign(id: number): Observable<any> {
+    return this.toggleCampaignStatus(id);
   }
 
   getRoles(): Observable<any[]> {

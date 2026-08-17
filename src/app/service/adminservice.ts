@@ -138,6 +138,16 @@ getRolesSearchDropdown() {
   );
 }
 
+getUserLogRoles(name: string = ''): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/user/userlogs/roles`,
+    {
+      headers: this.getAuthHeaders(),
+      params: { name }
+    }
+  );
+}
+
 getFinancialYearsDropdown() {
   return this.http.get<any>(
     `${this.baseUrl}/user/financialyears-dropdown`,
@@ -1112,12 +1122,23 @@ downloadSubSystemExcel(payload: any) {
       { headers: this.getAuthHeaders() }
     );
   }
-  searchUserLogs(keyword: string): Observable<UserlogModel[]> {
+  searchUserLogs(
+    roleName?: string,
+    employeeId?: string,
+    fromDate?: string,
+    toDate?: string
+  ): Observable<UserlogModel[]> {
+    const params: any = {};
+    if (roleName) params.roleName = roleName;
+    if (employeeId) params.employeeId = employeeId;
+    if (fromDate) params.fromDate = fromDate + 'T00:00:00';
+    if (toDate) params.toDate = toDate + 'T23:59:59';
+
     return this.http.get<UserlogModel[]>(
       `${this.baseUrl}/auth/report/search`,
       {
         headers: this.getAuthHeaders(),
-        params: { keyword } // adjust if backend uses different param
+        params
       }
     );
   }
