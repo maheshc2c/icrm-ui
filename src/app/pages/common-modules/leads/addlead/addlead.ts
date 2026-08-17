@@ -584,26 +584,28 @@ export class AddleadComponent implements OnInit {
           ];
         }
 
+        const getStr = (val: any) => (val !== null && val !== undefined && val !== '') ? val.toString() : '';
+
         this.leadForm = {
-          source: data.sourceId ? data.sourceId.toString() : '',
-          campaign: data.campaignId ? data.campaignId.toString() : '',
-          customer: data.customerId ? data.customerId.toString() : '',
-          rapportWithCustomer: data.relationshipId ? data.relationshipId.toString() : '',
-          contact1: data.contactId ? data.contactId.toString() : '',
-          contact2: data.contact2Id ? data.contact2Id.toString() : '',
-          purchasePotentialRs: data.purchasePotential ? data.purchasePotential.toString() : (data.leadPurchasePotential ? data.leadPurchasePotential.toString() : ''),
-          purchasePotential: data.leadCmdLine3 || '',
-          siteReadiness: data.siteReadinessId ? data.siteReadinessId.toString() : '',
+          source: getStr(data.sourceId || data.source?.sourceId),
+          campaign: getStr(data.campaignId || data.campaign?.campaignId),
+          customer: getStr(data.customerId || data.customer?.customerId),
+          rapportWithCustomer: getStr(data.relationshipId || data.relationship?.relationshipId),
+          contact1: getStr(data.contactId || data.contact1?.contactId || data.contactPerson1Id),
+          contact2: getStr(data.contact2Id || data.contact2?.contactId || data.contactPerson2Id),
+          purchasePotentialRs: getStr(data.purchasePotential || data.leadPurchasePotential),
+          purchasePotential: data.leadCmdLine3 || data.purchasePotentialRemarks || '',
+          siteReadiness: getStr(data.siteReadinessId || data.siteReadiness?.siteReadinessID),
           visitRequirement: data.visitRequirement === true ? 'Yes' : (data.leadVisitRequirement === 1 ? 'Yes' : 'No'),
           resourceRequirement: data.resourceRequirement === true ? 'Yes' : (data.leadResourceRequirement === 1 ? 'Yes' : 'No'),
-          distributor: data.distributorId ? data.distributorId.toString() : '',
+          distributor: getStr(data.distributorId || data.distributor?.userId),
           commentLine1: data.remarks1 || data.leadCmdLine1 || '',
           commentLine2: data.remarks2 || data.leadCmdLine2 || ''
         };
         
         // Filter contacts specifically for this loaded customer if contact data is already fetched
-        if (this.contactPersonsData && this.contactPersonsData.length > 0) {
-          const selectedCustomerId = data.customerId;
+        const selectedCustomerId = data.customerId || data.customer?.customerId;
+        if (this.contactPersonsData && this.contactPersonsData.length > 0 && selectedCustomerId) {
           const filteredContacts = this.contactPersonsData.filter((c: any) => 
             (c.customer && (c.customer.customerId == selectedCustomerId || c.customer.id == selectedCustomerId)) || 
             c.customerId == selectedCustomerId
@@ -614,6 +616,7 @@ export class AddleadComponent implements OnInit {
 
         // Trigger field binding refresh
         this.leadFields = [...this.leadFields];
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed to load lead details:', err)
     });
@@ -637,6 +640,7 @@ export class AddleadComponent implements OnInit {
     ];
     console.log(`Dropdown Options for field '${fieldName}':`, field.options);
     this.leadFields = [...this.leadFields];
+    this.cdr.detectChanges();
   }
 
   /* ================= CONTACT SPECIFIC UPDATER ================= */
@@ -1208,6 +1212,17 @@ export class AddleadComponent implements OnInit {
         console.log("Fetched full Opportunity data:", fullOpp);
         this.isEditOppMode = true;
         this.editOppId = oppId;
+
+        // Fetch quote-sensitive status options for this specific opportunity
+        this.leadservice.getStatus(oppId).subscribe((statusData: any) => {
+          const field = this.oppFields.find(f => f.name === 'status');
+          if (field && statusData) {
+            field.options = statusData.map((d: any) => {
+              const weight = d.oppWeight != null ? ` (${d.oppWeight}%)` : '';
+              return { label: (d.oppName || d.OppName || 'Status') + weight, value: d.oppStatusId || d.OppStatusId };
+            });
+          }
+        });
         
           // Map the full API data back to oppModel
           const extractId = (val: any) => {
@@ -1254,7 +1269,11 @@ export class AddleadComponent implements OnInit {
               return [Number(fullOpp.remarks1)];
             }
             return [];
-          })()
+          })(),
+          lostReasonId: extractId(fullOpp.oppLostReason || fullOpp.opprLostId || fullOpp.lostReasonId || ''),
+          lostCompetitorId: extractId(fullOpp.lostCompetitor || fullOpp.lostCompetitorId || ''),
+          model: fullOpp.model || '',
+          remarks2: fullOpp.remarks2 || ''
         };
 
         if (this.oppModel.productCategoryId) {
@@ -1395,6 +1414,42 @@ export class AddleadComponent implements OnInit {
       }
       this.oppModel.productId = '';
     }
+
+    if (event.name === 'status') {
+      if (event.value == 7) { // Closed Lost
+        // 1. Lost Reason
+        this.leadservice.getLostReasons().subscribe((reasons: any) => {
+          let reasonField = this.oppFields.find(f => f.name === 'lostReasonId');
+          if (!reasonField) {
+            this.oppFields.push({ name: 'lostReasonId', label: 'Lost Reason', type: 'select', options: [], required: true });
+            reasonField = this.oppFields.find(f => f.name === 'lostReasonId');
+          }
+          if (reasonField && reasons) {
+            reasonField.options = reasons.map((r: any) => ({ label: r.name, value: r.reasonId }));
+          }
+        });
+
+        // 2. Lost Competitor
+        this.leadservice.getCompetitors().subscribe((competitors: any) => {
+          let compField = this.oppFields.find(f => f.name === 'lostCompetitorId');
+          if (!compField) {
+            this.oppFields.push({ name: 'lostCompetitorId', label: 'Lost Competitor', type: 'select', options: [], required: true });
+            compField = this.oppFields.find(f => f.name === 'lostCompetitorId');
+          }
+          if (compField && competitors) {
+            compField.options = competitors.map((c: any) => ({ label: c.competitorName || c.name || 'Unknown', value: c.competitorId || c.id }));
+          }
+        });
+
+        // 3. Model
+        let modelField = this.oppFields.find(f => f.name === 'model');
+        if (!modelField) {
+          this.oppFields.push({ name: 'model', label: 'Model', type: 'text', required: true });
+        }
+      } else {
+        this.oppFields = this.oppFields.filter(f => f.name !== 'lostReasonId' && f.name !== 'lostCompetitorId' && f.name !== 'model' && f.name !== 'remarks2');
+      }
+    }
   }
 
   isEditOppMode: boolean = false;
@@ -1418,8 +1473,13 @@ export class AddleadComponent implements OnInit {
       status: '',
       expectedOrderConclusion: '',
       expectedInvoicingDate: '',
-      competitors: ''
+      competitors: '',
+      lostReasonId: '',
+      lostCompetitorId: '',
+      model: '',
+      remarks2: ''
     };
+    this.oppFields = this.oppFields.filter(f => f.name !== 'lostReasonId' && f.name !== 'lostCompetitorId' && f.name !== 'model' && f.name !== 'remarks2');
     this.showOppModal = true;
   }
 
@@ -1494,13 +1554,14 @@ export class AddleadComponent implements OnInit {
       competitorIds: (() => {
         const compVal = this.oppModel.competitors;
         if (!compVal) return [];
-        if (Array.isArray(compVal)) {
-          return compVal.map((v: any) => Number(v)).filter((n: number) => !isNaN(n));
-        }
-        return !isNaN(Number(compVal)) ? [Number(compVal)] : [];
+        if (Array.isArray(compVal)) return compVal.map(Number);
+        return [Number(compVal)];
       })(),
       remarks1: null,
-      remarks2: null
+      remarks2: toNullIfEmpty(this.oppModel.remarks2),
+      opprLostId: toNullIfEmpty(this.oppModel.lostReasonId) ? Number(toNullIfEmpty(this.oppModel.lostReasonId)) : null,
+      lostCompetitorId: toNullIfEmpty(this.oppModel.lostCompetitorId) ? Number(toNullIfEmpty(this.oppModel.lostCompetitorId)) : null,
+      model: toNullIfEmpty(this.oppModel.model)
     };
 
     console.log("?? SENDING OPPORTUNITY PAYLOAD TO BACKEND:", payload);

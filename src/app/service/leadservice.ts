@@ -261,8 +261,18 @@ export class Leadservice {
   }
 
   /* ================= GET STATUS DROPDOWN ================= */
-  getStatus(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/opportunity/status-dropdown`, {
+  getStatus(opportunityId?: number | string): Observable<any[]> {
+    const url = opportunityId 
+      ? `${this.baseUrl}/opportunity/status-dropdown?opportunityId=${opportunityId}` 
+      : `${this.baseUrl}/opportunity/status-dropdown`;
+    return this.http.get<any[]>(url, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= GET LOST REASONS DROPDOWN ================= */
+  getLostReasons(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/opportunity/lost-reasons-dropdown`, {
       headers: this.getAuthHeaders()
     });
   }
