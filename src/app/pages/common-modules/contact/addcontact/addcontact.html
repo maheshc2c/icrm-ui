@@ -2,7 +2,7 @@
 <app-sidebar></app-sidebar>
 
 <app-pageheader
-  [title]="headerTitle"
+   [title]="isEditMode ? 'Edit Contact' : 'Add Contact'"
   [breadcrumbs]="headerBreadcrumbs">
 </app-pageheader>
 

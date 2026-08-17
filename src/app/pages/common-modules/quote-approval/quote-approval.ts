@@ -319,63 +319,174 @@ showHistoryPopup = false;
 
 showViewPopup = false;
 marginAnalysisData: any = null;
+approvalInProgress = false;
+approve(row: any): void {
 
+  if (this.approvalInProgress) {
+    return;
+  }
 
-approve(row:any):void {
+  if (!row?.quoteRevisionId) {
+    this.toastService.error('Quote Revision ID is missing.');
+    return;
+  }
 
- const payload:any={
-   quoteRevisionId: row.quoteRevisionId,
-   action:'APPROVE'
- };
+  this.approvalInProgress = true;
 
+  const startTime = performance.now();
 
- switch(row.currentStage){
+  console.log('========== APPROVE START ==========');
+  console.log('Time:', new Date().toISOString());
+  console.log('Role:', this.loggedInRole);
+  console.log('Stage:', row.currentStage);
+  console.log('Revision ID:', row.quoteRevisionId);
 
- case 'RBH':
-   payload.quoteRemarks1=this.remarks;
-   break;
+  const payload: any = {
+    quoteRevisionId: row.quoteRevisionId,
+    action: 'APPROVE'
+  };
 
- case 'NSM':
-   payload.quoteRemarks2=this.remarks;
-   break;
+  switch (row.currentStage) {
+    case 'RBH':
+      payload.quoteRemarks1 = this.remarks;
+      break;
 
- case 'CH':
-   payload.quoteRemarks3=this.remarks;
-   break;
+    case 'NSM':
+      payload.quoteRemarks2 = this.remarks;
+      break;
 
- }
+    case 'CH':
+      payload.quoteRemarks3 = this.remarks;
+      break;
 
+    default:
+      this.approvalInProgress = false;
+      this.toastService.error('Invalid approval stage.');
+      return;
+  }
 
- this.quoteApprovalService.action(payload)
- .subscribe({
+  console.log('APPROVE PAYLOAD:', payload);
 
- next:(response)=>{
+  const apiStart = performance.now();
 
+  this.quoteApprovalService.action(payload).subscribe({
 
-   this.toastService.success(
-      response?.message || 'Approved successfully'
-   );
+    next: (response) => {
 
+      const apiTime = performance.now() - apiStart;
+      const totalTime = performance.now() - startTime;
 
-   this.showApprovalPopup=false;
-   this.remarks='';
+      console.log('========== APPROVE RESPONSE ==========');
+      console.log('API response time:', apiTime.toFixed(0), 'ms');
+      console.log('Total frontend time:', totalTime.toFixed(0), 'ms');
+      console.log('Response:', response);
 
+      if (response?.status === true) {
 
-   // keep row visible
-  //  this.refreshCurrentRow(row);
-  this.loadQuotes();
+        this.toastService.success(
+          'Quote approved successfully.'
+        );
 
+        this.showApprovalPopup = false;
+        this.showHistoryPopup = false;
 
- },
+        this.rows = this.rows.filter(
+          x => x.quoteRevisionId !== row.quoteRevisionId
+        );
 
+        this.fullRows = this.fullRows.filter(
+          x => x.quoteRevisionId !== row.quoteRevisionId
+        );
 
- error:()=>{
-   this.toastService.error('Failed to approve quote.');
- }
+        if (this.totalElements > 0) {
+          this.totalElements--;
+        }
 
- });
+        this.selectedQuote = null;
+        this.remarks = '';
+      }
 
+      this.approvalInProgress = false;
+
+      console.log('========== APPROVE END ==========');
+    },
+
+    error: (error) => {
+
+      const apiTime = performance.now() - apiStart;
+      const totalTime = performance.now() - startTime;
+
+      console.error('========== APPROVE ERROR ==========');
+      console.error('API response time:', apiTime.toFixed(0), 'ms');
+      console.error('Total frontend time:', totalTime.toFixed(0), 'ms');
+      console.error(error);
+
+      this.approvalInProgress = false;
+
+      this.toastService.error(
+        error?.error?.message ||
+        'Failed to approve quote.'
+      );
+    }
+
+  });
 }
+
+// approve(row:any):void {
+
+//  const payload:any={
+//    quoteRevisionId: row.quoteRevisionId,
+//    action:'APPROVE'
+//  };
+
+
+//  switch(row.currentStage){
+
+//  case 'RBH':
+//    payload.quoteRemarks1=this.remarks;
+//    break;
+
+//  case 'NSM':
+//    payload.quoteRemarks2=this.remarks;
+//    break;
+
+//  case 'CH':
+//    payload.quoteRemarks3=this.remarks;
+//    break;
+
+//  }
+
+
+//  this.quoteApprovalService.action(payload)
+//  .subscribe({
+
+//  next:(response)=>{
+
+
+//    this.toastService.success(
+//       response?.message || 'Approved successfully'
+//    );
+
+
+//    this.showApprovalPopup=false;
+//    this.remarks='';
+
+
+//    // keep row visible
+//   //  this.refreshCurrentRow(row);
+//   this.loadQuotes();
+
+
+//  },
+
+
+//  error:()=>{
+//    this.toastService.error('Failed to approve quote.');
+//  }
+
+//  });
+
+// }
 
 refreshCurrentRow(updatedRow:any):void {
 
@@ -425,15 +536,40 @@ reject(row: any): void {
 
    next: (response) => {
 
-  this.showApprovalPopup = false;
-  this.selectedQuote = null;
-  this.remarks = '';
+  console.log('APPROVE SUCCESS RESPONSE:', response);
 
-  this.toastService.success(
-      response?.message || 'Quote has been rejected successfully.'
-  );
+  if (response?.status === true) {
 
-  this.loadQuotes();
+    this.toastService.success(
+      response?.message || 'Quote approved successfully.'
+    );
+
+    this.showApprovalPopup = false;
+    this.showHistoryPopup = false;
+    this.selectedQuote = null;
+    this.remarks = '';
+
+    // Remove the approved quote immediately from the current list
+    this.rows = this.rows.filter(
+      x => x.quoteRevisionId !== row.quoteRevisionId
+    );
+
+    this.fullRows = this.fullRows.filter(
+      x => x.quoteRevisionId !== row.quoteRevisionId
+    );
+
+    // Update total count
+    if (this.totalElements > 0) {
+      this.totalElements--;
+    }
+
+  } else {
+
+    this.toastService.error(
+      response?.message || 'Failed to approve quote.'
+    );
+
+  }
 
 },
 error: () => {
@@ -619,15 +755,15 @@ onEdit(row: any): void {
   }
 }
 
-
 closeApprovalPopup(): void {
 
+  if (this.approvalInProgress) {
+    return;
+  }
+
   this.showApprovalPopup = false;
-
   this.selectedQuote = null;
-
   this.remarks = '';
-
 }
 
 closeHistoryPopup(): void {

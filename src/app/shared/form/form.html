@@ -72,6 +72,7 @@
               <select *ngIf="field.type === 'select' && !field.searchable"
                 class="company-text-input"
                 [(ngModel)]="formData[field.name]"
+                [disabled]="field.disabled"
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)"
                 [name]="field.name"
                 [id]="'form-field-' + field.name">
@@ -87,14 +88,15 @@
                   class="company-text-input"
                   [placeholder]="field.placeholder || 'Type to search...'"
                   [value]="getSelectedLabel(field)"
-                  (focus)="onSearchFocus(field, searchInput)"
-                  (input)="onSearchInput(field, searchInput.value)"
-                  (blur)="closeDropdownDelayed(field)"
+                   [disabled]="field.disabled"
+                  (focus)="!field.disabled && onSearchFocus(field, searchInput)"
+                  (input)="!field.disabled && onSearchInput(field, searchInput.value)"
+                  (blur)="!field.disabled && closeDropdownDelayed(field)"
                   #searchInput
                   [id]="'form-field-' + field.name"
                   autocomplete="off" />
 
-                <div class="searchable-dropdown-list" *ngIf="field._open">
+                <div class="searchable-dropdown-list" *ngIf="field._open && !field.disabled">
                   <div class="searchable-dropdown-item"
                        *ngFor="let opt of (field._filtered || field.options)"
                        (mousedown)="selectSearchableOption(field, opt)">
