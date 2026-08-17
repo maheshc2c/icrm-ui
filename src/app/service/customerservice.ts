@@ -7,7 +7,7 @@ import { AuthService } from './auth-service';
   providedIn: 'root'
 })
 export class Customerservice {
-  private baseUrl = 'http://localhost:8080/salesengineer';
+  private baseUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -20,25 +20,25 @@ export class Customerservice {
   }
 
   getCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/categories-dropdown`, {
+    return this.http.get<any[]>(`${this.baseUrl}/customer/categories`, {
       headers: this.getAuthHeaders()
     });
   }
 
   getCities(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/city-view`, {
+    return this.http.get<any[]>(`${this.baseUrl}/location/cities`, {
       headers: this.getAuthHeaders()
     });
   }
 
   getSubCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/dropdown-sub-categories`, {
+    return this.http.get<any[]>(`${this.baseUrl}/customer/subcategories`, {
       headers: this.getAuthHeaders()
     });
   }
 
   searchCustomers(params: any): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/view-customer`, {
+    return this.http.post<any[]>(`${this.baseUrl}/customer/search`, params, {
       headers: this.getAuthHeaders()
     });
   }
@@ -50,13 +50,13 @@ export class Customerservice {
   }
 
   updateCustomer(id: number, payload: any): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/update-customer/${id}`, payload, {
+    return this.http.put<any>(`${this.baseUrl}/customer/${id}`, payload, {
       headers: this.getAuthHeaders()
     });
   }
 
   createCustomer(payload: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/create-customer`, payload, {
+    return this.http.post<any>(`${this.baseUrl}/customer`, payload, {
       headers: this.getAuthHeaders()
     });
   }

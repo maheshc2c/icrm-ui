@@ -1688,10 +1688,10 @@ export class AddleadComponent implements OnInit {
     }
 
     this.customerService.getCustomerById(Number(customerId)).subscribe({
-      next: (customer) => {
-        this.selectedCustomer = customer;
+      next: (res: any) => {
+        this.selectedCustomer = res && res.customer ? res.customer : res;
         this.showCustomerDetailsModal = true;
-        console.log('Opening Customer Details Modal for:', customer);
+        console.log('Opening Customer Details Modal for:', this.selectedCustomer);
       },
       error: (err) => {
         console.error('Failed to load customer details:', err);
@@ -1708,8 +1708,8 @@ export class AddleadComponent implements OnInit {
     }
     
     this.customerService.getInstallationBase(Number(customerId)).subscribe({
-      next: (records: any[]) => {
-        this.installationBaseDetails = records;
+      next: (records: any) => {
+        this.installationBaseDetails = Array.isArray(records) ? records : (records && Array.isArray(records.installedBases) ? records.installedBases : []);
         this.showInstallationBaseDetailsModal = true;
         console.log('Loaded customer installation base from backend:', this.installationBaseDetails);
       },
