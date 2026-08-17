@@ -1,0 +1,166 @@
+<app-pageheader title="Run Rate Projection" [breadcrumbs]="breadcrumbs"></app-pageheader>
+
+<div class="runrate-page-content">
+
+  <!-- ── Filter Bar ─────────────────────────────────────────────────── -->
+  <div class="runrate-filter-bar">
+
+    <!-- Category Searchable Dropdown -->
+    <div class="filter-control custom-dropdown-container">
+      <div class="dropdown-trigger" [class.active]="categoryDropdownOpen" (click)="toggleCategoryDropdown()">
+        <span class="trigger-text">{{ selectedCategoryName }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      
+      <div class="dropdown-panel" *ngIf="categoryDropdownOpen">
+        <div class="search-box-wrapper">
+          <input type="text" class="dropdown-search-input" placeholder="Search category..." [(ngModel)]="categorySearchQuery" (click)="$event.stopPropagation()">
+        </div>
+        <ul class="options-list">
+          <li class="option-item" (click)="selectCategory(null)">Select Category</li>
+          <li class="option-item" *ngFor="let c of filteredCategories" (click)="selectCategory(c.id)">
+            {{ c.label }}
+          </li>
+          <li class="no-results" *ngIf="filteredCategories.length === 0">No categories found</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Product Searchable Dropdown -->
+    <div class="filter-control custom-dropdown-container">
+      <div class="dropdown-trigger" [class.active]="productDropdownOpen" (click)="toggleProductDropdown()">
+        <span class="trigger-text">{{ selectedProductName }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      
+      <div class="dropdown-panel" *ngIf="productDropdownOpen">
+        <div class="search-box-wrapper">
+          <input type="text" class="dropdown-search-input" placeholder="Search product..." [(ngModel)]="productSearchQuery" (click)="$event.stopPropagation()">
+        </div>
+        <ul class="options-list">
+          <li class="option-item" (click)="selectProduct(null)">Select Product</li>
+          <li class="option-item" *ngFor="let p of filteredProducts" (click)="selectProduct(p.id)">
+            {{ p.label }}
+          </li>
+          <li class="no-results" *ngIf="filteredProducts.length === 0">No products found</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Region Searchable Dropdown -->
+    <div class="filter-control custom-dropdown-container">
+      <div class="dropdown-trigger" [class.active]="regionDropdownOpen" (click)="toggleRegionDropdown()">
+        <span class="trigger-text">{{ selectedRegionName }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      
+      <div class="dropdown-panel" *ngIf="regionDropdownOpen">
+        <div class="search-box-wrapper">
+          <input type="text" class="dropdown-search-input" placeholder="Search region..." [(ngModel)]="regionSearchQuery" (click)="$event.stopPropagation()">
+        </div>
+        <ul class="options-list">
+          <li class="option-item" (click)="selectRegion(null)">Select Region</li>
+          <li class="option-item" *ngFor="let r of filteredRegions" (click)="selectRegion(r.id)">
+            {{ r.label }}
+          </li>
+          <li class="no-results" *ngIf="filteredRegions.length === 0">No regions found</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Users Searchable Dropdown -->
+    <div class="filter-control custom-dropdown-container">
+      <div class="dropdown-trigger" [class.active]="userDropdownOpen" (click)="toggleUserDropdown()">
+        <span class="trigger-text">{{ selectedUserName }}</span>
+        <i class="fas fa-chevron-down arrow-icon"></i>
+      </div>
+      
+      <div class="dropdown-panel" *ngIf="userDropdownOpen">
+        <div class="search-box-wrapper">
+          <input type="text" class="dropdown-search-input" placeholder="Search user..." [(ngModel)]="userSearchQuery" (click)="$event.stopPropagation()">
+        </div>
+        <ul class="options-list">
+          <li class="option-item" (click)="selectUser(null)">Select Users</li>
+          <li class="option-item" *ngFor="let u of filteredUsers" (click)="selectUser(u.id)">
+            {{ u.label }}
+          </li>
+          <li class="no-results" *ngIf="filteredUsers.length === 0">No users found</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Custom Rate Input -->
+    <div class="filter-control custom-rate-wrapper">
+      <input
+        type="number"
+        class="custom-rate-input"
+        placeholder="Custom Rate"
+        [(ngModel)]="customRate"
+        (change)="onCustomRateChange()">
+    </div>
+
+    <!-- View Mode Radio Controls (By Graph / By Table) -->
+    <div class="radio-group-container" style="margin-left: auto;">
+      <label class="radio-label">
+        <input type="radio" name="viewModeOpt" value="graph" [(ngModel)]="viewMode" (change)="onViewModeChange('graph')">
+        <span class="radio-custom"></span>
+        <span class="radio-text">By Graph</span>
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="viewModeOpt" value="table" [(ngModel)]="viewMode" (change)="onViewModeChange('table')">
+        <span class="radio-custom"></span>
+        <span class="radio-text">By Table</span>
+      </label>
+    </div>
+
+  </div>
+
+  <!-- ── Chart / Table Card ─────────────────────────────────────────── -->
+  <div class="runrate-chart-card">
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="chart-loading">
+      <div class="spinner"></div>
+      <span>Loading Run Rate Projection data...</span>
+    </div>
+
+    <!-- Highcharts Container (By Graph View) -->
+    <div [hidden]="loading || viewMode !== 'graph'" id="runRateChart" class="chart-container"></div>
+
+    <!-- Matrix Data Table (By Table View) -->
+    <div *ngIf="!loading && viewMode === 'table'" class="data-table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Month Name</th>
+            <th class="text-end">Open Opportunities (Lakhs)</th>
+            <th class="text-end">Closed Won / Projected (Lakhs)</th>
+            <th class="text-center">Monthly / Avg Conv Rate (%)</th>
+            <th class="text-center">Max Conv Rate (%)</th>
+            <th class="text-end">Max Projected (Lakhs)</th>
+            <th class="text-center">Min Conv Rate (%)</th>
+            <th class="text-end">Min Projected (Lakhs)</th>
+            <th class="text-center">Custom Rate (%)</th>
+            <th class="text-end">Custom Projected (Lakhs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of tableRows" [class.future-projected-row]="row.isProjected">
+            <td style="font-weight: 600;">{{ row.monthName }}</td>
+            <td class="text-end">{{ row.newOppVal | number:'1.2-2' }}</td>
+            <td class="text-end" style="font-weight: 700;">{{ row.newSaleVal | number:'1.2-2' }}</td>
+            <td class="text-center">{{ row.conversionRate | number:'1.1-2' }}%</td>
+            <td class="text-center">{{ row.isProjected ? (row.maxConRate | number:'1.1-2') + '%' : '-' }}</td>
+            <td class="text-end">{{ row.isProjected ? (row.maxConVal | number:'1.2-2') : '-' }}</td>
+            <td class="text-center">{{ row.isProjected ? (row.minConRate | number:'1.1-2') + '%' : '-' }}</td>
+            <td class="text-end">{{ row.isProjected ? (row.minConVal | number:'1.2-2') : '-' }}</td>
+            <td class="text-center">{{ row.cusConRate > 0 ? (row.cusConRate | number:'1.1-2') + '%' : '-' }}</td>
+            <td class="text-end">{{ row.cusConVal > 0 ? (row.cusConVal | number:'1.2-2') : '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

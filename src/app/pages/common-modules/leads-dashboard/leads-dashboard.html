@@ -1,0 +1,194 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<div class="dashboard-content">
+
+  <!-- Controls Filter Bar -->
+  <div class="controls-card">
+    <div class="user-filter">
+      <select id="userSelect" [(ngModel)]="selectedUserId" (change)="onUserChange()" class="form-control">
+        <option [ngValue]="null">-- Select User --</option>
+        <option *ngFor="let u of users" [value]="u.id || u.userId">
+          {{ u.name || (u.firstName + ' ' + u.lastName) }}
+        </option>
+      </select>
+    </div>
+
+    <div class="timeline-filter">
+      <span class="filter-label">Timeline: &nbsp;</span>
+      <label class="radio-label">
+        <input type="radio" name="timeline" [value]="1" [checked]="selectedTimeline === 1" (change)="onTimelineChange(1)">
+        Month &nbsp;&nbsp;
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="timeline" [value]="2" [checked]="selectedTimeline === 2" (change)="onTimelineChange(2)">
+        Quarter &nbsp;&nbsp;
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="timeline" [value]="3" [checked]="selectedTimeline === 3" (change)="onTimelineChange(3)">
+        Year
+      </label>
+    </div>
+  </div>
+
+  <!-- Dashboard Row 1 -->
+  <div class="dashboard-row">
+    <!-- Target Vs Actual Speedometer (Left - 35% width) -->
+    <div class="chart-card speedometer-card" id="chart-card-1">
+      <div class="chart-header">
+        <h3>Target Vs Actual</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart1'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart1'">
+            <button (click)="printChart('chart-card-1')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('chart-card-1', 'Target_Vs_Actual')">Download PNG image</button>
+            <button (click)="downloadJpeg('chart-card-1', 'Target_Vs_Actual')">Download JPEG image</button>
+            <button (click)="downloadPdf('chart-card-1', 'Target_Vs_Actual')">Download PDF document</button>
+            <button (click)="downloadSvg('chart-card-1', 'Target_Vs_Actual')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="speedometer-box">
+        <svg viewBox="0 0 200 120" class="speedometer-svg">
+          <!-- 4 Arc Bands: Orange (0-40%), Grey (40-60%), Yellow (60-80%), Blue (80-100%) -->
+          <path d="M 28 100 A 72 72 0 0 1 77.75 31.52" fill="none" stroke="#ee7c2b" stroke-width="13" stroke-linecap="butt" />
+          <path d="M 77.75 31.52 A 72 72 0 0 1 122.25 31.52" fill="none" stroke="#a0a0a0" stroke-width="13" stroke-linecap="butt" />
+          <path d="M 122.25 31.52 A 72 72 0 0 1 158.25 57.68" fill="none" stroke="#f1b500" stroke-width="13" stroke-linecap="butt" />
+          <path d="M 158.25 57.68 A 72 72 0 0 1 172 100" fill="none" stroke="#3b71ca" stroke-width="13" stroke-linecap="butt" />
+
+          <!-- Axis Numbers rotated along radial curve -->
+          <text x="56.3" y="68.3" font-size="8.5" fill="#333333" font-weight="600" text-anchor="middle" transform="rotate(-36, 56.3, 68.3)">20</text>
+          <text x="83.3" y="46.7" font-size="8.5" fill="#333333" font-weight="600" text-anchor="middle" transform="rotate(-18, 83.3, 46.7)">40</text>
+          <text x="116.7" y="46.7" font-size="8.5" fill="#333333" font-weight="600" text-anchor="middle" transform="rotate(18, 116.7, 46.7)">60</text>
+          <text x="143.7" y="68.3" font-size="8.5" fill="#333333" font-weight="600" text-anchor="middle" transform="rotate(36, 143.7, 68.3)">80</text>
+          <text x="158" y="96" font-size="8.5" fill="#333333" font-weight="600" text-anchor="middle" transform="rotate(72, 158, 96)">100</text>
+
+          <!-- Rotating Needle & Center Pivot -->
+          <g [style.transform]="'rotate(' + getNeedleRotation() + 'deg)'" style="transform-origin: 100px 100px; transition: transform 0.8s ease-in-out;">
+            <polygon points="98.5,100 100,30 101.5,100" fill="#000000" />
+            <circle cx="100" cy="27" r="2.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+            <circle cx="100" cy="100" r="5" fill="#000000" />
+          </g>
+        </svg>
+
+        <!-- Center Badge Box -->
+        <div class="gauge-center-badge">
+          <span>{{ percentage }} %</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leads to Opportunity Conversion % by Region (Right - 65% width) -->
+    <div class="chart-card l2o-card" id="chart-card-2">
+      <div class="chart-header">
+        <h3>LEADS TO OPPORTUNITY CONVERSION % BY REGION</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart2'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart2'">
+            <button (click)="printChart('chart-card-2')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('chart-card-2', 'Region_Conversion')">Download PNG image</button>
+            <button (click)="downloadJpeg('chart-card-2', 'Region_Conversion')">Download JPEG image</button>
+            <button (click)="downloadPdf('chart-card-2', 'Region_Conversion')">Download PDF document</button>
+            <button (click)="downloadSvg('chart-card-2', 'Region_Conversion')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="region-chart-container">
+        <div *ngIf="!regionData || regionData.length === 0" class="no-data-msg">
+          No region conversion data available
+        </div>
+        <div *ngIf="regionData && regionData.length > 0" class="region-bars-wrapper">
+          <div *ngFor="let item of regionData" class="region-bar-item">
+            <div class="bar-top-value">{{ item.conversionPercentage }}%</div>
+            <div class="bar-track">
+              <div class="bar-fill" [style.height.%]="item.conversionPercentage"></div>
+            </div>
+            <div class="bar-label">{{ item.regionName }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Row 2: Leads Created YTD -->
+  <div class="dashboard-row full-row">
+    <div class="chart-card" id="chart-card-3">
+      <div class="chart-header">
+        <h3>LEADS CREATED YTD</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart3'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart3'">
+            <button (click)="printChart('chart-card-3')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('chart-card-3', 'Leads_Created')">Download PNG image</button>
+            <button (click)="downloadJpeg('chart-card-3', 'Leads_Created')">Download JPEG image</button>
+            <button (click)="downloadPdf('chart-card-3', 'Leads_Created')">Download PDF document</button>
+            <button (click)="downloadSvg('chart-card-3', 'Leads_Created')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="line-chart-container">
+        <div class="y-axis-label">Values (Number)</div>
+        <svg viewBox="0 0 800 200" class="line-chart-svg">
+          <!-- Horizontal Grid Lines -->
+          <line x1="40" y1="20" x2="760" y2="20" stroke="#edf2f7" stroke-width="1" />
+          <line x1="40" y1="60" x2="760" y2="60" stroke="#edf2f7" stroke-width="1" />
+          <line x1="40" y1="100" x2="760" y2="100" stroke="#edf2f7" stroke-width="1" />
+          <line x1="40" y1="140" x2="760" y2="140" stroke="#edf2f7" stroke-width="1" />
+
+          <!-- Main Polyline -->
+          <path [attr.d]="getLinePointsPath()" fill="none" stroke="#3182ce" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+          <!-- Interactive Point Markers -->
+          <g *ngFor="let pt of getLineCirclePoints()">
+            <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="5" fill="#3182ce" stroke="#ffffff" stroke-width="2" />
+            <text [attr.x]="pt.x" [attr.y]="pt.y - 10" font-size="10" fill="#2b6cb0" font-weight="600" text-anchor="middle">{{ pt.val }}</text>
+            <text [attr.x]="pt.x" y="165" font-size="10" fill="#4a5568" font-weight="500" text-anchor="middle">{{ pt.label }}</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Row 3: Leads Created Cumulative -->
+  <div class="dashboard-row full-row">
+    <div class="chart-card" id="chart-card-4">
+      <div class="chart-header">
+        <h3>LEADS CREATED (CUMULATIVE)</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart4'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart4'">
+            <button (click)="printChart('chart-card-4')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('chart-card-4', 'Leads_Cumulative')">Download PNG image</button>
+            <button (click)="downloadJpeg('chart-card-4', 'Leads_Cumulative')">Download JPEG image</button>
+            <button (click)="downloadPdf('chart-card-4', 'Leads_Cumulative')">Download PDF document</button>
+            <button (click)="downloadSvg('chart-card-4', 'Leads_Cumulative')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="cumulative-chart-container">
+        <div class="y-axis-label">Values (Number)</div>
+        <div class="cumulative-bars-wrapper">
+          <div *ngFor="let cat of cumulativeCategories; let i = index" class="cumulative-bar-item">
+            <div class="cum-val">{{ cumulativeData[i] || 0 }}</div>
+            <div class="cum-track">
+              <div class="cum-fill" [style.height.%]="((cumulativeData[i] || 0) / maxCumulativeVal) * 100"></div>
+            </div>
+            <div class="cum-label">{{ cat }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

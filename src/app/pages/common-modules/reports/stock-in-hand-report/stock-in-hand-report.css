@@ -1,0 +1,388 @@
+::ng-deep .page-header {
+  background: #fff !important;
+  padding: 1.25rem 2rem !important;
+  margin: 0 0 20px 0 !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  width: calc(104% - 255px) !important;
+  margin-left: 255px !important;
+  border-bottom: 1px solid #edf2f7 !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 80px !important;
+  margin-top: -40px !important;
+  box-sizing: border-box !important;
+}
+
+.sih-page-content {
+  margin-left: 255px;
+  width: calc(100% - 255px);
+  margin-top: 0px;
+  padding: 20px 24px;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+}
+
+/* Datatable Toolbar (Matching Product List UI) */
+.datatable-toolbar {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 18px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.search-group {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+}
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+}
+
+.search-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 2px;
+}
+
+/* Custom Searchable Dropdowns */
+.dropdown-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13.5px;
+  color: #495057;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  user-select: none;
+  height: 38px;
+}
+
+.dropdown-trigger:hover, .dropdown-trigger.active {
+  border-color: #7a4bc4;
+  box-shadow: 0 0 0 3px rgba(122, 75, 196, 0.15);
+}
+
+.trigger-text {
+  font-size: 13.5px;
+  color: #374151;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  z-index: 1050;
+  padding: 8px 0;
+  min-width: 220px;
+}
+
+.dropdown-search {
+  padding: 4px 10px 8px 10px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.dropdown-search input {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 12.5px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  outline: none;
+}
+
+.dropdown-search input:focus {
+  border-color: #7a4bc4;
+}
+
+.dropdown-options {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-option {
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #333333;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.dropdown-option:hover {
+  background-color: #f4ebff;
+  color: #7a4bc4;
+}
+
+.dropdown-option.selected {
+  background-color: #f4ebff;
+  color: #7a4bc4;
+  font-weight: 600;
+}
+
+/* Action Icon Buttons (Matching Product List app-button icon-btn design) */
+.filter-actions.icon-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.icon-actions .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  width: 38px;
+  min-width: 38px;
+  border: 1px solid #e8dff7;
+  border-radius: 12px;
+  background: #f4ebff;
+  color: #7a4bc4;
+  box-shadow: 0 4px 10px rgba(122, 75, 196, 0.08);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.icon-actions .icon-btn i {
+  font-size: 14px;
+}
+
+.icon-actions .icon-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(122, 75, 196, 0.12);
+  background: #ede0ff;
+  color: #6b3ab7;
+}
+
+.icon-actions .icon-btn:active {
+  transform: translateY(0);
+}
+
+/* Table Card Container & Soft Pink Header Bars (Matching Product List) */
+.table-card {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #ced4da;
+  width: 100%;
+  overflow: hidden;
+}
+
+.sih-table {
+  width: 100% !important;
+  border-collapse: collapse;
+}
+
+.sih-pink-header {
+  background-color: #f7d3cd !important;
+  width: 100% !important;
+}
+
+.sih-pink-header th {
+  background-color: #f7d3cd !important;
+  color: #2d2d35 !important;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 14px 16px;
+  border-bottom: 1px solid #dfb8b3 !important;
+  border-right: 1px solid #dfb8b3 !important;
+  text-transform: uppercase;
+}
+
+.sih-pink-header th:last-child {
+  border-right: none !important;
+}
+
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable-header:hover {
+  background-color: #f2c6bf !important;
+}
+
+/* Row Styling */
+.category-row, .segment-row {
+  border-bottom: 1px solid #e9ecef;
+  transition: background 0.15s ease;
+}
+
+.category-row:hover, .segment-row:hover {
+  background-color: #f8fafc;
+}
+
+.btn-expand-symbol {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  color: #495057;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.15s ease;
+}
+
+.btn-expand-symbol:hover {
+  color: #7a4bc4;
+}
+
+/* Application Shared Pagination Styling (Matching Product List) */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 14px;
+  padding: 12px 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.pagination-info {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-container button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-container button:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.pagination-container button.active {
+  background: #6d28d9;
+  color: #ffffff;
+  border-color: #6d28d9;
+}
+
+.pagination-container button:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+}
+
+.page-size-dropdown {
+  width: 80px !important;
+}
+
+.custom-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-container .dropdown-trigger {
+  width: 100%;
+  height: 35px;
+  padding: 6px 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.custom-dropdown-container .dropdown-panel {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px 6px 0 0;
+  z-index: 1000;
+  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2px;
+  top: auto;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.option-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #444;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.option-item:hover {
+  background: #f5f8fa;
+  color: #7a4bc4;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthService } from '../../../service/auth-service';
+import { AuthService } from '../../../../service/auth-service';
 
 // ─── Request DTOs ─────────────────────────────────────────────────────────────
 
@@ -211,6 +211,51 @@ export class OpenOrdersService {
             throw new Error(response.message || 'Failed to fetch regions');
           }
           return response.data as { id: number; label: string }[];
+        })
+      );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Months dropdown helper
+  // Maps to: GET /reports/open-orders/months
+  // PHP format: label = "M-y" (e.g., "Apr-24"), value = "month_notoyear_no" (e.g., "1to2024")
+  // ─────────────────────────────────────────────────────────────────────────
+
+  getMonthsForDropdown(): Observable<{ id: number; label: string; value: string; monthNo: number; yearNo: number; fromDate: string; toDate: string }[]> {
+    return this.http
+      .get<any>(`${this.baseUrl}/reports/open-orders/months`, {
+        headers: this.getAuthHeaders()
+      })
+      .pipe(
+        map(response => {
+          if (!response.status) {
+            throw new Error(response.message || 'Failed to fetch months');
+          }
+          return response.data as { id: number; label: string; value: string; monthNo: number; yearNo: number; fromDate: string; toDate: string }[];
+        })
+      );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Weeks dropdown helper
+  // Maps to: GET /reports/open-orders/weeks
+  // PHP format: label = "Week X (YYYY-MM-DD to YYYY-MM-DD)", value = "YYYY-MM-DDtoYYYY-MM-DD"
+  // ─────────────────────────────────────────────────────────────────────────
+
+  getWeeksForDropdown(): Observable<{ id: number; label: string; value: string; weekNo: number; fromDate: string; toDate: string }[]> {
+    console.log('=== Service: Calling /reports/open-orders/weeks ===');
+    return this.http
+      .get<any>(`${this.baseUrl}/reports/open-orders/weeks`, {
+        headers: this.getAuthHeaders()
+      })
+      .pipe(
+        map(response => {
+          console.log('Service: Weeks response received:', response);
+          if (!response.status) {
+            throw new Error(response.message || 'Failed to fetch weeks');
+          }
+          console.log('Service: Returning weeks data:', response.data);
+          return response.data as { id: number; label: string; value: string; weekNo: number; fromDate: string; toDate: string }[];
         })
       );
   }

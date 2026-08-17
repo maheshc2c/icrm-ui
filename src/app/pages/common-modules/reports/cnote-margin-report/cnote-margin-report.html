@@ -1,0 +1,241 @@
+<app-pageheader title="C-Note Margin Analysis Report" [breadcrumbs]="breadcrumbs"></app-pageheader>
+
+<div class="cnote-margin-page">
+
+  <!-- Toolbar Filters -->
+  <div class="datatable-toolbar">
+    <div class="filter-controls">
+
+      <!-- Region Filter -->
+      <div class="filter-item">
+        <label class="search-label">Region</label>
+        <select class="form-select" [(ngModel)]="selectedRegionId" (change)="onSearch()">
+          <option [ngValue]="null">All Regions</option>
+          <option *ngFor="let r of regions" [value]="r.id">{{ r.label }}</option>
+        </select>
+      </div>
+
+      <!-- Segment Filter -->
+      <div class="filter-item">
+        <label class="search-label">Segment</label>
+        <select class="form-select" [(ngModel)]="selectedSegmentId" (change)="onSegmentChange(); onSearch()">
+          <option [ngValue]="null">Select Segment</option>
+          <option *ngFor="let s of segments" [value]="s.id">{{ s.label }}</option>
+        </select>
+      </div>
+
+      <!-- Product Filter -->
+      <div class="filter-item">
+        <label class="search-label">Product</label>
+        <select class="form-select" [(ngModel)]="selectedProductId" (change)="onSearch()">
+          <option [ngValue]="null">Select Product</option>
+          <option *ngFor="let p of products" [value]="p.id">{{ p.label }}</option>
+        </select>
+      </div>
+
+      <!-- User Filter -->
+      <div class="filter-item">
+        <label class="search-label">Sales Engineer</label>
+        <select class="form-select" [(ngModel)]="selectedUserId" (change)="onSearch()">
+          <option [ngValue]="null">All Users</option>
+          <option *ngFor="let u of users" [value]="u.id">{{ u.label }}</option>
+        </select>
+      </div>
+
+      <!-- Customer / SO Search -->
+      <div class="filter-item">
+        <label class="search-label">Customer / SO No</label>
+        <input type="text" class="form-select" placeholder="Search customer or SO..." [(ngModel)]="customerName" (keyup.enter)="onSearch()" />
+      </div>
+
+      <!-- From Date -->
+      <div class="filter-item">
+        <label class="search-label">From Date</label>
+        <input type="date" class="form-select" [(ngModel)]="fromDate" (change)="onSearch()" />
+      </div>
+
+      <!-- To Date -->
+      <div class="filter-item">
+        <label class="search-label">To Date</label>
+        <input type="date" class="form-select" [(ngModel)]="toDate" (change)="onSearch()" />
+      </div>
+
+    </div>
+
+    <!-- Search & Download Action Buttons -->
+    <div class="toolbar-actions">
+      <button type="button" class="btn-action btn-search" (click)="onSearch()" [disabled]="isLoading" title="Search">
+        <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+        <span>Search</span>
+      </button>
+
+      <button type="button" class="btn-action btn-reset" (click)="resetFilters()" title="Reset Filters">
+        <i class="fas fa-sync-alt"></i>
+        <span>Reset</span>
+      </button>
+
+      <button type="button" class="btn-action btn-download" (click)="onDownload()" [disabled]="isDownloading" title="Download Excel Report">
+        <i class="fas" [ngClass]="isDownloading ? 'fa-spinner fa-spin' : 'fa-cloud-download-alt'"></i>
+        <span>Download Excel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <span>Loading C-Note Margin Analysis data...</span>
+  </div>
+
+  <!-- Data Table Card -->
+  <div class="table-card" *ngIf="!isLoading">
+    <div class="table-responsive">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th class="text-center" style="width: 50px;">S.No</th>
+            <th class="sortable" (click)="onSort('cnoteId')">
+              C-Note ID
+              <i class="fas" [ngClass]="sortBy === 'cnoteId' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('cnoteTypeLabel')">
+              Type
+              <i class="fas" [ngClass]="sortBy === 'cnoteTypeLabel' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('customerName')">
+              Customer Name
+              <i class="fas" [ngClass]="sortBy === 'customerName' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('salesEngineer')">
+              Sales Engineer
+              <i class="fas" [ngClass]="sortBy === 'salesEngineer' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('soNumber')">
+              SO Number
+              <i class="fas" [ngClass]="sortBy === 'soNumber' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="sortable" (click)="onSort('cnoteCreatedTime')">
+              C-Note Date
+              <i class="fas" [ngClass]="sortBy === 'cnoteCreatedTime' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th>Product Details</th>
+            <th>Region</th>
+            <th class="text-end sortable" (click)="onSort('orderValue')">
+              Order Value (₹)
+              <i class="fas" [ngClass]="sortBy === 'orderValue' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="text-end sortable" (click)="onSort('netSellingPrice')">
+              NSP (₹)
+              <i class="fas" [ngClass]="sortBy === 'netSellingPrice' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="text-end">Basic Price (₹)</th>
+            <th class="text-end">Discount %</th>
+            <th class="text-end">Warranty Cost (₹)</th>
+            <th class="text-end">Finance Cost (₹)</th>
+            <th class="text-end">Commission (₹)</th>
+            <th class="text-end">Free Supply Cost (₹)</th>
+            <th class="text-end sortable" (click)="onSort('grossMargin')">
+              Gross Margin (₹)
+              <i class="fas" [ngClass]="sortBy === 'grossMargin' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="text-end">Gross Margin %</th>
+            <th class="text-end sortable" (click)="onSort('netMargin')">
+              Net Margin (₹)
+              <i class="fas" [ngClass]="sortBy === 'netMargin' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+            <th class="text-end">Net Margin %</th>
+            <th class="text-center sortable" (click)="onSort('orderStatusLabel')">
+              Status
+              <i class="fas" [ngClass]="sortBy === 'orderStatusLabel' ? (sortOrder === 'ASC' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items; let i = index">
+            <td class="text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+            <td class="fw-bold">#{{ item.cnoteId }}</td>
+            <td>
+              <span class="badge-type" [class.regular]="item.cnoteTypeLabel === 'Regular'" [class.po]="item.cnoteTypeLabel !== 'Regular'">
+                {{ item.cnoteTypeLabel }}
+              </span>
+            </td>
+            <td class="fw-semibold">{{ item.customerName || '-' }}</td>
+            <td>{{ item.salesEngineer || '-' }}</td>
+            <td>{{ item.soNumber || '-' }}</td>
+            <td [innerHTML]="item.productDetails || '-'"></td>
+            <td>{{ item.region || '-' }}</td>
+
+            <!-- Financial Metrics -->
+            <td class="text-end fw-bold">{{ item.marginMetrics?.orderValue | number:'1.2-2' }}</td>
+            <td class="text-end">{{ item.marginMetrics?.netSellingPrice | number:'1.2-2' }}</td>
+            <td class="text-end">{{ item.marginMetrics?.basicPrice | number:'1.2-2' }}</td>
+            <td class="text-end">{{ item.marginMetrics?.discountPercentage | number:'1.2-2' }}%</td>
+            <td class="text-end">{{ item.marginMetrics?.costOfWarranty | number:'1.2-2' }}</td>
+            <td class="text-end">{{ item.marginMetrics?.costOfFinance | number:'1.2-2' }}</td>
+            <td class="text-end">{{ item.marginMetrics?.costOfDealerCommission | number:'1.2-2' }}</td>
+            <td class="text-end">{{ item.marginMetrics?.costOfFreeSupply | number:'1.2-2' }}</td>
+
+            <td class="text-end fw-bold" [class.positive]="item.marginMetrics?.grossMargin >= 0" [class.negative]="item.marginMetrics?.grossMargin < 0">
+              {{ item.marginMetrics?.grossMargin | number:'1.2-2' }}
+            </td>
+            <td class="text-end fw-bold">{{ item.marginMetrics?.grossMarginPercentage | number:'1.2-2' }}%</td>
+
+            <td class="text-end fw-bold" [class.positive]="item.marginMetrics?.netMargin >= 0" [class.negative]="item.marginMetrics?.netMargin < 0">
+              {{ item.marginMetrics?.netMargin | number:'1.2-2' }}
+            </td>
+            <td class="text-end fw-bold">{{ item.marginMetrics?.netMarginPercentage | number:'1.2-2' }}%</td>
+
+            <td class="text-center">
+              <span class="status-badge" [class.cleared]="item.orderStatusLabel === 'Cleared'" [class.invoiced]="item.orderStatusLabel === 'Invoiced'" [class.pending]="item.orderStatusLabel !== 'Cleared' && item.orderStatusLabel !== 'Invoiced'">
+                {{ item.orderStatusLabel }}
+              </span>
+            </td>
+          </tr>
+
+          <!-- No Data Found -->
+          <tr *ngIf="items.length === 0">
+            <td colspan="21" class="text-center empty-msg">No C-Note margin analysis records found for selected filters.</td>
+          </tr>
+        </tbody>
+
+        <!-- Grand Total Summary Row -->
+        <tfoot *ngIf="items.length > 0">
+          <tr class="summary-row">
+            <td colspan="8" class="text-end fw-bold summary-label">GRAND TOTAL</td>
+            <td class="text-end fw-bold summary-val">{{ totalOrderValue | number:'1.2-2' }}</td>
+            <td class="text-end fw-bold summary-val">{{ totalNetSellingPrice | number:'1.2-2' }}</td>
+            <td colspan="6"></td>
+            <td class="text-end fw-bold summary-val">{{ totalGrossMargin | number:'1.2-2' }}</td>
+            <td></td>
+            <td class="text-end fw-bold summary-val">{{ totalNetMargin | number:'1.2-2' }}</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Pagination Container -->
+    <div class="pagination-container" *ngIf="totalRecords > 0">
+      <div class="pagination-info">
+        Showing {{ startRecord }} to {{ endRecord }} of {{ totalRecords }} records
+      </div>
+
+      <div class="pagination-controls">
+        <button class="page-btn nav-btn" [disabled]="currentPage === 1" (click)="prevPage()">Prev</button>
+
+        <button *ngFor="let page of visiblePages" class="page-btn" [class.active]="page === currentPage" (click)="goToPage(page)">
+          {{ page }}
+        </button>
+
+        <button class="page-btn nav-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+      </div>
+
+      <div class="page-size-selector">
+        <select class="page-size-select" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+          <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }} v</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+</div>

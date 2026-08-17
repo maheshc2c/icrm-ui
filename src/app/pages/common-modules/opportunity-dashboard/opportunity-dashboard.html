@@ -1,0 +1,270 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<div class="dashboard-content">
+
+  <!-- Controls Filter Bar -->
+  <div class="controls-card">
+    <div class="user-filter">
+      <select id="userSelect" [(ngModel)]="selectedUserId" (change)="onUserChange()" class="form-control">
+        <option [ngValue]="null">-- Select User --</option>
+        <option *ngFor="let u of users" [value]="u.id || u.userId">
+          {{ u.name || (u.firstName + ' ' + u.lastName) }}
+        </option>
+      </select>
+    </div>
+
+    <div class="group-filter" *ngIf="showPcRegionToggle">
+      <label class="radio-label">
+        <input type="radio" name="pcRegion" [value]="1" [checked]="selectedPcRegion === 1" (change)="onPcRegionChange(1)">
+        Product Category &nbsp;&nbsp;
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="pcRegion" [value]="2" [checked]="selectedPcRegion === 2" (change)="onPcRegionChange(2)">
+        Region
+      </label>
+    </div>
+
+    <div class="timeline-filter">
+      <span class="filter-label">Timeline: &nbsp;</span>
+      <label class="radio-label">
+        <input type="radio" name="timeline" [value]="1" [checked]="selectedTimeline === 1" (change)="onTimelineChange(1)">
+        Month &nbsp;&nbsp;
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="timeline" [value]="2" [checked]="selectedTimeline === 2" (change)="onTimelineChange(2)">
+        Quarter &nbsp;&nbsp;
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="timeline" [value]="3" [checked]="selectedTimeline === 3" (change)="onTimelineChange(3)">
+        Year
+      </label>
+    </div>
+  </div>
+
+  <!-- Dashboard Row 1 (2 Cards per Row) -->
+  <div class="dashboard-row">
+    
+    <!-- Chart 1: Pipeline Opportunities (Funnel) -->
+    <div class="chart-card" id="opp-chart-1">
+      <div class="chart-header">
+        <h3>Pipeline Opportunities (In Lakhs)</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart1'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart1'">
+            <button (click)="printChart('opp-chart-1')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('opp-chart-1', 'Pipeline_Funnel')">Download PNG image</button>
+            <button (click)="downloadJpeg('opp-chart-1', 'Pipeline_Funnel')">Download JPEG image</button>
+            <button (click)="downloadPdf('opp-chart-1', 'Pipeline_Funnel')">Download PDF document</button>
+            <button (click)="downloadSvg('opp-chart-1', 'Pipeline_Funnel')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+      <div class="chart-body funnel-body">
+        <div class="funnel-container-wrapper">
+          <svg viewBox="0 0 400 240" class="funnel-svg-graphic" preserveAspectRatio="xMidYMid meet">
+            <!-- Top Stage: HOT (Red) -->
+            <g class="funnel-stage-group hot-stage">
+              <polygon points="20,10 380,10 295,85 105,85" fill="#e54b4b" class="funnel-polygon" />
+              <text x="200" y="52" fill="#ffffff" font-size="15" font-weight="700" text-anchor="middle" class="stage-label">Hot ({{ getHotValue() }})</text>
+            </g>
+
+            <!-- Middle Stage: WARM (Yellow/Orange) -->
+            <g class="funnel-stage-group warm-stage">
+              <polygon points="105,86 295,86 230,152 170,152" fill="#e5a638" class="funnel-polygon" />
+              <text x="200" y="123" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle" class="stage-label">Warm ({{ getWarmValue() }})</text>
+            </g>
+
+            <!-- Bottom Stage: COLD (Blue) -->
+            <g class="funnel-stage-group cold-stage">
+              <polygon points="170,153 230,153 230,225 170,225" fill="#4c8bf5" class="funnel-polygon" />
+              <text x="200" y="193" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle" class="stage-label">Cold ({{ getColdValue() }})</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 2: Pipeline Opportunities by Group -->
+    <div class="chart-card" id="opp-chart-2">
+      <div class="chart-header">
+        <h3>Pipeline Opportunities by {{ getGroupLabel() }}</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart2'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart2'">
+            <button (click)="printChart('opp-chart-2')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('opp-chart-2', 'Pipeline_By_Group')">Download PNG image</button>
+            <button (click)="downloadJpeg('opp-chart-2', 'Pipeline_By_Group')">Download JPEG image</button>
+            <button (click)="downloadPdf('opp-chart-2', 'Pipeline_By_Group')">Download PDF document</button>
+            <button (click)="downloadSvg('opp-chart-2', 'Pipeline_By_Group')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+      <div class="chart-body">
+        <div class="y-axis-title">Value (Lakhs)</div>
+        <div class="group-bar-container">
+          <div class="cat-column" *ngFor="let cat of pipelineCategories; let idx = index">
+            <div class="stacked-bar">
+              <div class="bar-segment cold-segment" [style.height.%]="((pipelineCold[idx] || 0) / getMaxValue(pipelineCold)) * 100" [title]="'Cold: ' + (pipelineCold[idx] || 0)"></div>
+              <div class="bar-segment warm-segment" [style.height.%]="((pipelineWarm[idx] || 0) / getMaxValue(pipelineWarm)) * 100" [title]="'Warm: ' + (pipelineWarm[idx] || 0)"></div>
+              <div class="bar-segment hot-segment" [style.height.%]="((pipelineHot[idx] || 0) / getMaxValue(pipelineHot)) * 100" [title]="'Hot: ' + (pipelineHot[idx] || 0)"></div>
+            </div>
+            <div class="cat-label">{{ cat }}</div>
+          </div>
+        </div>
+        <div class="legend-row">
+          <span class="legend-item"><span class="legend-box cold-box"></span> Cold</span>
+          <span class="legend-item"><span class="legend-box warm-box"></span> Warm</span>
+          <span class="legend-item"><span class="legend-box hot-box"></span> Hot</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Dashboard Row 2 (2 Cards per Row) -->
+  <div class="dashboard-row">
+
+    <!-- Chart 3: Top Hot Opportunities -->
+    <div class="chart-card" id="opp-chart-3">
+      <div class="chart-header">
+        <h3>Top Hot Opportunities</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart3'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart3'">
+            <button (click)="printChart('opp-chart-3')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('opp-chart-3', 'Top_Hot_Opportunities')">Download PNG image</button>
+            <button (click)="downloadJpeg('opp-chart-3', 'Top_Hot_Opportunities')">Download JPEG image</button>
+            <button (click)="downloadPdf('opp-chart-3', 'Top_Hot_Opportunities')">Download PDF document</button>
+            <button (click)="downloadSvg('opp-chart-3', 'Top_Hot_Opportunities')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+      <div class="chart-body horizontal-bar-body">
+        <div class="horizontal-rows" *ngIf="topHotCustomers && topHotCustomers.length > 0; else noData">
+          <div class="hbar-row" *ngFor="let cust of topHotCustomers; let idx = index">
+            <div class="cust-label" [title]="cust">{{ cust }}</div>
+            <div class="hbar-track">
+              <div class="hbar-fill blue-fill" [style.width.%]="((topHotPrices[idx] || 0) / getMaxValue(topHotPrices)) * 100"></div>
+            </div>
+            <div class="hbar-value">{{ topHotPrices[idx] || 0 }}</div>
+          </div>
+        </div>
+        <ng-template #noData>
+          <div class="no-data-msg">No Hot Opportunities Available</div>
+        </ng-template>
+        <div class="x-axis-title">In Lakhs</div>
+      </div>
+    </div>
+
+    <!-- Chart 4: Opportunities closed by Group -->
+    <div class="chart-card" id="opp-chart-4">
+      <div class="chart-header">
+        <h3>Opportunities closed by {{ getGroupLabel() }} {{ getTimelineLabel() }}</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart4'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart4'">
+            <button (click)="printChart('opp-chart-4')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('opp-chart-4', 'Closed_By_Group')">Download PNG image</button>
+            <button (click)="downloadJpeg('opp-chart-4', 'Closed_By_Group')">Download JPEG image</button>
+            <button (click)="downloadPdf('opp-chart-4', 'Closed_By_Group')">Download PDF document</button>
+            <button (click)="downloadSvg('opp-chart-4', 'Closed_By_Group')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+      <div class="chart-body">
+        <div class="y-axis-title">Value (Lakhs)</div>
+        <div class="group-bar-container">
+          <div class="cat-column" *ngFor="let cat of closedCategories; let idx = index">
+            <div class="side-bars">
+              <div class="won-bar" [style.height.%]="((closedWon[idx] || 0) / getMaxValue(closedWon)) * 100" [title]="'Won: ' + (closedWon[idx] || 0)"></div>
+              <div class="lost-bar" [style.height.%]="((closedLost[idx] || 0) / getMaxValue(closedLost)) * 100" [title]="'Lost: ' + (closedLost[idx] || 0)"></div>
+            </div>
+            <div class="cat-label">{{ cat }}</div>
+          </div>
+        </div>
+        <div class="legend-row">
+          <span class="legend-item"><span class="legend-box won-box"></span> Won</span>
+          <span class="legend-item"><span class="legend-box lost-box"></span> Lost</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Dashboard Row 3 (2 Cards per Row) -->
+  <div class="dashboard-row">
+
+    <!-- Chart 5: Closure success by Group -->
+    <div class="chart-card" id="opp-chart-5">
+      <div class="chart-header">
+        <h3>Closure success by {{ getGroupLabel() }} {{ getTimelineLabel() }}</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart5'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart5'">
+            <button (click)="printChart('opp-chart-5')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('opp-chart-5', 'Closure_Success')">Download PNG image</button>
+            <button (click)="downloadJpeg('opp-chart-5', 'Closure_Success')">Download JPEG image</button>
+            <button (click)="downloadPdf('opp-chart-5', 'Closure_Success')">Download PDF document</button>
+            <button (click)="downloadSvg('opp-chart-5', 'Closure_Success')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+      <div class="chart-body">
+        <div class="y-axis-title">Percentage</div>
+        <div class="group-bar-container">
+          <div class="cat-column" *ngFor="let item of closureSuccessData">
+            <div class="single-bar-container">
+              <div class="percent-bar" [style.height.%]="item.percentage || 0" [title]="(item.percentage || 0) + '%'"></div>
+            </div>
+            <div class="cat-label">{{ item.category }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 6: Top Opportunities Closed -->
+    <div class="chart-card" id="opp-chart-6">
+      <div class="chart-header">
+        <h3>Top Opportunities Closed {{ getTimelineLabel() }}</h3>
+        <div class="chart-menu-container">
+          <button class="chart-menu-btn" (click)="toggleMenu('chart6'); $event.stopPropagation()" title="Chart Options">☰</button>
+          <div class="chart-dropdown-menu" *ngIf="activeMenu === 'chart6'">
+            <button (click)="printChart('opp-chart-6')">Print chart</button>
+            <div class="dropdown-divider"></div>
+            <button (click)="downloadPng('opp-chart-6', 'Top_Opportunities_Closed')">Download PNG image</button>
+            <button (click)="downloadJpeg('opp-chart-6', 'Top_Opportunities_Closed')">Download JPEG image</button>
+            <button (click)="downloadPdf('opp-chart-6', 'Top_Opportunities_Closed')">Download PDF document</button>
+            <button (click)="downloadSvg('opp-chart-6', 'Top_Opportunities_Closed')">Download SVG vector image</button>
+          </div>
+        </div>
+      </div>
+      <div class="chart-body horizontal-bar-body">
+        <div class="horizontal-rows" *ngIf="topClosedCustomers && topClosedCustomers.length > 0; else noClosedData">
+          <div class="hbar-row" *ngFor="let cust of topClosedCustomers; let idx = index">
+            <div class="cust-label" [title]="cust">{{ cust }}</div>
+            <div class="hbar-track">
+              <div class="hbar-fill blue-fill" [style.width.%]="((topClosedPrices[idx] || 0) / getMaxValue(topClosedPrices)) * 100"></div>
+            </div>
+            <div class="hbar-value">{{ topClosedPrices[idx] || 0 }}</div>
+          </div>
+        </div>
+        <ng-template #noClosedData>
+          <div class="no-data-msg">No Closed Opportunities Available</div>
+        </ng-template>
+        <div class="x-axis-title">In Lakhs</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

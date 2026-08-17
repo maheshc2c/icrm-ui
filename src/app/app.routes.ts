@@ -63,22 +63,11 @@ export const routes: Routes = [
         ]
       }
     },
-    {
-      path: 'reports/open-orders',
-      loadComponent: () =>
-        import('./pages/common-modules/reports/open-orders-report/open-orders-report.component').then(m => m.OpenOrdersReportComponent),
-      canActivate: [authGuard],
-      data: {
-        roles: [
-          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
-          'National Sales Manager', 'Country Head'
-        ]
-      }
-    },
+    
     {
       path: 'reports/stock-in-hand',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/stock-in-hand-report/stock-in-hand-report').then(m => m.StockInHandReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -102,7 +91,31 @@ export const routes: Routes = [
     {
       path: 'reports/target-vs-sales',
       loadComponent: () =>
-        import('./pages/common-modules/reports/target-vs-sales/target-vs-sales').then(m => m.TargetVsSalesComponent),
+        import('./pages/common-modules/reports/target-vs-sales-report/target-vs-sales-report').then(m => m.TargetVsSalesReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'reports/stock-in-hand',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/stock-in-hand-report/stock-in-hand-report').then(m => m.StockInHandReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'stock_in_hand_table',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/stock-in-hand-report/stock-in-hand-report').then(m => m.StockInHandReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -114,7 +127,7 @@ export const routes: Routes = [
     {
       path: 'reports/runrate-projection',
       loadComponent: () =>
-        import('./pages/common-modules/reports/runrate-projection/runrate-projection').then(m => m.RunrateProjectionComponent),
+        import('./pages/common-modules/reports/runrate-projection-report/runrate-projection-report').then(m => m.RunrateProjectionReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -149,7 +162,18 @@ export const routes: Routes = [
     {
       path: 'reports/margin-analysis-c-note',
       loadComponent: () =>
-        import('./pages/common-modules/reports/margin-analysis-report/margin-analysis-report').then(m => m.MarginAnalysisReportComponent),
+        import('./pages/common-modules/reports/cnote-margin-report/cnote-margin-report').then(m => m.CNoteMarginReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'Regional Branch Head', 'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'cnote_margin_analysis',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/cnote-margin-report/cnote-margin-report').then(m => m.CNoteMarginReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -160,7 +184,18 @@ export const routes: Routes = [
     {
       path: 'reports/outstanding',
       loadComponent: () =>
-        import('./pages/common-modules/reports/funnel-report/funnel-report').then(m => m.FunnelReportComponent),
+        import('./pages/common-modules/reports/outstanding-report/outstanding-report').then(m => m.OutstandingReportComponent),
+      canActivate: [authGuard],
+      data: {
+        roles: [
+          'National Sales Manager', 'Country Head'
+        ]
+      }
+    },
+    {
+      path: 'get_new_outstanding_report',
+      loadComponent: () =>
+        import('./pages/common-modules/reports/outstanding-report/outstanding-report').then(m => m.OutstandingReportComponent),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -176,11 +211,6 @@ export const routes: Routes = [
     {
       path: 'opportunity-lost',
       redirectTo: '/reports/opportunity-lost',
-      pathMatch: 'full'
-    },
-    {
-      path: 'open-order-reports',
-      redirectTo: '/reports/open-orders',
       pathMatch: 'full'
     },
     {
@@ -221,9 +251,9 @@ export const routes: Routes = [
   ]
 },
 {
-      path: 'reports/open-orders',
+      path: 'reports/OpenOrders',
       loadComponent: () =>
-        import('./pages/common-modules/open-orders/open-orders').then(m => m.OpenOrders),
+        import('./pages/common-modules/reports/open-orders/open-orders').then(m => m.OpenOrders),
       canActivate: [authGuard],
       data: {
         roles: [
@@ -863,6 +893,26 @@ export const routes: Routes = [
 
 
 {
+        path: 'leads-dashboard',
+        loadComponent: () => import('./pages/common-modules/leads-dashboard/leads-dashboard').then(m => m.LeadsDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'dashboards/leads',
+        loadComponent: () => import('./pages/common-modules/leads-dashboard/leads-dashboard').then(m => m.LeadsDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'dashboards/opportunity',
+        loadComponent: () => import('./pages/common-modules/opportunity-dashboard/opportunity-dashboard').then(m => m.OpportunityDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'opportunity-dashboard',
+        loadComponent: () => import('./pages/common-modules/opportunity-dashboard/opportunity-dashboard').then(m => m.OpportunityDashboardComponent),
+        canActivate: [authGuard]
+      },
+      {
         path: 'sales-manager-dashboard',
         loadComponent: () => import('./pages/SalesManager/salesmanager-dashboard/salesmanager-dashboard').then(m => m.SalesManagerDashboard),
         canActivate: [authGuard],

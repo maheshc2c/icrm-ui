@@ -609,13 +609,36 @@ export class EditUsersComponent implements OnInit {
     this.selStates = checked
       ? [...this.selStates, name]
       : this.selStates.filter(s => s !== name);
-    this.districtOptions = []; this.selDistricts = [];
-    this.cityOptions = []; this.selCities = [];
 
     const selectedObjs = this.stateOptions.filter(s => this.selStates.includes(s.locationName));
     if (selectedObjs.length) {
       forkJoin(selectedObjs.map(s => this.userService.getLocationsByLevel(6, s.locationId)))
-        .subscribe(results => this.districtOptions = results.flat());
+        .subscribe(results => {
+          const newDistricts = results.flat();
+          this.districtOptions = newDistricts;
+          const validDistrictNames = new Set(newDistricts.map(d => d.locationName));
+          this.selDistricts = this.selDistricts.filter(d => validDistrictNames.has(d));
+
+          // Fetch cities for valid selected districts
+          const selectedDistObjs = this.districtOptions.filter(d => this.selDistricts.includes(d.locationName));
+          if (selectedDistObjs.length) {
+            forkJoin(selectedDistObjs.map(d => this.userService.getLocationsByLevel(7, d.locationId)))
+              .subscribe((cityResults: any[][]) => {
+                const newCities = cityResults.flat();
+                this.cityOptions = newCities;
+                const validCityNames = new Set(newCities.map(c => c.locationName));
+                this.selCities = this.selCities.filter(c => validCityNames.has(c));
+              });
+          } else {
+            this.cityOptions = [];
+            this.selCities = [];
+          }
+        });
+    } else {
+      this.districtOptions = [];
+      this.selDistricts = [];
+      this.cityOptions = [];
+      this.selCities = [];
     }
   }
 
@@ -624,12 +647,19 @@ export class EditUsersComponent implements OnInit {
     this.selDistricts = checked
       ? [...this.selDistricts, name]
       : this.selDistricts.filter(d => d !== name);
-    this.cityOptions = []; this.selCities = [];
 
     const selectedObjs = this.districtOptions.filter(d => this.selDistricts.includes(d.locationName));
     if (selectedObjs.length) {
       forkJoin(selectedObjs.map(d => this.userService.getLocationsByLevel(7, d.locationId)))
-        .subscribe((results: any[][]) => this.cityOptions = results.flat());
+        .subscribe((results: any[][]) => {
+          const newCities = results.flat();
+          this.cityOptions = newCities;
+          const validCityNames = new Set(newCities.map(c => c.locationName));
+          this.selCities = this.selCities.filter(c => validCityNames.has(c));
+        });
+    } else {
+      this.cityOptions = [];
+      this.selCities = [];
     }
   }
 
@@ -648,13 +678,32 @@ export class EditUsersComponent implements OnInit {
     this.selCategories = checked
       ? [...this.selCategories, name]
       : this.selCategories.filter(c => c !== name);
-    this.groupOptions = []; this.selGroups = [];
-    this.productOptions = []; this.selProducts = [];
 
     if (this.selCategories.length) {
       this.groupOptions = this.allGroups.filter(g =>
         this.selCategories.includes(g.category?.categoryName)
       );
+      const validGroupNames = new Set(this.groupOptions.map(g => g.groupName));
+      this.selGroups = this.selGroups.filter(g => validGroupNames.has(g));
+
+      const selectedGroupObjs = this.groupOptions.filter(g => this.selGroups.includes(g.groupName));
+      if (selectedGroupObjs.length) {
+        forkJoin(selectedGroupObjs.map(g => this.userService.getProductsByGroupId(g.groupId)))
+          .subscribe((results: any[][]) => {
+            const newProducts = Array.from(new Set(results.flat()));
+            this.productOptions = newProducts;
+            const validProductNames = new Set(newProducts);
+            this.selProducts = this.selProducts.filter(p => validProductNames.has(p));
+          });
+      } else {
+        this.productOptions = [];
+        this.selProducts = [];
+      }
+    } else {
+      this.groupOptions = [];
+      this.selGroups = [];
+      this.productOptions = [];
+      this.selProducts = [];
     }
   }
 
@@ -663,14 +712,19 @@ export class EditUsersComponent implements OnInit {
     this.selGroups = checked
       ? [...this.selGroups, name]
       : this.selGroups.filter(g => g !== name);
-    this.productOptions = []; this.selProducts = [];
 
     const selectedObjs = this.groupOptions.filter(g => this.selGroups.includes(g.groupName));
     if (selectedObjs.length) {
       forkJoin(selectedObjs.map(g => this.userService.getProductsByGroupId(g.groupId)))
         .subscribe((results: any[][]) => {
-          this.productOptions = Array.from(new Set(results.flat()));
+          const newProducts = Array.from(new Set(results.flat()));
+          this.productOptions = newProducts;
+          const validProductNames = new Set(newProducts);
+          this.selProducts = this.selProducts.filter(p => validProductNames.has(p));
         });
+    } else {
+      this.productOptions = [];
+      this.selProducts = [];
     }
   }
 
