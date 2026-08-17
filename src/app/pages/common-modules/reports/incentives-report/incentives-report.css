@@ -52,6 +52,7 @@
 }
 
 .btn-search,
+.btn-reset,
 .btn-download {
   border: none;
   background: linear-gradient(180deg, #7a4bc4 0%, #7a4bc4 100%);
@@ -67,6 +68,7 @@
 }
 
 .btn-search:hover,
+.btn-reset:hover,
 .btn-download:hover {
   filter: brightness(0.98);
 }

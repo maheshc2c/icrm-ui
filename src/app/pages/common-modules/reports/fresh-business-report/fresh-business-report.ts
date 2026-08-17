@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { NgApexchartsModule, ChartComponent, ApexOptions } from 'ng-apexcharts';
 import { ReportsLayoutComponent } from '../reports-layout/reports-layout';
 import { Breadcrumb } from '../../../../models/breadcrumb';
+import { AuthService } from '../../../../service/auth-service';
 
 export type ChartOptions = {
   series: ApexOptions['series'];
@@ -27,7 +29,8 @@ export type ChartOptions = {
     CommonModule,
     ReactiveFormsModule,
     ReportsLayoutComponent,
-    NgApexchartsModule
+    NgApexchartsModule,
+    HttpClientModule
   ],
   templateUrl: './fresh-business-report.html',
   styleUrls: ['./fresh-business-report.css']
@@ -46,41 +49,13 @@ export class FreshBusinessReportComponent implements OnInit {
   timelineOptions = ['Week', 'Month', 'Quarter', 'Year'];
   dateOptions: string[] = [];
 
-  // Mock data per timeline — each entry: { name, freshBusiness, repeatBusiness, freshPct, repeatPct }
-  mockData: Record<string, Record<string, any[]>> = {
-    product: {
-      Week: [
-        { name: 'Oracle', freshBusiness: 0, repeatBusiness: 7.5, freshPct: 0, repeatPct: 100 }
-      ],
-      Month: [
-        { name: 'Oracle', freshBusiness: 0, repeatBusiness: 7.5, freshPct: 0, repeatPct: 100 }
-      ],
-      Quarter: [
-        { name: 'Oracle', freshBusiness: 0, repeatBusiness: 9, freshPct: 0, repeatPct: 100 },
-        { name: 'SAP',    freshBusiness: 0, repeatBusiness: 7.2, freshPct: 0, repeatPct: 100 }
-      ],
-      Year: [
-        { name: 'Oracle', freshBusiness: 6.84, repeatBusiness: 12,  freshPct: 36.31, repeatPct: 63.69 },
-        { name: 'SAP',    freshBusiness: 0,    repeatBusiness: 7.21, freshPct: 0,     repeatPct: 100 }
-      ]
-    },
-    region: {
-      Week: [
-        { name: 'South2', freshBusiness: 0, repeatBusiness: 7.5, freshPct: 0, repeatPct: 100 }
-      ],
-      Month: [
-        { name: 'South2', freshBusiness: 0, repeatBusiness: 7.5, freshPct: 0, repeatPct: 100 }
-      ],
-      Quarter: [
-        { name: 'South2', freshBusiness: 0, repeatBusiness: 16.2, freshPct: 0, repeatPct: 100 }
-      ],
-      Year: [
-        { name: 'South2', freshBusiness: 6.84, repeatBusiness: 19.21, freshPct: 26.26, repeatPct: 73.74 }
-      ]
-    }
-  };
+  isDrilldownMode = false;
+  rawCategories: string[] = [];
+  customers: any[] = [];
+  regions: any[] = [];
+  users: any[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private auth: AuthService) {
     this.initChart();
   }
 
@@ -93,12 +68,34 @@ export class FreshBusinessReportComponent implements OnInit {
       timeline: ['Week']
     });
 
+    this.fetchDropdowns();
     this.updateDateOptions(this.filterForm.value.timeline);
     this.updateChartData();
 
     this.filterForm.valueChanges.subscribe(() => {
       this.updateDateOptions(this.filterForm.value.timeline);
       this.updateChartData();
+    });
+  }
+
+  fetchDropdowns(): void {
+    const token = this.auth.getToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+
+    // Regions dropdown
+    this.http.get<any[]>('http://localhost:8080/location/locations?territoryLevelId=4', { headers }).subscribe({
+      next: (res) => {
+        if (Array.isArray(res)) this.regions = res;
+      },
+      error: (err) => console.error('Error loading regions:', err)
+    });
+
+    // Users dropdown
+    this.http.get<any[]>('http://localhost:8080/user/active-users-dropdown', { headers }).subscribe({
+      next: (res) => {
+        if (Array.isArray(res)) this.users = res;
+      },
+      error: (err) => console.error('Error loading users:', err)
     });
   }
 
@@ -142,6 +139,15 @@ export class FreshBusinessReportComponent implements OnInit {
             zoomout: false,
             pan: false,
             reset: false
+          }
+        },
+        events: {
+          dataPointSelection: (event: any, chartContext: any, config: any) => {
+            const seriesIndex = config.seriesIndex;
+            const dataPointIndex = config.dataPointIndex;
+            if (seriesIndex !== undefined && dataPointIndex !== undefined && seriesIndex !== -1 && dataPointIndex !== -1) {
+               this.handleChartClick(seriesIndex, dataPointIndex);
+            }
           }
         }
       },
@@ -224,30 +230,139 @@ export class FreshBusinessReportComponent implements OnInit {
     };
   }
 
-  updateChartData(): void {
+  getDateRange(timeline: string, dateStr: string): { startDate: string | null, endDate: string | null } {
+    if (timeline === 'Year') {
+      return { startDate: '2026-04-01', endDate: '2027-03-31' };
+    }
+    if (timeline === 'Month') {
+      const monthMap: any = { 'Jul-26': ['2026-07-01', '2026-07-31'], 'Aug-26': ['2026-08-01', '2026-08-31'], 'Sep-26': ['2026-09-01', '2026-09-30'] };
+      if (monthMap[dateStr]) return { startDate: monthMap[dateStr][0], endDate: monthMap[dateStr][1] };
+    }
+    if (timeline === 'Week' && dateStr) {
+      const match = dateStr.match(/\((.*?)\s+to\s+(.*?)\)/);
+      if (match && match.length === 3) return { startDate: match[1], endDate: match[2] };
+    }
+    if (timeline === 'Quarter') {
+      if (dateStr === 'Quarter1') return { startDate: '2026-04-01', endDate: '2026-06-30' };
+      if (dateStr === 'Quarter2') return { startDate: '2026-07-01', endDate: '2026-09-30' };
+      if (dateStr === 'Quarter3') return { startDate: '2026-10-01', endDate: '2026-12-31' };
+      if (dateStr === 'Quarter4') return { startDate: '2027-01-01', endDate: '2027-03-31' };
+    }
+    return { startDate: '2026-04-01', endDate: '2027-03-31' }; // Fallback
+  }
+
+  handleChartClick(seriesIndex: number, dataPointIndex: number): void {
+    if (this.isDrilldownMode) return;
+
+    const seriesItem = this.chartOptions.series![seriesIndex] as any;
+    const seriesName = seriesItem?.name;
+    let category = this.rawCategories[dataPointIndex];
+    if (category && category.includes('<br>')) {
+      category = category.split('<br>')[0].trim();
+    }
+
+    this.fetchDrilldownData(category, seriesName as string);
+  }
+
+  fetchDrilldownData(category: string, seriesName: string): void {
     const reportType = this.filterForm?.get('reportType')?.value || 'product';
     const timeline = this.filterForm?.get('timeline')?.value || 'Week';
+    const dateStr = this.filterForm?.get('date')?.value || '';
+    const regionId = this.filterForm?.get('region')?.value;
+    const userId = this.filterForm?.get('user')?.value;
 
-    // Pick dataset based on reportType and current timeline
-    const data: any[] = this.mockData[reportType]?.[timeline] ?? [];
+    const measure = reportType === 'product' ? 1 : 2;
+    const viewTime = timeline === 'Year' ? 'y' : timeline === 'Month' ? 'm' : timeline === 'Week' ? 'w' : 'q';
+    const { startDate, endDate } = this.getDateRange(timeline, dateStr);
 
-    // Build x-axis categories as multi-line arrays for apexcharts
-    const categories = data.map(d => [
-      d.name,
-      `F-(${d.freshPct} %)`,
-      `R-(${d.repeatPct} %)`
-    ]);
+    const token = this.auth.getToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
 
-    const freshSeries = data.map(d => d.freshBusiness);
-    const repeatSeries = data.map(d => d.repeatBusiness);
+    const body = {
+      measure: measure,
+      viewTime: viewTime,
+      regionId: regionId ? Number(regionId) : null,
+      userId: userId ? Number(userId) : null,
+      startDate: startDate,
+      endDate: endDate,
+      category: category,
+      seriesName: seriesName
+    };
+
+    this.http.post<any>('http://localhost:8080/reports/fresh-business/drilldown', body, { headers }).subscribe({
+      next: (response) => {
+        if (response && response.status && response.data) {
+          this.isDrilldownMode = true;
+          this.customers = response.data.customers || [];
+          this.processApiResponse(response.data);
+        }
+      },
+      error: (err) => console.error('Error fetching drilldown data:', err)
+    });
+  }
+
+  goBack(): void {
+    this.isDrilldownMode = false;
+    this.customers = [];
+    this.updateChartData();
+  }
+
+  updateChartData(): void {
+    if (this.isDrilldownMode) {
+       this.isDrilldownMode = false;
+       this.customers = [];
+    }
+    const reportType = this.filterForm?.get('reportType')?.value || 'product';
+    const timeline = this.filterForm?.get('timeline')?.value || 'Week';
+    const dateStr = this.filterForm?.get('date')?.value || '';
+    const regionId = this.filterForm?.get('region')?.value;
+    const userId = this.filterForm?.get('user')?.value;
+
+    const measure = reportType === 'product' ? 1 : 2;
+    const viewTime = timeline === 'Year' ? 'y' : timeline === 'Month' ? 'm' : timeline === 'Week' ? 'w' : 'q';
+    const { startDate, endDate } = this.getDateRange(timeline, dateStr);
+
+    const token = this.auth.getToken();
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+
+    const body = {
+      measure: measure,
+      viewTime: viewTime,
+      regionId: regionId ? Number(regionId) : null,
+      userId: userId ? Number(userId) : null,
+      startDate: startDate,
+      endDate: endDate
+    };
+
+    this.http.post<any>('http://localhost:8080/reports/fresh-business', body, { headers }).subscribe({
+      next: (response) => {
+        if (response && response.status && response.data) {
+          this.processApiResponse(response.data);
+        }
+      },
+      error: (err) => console.error('Error fetching fresh business report:', err)
+    });
+  }
+
+  processApiResponse(data: any): void {
+    this.rawCategories = data.xaxisCategories || [];
+    let categories: any[] = [];
+    if (data.xaxisCategories && Array.isArray(data.xaxisCategories)) {
+      categories = data.xaxisCategories.map((cat: string) => {
+        if (typeof cat === 'string' && cat.includes('<br>')) {
+          return cat.split('<br>').map(s => s.trim());
+        }
+        return cat;
+      });
+    }
+
+    const series = data.series || [];
+    const title = data.chartTitle || this.getChartTitle();
 
     if (this.chartOptions) {
       this.chartOptions = {
         ...this.chartOptions,
-        series: [
-          { name: 'Fresh Business', data: freshSeries },
-          { name: 'Repeat Business', data: repeatSeries }
-        ],
+        series: series,
         colors: ['#e53935', '#5e35b1'],
         xaxis: {
           ...this.chartOptions.xaxis,
@@ -255,7 +370,7 @@ export class FreshBusinessReportComponent implements OnInit {
         },
         title: {
           ...this.chartOptions.title,
-          text: this.getChartTitle()
+          text: title
         }
       };
     }

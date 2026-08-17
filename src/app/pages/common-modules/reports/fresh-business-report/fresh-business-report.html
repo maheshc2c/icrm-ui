@@ -1,5 +1,11 @@
 <app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
-  <div class="report-toolbar" [formGroup]="filterForm">
+  <div class="drilldown-header" *ngIf="isDrilldownMode">
+    <button class="btn-back" (click)="goBack()">
+      &larr; Back to Main Report
+    </button>
+  </div>
+
+  <div class="report-toolbar" [formGroup]="filterForm" *ngIf="!isDrilldownMode">
 
     <!-- Radio Buttons -->
     <div class="radio-group">
@@ -19,10 +25,7 @@
     <div class="toolbar-field">
       <select class="form-select" formControlName="region">
         <option value="">Select Region</option>
-        <option value="North">North</option>
-        <option value="South">South</option>
-        <option value="East">East</option>
-        <option value="West">West</option>
+        <option *ngFor="let reg of regions" [value]="reg.locationId || reg.id">{{ reg.locationName || reg.name }}</option>
       </select>
     </div>
 
@@ -30,7 +33,7 @@
     <div class="toolbar-field">
       <select class="form-select" formControlName="user">
         <option value="">Select Users</option>
-        <option value="Swaroop">Swaroop (C2CAS103)</option>
+        <option *ngFor="let u of users" [value]="u.userId || u.id">{{ u.name || u.firstName }}</option>
       </select>
     </div>
 
@@ -89,5 +92,27 @@
       [grid]="chartOptions.grid!"
       [tooltip]="chartOptions.tooltip!"
     ></apx-chart>
+  </div>
+
+  <!-- Customers Table for Drilldown -->
+  <div class="customers-table-container" *ngIf="isDrilldownMode && customers && customers.length > 0">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Sno</th>
+          <th>Customer Name</th>
+          <th>Business Type</th>
+          <th>Total Orders (Lacs)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of customers; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ row.customerName }}</td>
+          <td>{{ row.businessType }}</td>
+          <td>{{ row.totalOrders }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </app-reports-layout>
