@@ -161,7 +161,7 @@
 
 .legend-dot.hot    { background: #e74c3c; }
 .legend-dot.warm   { background: #e67e22; }
-.legend-dot.cold   { background: #bdc3c7; }
+.legend-dot.cold   { background: #3498db; }
 .legend-dot.new    { background: #2c3e50; }
 .legend-dot.closed { background: #27ae60; }
 

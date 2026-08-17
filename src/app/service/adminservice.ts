@@ -125,7 +125,7 @@ updateMarginBandConfig(payload: any) {
 
 saveGeneralSettings(payload: any) {
   return this.http.post(
-    `${this.baseUrl}/user/save-general-settings`,
+    `${this.baseUrl}/user/general`,
     payload,
     { headers: this.getAuthHeaders() }
   );
@@ -133,7 +133,7 @@ saveGeneralSettings(payload: any) {
 
 getRolesSearchDropdown() {
   return this.http.get<any>(
-    `${this.baseUrl}/user/rolessearch-dropdown`,
+    `${this.baseUrl}/user/incentives/roles`,
     { headers: this.getAuthHeaders() }
   );
 }
@@ -150,14 +150,14 @@ getUserLogRoles(name: string = ''): Observable<any[]> {
 
 getFinancialYearsDropdown() {
   return this.http.get<any>(
-    `${this.baseUrl}/user/financialyears-dropdown`,
+    `${this.baseUrl}/user/incentives/financialyears`,
     { headers: this.getAuthHeaders() }
   );
 }
 
 getIncentivesList(payload: any) {
   return this.http.post<any>(
-    `${this.baseUrl}/user/incentives-list`,
+    `${this.baseUrl}/user/incentives`,
     payload,
     { headers: this.getAuthHeaders() }
   );
@@ -172,7 +172,7 @@ getIncentiveById(id: number) {
 
 saveIncentive(payload: any) {
   return this.http.post<any>(
-    `${this.baseUrl}/user/save-incentive`,
+    `${this.baseUrl}/user/incentive`,
     payload,
     { headers: this.getAuthHeaders() }
   );

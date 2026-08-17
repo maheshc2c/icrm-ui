@@ -409,7 +409,7 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
     const colorMap: Record<string, string> = {
       Hot:    '#e74c3c',
       Warm:   '#e67e22',
-      Cold:   '#bdc3c7',
+      Cold:   '#3498db',
       New:    '#2c3e50',
       Closed: '#27ae60'
     };
@@ -469,8 +469,30 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
       xAxis: {
         categories: categories,
         labels: {
-          rotation: -45,
-          align: 'right',
+          useHTML: true,
+          rotation: 0,
+          align: 'center',
+          formatter: function(this: any): string {
+            const val = this.value;
+            if (typeof val === 'string' && val.includes('Week')) {
+              const match = val.match(/(Week\d+)\s*\((.*?)\s+to\s+(.*?)\)/);
+              if (match && match.length === 4) {
+                const weekLabel = match[1];
+                const start = match[2];
+                const end = match[3];
+                const formatShortDate = (dStr: string) => {
+                  const parts = dStr.split('-');
+                  if (parts.length === 3) {
+                    return `${parts[2]}/${parts[1]}`;
+                  }
+                  return dStr;
+                };
+                return `<div style="text-align: center; line-height: 1.2;"><b>${weekLabel}</b><br/><span style="font-size: 9px; color: #777;">${formatShortDate(start)} to ${formatShortDate(end)}</span></div>`;
+              }
+              return val.split('(')[0].trim();
+            }
+            return val;
+          },
           style: { fontSize: '11px', color: '#555' }
         },
         crosshair: true,
