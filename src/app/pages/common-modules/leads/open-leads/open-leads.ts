@@ -103,8 +103,121 @@ export class OpenLeads implements OnInit {
           leadStatus: item.status !== undefined ? item.status : item.leadStatus,
           hasOpportunity: item.hasOpportunity,
           hasQuote: item.hasQuote,
-          hasCNote: item.hasCNote
+          // hasCNote: item.hasCNote,
+         
+          //Fixed Stage Colour Issue, Once Stage is set has Completed the Status Bar Turns into Green
+contractNoteStage:
+  item.contractNoteStage ||
+  item.cNoteStage ||
+  item.contractNoteStatus ||
+  '',
+
+isContractNoteCompleted:
+  String(
+    item.contractNoteStage ||
+    item.cNoteStage ||
+    item.contractNoteStatus ||
+    ''
+  ).trim().toLowerCase() === 'completed',
+
+hasCNote:
+  item.hasCNote === true ||
+  item.hasCNote === 1 ||
+  item.hasCNote === 'true' ||
+  item.hasCNote === '1' ||
+  String(
+    item.contractNoteStage ||
+    item.cNoteStage ||
+    item.contractNoteStatus ||
+    ''
+  ).trim().toLowerCase() === 'completed' ||
+  item.status === 10 ||
+  item.leadStatus === 10
+    
         }));
+
+this.rows.forEach((row: any) => {
+
+  const payload = {
+    leadId: String(row.leadId),
+    pagination: {
+      pageNumber: 0,
+      pageSize: 100,
+      sortBy: '',
+      sortOrder: ''
+    }
+  };
+
+  this.leadService.getContractNoteDetails(payload).subscribe({
+    next: (response: any) => {
+
+      const notes =
+        response?.content ??
+        response?.data?.content ??
+        response?.data ??
+        response?.contractNotes ??
+        response;
+
+      const contractNotes = Array.isArray(notes) ? notes : [];
+
+      // const completedNote = contractNotes.find((note: any) =>
+      //   String(
+      //     note.stage ??
+      //     note.status ??
+      //     ''
+      //   ).trim().toLowerCase() === 'completed'
+      // );
+
+      const completedNote = contractNotes.find((note: any) => {
+
+  const soNumber =
+    note.soNumber ??
+    note.salesOrderNumber ??
+    note.salesOrderNo ??
+    '';
+
+  const hasSoNumber =
+    soNumber !== null &&
+    soNumber !== undefined &&
+    String(soNumber).trim() !== '' &&
+    String(soNumber).trim().toLowerCase() !== 'n/a' &&
+    String(soNumber).trim() !== '0';
+
+  const stage =
+    String(
+      note.stage ??
+      note.status ??
+      ''
+    ).trim().toLowerCase();
+
+  return stage === 'completed' || hasSoNumber;
+});
+
+      if (completedNote) {
+        row.hasCNote = true;
+        row.isContractNoteCompleted = true;
+        row.contractNoteStage = 'Completed';
+
+        console.log(
+          'C Note completed for Lead:',
+          row.leadId
+        );
+      }
+    },
+
+    error: (err) => {
+      console.error(
+        'Failed to load Contract Note for Lead:',
+        row.leadId,
+        err
+      );
+    }
+  });
+
+});
+
+
+
         this.originalLeads = leadsData;
       },
       error: (err) => {

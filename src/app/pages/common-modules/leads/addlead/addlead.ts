@@ -454,17 +454,86 @@ export class AddleadComponent implements OnInit {
         this.contractNoteTotalElements = response?.totalElements ?? response?.data?.totalElements ?? response?.content?.totalElements ?? rows.length;
         this.contractNoteTotalPages = Math.max(1, Math.ceil(this.contractNoteTotalElements / this.contractNotePageSize));
 
-        const mappedRows = rows.map((item: any, index: number) => ({
-          id: item.contractNoteId ?? item.id ?? item.cNoteId ?? index + 1,
-          cNoteId: item.contractNoteId ?? item.cNoteId ?? item.id ?? index + 1,
-          quoteRefId: item.quoteReferenceId ?? item.quoteRefId ?? item.quoteId ?? item.quoteReference ?? 'N/A',
-          billing: item.billing ?? item.billingToParty ?? item.billingParty ?? 'N/A',
-          discount: item.discount ?? item.discountPercentage ?? '0%',
-          poNumber: item.poNumber ?? item.poNo ?? item.purchaseOrderNo ?? 'N/A',
-          poDate: item.poDate ?? item.dateOfPurchaseOrder ?? 'N/A',
-          soNumber: item.soNumber ?? item.salesOrderNumber ?? '',
-          stage: item.stage ?? item.status ?? 'N/A'
-        }));
+        // const mappedRows = rows.map((item: any, index: number) => ({
+        //   id: item.contractNoteId ?? item.id ?? item.cNoteId ?? index + 1,
+        //   cNoteId: item.contractNoteId ?? item.cNoteId ?? item.id ?? index + 1,
+        //   quoteRefId: item.quoteReferenceId ?? item.quoteRefId ?? item.quoteId ?? item.quoteReference ?? 'N/A',
+        //   billing: item.billing ?? item.billingToParty ?? item.billingParty ?? 'N/A',
+        //   discount: item.discount ?? item.discountPercentage ?? '0%',
+        //   poNumber: item.poNumber ?? item.poNo ?? item.purchaseOrderNo ?? 'N/A',
+        //   poDate: item.poDate ?? item.dateOfPurchaseOrder ?? 'N/A',
+        //   soNumber: item.soNumber ?? item.salesOrderNumber ?? '',
+        //   stage: item.stage ?? item.status ?? 'N/A'
+        // }));
+
+        //Fixed For Status Bar Updating Colour Issue
+
+  const mappedRows = rows.map((item: any, index: number) => {
+
+  const soNumber =
+    item.soNumber ??
+    item.salesOrderNumber ??
+    item.salesOrderNo ??
+    '';
+
+  const hasSoNumber =
+    soNumber !== null &&
+    soNumber !== undefined &&
+    String(soNumber).trim() !== '' &&
+    String(soNumber).trim().toLowerCase() !== 'n/a' &&
+    String(soNumber).trim() !== '0';
+
+  const stage = hasSoNumber
+    ? 'Completed'
+    : (
+        item.stage ??
+        item.status ??
+        'N/A'
+      );
+
+  return {
+    id: item.contractNoteId ?? item.id ?? item.cNoteId ?? index + 1,
+
+    cNoteId:
+      item.contractNoteId ??
+      item.cNoteId ??
+      item.id ??
+      index + 1,
+
+    quoteRefId:
+      item.quoteReferenceId ??
+      item.quoteRefId ??
+      item.quoteId ??
+      item.quoteReference ??
+      'N/A',
+
+    billing:
+      item.billing ??
+      item.billingToParty ??
+      item.billingParty ??
+      'N/A',
+
+    discount:
+      item.discount ??
+      item.discountPercentage ??
+      '0%',
+
+    poNumber:
+      item.poNumber ??
+      item.poNo ??
+      item.purchaseOrderNo ??
+      'N/A',
+
+    poDate:
+      item.poDate ??
+      item.dateOfPurchaseOrder ??
+      'N/A',
+
+    soNumber,
+
+    stage
+  };
+});
 
         console.log('Contract Note Details loaded:', mappedRows);
         this.contractNotes = mappedRows;

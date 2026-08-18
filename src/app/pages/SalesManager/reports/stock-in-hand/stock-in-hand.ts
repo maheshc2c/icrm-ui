@@ -1,70 +1,201 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DataTable } from '../../../../shared/data-table/data-table';
-import { SearchFieldConfig } from '../../../../shared/search/search';
+import { Pageheader } from '../../../../shared/pageheader/pageheader';
+import { ReportService } from '../../../../service/report.service';
 
 @Component({
   selector: 'app-stock-in-hand',
   standalone: true,
-  imports: [DataTable, CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Pageheader],
   templateUrl: './stock-in-hand.html',
   styleUrls: ['./stock-in-hand.css']
 })
 export class StockInHandComponent implements OnInit {
-  
-  breadcrumbs = [
-    { label: 'Home', route: '/sales-manager-dashboard' },
-    { label: 'Stock In Hand Report' }
-  ];
+  title = 'Stock In Hand Report';
+  breadcrumbs: any[] = [];
 
-  searchFields: SearchFieldConfig[] = [
-    { key: 'category', label: 'Category', type: 'select', placeholder: 'Select Category', options: [
-      { value: '', label: 'Select Category' },
-      { value: 'ERP', label: 'ERP' },
-      { value: 'CRM', label: 'CRM' }
-    ]},
-    { key: 'segment', label: 'Segment', type: 'select', placeholder: 'Select Segment', options: [
-      { value: '', label: 'Select Segment' },
-      { value: 'Enterprise', label: 'Enterprise' },
-      { value: 'SMB', label: 'SMB' }
-    ]},
-    { key: 'product', label: 'Product', type: 'select', placeholder: 'Select Product', options: [
-      { value: '', label: 'Select Product' },
-      { value: 'Product A', label: 'Product A' },
-      { value: 'Product B', label: 'Product B' }
-    ]}
-  ];
+  // Filter IDs
+  selectedCategoryId: number | null = null;
+  selectedGroupId: number | null = null;
+  selectedProductId: number | null = null;
 
-  columns = [
-    { header: 'Category', field: 'category' },
-    { header: 'Quantity', field: 'quantity' }
-  ];
+  // Dropdown lists
+  categories: { id: number; label: string }[] = [];
+  groups: { id: number; label: string }[] = []; // Segments
+  products: { id: number; label: string }[] = [];
 
-  rows: any[] = [];
+  isLoading = false;
+  isDownloading = false;
 
-  constructor(private router: Router) { }
+  reportData: any = null;
+  expandedCategories = new Set<number>();
+  expandedSegments = new Set<number>();
+
+  constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
-    this.loadStockData();
+    this.setDynamicHomeRoute();
+    this.loadDropdowns();
+    this.onSearch();
   }
 
-  loadStockData(): void {
-    this.rows = [
-      {
-        category: 'ERP',
-        quantity: 0
+  setDynamicHomeRoute(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      let homeRoute = '/dashboard';
+
+      if (role === 'SUPERADMIN') {
+        homeRoute = '/superadmindashboard';
+      } else if (role === 'Admin') {
+        homeRoute = '/admindashboard';
+      } else if (role === 'Regional Branch Head') {
+        homeRoute = '/regional-branch-head-dashboard';
+      } else if (role === 'Regional Sales Manager') {
+        homeRoute = '/regional-sales-manager-dashboard';
+      } else if (role === 'Country Head') {
+        homeRoute = '/country-head';
+      } else if (role === 'Sales Engineer' || role === 'SALES_MANAGER' || role === 'SALESMANAGER' || role === 'Sales Manager') {
+        homeRoute = '/sales-manager-dashboard';
+      } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
+        homeRoute = '/adminmarketingdashboard';
       }
-    ];
+
+      this.breadcrumbs = [
+        { label: 'Home', route: homeRoute },
+        { label: 'Stock In Hand Report' }
+      ];
+    } else {
+      this.breadcrumbs = [
+        { label: 'Home', route: '/dashboard' },
+        { label: 'Stock In Hand Report' }
+      ];
+    }
   }
 
-  onSearch(filters: any): void {
-    console.log('Search filters:', filters);
+  loadDropdowns(): void {
+    this.reportService.getCategoriesForDropdown().subscribe({
+      next: (res) => (this.categories = res),
+      error: (err) => console.error('Error fetching categories:', err)
+    });
+
+    this.reportService.getSegmentsForDropdown().subscribe({
+      next: (res) => (this.groups = res),
+      error: (err) => console.error('Error fetching segments:', err)
+    });
+
+    this.loadProducts();
+  }
+
+  onCategoryChange(): void {
+    this.selectedProductId = null;
+    this.loadProducts();
+  }
+
+  loadProducts(): void {
+    this.reportService.getProductsForDropdown(this.selectedGroupId).subscribe({
+      next: (res) => (this.products = res),
+      error: (err) => console.error('Error fetching products:', err)
+    });
+  }
+
+  onSearch(): void {
+    this.isLoading = true;
+    const filter = {
+      categoryId: this.selectedCategoryId ? Number(this.selectedCategoryId) : null,
+      segmentId: this.selectedGroupId ? Number(this.selectedGroupId) : null,
+      productId: this.selectedProductId ? Number(this.selectedProductId) : null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 100,
+        sortBy: 'categoryName',
+        sortOrder: 'ASC'
+      }
+    };
+
+    this.reportService.getStockInHandReport(filter).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        if (response && response.status && response.data) {
+          this.reportData = response.data;
+        } else {
+          this.reportData = null;
+        }
+        this.expandedCategories.clear();
+        this.expandedSegments.clear();
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        console.error('Error fetching Stock In Hand report:', err);
+        this.reportData = null;
+      }
+    });
+  }
+
+  resetFilters(): void {
+    this.selectedCategoryId = null;
+    this.selectedGroupId = null;
+    this.selectedProductId = null;
+    this.onSearch();
   }
 
   onDownload(): void {
-    console.log('Download stock report as Excel');
-    alert('Download functionality will be implemented');
+    this.isDownloading = true;
+    const filter = {
+      categoryId: this.selectedCategoryId ? Number(this.selectedCategoryId) : null,
+      segmentId: this.selectedGroupId ? Number(this.selectedGroupId) : null,
+      productId: this.selectedProductId ? Number(this.selectedProductId) : null
+    };
+
+    this.reportService.downloadStockInHandReport(filter).subscribe({
+      next: (blob: Blob) => {
+        this.isDownloading = false;
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Stock_In_Hand_Report.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err: any) => {
+        this.isDownloading = false;
+        console.error('Error downloading Stock in Hand Excel:', err);
+      }
+    });
+  }
+
+  toggleCategoryExpand(catId: number): void {
+    if (this.expandedCategories.has(catId)) {
+      this.expandedCategories.delete(catId);
+    } else {
+      this.expandedCategories.add(catId);
+    }
+  }
+
+  isCategoryExpanded(catId: number): boolean {
+    return this.expandedCategories.has(catId);
+  }
+
+  toggleSegmentExpand(groupId: number): void {
+    if (this.expandedSegments.has(groupId)) {
+      this.expandedSegments.delete(groupId);
+    } else {
+      this.expandedSegments.add(groupId);
+    }
+  }
+
+  isSegmentExpanded(groupId: number): boolean {
+    return this.expandedSegments.has(groupId);
+  }
+
+  // Get total quantity helper for summary row
+  get grandTotalQuantity(): number {
+    if (!this.reportData?.categories) return 0;
+    return this.reportData.categories.reduce(
+      (sum: number, cat: any) => sum + Number(cat.totalCategoryQuantity || 0),
+      0
+    );
   }
 }

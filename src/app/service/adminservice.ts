@@ -125,7 +125,7 @@ updateMarginBandConfig(payload: any) {
 
 saveGeneralSettings(payload: any) {
   return this.http.post(
-    `${this.baseUrl}/user/save-general-settings`,
+    `${this.baseUrl}/user/general`,
     payload,
     { headers: this.getAuthHeaders() }
   );
@@ -133,21 +133,31 @@ saveGeneralSettings(payload: any) {
 
 getRolesSearchDropdown() {
   return this.http.get<any>(
-    `${this.baseUrl}/user/rolessearch-dropdown`,
+    `${this.baseUrl}/user/incentives/roles`,
     { headers: this.getAuthHeaders() }
+  );
+}
+
+getUserLogRoles(name: string = ''): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/user/userlogs/roles`,
+    {
+      headers: this.getAuthHeaders(),
+      params: { name }
+    }
   );
 }
 
 getFinancialYearsDropdown() {
   return this.http.get<any>(
-    `${this.baseUrl}/user/financialyears-dropdown`,
+    `${this.baseUrl}/user/incentives/financialyears`,
     { headers: this.getAuthHeaders() }
   );
 }
 
 getIncentivesList(payload: any) {
   return this.http.post<any>(
-    `${this.baseUrl}/user/incentives-list`,
+    `${this.baseUrl}/user/incentives`,
     payload,
     { headers: this.getAuthHeaders() }
   );
@@ -162,7 +172,7 @@ getIncentiveById(id: number) {
 
 saveIncentive(payload: any) {
   return this.http.post<any>(
-    `${this.baseUrl}/user/save-incentive`,
+    `${this.baseUrl}/user/incentive`,
     payload,
     { headers: this.getAuthHeaders() }
   );
@@ -906,6 +916,15 @@ getContactsPaged(
   );
 }
 
+getContactById(contactId: number) {
+  return this.http.get<any>(
+    `${this.baseUrl}/contact/${contactId}`,
+    {
+      headers: this.getAuthHeaders()
+    }
+  );
+}
+
 toggleContactStatus(id: number) {
   return this.http.delete(
     `${this.baseUrl}/contact/${id}`,
@@ -1112,12 +1131,23 @@ downloadSubSystemExcel(payload: any) {
       { headers: this.getAuthHeaders() }
     );
   }
-  searchUserLogs(keyword: string): Observable<UserlogModel[]> {
+  searchUserLogs(
+    roleName?: string,
+    employeeId?: string,
+    fromDate?: string,
+    toDate?: string
+  ): Observable<UserlogModel[]> {
+    const params: any = {};
+    if (roleName) params.roleName = roleName;
+    if (employeeId) params.employeeId = employeeId;
+    if (fromDate) params.fromDate = fromDate + 'T00:00:00';
+    if (toDate) params.toDate = toDate + 'T23:59:59';
+
     return this.http.get<UserlogModel[]>(
       `${this.baseUrl}/auth/report/search`,
       {
         headers: this.getAuthHeaders(),
-        params: { keyword } // adjust if backend uses different param
+        params
       }
     );
   }

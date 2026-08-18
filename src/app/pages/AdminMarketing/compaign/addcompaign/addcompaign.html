@@ -56,6 +56,9 @@
                 </div>
               </div>
             </div>
+            <div *ngIf="errors.selectedSpecialities" class="validation-error">
+              {{ errors.selectedSpecialities }}
+            </div>
           </div>
         </div>
         <!-- GEO -->
@@ -74,9 +77,13 @@
                 <div class="ms-option" *ngFor="let opt of getFilteredOptions('offline', 'geo', geoOptions)" 
                      [class.selected]="isOptionSelected('offline', 'geo', opt.value)"
                      (click)="selectOption('offline', 'geo', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
               </div>
+            </div>
+            <div *ngIf="errors.selectedGeos" class="validation-error">
+              {{ errors.selectedGeos }}
             </div>
           </div>
         </div>
@@ -96,6 +103,7 @@
                 <div class="ms-option" *ngFor="let opt of getFilteredOptions('offline', 'country', countryOptions.offline)" 
                      [class.selected]="isOptionSelected('offline', 'country', opt.value)"
                      (click)="selectOption('offline', 'country', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="formData.offline.selectedGeos.length > 0 && countryOptions.offline.length === 0">No countries found for selected GEO</div>
@@ -119,6 +127,7 @@
                 <div class="ms-option" *ngFor="let opt of getFilteredOptions('offline', 'region', regionOptions.offline)" 
                      [class.selected]="isOptionSelected('offline', 'region', opt.value)"
                      (click)="selectOption('offline', 'region', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="formData.offline.selectedCountries.length > 0 && regionOptions.offline.length === 0">No regions found for selected Country</div>
@@ -142,6 +151,7 @@
                 <div class="ms-option" *ngFor="let opt of stateOptions.offline"
                      [class.selected]="isOptionSelected('offline', 'state', opt.value)"
                      (click)="selectOption('offline', 'state', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="stateOptions.offline.length === 0">No states found for selected Region</div>
@@ -165,6 +175,7 @@
                 <div class="ms-option" *ngFor="let opt of districtOptions.offline"
                      [class.selected]="isOptionSelected('offline', 'district', opt.value)"
                      (click)="selectOption('offline', 'district', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="districtOptions.offline.length === 0">No districts found for selected State</div>
@@ -188,6 +199,7 @@
                 <div class="ms-option" *ngFor="let opt of cityOptions.offline" 
                      [class.selected]="isOptionSelected('offline', 'city', opt.value)"
                      (click)="selectOption('offline', 'city', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="cityOptions.offline.length === 0">No cities found for selected District</div>
@@ -197,7 +209,12 @@
         </div>
         <div class="form-row">
           <div class="form-label">Name<span class="req">*</span></div>
-          <div class="form-control-wrap"><input type="text" [(ngModel)]="formData.offline.campaignName" placeholder="Name"></div>
+          <div class="form-control-wrap">
+            <input type="text" [(ngModel)]="formData.offline.campaignName" (ngModelChange)="onFieldChange()" placeholder="Name">
+            <div *ngIf="errors.campaignName" class="validation-error">
+              {{ errors.campaignName }}
+            </div>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-label">Description</div>
@@ -205,7 +222,12 @@
         </div>
         <div class="form-row">
           <div class="form-label">Campaign date<span class="req">*</span></div>
-          <div class="form-control-wrap"><input type="date" [(ngModel)]="formData.offline.campaignDate"></div>
+          <div class="form-control-wrap">
+            <input type="date" [(ngModel)]="formData.offline.campaignDate" (ngModelChange)="onFieldChange()">
+            <div *ngIf="errors.campaignDate" class="validation-error">
+              {{ errors.campaignDate }}
+            </div>
+          </div>
         </div>
       </div>
       <!-- END OFFLINE -->
@@ -236,6 +258,9 @@
                 </div>
               </div>
             </div>
+            <div *ngIf="errors.selectedSpecialities" class="validation-error">
+              {{ errors.selectedSpecialities }}
+            </div>
           </div>
         </div>
         <!-- GEO -->
@@ -254,9 +279,13 @@
                 <div class="ms-option" *ngFor="let opt of getFilteredOptions('mass_mailing', 'geo', geoOptions)" 
                      [class.selected]="isOptionSelected('mass_mailing', 'geo', opt.value)"
                      (click)="selectOption('mass_mailing', 'geo', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
               </div>
+            </div>
+            <div *ngIf="errors.selectedGeos" class="validation-error">
+              {{ errors.selectedGeos }}
             </div>
           </div>
         </div>
@@ -276,6 +305,7 @@
                 <div class="ms-option" *ngFor="let opt of getFilteredOptions('mass_mailing', 'country', countryOptions.mass_mailing)" 
                      [class.selected]="isOptionSelected('mass_mailing', 'country', opt.value)"
                      (click)="selectOption('mass_mailing', 'country', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="formData.mass_mailing.selectedGeos.length > 0 && countryOptions.mass_mailing.length === 0">No countries found for selected GEO</div>
@@ -299,6 +329,7 @@
                 <div class="ms-option" *ngFor="let opt of getFilteredOptions('mass_mailing', 'region', regionOptions.mass_mailing)" 
                      [class.selected]="isOptionSelected('mass_mailing', 'region', opt.value)"
                      (click)="selectOption('mass_mailing', 'region', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="formData.mass_mailing.selectedCountries.length > 0 && regionOptions.mass_mailing.length === 0">No regions found for selected Country</div>
@@ -322,6 +353,7 @@
                 <div class="ms-option" *ngFor="let opt of stateOptions.mass_mailing"
                      [class.selected]="isOptionSelected('mass_mailing', 'state', opt.value)"
                      (click)="selectOption('mass_mailing', 'state', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="stateOptions.mass_mailing.length === 0">No states found for selected Region</div>
@@ -345,6 +377,7 @@
                 <div class="ms-option" *ngFor="let opt of districtOptions.mass_mailing"
                      [class.selected]="isOptionSelected('mass_mailing', 'district', opt.value)"
                      (click)="selectOption('mass_mailing', 'district', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="districtOptions.mass_mailing.length === 0">No districts found for selected State</div>
@@ -368,6 +401,7 @@
                 <div class="ms-option" *ngFor="let opt of cityOptions.mass_mailing" 
                      [class.selected]="isOptionSelected('mass_mailing', 'city', opt.value)"
                      (click)="selectOption('mass_mailing', 'city', opt.value, $event)">
+                  <span class="ms-checkbox"></span>
                   <span>{{ opt.label }}</span>
                 </div>
                 <div class="ms-empty" *ngIf="cityOptions.mass_mailing.length === 0">No cities found for selected District</div>
@@ -388,7 +422,12 @@
         </div>
         <div class="form-row">
           <div class="form-label">Name<span class="req">*</span></div>
-          <div class="form-control-wrap"><input type="text" [(ngModel)]="formData.mass_mailing.campaignName" placeholder="Name"></div>
+          <div class="form-control-wrap">
+            <input type="text" [(ngModel)]="formData.mass_mailing.campaignName" (ngModelChange)="onFieldChange()" placeholder="Name">
+            <div *ngIf="errors.campaignName" class="validation-error">
+              {{ errors.campaignName }}
+            </div>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-label">Description</div>
@@ -396,15 +435,30 @@
         </div>
         <div class="form-row">
           <div class="form-label">Campaign date<span class="req">*</span></div>
-          <div class="form-control-wrap"><input type="date" [(ngModel)]="formData.mass_mailing.campaignDate"></div>
+          <div class="form-control-wrap">
+            <input type="date" [(ngModel)]="formData.mass_mailing.campaignDate" (ngModelChange)="onFieldChange()">
+            <div *ngIf="errors.campaignDate" class="validation-error">
+              {{ errors.campaignDate }}
+            </div>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-label">Mail To<span class="req">*</span></div>
-          <div class="form-control-wrap"><textarea [(ngModel)]="formData.mass_mailing.mailTo" rows="2" placeholder="Enter recipient email addresses..."></textarea></div>
+          <div class="form-control-wrap">
+            <textarea [(ngModel)]="formData.mass_mailing.mailTo" (ngModelChange)="onFieldChange()" rows="2" placeholder="Enter recipient email addresses..."></textarea>
+            <div *ngIf="errors.mailTo" class="validation-error">
+              {{ errors.mailTo }}
+            </div>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-label">Subject<span class="req">*</span></div>
-          <div class="form-control-wrap"><textarea [(ngModel)]="formData.mass_mailing.campaignSubject" rows="2" placeholder="Email subject..."></textarea></div>
+          <div class="form-control-wrap">
+            <textarea [(ngModel)]="formData.mass_mailing.campaignSubject" (ngModelChange)="onFieldChange()" rows="2" placeholder="Email subject..."></textarea>
+            <div *ngIf="errors.campaignSubject" class="validation-error">
+              {{ errors.campaignSubject }}
+            </div>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-label">Mail content<span class="req">*</span></div>
@@ -444,6 +498,9 @@
                 </select>
               </div>
               <div class="ck-body" id="mail_content" contenteditable="true" (input)="onMailContentChange($event)"></div>
+            </div>
+            <div *ngIf="errors.mailContent" class="validation-error">
+              {{ errors.mailContent }}
             </div>
           </div>
         </div>
