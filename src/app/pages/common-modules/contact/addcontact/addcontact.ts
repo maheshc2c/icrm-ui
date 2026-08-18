@@ -102,12 +102,45 @@ export class Addcontact implements OnInit {
   };
 });
 
-  this.headerBreadcrumbs = [
-      { label: 'Home', route: '/admindashboard' },
-      { label: 'Contact', route: '/contact' },
-      { label: this.isEditMode ? 'Edit Contact' : 'Add Contact' }
-    ];
+  this.buildBreadcrumbs(this.isEditMode);
 }
+
+  private buildBreadcrumbs(isEditMode: boolean): void {
+    let homeRoute = '/dashboard';
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      if (role === 'SUPERADMIN') {
+        homeRoute = '/superadmindashboard';
+      } else if (role === 'Admin') {
+        homeRoute = '/admindashboard';
+      } else if (role === 'Regional Branch Head') {
+        homeRoute = '/regional-branch-head-dashboard';
+      } else if (role === 'Regional Sales Manager') {
+        homeRoute = '/regional-sales-manager-dashboard';
+      } else if (role === 'Country Head') {
+        homeRoute = '/country-head';
+      } else if (role === 'Sales Engineer' || role === 'SALES_MANAGER' || role === 'SALESMANAGER' || role === 'Sales Manager') {
+        homeRoute = '/sales-manager-dashboard';
+      } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
+        homeRoute = '/adminmarketingdashboard';
+      }
+    }
+
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (returnUrl && (returnUrl.includes('leads') || returnUrl.includes('lead'))) {
+      this.headerBreadcrumbs = [
+        { label: 'Home', route: homeRoute },
+        { label: 'Lead', route: returnUrl },
+        { label: isEditMode ? 'Edit Contact' : 'Add Contact' }
+      ];
+    } else {
+      this.headerBreadcrumbs = [
+        { label: 'Home', route: homeRoute },
+        { label: 'Contact', route: '/contact' },
+        { label: isEditMode ? 'Edit Contact' : 'Add Contact' }
+      ];
+    }
+  }
 
   /* ================= SAVE ================= */
   saveContact(data: any): void {
