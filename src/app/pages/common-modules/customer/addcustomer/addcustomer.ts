@@ -339,22 +339,26 @@ export class Addcustomer implements OnInit {
   saveCompany(data: any): void {
  
     // Filter out rows where all fields are empty and format numbers correctly
-      const cleanInstalledBases = this.installedBases
-        .filter(b => 
-          (b.competitors && b.competitors.trim() !== '') || 
-          (b.productModel && b.productModel.trim() !== '') || 
-          (b.make && b.make.trim() !== '') || 
-          b.quantity !== null ||
-          (b.yearOfPurchase && b.yearOfPurchase.trim() !== '') || 
-          (b.replacementYear && b.replacementYear.trim() !== '')
-        )
-        .map(b => ({
-          ...b,
-          customerInstalledBaseId: b.customerInstalledId || b.customerInstalledBaseId || null,
-          quantity: b.quantity ? Number(b.quantity) : null,
-          yearOfPurchase: b.yearOfPurchase ? Number(b.yearOfPurchase) : null,
-          replacementYear: b.replacementYear ? Number(b.replacementYear) : null
-        }));
+    const cleanInstalledBases = (this.installedBases || [])
+      .filter(b => {
+        if (!b) return false;
+        const comp = (b.competitors || b.competitor || '').toString().trim();
+        const model = (b.productModel || '').toString().trim();
+        const make = (b.make || '').toString().trim();
+        const qty = b.quantity;
+        const yop = (b.yearOfPurchase || '').toString().trim();
+        const repYr = (b.replacementYear || '').toString().trim();
+        return comp !== '' || model !== '' || make !== '' || (qty !== null && qty !== undefined && qty !== '') || yop !== '' || repYr !== '';
+      })
+      .map(b => ({
+        customerInstalledBaseId: b.customerInstalledBaseId || b.customerInstalledId || null,
+        competitors: (b.competitors || b.competitor || '').toString().trim(),
+        productModel: (b.productModel || '').toString().trim(),
+        make: (b.make || '').toString().trim(),
+        quantity: (b.quantity !== null && b.quantity !== undefined && b.quantity !== '') ? Number(b.quantity) : null,
+        yearOfPurchase: (b.yearOfPurchase !== null && b.yearOfPurchase !== undefined && b.yearOfPurchase !== '') ? Number(b.yearOfPurchase) : null,
+        replacementYear: (b.replacementYear !== null && b.replacementYear !== undefined && b.replacementYear !== '') ? Number(b.replacementYear) : null
+      }));
 
     const payload = {
       ...data,
