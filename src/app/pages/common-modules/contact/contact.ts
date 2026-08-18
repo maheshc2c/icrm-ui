@@ -87,6 +87,7 @@ totalElements = 0;
 totalPages = 1;
 
 private loadContact(): void {
+  console.log(this.rows);
 
   
 
@@ -101,6 +102,8 @@ private loadContact(): void {
     .subscribe({
 
       next: (response: any) => {
+        console.log('GET CONTACTS PAGED RESPONSE', response);
+        console.log('FIRST ROW', response.content[0]);
 
         this.totalPages = response.totalPages;
         this.totalElements = response.totalElements;
@@ -129,7 +132,7 @@ private loadContact(): void {
   contactStatus: c.contactStatus,
 
   customerId: c.customer?.customerId,
-  specialityId: c.speciality?.specialityId
+  specialityId: c.speciality?.specialityId,
 }));
       },
 
@@ -266,12 +269,7 @@ onSearch(filters: any) {
 
 
 onEdit(row: any) {
-  this.router.navigate(
-    ['/contact/edit', row.contactId],
-    {
-      state: { contact: row }
-    }
-  );
+  this.router.navigate(['/contact/edit', row.contactId]);
 }
 
  

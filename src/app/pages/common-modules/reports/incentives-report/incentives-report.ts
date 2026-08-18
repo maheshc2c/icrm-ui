@@ -70,7 +70,7 @@ export class IncentivesReportComponent implements OnInit {
     const token = this.auth.getToken();
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
 
-    this.http.get<any>('http://localhost:8080/user/financialyears-dropdown', { headers }).subscribe({
+    this.http.get<any>('http://localhost:8080/user/incentives/financialyears', { headers }).subscribe({
       next: (response) => {
         if (response.status && response.data) {
           this.financialYears = response.data;
@@ -83,6 +83,14 @@ export class IncentivesReportComponent implements OnInit {
   }
 
   onSearch(): void {
+    this.currentPage = 0;
+    this.fetchIncentives();
+  }
+
+  resetFilters(): void {
+    this.selectedUser = null;
+    this.quarter = null;
+    this.financialYear = null;
     this.currentPage = 0;
     this.fetchIncentives();
   }

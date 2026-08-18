@@ -7,29 +7,28 @@
 
 
 <app-data-table
-[columns]="columns"
-[rows]="rows"
-[totalElements]="totalElements"
-[totalPages]="totalPages"
-[currentPage]="currentPage"
-[pageSize]="pageSize"
-[showAdd]="false"
-[showDownload]="false"
-[showDelete]="false"
-[showReset]="true"
-(reset)="OnReset()"
-[showEdit]="false"
-[showApprovalAction]="true"
-[showView]="true"
-[searchFields]="searchFields"
-(searchChange)="onSearch($event)"
-(pageChange)="onPageChange($event)"
-(pageSizeChange)="onPageSizeChange($event)"
-(editRow)="onEdit($event)"
-(viewRow)="onView($event)"
-(approveRow)="approve($event)"
-(rejectRow)="reject($event)">
+    [columns]="columns"
+    [rows]="rows"
+    [totalElements]="totalElements"
+    [totalPages]="totalPages"
+    [currentPage]="currentPage"
+    [pageSize]="pageSize"
+    [showAdd]="false"
+    [showDownload]="false"
+    [showDelete]="false"
+    [showReset]="true"
+    (reset)="OnReset()"
+    [showEdit]="false"
+    [showApprovalAction]="true"
+    [showView]="true"
+    [searchFields]="searchFields"
+    (searchChange)="onSearch($event)"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+    (editRow)="onEdit($event)"
+    (viewRow)="onView($event)">
 </app-data-table>
+
 <div class="modal-backdrop" *ngIf="showApprovalPopup">
 
     <div class="approval-popup">
@@ -107,12 +106,14 @@
         <div class="popup-footer">
 
             <button
-                class="approve-btn"
-                (click)="approve(selectedQuote)">
+    type="button"
+    class="approve-btn"
+    [disabled]="approvalInProgress"
+    (click)="approve(selectedQuote)">
 
-                👍 Approve
+    {{ approvalInProgress ? 'Approving...' : '👍 Approve' }}
 
-            </button>
+</button>
 
             <button
                 class="reject-btn"
