@@ -1,13 +1,134 @@
-<app-data-table
-  [title]="'Stock In Hand Report'"
-  [breadcrumbs]="breadcrumbs"
-  [searchFields]="searchFields"
-  [columns]="columns"
-  [rows]="rows"
-  [showSerialNumber]="false"
-  [showAdd]="false"
-  [showImport]="true"
-  [showRefresh]="true"
-  (searchChange)="onSearch($event)"
-  (download)="onDownload()">
-</app-data-table>
+<app-pageheader [title]="title" [breadcrumbs]="breadcrumbs"></app-pageheader>
+
+<div class="sih-page-content">
+  <div class="report-toolbar">
+    <!-- Category Filter -->
+    <div class="toolbar-field">
+      <label class="field-label">Category</label>
+      <select class="form-select" [(ngModel)]="selectedCategoryId" (change)="onCategoryChange()">
+        <option [ngValue]="null">Select Category</option>
+        <option *ngFor="let c of categories" [value]="c.id">{{ c.label }}</option>
+      </select>
+    </div>
+
+    <!-- Segment Filter -->
+    <div class="toolbar-field">
+      <label class="field-label">Select Segment</label>
+      <select class="form-select" [(ngModel)]="selectedGroupId" (change)="loadProducts()">
+        <option [ngValue]="null">Select Segment</option>
+        <option *ngFor="let s of groups" [value]="s.id">{{ s.label }}</option>
+      </select>
+    </div>
+
+    <!-- Product Filter -->
+    <div class="toolbar-field">
+      <label class="field-label">Select Product</label>
+      <select class="form-select" [(ngModel)]="selectedProductId">
+        <option [ngValue]="null">Select Product</option>
+        <option *ngFor="let p of products" [value]="p.id">{{ p.label }}</option>
+      </select>
+    </div>
+
+    <!-- Action Toolbar Buttons -->
+    <div class="toolbar-actions">
+      <button type="button" class="btn-search" (click)="onSearch()" [disabled]="isLoading" title="Search">
+        <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-search'"></i>
+      </button>
+      <button type="button" class="btn-reset" (click)="resetFilters()" title="Reset">
+        <i class="fas fa-redo-alt"></i>
+      </button>
+      <button type="button" class="btn-export" (click)="onDownload()" [disabled]="isDownloading" title="Export Excel">
+        <i class="fas" [ngClass]="isDownloading ? 'fa-spinner fa-spin' : 'fa-download'"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="report-table-wrapper">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th style="width: 70px;">&nbsp;</th>
+          <th>Category</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loop over Categories (Level 1) -->
+        <ng-container *ngFor="let cat of reportData?.categories; let catIdx = index">
+          <tr class="main-row" [ngClass]="{'even-row': catIdx % 2 === 1}">
+            <td class="expand-cell" (click)="toggleCategoryExpand(cat.categoryId)" style="cursor: pointer;">
+              {{ isCategoryExpanded(cat.categoryId) ? '-' : '+' }}
+            </td>
+            <td class="text-start fw-bold" style="padding-left: 20px;">{{ cat.categoryName }}</td>
+            <td class="fw-bold">{{ cat.totalCategoryQuantity | number:'1.0-2' }}</td>
+          </tr>
+
+          <!-- Level 2 Segment Sub-Table (Expanded under Category) -->
+          <tr *ngIf="isCategoryExpanded(cat.categoryId)" class="sub-table-row">
+            <td colspan="3" class="p-0 border-0" style="padding: 0; border: none;">
+              <table class="sub-table">
+                <thead>
+                  <tr>
+                    <th style="width: 70px;">&nbsp;</th>
+                    <th style="width: 70px;">S.No</th>
+                    <th>Segment</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let seg of cat.segments; let segIdx = index">
+                    <tr class="segment-row" style="background-color: #fafbfc !important;">
+                      <td class="expand-cell" (click)="toggleSegmentExpand(seg.groupId)" style="cursor: pointer; font-size: 16px;">
+                        {{ isSegmentExpanded(seg.groupId) ? '-' : '+' }}
+                      </td>
+                      <td>{{ segIdx + 1 }}</td>
+                      <td class="text-start" style="padding-left: 20px;">{{ seg.groupName }}</td>
+                      <td class="fw-bold">{{ seg.totalSegmentQuantity | number:'1.0-2' }}</td>
+                    </tr>
+
+                    <!-- Level 3 Product Sub-Table (Expanded under Segment) -->
+                    <tr *ngIf="isSegmentExpanded(seg.groupId)" class="sub-table-row">
+                      <td colspan="4" class="p-0 border-0" style="padding: 0; border: none;">
+                        <table class="sub-table" style="background-color: #f7fafc !important;">
+                          <thead>
+                            <tr>
+                              <th style="width: 70px;">S.No</th>
+                              <th>Product Code</th>
+                              <th>Product Description</th>
+                              <th>Quantity</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let prod of seg.products; let prodIdx = index">
+                              <td>{{ prodIdx + 1 }}</td>
+                              <td>{{ prod.productCode }}</td>
+                              <td>{{ prod.description || prod.productCode }}</td>
+                              <td class="text-success fw-semibold">{{ prod.quantity | number:'1.0-2' }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+
+        <!-- No data state -->
+        <tr *ngIf="(!reportData?.categories || reportData.categories.length === 0) && !isLoading">
+          <td colspan="3" style="text-align: center; color: #777; padding: 20px;">
+            No stock in hand records found for selected filters.
+          </td>
+        </tr>
+
+        <!-- Summary Row -->
+        <tr class="total-row" *ngIf="reportData?.categories?.length > 0">
+          <td colspan="2" class="total-label text-end" style="padding-right: 30px;">Total Stock Quantity</td>
+          <td>{{ grandTotalQuantity | number:'1.0-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

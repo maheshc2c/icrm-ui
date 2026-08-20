@@ -767,3 +767,11 @@ textarea {
   color: #e24b4a;
   margin-left: 4px; /* Adjusted margin for better visual separation */
 }
+
+.validation-error {
+  color: #e24b4a;
+  font-size: 13px;
+  margin-top: 5px;
+  font-weight: 500;
+  display: block;
+}

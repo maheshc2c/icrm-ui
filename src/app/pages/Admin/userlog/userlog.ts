@@ -54,6 +54,7 @@ export class Userlog {
 
   ngOnInit(): void {
     this.loadUserLogs();
+    this.loadRoles();
   }
 
   /* ================= LOAD ================= */
@@ -62,18 +63,28 @@ export class Userlog {
     this.adminservice.getUserLogs().subscribe({
       next: (logs: UserlogModel[]) => {
         this.fullRows = logs;
-
-        // Dynamically populate role search field options from loaded logs
-        const uniqueRoles = Array.from(new Set(logs.map(l => l.role).filter(Boolean)));
-        const roleOptions = uniqueRoles.map(role => ({ label: role, value: role }));
-        const roleField = this.searchFields.find(f => f.key === 'role');
-        if (roleField) {
-          roleField.options = roleOptions;
-        }
-
         this.resetRows();
       },
       error: err => console.error('Load error:', err)
+    });
+  }
+
+  private loadRoles(): void {
+    this.adminservice.getUserLogRoles().subscribe({
+      next: (res: any[]) => {
+        const roleOptions = res.map((r: any) => {
+          const name = r.name || '';
+          return { label: name, value: name };
+        });
+
+        const sf = this.searchFields.find(s => s.key === 'role');
+        if (sf) {
+          sf.options = roleOptions;
+        }
+      },
+      error: () => {
+        console.error('Failed to load userlog roles from API');
+      }
     });
   }
 
@@ -188,37 +199,23 @@ export class Userlog {
       return;
     }
 
-    let filtered = [...this.fullRows];
+    const roleName = filters.role || undefined;
+    const employeeId = filters.employeeId || undefined;
+    const fromDate = filters.fromDate || undefined;
+    const toDate = filters.toDate || undefined;
 
-    if (filters.role) {
-      filtered = filtered.filter(l => l.role && l.role.trim().toLowerCase() === filters.role.trim().toLowerCase());
-    }
-
-    if (filters.name) {
-      filtered = filtered.filter(l => l.name && l.name.toLowerCase().includes(filters.name.toLowerCase()));
-    }
-
-    if (filters.employeeId) {
-      filtered = filtered.filter(l => l.employeeId && l.employeeId.toLowerCase().includes(filters.employeeId.toLowerCase()));
-    }
-
-    if (filters.fromDate) {
-      filtered = filtered.filter(l => {
-        if (!l.loginTime) return false;
-        const logDateStr = l.loginTime.substring(0, 10);
-        return logDateStr >= filters.fromDate;
-      });
-    }
-
-    if (filters.toDate) {
-      filtered = filtered.filter(l => {
-        if (!l.loginTime) return false;
-        const logDateStr = l.loginTime.substring(0, 10);
-        return logDateStr <= filters.toDate;
-      });
-    }
-
-    this.mapRows(filtered);
+    this.adminservice.searchUserLogs(roleName, employeeId, fromDate, toDate).subscribe({
+      next: (logs) => {
+        let filtered = logs;
+        if (filters.name) {
+          filtered = filtered.filter(l => l.name && l.name.toLowerCase().includes(filters.name.toLowerCase()));
+        }
+        this.mapRows(filtered);
+      },
+      error: err => {
+        console.error('Search logs error:', err);
+      }
+    });
   }
 
   onReset() {

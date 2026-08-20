@@ -65,82 +65,52 @@ export class ManageCompaign implements OnInit {
   }
 
   // Load Campaigns
-  private loadCampaigns(): void {
-    // We use getCampaigns as the primary source for the Manage Campaign page
-    this.adminMarketingservice.getCampaigns().subscribe({
+  private loadCampaigns(name: string = '', fromDate: string | null = null, toDate: string | null = null): void {
+    const payload = {
+      campaignName: name,
+      fromDate: fromDate || null,
+      toDate: toDate || null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 100000,
+        sortBy: 'campaignDate',
+        sortOrder: 'DESC'
+      }
+    };
+
+    this.adminMarketingservice.searchCampaignsPaged(payload).subscribe({
       next: (response: any) => {
-        console.log('RAW API RESPONSE =>', response);
+        console.log('Campaign Search API Response =>', response);
 
-        // ✅ Handle paginated response (response.content) or direct array
-        const campaignList = Array.isArray(response) ? response : (response?.content || (response ? [response] : []));
+        const campaignList = response?.content || [];
         this.fullRows = campaignList;
-        this.rows = campaignList.map((c: any, index: number) => this.mapCampaignToRow(c, index));
+        this.rows = campaignList.map((c: any) => {
+          const campaignId = c.campaignId ?? c.id;
+          
+          // Retrieve status from localStorage; default to 1 (Active) if not stored.
+          const storedStatus = localStorage.getItem(`campaign_status_${campaignId}`);
+          const statusVal = storedStatus !== null ? Number(storedStatus) : 1;
 
-        console.log('TABLE ROWS =>', this.rows);
+          return {
+            campaignId: campaignId,
+            id: campaignId,
+            type: c.campaignType || '',
+            name: c.campaignName || '',
+            date: c.campaignDate || '',
+            speciality: c.specialities || '',
+            locations: c.locations || '',
+            specialityStatus: statusVal,  // Correctly maps to status value (1 or 2)
+            statusText: statusVal === 1 ? 'Active' : 'Inactive'
+          };
+        });
+
+        console.log('Mapped Rows =>', this.rows);
       },
-      error: (err) => {
-        console.error('Campaign API failed', err);
+      error: (err: any) => {
+        console.error('Campaign Search API failed', err);
         this.rows = [];
       }
     });
-  }
-
-  // Helper to map campaign object to table row
-  private mapCampaignToRow(c: any, index: number) {
-    const specialityName: string = (
-      c.specialityName ||
-      c.speciality?.specialityName ||
-      (Array.isArray(c.specialities)
-        ? c.specialities.map((s: any) => s?.specialityName || s?.name || '').filter(Boolean).join(', ')
-        : '') ||
-      (Array.isArray(c.role)
-        ? c.role.map((r: any) => r?.roleName || '').filter(Boolean).join(', ')
-        : '') ||
-      ''
-    );
-
-    const locationArray: any =
-      c.geoNames ||
-      c.cityNames ||
-      c.districtNames ||
-      c.stateNames ||
-      c.regionNames ||
-      c.countryNames ||
-      c.locationNames ||
-      c.locations ||
-      [];
-
-    let locationParts: string[] = Array.isArray(locationArray)
-      ? locationArray
-      : (typeof locationArray === 'string' && locationArray
-          ? [locationArray]
-          : []);
-
-    if (!locationParts.length && Array.isArray(c.locationInfo)) {
-      locationParts = c.locationInfo
-        .map((loc: any) => loc?.locationName || '')
-        .filter((n: string) => !!n);
-    }
-
-    // Match speciality.ts style: use explicit status check
-    const statusVal = c.campaignStatus !== undefined ? c.campaignStatus : 
-                     (c.campaignDocstatus !== undefined ? c.campaignDocstatus : 
-                     (c.isActive ? 1 : 0));
-
-    return {
-      campaignId: c.campaignId ?? c.campaignDocumentId ?? c.id, // Keep specific ID
-      id: c.campaignId ?? c.campaignDocumentId ?? c.id,
-      type: c.campaignType === 1 ? 'Mass Mailing' : (c.campaignType === 0 ? 'Offline' : 'Document'),
-      name: c.campaignDocName ?? c.campaignName ?? '',
-      date: c.campaignDoccreatedTime ?? c.campaignDate ?? '',
-      speciality: specialityName,
-      locations: Array.isArray(locationParts) ? locationParts.join(', ') : '',
-      description: c.campaignDocdescription ?? c.campaignDescription ?? '',
-      subject: c.campaignSubject ?? '',
-      mailContent: c.campaignMailContent ?? '',
-      specialityStatus: Number(statusVal), // Ensure it's a number for DataTable
-      statusText: Number(statusVal) === 1 ? 'Active' : 'Inactive',
-    };
   }
 
   // Add Campaign
@@ -169,19 +139,21 @@ export class ManageCompaign implements OnInit {
     }).then((confirmed) => {
       if (!confirmed) return;
 
-      const apiCall = isActive
-        ? this.adminMarketingservice.deactivateCampaign(id)
-        : this.adminMarketingservice.activateCampaign(id);
-
-      apiCall.subscribe({
+      this.adminMarketingservice.toggleCampaignStatus(id).subscribe({
         next: () => {
-          row.specialityStatus = isActive ? 2 : 1;
-          this.rows = [...this.rows];
-          this.fullRows = [...this.fullRows];
+          // Store new status in localStorage to persist client-side
+          const newStatus = isActive ? 2 : 1;
+          localStorage.setItem(`campaign_status_${id}`, String(newStatus));
+
           this.toastService.success(`Campaign ${isActive ? 'deactivated' : 'activated'} successfully`);
+          // Reload from server to reflect updated status
+          const name = this.searchValues?.name?.trim() || '';
+          const fromDate = this.searchValues?.fromDate || null;
+          const toDate = this.searchValues?.toDate || null;
+          this.loadCampaigns(name, fromDate, toDate);
         },
-        error: (err) => {
-          console.error('Status update failed', err);
+        error: (err: any) => {
+          console.error('Status toggle failed', err);
           this.toastService.error('Failed to update status');
         }
       });
@@ -198,72 +170,54 @@ export class ManageCompaign implements OnInit {
   onSearch() {
     console.log('Search button clicked, values:', this.searchValues);
     
-    const name = this.searchValues?.name?.trim()?.toLowerCase() || '';
-    const fromDate = this.searchValues?.fromDate;
-    const toDate = this.searchValues?.toDate;
+    const name = this.searchValues?.name?.trim() || '';
+    const fromDate = this.searchValues?.fromDate || null;
+    const toDate = this.searchValues?.toDate || null;
 
-    // If all filters are empty, reload all
-    if (!name && !fromDate && !toDate) {
-      this.loadCampaigns();
-      return;
-    }
-
-    // Filter locally from fullRows
-    let filtered = [...this.fullRows];
-
-    // Filter by name
-    if (name) {
-      filtered = filtered.filter((c: any) => {
-        const campaignName = (c.campaignName || c.campaignDocName || '').toLowerCase();
-        return campaignName.includes(name);
-      });
-    }
-
-    // Filter by date range
-    if (fromDate) {
-      const from = new Date(fromDate);
-      filtered = filtered.filter((c: any) => {
-        const campaignDate = new Date(c.campaignDate || c.campaignDoccreatedTime);
-        return campaignDate >= from;
-      });
-    }
-
-    if (toDate) {
-      const to = new Date(toDate);
-      filtered = filtered.filter((c: any) => {
-        const campaignDate = new Date(c.campaignDate || c.campaignDoccreatedTime);
-        return campaignDate <= to;
-      });
-    }
-
-    console.log('Filtered count:', filtered.length);
-
-    // Map filtered results to display rows
-    this.rows = filtered.map((c: any, index: number) => this.mapCampaignToRow(c, index));
+    this.loadCampaigns(name, fromDate, toDate);
   }
 
   // Download
   onDownload() {
-    if (!this.rows || this.rows.length === 0) {
-      this.toastService.warning('No data available to download');
-      return;
-    }
+    const name = this.searchValues?.name?.trim() || '';
+    const fromDate = this.searchValues?.fromDate || null;
+    const toDate = this.searchValues?.toDate || null;
 
-    const exportData = this.rows.map(row => ({
-      'Campaign Type': row.type,
-      'Campaign Name': row.name,
-      'Campaign Date': row.date,
-      'Specialities': row.speciality,
-      'Locations': row.locations,
-      'Description': row.description || '',
-      'Subject': row.subject || '',
-      'Mail Content': row.mailContent || ''
-    }));
+    const payload = {
+      campaignName: name,
+      fromDate: fromDate || null,
+      toDate: toDate || null,
+      pagination: {
+        pageNumber: 0,
+        pageSize: 100000,
+        sortBy: 'campaignDate',
+        sortOrder: 'DESC'
+      }
+    };
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Campaigns');
-    XLSX.writeFile(workbook, 'Campaigns_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+    this.adminMarketingservice.downloadCampaignsReport(payload).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Campaign_Report.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        this.toastService.success('Report downloaded successfully');
+      },
+      error: (err: any) => {
+        console.error('Failed to download report', err);
+        this.toastService.error('Failed to download report');
+      }
+    });
+  }
+
+  // Reset
+  onReset() {
+    this.searchValues = {};
+    this.loadCampaigns();
   }
 
   // View Campaign (Modal)
@@ -271,10 +225,38 @@ export class ManageCompaign implements OnInit {
     this.openModal(row);
   }
 
-  // Modal
+  // Modal - loads full details dynamically from backend
   openModal(row: any) {
-    this.selected = row;
-    this.showModal = true;
+    const id = row.campaignId || row.id;
+    this.adminMarketingservice.getCampaignById(id).subscribe({
+      next: (res: any) => {
+        const campaign = res?.data || res;
+        if (campaign) {
+          this.selected = {
+            ...row,
+            type: (campaign.type === 1 || campaign.campaignType === 'Mass Mailing') ? 'Mass Mailing' : 'Offline',
+            speciality: campaign.specialities 
+              ? (Array.isArray(campaign.specialities) ? campaign.specialities.join(', ') : campaign.specialities)
+              : row.speciality,
+            locations: campaign.locations
+              ? (Array.isArray(campaign.locations) ? campaign.locations.join(', ') : campaign.locations)
+              : row.locations,
+            name: campaign.name || campaign.campaignName || row.name,
+            description: campaign.description || campaign.campaignDescription || '',
+            date: campaign.campaignDate || row.date,
+            subject: campaign.subject || '',
+            mailContent: campaign.mailContent || ''
+          };
+          this.showModal = true;
+        } else {
+          this.toastService.error('Failed to load campaign details');
+        }
+      },
+      error: (err: any) => {
+        console.error('Failed to fetch campaign details', err);
+        this.toastService.error('Failed to fetch campaign details');
+      }
+    });
   }
 
   closeModal() {
