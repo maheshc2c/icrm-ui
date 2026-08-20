@@ -1,6 +1,10 @@
 <app-reports-layout [title]="title" [breadcrumbs]="breadcrumbs">
+
+  <!-- ─── Toolbar ─────────────────────────────────────────────────── -->
   <div class="report-toolbar">
-    <div class="toolbar-field custom-dropdown-container">
+
+    <!-- User dropdown (hidden for RSM who sees only their own data) -->
+    <div class="toolbar-field custom-dropdown-container" *ngIf="!currentRole.includes('Regional Sales Manager')">
       <label class="field-label">Select Users</label>
       <div class="custom-dropdown" [class.open]="isDropdownOpen">
         <div class="dropdown-selected form-select" (click)="toggleDropdown()">
@@ -8,11 +12,12 @@
         </div>
         <div class="dropdown-list" *ngIf="isDropdownOpen">
           <div class="dropdown-search">
-            <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()" />
+            <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()" placeholder="Search..." />
           </div>
           <div class="dropdown-options">
             <div class="dropdown-item" [class.active]="!selectedUser" (click)="selectUser(null)">Select Users</div>
-            <div class="dropdown-item" *ngFor="let user of filteredUsers" [class.active]="selectedUser?.id === user.id" (click)="selectUser(user)">
+            <div class="dropdown-item" *ngFor="let user of filteredUsers"
+              [class.active]="selectedUser?.id === user.id" (click)="selectUser(user)">
               {{ user.name }}
             </div>
           </div>
@@ -20,7 +25,16 @@
       </div>
     </div>
 
-     <div class="toolbar-field">
+    <!-- Region dropdown: visible for RBH, NSM, Country Head (not RSM, not Sales Manager) -->
+    <div class="toolbar-field" *ngIf="isHigherRole && !currentRole.includes('Regional Sales Manager') && !currentRole.includes('Regional Branch Head')">
+      <label class="field-label">Select Region</label>
+      <select class="form-select" [(ngModel)]="selectedRegion">
+        <option [ngValue]="null">Select Region</option>
+        <option *ngFor="let r of regions" [ngValue]="r.locationId || r.id">{{ r.locationName || r.name }}</option>
+      </select>
+    </div>
+
+    <div class="toolbar-field">
       <label class="field-label">Financial Year</label>
       <select class="form-select" [(ngModel)]="financialYear">
         <option [ngValue]="null" disabled>Select Financial Year</option>
@@ -40,61 +54,153 @@
     </div>
 
     <div class="toolbar-actions">
-      <button type="button" class="btn-search" (click)="onSearch()"><i class="fas fa-search"></i></button>
+      <button type="button" class="btn-search" (click)="onSearch()" title="Search"><i class="fas fa-search"></i></button>
       <button type="button" class="btn-reset" (click)="resetFilters()" title="Reset"><i class="fas fa-redo-alt"></i></button>
-      <button type="button" class="btn-download" (click)="downloadIncentives()"><i class="fas fa-cloud-download-alt"></i></button>
+      <button type="button" class="btn-download" (click)="downloadIncentives()" title="Download"><i class="fas fa-cloud-download-alt"></i></button>
     </div>
   </div>
 
+  <!-- ─── Report Title ───────────────────────────────────────────── -->
   <div class="report-title">Part1 Incentives For ( {{ financialYear }} - {{ quarter }} )</div>
 
-  <div class="report-table-wrapper">
-    <table class="report-table">
-      <thead>
-        <tr>
-          <th>S.No</th>
-          <th>Role</th>
-          <th>User</th>
-          <th>ERP Target (in Lakhs)</th>
-          <th>ERP Sales (in Lakhs)</th>
-          <th>Incentive Amount (In Rs)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of reports; let i = index">
-          <td>{{ (currentPage * pageSize) + i + 1 }}</td>
-          <td>{{ item.role }}</td>
-          <td>{{ item.user }}</td>
-          <td>{{ item.erpTarget }}</td>
-          <td>{{ item.erpSales }}</td>
-          <td>{{ item.incentiveAmount }}</td>
-        </tr>
-        <tr *ngIf="reports.length === 0 && !isLoading">
-          <td colspan="6" style="text-align: center; color: #777; padding: 20px;">No incentive data found for selected filters.</td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="6" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ getTotalIncentives() }}</td>
-        </tr>
-      </tfoot>
-    </table>
+  <!-- ─── Loading ──────────────────────────────────────────────────── -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <i class="fas fa-spinner fa-spin"></i> Loading...
   </div>
 
-  <div class="pagination-container" *ngIf="totalElements > 0">
-    <div class="pagination-info">
-      Showing {{ (currentPage * pageSize) + 1 }} to {{ (currentPage + 1) * pageSize > totalElements ? totalElements : (currentPage + 1) * pageSize }} of {{ totalElements }} records
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- CHART VIEW (for RSM, RBH, NSM, Country Head)                   -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="isHigherRole && viewMode === 'chart' && !isLoading">
+
+    <div class="chart-hint">Click on a bar to see detailed breakdown</div>
+    <div class="chart-container">
+      <apx-chart
+        *ngIf="chartOptions.series"
+        [series]="chartOptions.series!"
+        [chart]="chartOptions.chart!"
+        [plotOptions]="chartOptions.plotOptions!"
+        [dataLabels]="chartOptions.dataLabels!"
+        [colors]="chartOptions.colors!"
+        [xaxis]="chartOptions.xaxis!"
+        [yaxis]="chartOptions.yaxis!"
+        [tooltip]="chartOptions.tooltip!"
+        [grid]="chartOptions.grid!"
+        [legend]="chartOptions.legend!"
+      ></apx-chart>
     </div>
-    <div class="pagination-actions">
-      <button class="btn-prev" [disabled]="currentPage === 0" (click)="changePage(-1)">Prev</button>
-      <button class="btn-page active">{{ currentPage + 1 }}</button>
-      <button class="btn-next" [disabled]="currentPage >= totalPages - 1" (click)="changePage(1)">Next</button>
-      <select class="form-select page-size" [(ngModel)]="pageSize" (change)="onSearch()">
-        <option [ngValue]="10">10</option>
-        <option [ngValue]="20">20</option>
-        <option [ngValue]="30">30</option>
-        <option [ngValue]="50">50</option>
-      </select>
+
+    <!-- No data at all -->
+    <div class="no-data" *ngIf="chartDataMap.length === 0">
+      No incentive data found for selected filters.
     </div>
-  </div>
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- DRILLDOWN TABLE (clicked from chart) OR Sales Manager Table    -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="(isHigherRole && viewMode === 'table' && drilldownData) || isSalesManager">
+
+    <!-- Back button for drilldown -->
+    <div class="drilldown-back" *ngIf="isHigherRole && drilldownData">
+      <button class="btn-back" (click)="goBack()">&laquo; Back</button>
+    </div>
+
+    <!-- DRILLDOWN: single-row category metrics table -->
+    <div class="report-table-wrapper" *ngIf="isHigherRole && drilldownData">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Role</th>
+            <th>User</th>
+            <th>ERP Target (in Lakhs)</th>
+            <th>ERP Sales (in Lakhs)</th>
+            <th>BU1 Target (in Lakhs)</th>
+            <th>BU1 Sales (in Lakhs)</th>
+            <th>BU2 Target (in Lakhs)</th>
+            <th>BU2 Sales (in Lakhs)</th>
+            <th>BU3 Target (in Lakhs)</th>
+            <th>BU3 Sales (in Lakhs)</th>
+            <th>Incentive Amount (In Rs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of drilldownData; let i = index">
+            <td>{{ i + 1 + (currentPage * pageSize) }}</td>
+            <td>{{ row.role }}</td>
+            <td>{{ row.user }}</td>
+            <td>{{ row.erpTarget }}</td>
+            <td>{{ row.erpSales }}</td>
+            <td>{{ row.bu1Target }}</td>
+            <td>{{ row.bu1Sales }}</td>
+            <td>{{ row.bu2Target }}</td>
+            <td>{{ row.bu2Sales }}</td>
+            <td>{{ row.bu3Target }}</td>
+            <td>{{ row.bu3Sales }}</td>
+            <td>{{ row.incentiveAmount }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="12" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ getDrilldownTotal() }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- SALES MANAGER: full paginated table -->
+    <div class="report-table-wrapper" *ngIf="isSalesManager">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Role</th>
+            <th>User</th>
+            <th>ERP Target (in Lakhs)</th>
+            <th>ERP Sales (in Lakhs)</th>
+            <th>Incentive Amount (In Rs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of reports; let i = index">
+            <td>{{ (currentPage * pageSize) + i + 1 }}</td>
+            <td>{{ item.role }}</td>
+            <td>{{ item.user }}</td>
+            <td>{{ item.erpTarget }}</td>
+            <td>{{ item.erpSales }}</td>
+            <td>{{ item.incentiveAmount }}</td>
+          </tr>
+          <tr *ngIf="reports.length === 0 && !isLoading">
+            <td colspan="6" style="text-align: center; color: #777; padding: 20px;">No incentive data found for selected filters.</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6" class="table-total">Incentives Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ getTotalIncentives() }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Pagination (Sales Manager only) -->
+    <div class="pagination-container" *ngIf="isSalesManager && totalElements > 0">
+      <div class="pagination-info">
+        Showing {{ (currentPage * pageSize) + 1 }} to {{ (currentPage + 1) * pageSize > totalElements ? totalElements : (currentPage + 1) * pageSize }} of {{ totalElements }} records
+      </div>
+      <div class="pagination-actions">
+        <button class="btn-prev" [disabled]="currentPage === 0" (click)="changePage(-1)">Prev</button>
+        <button class="btn-page active">{{ currentPage + 1 }}</button>
+        <button class="btn-next" [disabled]="currentPage >= totalPages - 1" (click)="changePage(1)">Next</button>
+        <select class="form-select page-size" [(ngModel)]="pageSize" (change)="onSearch()">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="20">20</option>
+          <option [ngValue]="30">30</option>
+          <option [ngValue]="50">50</option>
+        </select>
+      </div>
+    </div>
+
+  </ng-container>
+
 </app-reports-layout>
