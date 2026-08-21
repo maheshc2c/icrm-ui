@@ -164,6 +164,8 @@ export class IncentivesReportComponent implements OnInit {
     };
     const apiQuarter = this.quarter ? (quarterMap[this.quarter] || 'Q1') : 'Q1';
 
+    const sizeToFetch = this.isHigherRole ? 1000 : this.pageSize;
+
     const body = {
       financialYearId: financialYearId,
       regionId: this.selectedRegion ? Number(this.selectedRegion) : null,
@@ -171,8 +173,8 @@ export class IncentivesReportComponent implements OnInit {
       roleId: null,
       quarter: apiQuarter,
       pagination: {
-        pageNumber: this.currentPage,
-        pageSize: this.pageSize,
+        pageNumber: this.isHigherRole ? 0 : this.currentPage,
+        pageSize: sizeToFetch,
         sortBy: 'id',
         sortOrder: 'ASC'
       }
