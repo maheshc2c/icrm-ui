@@ -238,17 +238,18 @@ export class IncentivesReportComponent implements OnInit {
   // ─── Chart Building ────────────────────────────────────────────────────────
 
   buildChart(data: any[]): void {
-    const categories = data.map(d => d.role || d.name);
+    const categories = data.map(d => d.name || d.role);
     this.chartCategories = categories;
     this.chartDataMap = data;
 
-    // When all values are 0, we still want ApexCharts to render the flat line (Image 2 style)
-    this.allZero = data.every(d => +(d.incentiveAmount || 0) === 0);
+    const getVal = (d: any) => +(d?.y ?? d?.incentiveAmount ?? d?.value ?? 0);
+
+    // When all values are 0, we still want ApexCharts to render the flat line
+    this.allZero = data.every(d => getVal(d) === 0);
 
     // If allZero, provide a tiny value (0.05) so the bars render with enough physical height to click.
-    // The Y-axis is forced to -1 to 1, so 0.05 is just a small sliver, and labels still show 0 L.
     const incentiveData = data.map(d => {
-      const actual = +(d.incentiveAmount || 0);
+      const actual = getVal(d);
       return this.allZero ? 0.05 : actual;
     });
 
@@ -287,7 +288,7 @@ export class IncentivesReportComponent implements OnInit {
         style: { fontSize: '11px', colors: ['#444'] },
         formatter: (val: number, opts: any) => {
           // Show real value from chartDataMap, not the display value
-          const realVal = +(this.chartDataMap[opts?.dataPointIndex]?.incentiveAmount || 0);
+          const realVal = getVal(this.chartDataMap[opts?.dataPointIndex]);
           return `${realVal} L`;
         }
       },
@@ -319,7 +320,7 @@ export class IncentivesReportComponent implements OnInit {
         y: {
           formatter: (val: number, opts: any) => {
             // Show real value from chartDataMap
-            const realVal = +(this.chartDataMap[opts?.dataPointIndex]?.incentiveAmount || 0);
+            const realVal = getVal(this.chartDataMap[opts?.dataPointIndex]);
             return `${realVal} L`;
           }
         }
