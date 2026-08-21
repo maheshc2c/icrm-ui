@@ -345,16 +345,24 @@ export class IncentivesReportComponent implements OnInit {
     const clickedBar = this.chartDataMap[index];
     if (!clickedBar) return;
 
-    const fullRoleName = this.getRoleFullName(clickedBar.name || clickedBar.role);
+    const roleCode = (clickedBar.name || clickedBar.role || '').toUpperCase();
+    const fullRoleName = this.getRoleFullName(roleCode);
     
-    // Filter the details array to only show users matching the clicked role
-    let filtered = this.drilldownDetails.filter(d => d.role === fullRoleName);
-    
-    // Fallback: if no users matched exactly, just show all details returned by API
-    if (filtered.length === 0) {
-      filtered = this.drilldownDetails;
-    }
-    
+    // Filter the details array to show users matching the clicked role
+    let filtered = this.drilldownDetails.filter(d => {
+      const r = (d.role || '').toLowerCase();
+      if (roleCode === 'SE') {
+        return r.includes('sales manager') || r.includes('sales engineer') || r === 'se';
+      } else if (roleCode === 'RSM') {
+        return r.includes('regional sales manager') || r === 'rsm';
+      } else if (roleCode === 'RBH') {
+        return r.includes('regional branch head') || r === 'rbh';
+      } else if (roleCode === 'NSM') {
+        return r.includes('national sales manager') || r === 'nsm';
+      }
+      return d.role === fullRoleName;
+    });
+
     this.drilldownData = filtered;
     this.viewMode = 'table';
   }
