@@ -41,7 +41,7 @@ export class QuoteTracking implements OnInit {
     { header: 'Opportunity Details', field: 'opportunityDetails' },
     { header: 'Discount', field: 'discount' },
     { header: 'Current Stage', field: 'currentStage' },
-    { header: 'Status', field: 'status' },
+    { header: 'Status', field: 'quoteTrackingStatus' },
     { header: 'Final Approver', field: 'finalApprover' }
   ];
 
@@ -115,7 +115,8 @@ export class QuoteTracking implements OnInit {
             ...q,
             finalApprover: q.approver ? String(q.approver) : '',
             currentStage: this.mapStage(q.currentStage),
-            status: this.mapStatus(q.status)
+            status: this.mapStatus(q.status),
+            quoteTrackingStatus: this.mapStatus(q.status)
           };
         });
         console.log('[QuoteTracking] Mapped rows:', this.rows);

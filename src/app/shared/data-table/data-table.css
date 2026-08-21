@@ -786,3 +786,41 @@
   color: #b91c1c !important;
   font-weight: bold;
 }
+
+/* Quote Tracking Custom Badges */
+.badge-quote-status {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-align: center;
+  min-width: 90px;
+}
+
+.badge-quote-status.approved {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badge-quote-status.pending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.badge-quote-status.converted {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-quote-status.previous {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.badge-quote-status.lost {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}

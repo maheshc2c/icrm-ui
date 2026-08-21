@@ -922,74 +922,74 @@ export const routes: Routes = [
         path: 'salesmanager/opportunities',
         loadComponent: () => import('./pages/common-modules/opportunities/opportunities').then(m => m.OpportunitiesComponent),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/closed-opportunities',
         loadComponent: () => import('./pages/common-modules/opportunities/closed-opportunities/closed-opportunities').then(m => m.ClosedOpportunitiesComponent),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/funnel-history',
         loadComponent: () => import('./pages/SalesManager/funnel-history/funnel-history').then(m => m.FunnelHistoryComponent),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/leads/add',
         loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/leads/edit/:id',
         loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
 
       {
         path: 'salesmanager/closed-leads',
         component: ClosedLeadsComponent,
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/customer',
         loadComponent: () => import('./pages/common-modules/customer/customer').then(m => m.Customer),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/customer/add',
         loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/customer/edit/:id',
         loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/contact',
         loadComponent: () => import('./pages/common-modules/contact/contact').then(m => m.Contact),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/contact/add',
         loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/contact/edit/:id',
         loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'planDemo',
@@ -1264,7 +1264,7 @@ export const routes: Routes = [
         path: 'openleads',
         component: OpenLeads,
         canActivate: [authGuard],
-        data: { roles: ['SUPERADMIN', 'SUPER ADMIN', 'SUPER ADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['SUPERADMIN', 'SUPER ADMIN', 'SUPER ADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
 
 
