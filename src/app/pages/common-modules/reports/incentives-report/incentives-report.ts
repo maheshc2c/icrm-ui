@@ -249,10 +249,14 @@ export class IncentivesReportComponent implements OnInit {
     // When all values are 0, we still want ApexCharts to render the flat line
     this.allZero = data.every(d => getVal(d) === 0);
 
-    // If allZero, provide a tiny value (0.05) so the bars render with enough physical height to click.
+    // Calculate maximum value to determine minimum clickable height for 0-value bars
+    const maxVal = Math.max(...data.map(d => getVal(d)), 1);
+    const minDisplayVal = maxVal * 0.015; // 1.5% height sliver so 0-value bars have physical clickable SVG area
+
     const incentiveData = data.map(d => {
       const actual = getVal(d);
-      return this.allZero ? 0.05 : actual;
+      if (this.allZero) return 0.05;
+      return actual === 0 ? minDisplayVal : actual;
     });
 
     this.chartOptions = {
@@ -269,7 +273,18 @@ export class IncentivesReportComponent implements OnInit {
             }
           },
           click: (event: any, chartContext: any, config: any) => {
-            const index = config.dataPointIndex;
+            let index = config.dataPointIndex;
+            if (index === undefined || index === -1) {
+              // Handle clicks on data label or X-axis label text elements
+              const target = event?.target;
+              if (target) {
+                const text = (target.textContent || target.innerText || '').trim();
+                const idx = categories.findIndex(c => c.toLowerCase() === text.toLowerCase());
+                if (idx !== -1) {
+                  index = idx;
+                }
+              }
+            }
             if (index !== undefined && index !== -1) {
               this.onChartBarClick(index);
             }
