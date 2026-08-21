@@ -63,6 +63,23 @@ export class EditUsersComponent implements OnInit {
     return this.userData?.roleName?.toLowerCase() === 'stockist';
   }
 
+  get currentRoleName(): string {
+    return (this.userData?.roleName || '').trim();
+  }
+
+  get isRegionLevelOnlyRole(): boolean {
+    const r = this.currentRoleName.toLowerCase();
+    return r.includes('rbh') || r.includes('regional branch head') ||
+           r.includes('rsm') || r.includes('regional sales manager') ||
+           r.includes('otr');
+  }
+
+  get isCountryLevelOnlyRole(): boolean {
+    const r = this.currentRoleName.toLowerCase();
+    return r.includes('nsm') || r.includes('national sales manager') ||
+           r.includes('country head') || r === 'ch';
+  }
+
   constructor(
     private userService: Userservice,
     private userTargetService: UserTargetService,
@@ -265,13 +282,13 @@ export class EditUsersComponent implements OnInit {
           this.userService.getLocationsByLevel(3, geoObj.locationId).subscribe((countries: any[]) => {
             this.countryOptions = countries;
             this.selCountry = this.userData.countryNames?.[0] || '';
-            if (this.selCountry) {
+            if (this.selCountry && !this.isCountryLevelOnlyRole) {
               const countryObj = this.countryOptions.find(c => c.locationName === this.selCountry);
               if (countryObj) {
                 this.userService.getLocationsByLevel(4, countryObj.locationId).subscribe((regions: any[]) => {
                   this.regionOptions = regions;
                   this.selRegion = this.userData.regionNames?.[0] || '';
-                  if (this.selRegion) {
+                  if (this.selRegion && !this.isRegionLevelOnlyRole) {
                     const regionObj = this.regionOptions.find(r => r.locationName === this.selRegion);
                     if (regionObj) {
                       this.userService.getLocationsByLevel(5, regionObj.locationId).subscribe((states: any[]) => {
@@ -489,10 +506,10 @@ export class EditUsersComponent implements OnInit {
     this.userData.worldNames = this.locationMode === 'world' && this.selWorld ? [this.selWorld] : [];
     this.userData.geoNames = this.selGeo ? [this.selGeo] : [];
     this.userData.countryNames = this.locationMode === 'cascade' && this.selCountry ? [this.selCountry] : [];
-    this.userData.regionNames = this.locationMode === 'cascade' && this.selRegion ? [this.selRegion] : [];
-    this.userData.stateNames = this.locationMode === 'cascade' ? this.selStates : [];
-    this.userData.districtNames = this.locationMode === 'cascade' ? this.selDistricts : [];
-    this.userData.cityNames = this.locationMode === 'cascade' ? this.selCities : [];
+    this.userData.regionNames = (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && this.selRegion) ? [this.selRegion] : [];
+    this.userData.stateNames = (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selStates : [];
+    this.userData.districtNames = (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selDistricts : [];
+    this.userData.cityNames = (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selCities : [];
 
     this.userService.updateUser(this.userId, this.getCleanPayload()).subscribe({
       next: () => {
@@ -578,7 +595,7 @@ export class EditUsersComponent implements OnInit {
     this.districtOptions = []; this.selDistricts = [];
     this.cityOptions = []; this.selCities = [];
 
-    if (val) {
+    if (val && !this.isCountryLevelOnlyRole) {
       const country = this.countryOptions.find(c => c.locationName === val);
       if (country) {
         this.userService.getLocationsByLevel(4, country.locationId).subscribe(
@@ -594,7 +611,7 @@ export class EditUsersComponent implements OnInit {
     this.districtOptions = []; this.selDistricts = [];
     this.cityOptions = []; this.selCities = [];
 
-    if (val) {
+    if (val && !this.isRegionLevelOnlyRole && !this.isCountryLevelOnlyRole) {
       const region = this.regionOptions.find(r => r.locationName === val);
       if (region) {
         this.userService.getLocationsByLevel(5, region.locationId).subscribe(

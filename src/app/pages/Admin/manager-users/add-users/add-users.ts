@@ -228,6 +228,23 @@ export class AddUsersComponent implements OnInit {
     return this.selectedRole?.toLowerCase() === 'stockist';
   }
 
+  get currentRoleName(): string {
+    return (this.selectedRole || this.formInitialData?.roleName || '').trim();
+  }
+
+  get isRegionLevelOnlyRole(): boolean {
+    const r = this.currentRoleName.toLowerCase();
+    return r.includes('rbh') || r.includes('regional branch head') ||
+           r.includes('rsm') || r.includes('regional sales manager') ||
+           r.includes('otr');
+  }
+
+  get isCountryLevelOnlyRole(): boolean {
+    const r = this.currentRoleName.toLowerCase();
+    return r.includes('nsm') || r.includes('national sales manager') ||
+           r.includes('country head') || r === 'ch';
+  }
+
   /* ================= SAVE & NAVIGATION ================= */
 
   handleFormError(form?: any): void {
@@ -311,10 +328,10 @@ export class AddUsersComponent implements OnInit {
       worldNames: this.locationMode === 'world' && this.selWorld ? [this.selWorld] : [],
       geoNames: this.selGeo ? [this.selGeo] : [],
       countryNames: this.locationMode === 'cascade' && this.selCountry ? [this.selCountry] : [],
-      regionNames: this.locationMode === 'cascade' && this.selRegion ? [this.selRegion] : [],
-      stateNames: this.locationMode === 'cascade' ? this.selStates : [],
-      districtNames: this.locationMode === 'cascade' ? this.selDistricts : [],
-      cityNames: this.locationMode === 'cascade' ? this.selCities : [],
+      regionNames: (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && this.selRegion) ? [this.selRegion] : [],
+      stateNames: (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selStates : [],
+      districtNames: (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selDistricts : [],
+      cityNames: (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selCities : [],
 
       // Product Details
       categoryNames: this.selCategories,
@@ -427,7 +444,7 @@ export class AddUsersComponent implements OnInit {
     this.districtOptions = []; this.selDistricts = [];
     this.cityOptions = []; this.selCities = [];
 
-    if (val) {
+    if (val && !this.isCountryLevelOnlyRole) {
       const country = this.countryOptions.find(c => c.locationName === val);
       if (country) {
         this.userService.getLocationsByLevel(4, country.locationId).subscribe(
@@ -444,7 +461,7 @@ export class AddUsersComponent implements OnInit {
     this.districtOptions = []; this.selDistricts = [];
     this.cityOptions = []; this.selCities = [];
 
-    if (val) {
+    if (val && !this.isRegionLevelOnlyRole && !this.isCountryLevelOnlyRole) {
       const region = this.regionOptions.find(r => r.locationName === val);
       if (region) {
         this.userService.getLocationsByLevel(5, region.locationId).subscribe(
