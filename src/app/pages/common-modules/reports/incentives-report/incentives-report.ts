@@ -358,10 +358,37 @@ export class IncentivesReportComponent implements OnInit {
     return map[abbreviation] || abbreviation;
   }
 
+  // Drilldown pagination state
+  drilldownCurrentPage = 0;
+  drilldownPageSize = 10;
+
+  get pagedDrilldownData(): any[] {
+    if (!this.drilldownData || this.drilldownData.length === 0) return [];
+    const start = this.drilldownCurrentPage * this.drilldownPageSize;
+    return this.drilldownData.slice(start, start + this.drilldownPageSize);
+  }
+
+  get drilldownTotalPages(): number {
+    if (!this.drilldownData || this.drilldownData.length === 0) return 0;
+    return Math.ceil(this.drilldownData.length / this.drilldownPageSize);
+  }
+
+  changeDrilldownPage(delta: number): void {
+    const newPage = this.drilldownCurrentPage + delta;
+    if (newPage >= 0 && newPage < this.drilldownTotalPages) {
+      this.drilldownCurrentPage = newPage;
+    }
+  }
+
+  onDrilldownPageSizeChange(): void {
+    this.drilldownCurrentPage = 0;
+  }
+
   onChartBarClick(index: number): void {
     const clickedBar = this.chartDataMap[index];
     if (!clickedBar) return;
 
+    this.drilldownCurrentPage = 0;
     const roleCode = (clickedBar.name || clickedBar.role || '').toUpperCase();
     const fullRoleName = this.getRoleFullName(roleCode);
     

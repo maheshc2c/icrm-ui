@@ -126,8 +126,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of drilldownData; let i = index">
-            <td>{{ i + 1 + (currentPage * pageSize) }}</td>
+          <tr *ngFor="let row of pagedDrilldownData; let i = index">
+            <td>{{ i + 1 + (drilldownCurrentPage * drilldownPageSize) }}</td>
             <td>{{ row.role }}</td>
             <td>{{ row.user }}</td>
             <td>{{ row.erpTarget }}</td>
@@ -140,6 +140,9 @@
             <td>{{ row.bu3Sales }}</td>
             <td>{{ row.incentiveAmount }}</td>
           </tr>
+          <tr *ngIf="drilldownData.length === 0 && !isLoading">
+            <td colspan="12" style="text-align: center; color: #777; padding: 20px;">No personnel records found for this role.</td>
+          </tr>
         </tbody>
         <tfoot>
           <tr>
@@ -147,6 +150,24 @@
           </tr>
         </tfoot>
       </table>
+    </div>
+
+    <!-- Pagination for Drilldown Table (Higher Roles) -->
+    <div class="pagination-container" *ngIf="isHigherRole && drilldownData && drilldownData.length > 0">
+      <div class="pagination-info">
+        Showing {{ (drilldownCurrentPage * drilldownPageSize) + 1 }} to {{ (drilldownCurrentPage + 1) * drilldownPageSize > drilldownData.length ? drilldownData.length : (drilldownCurrentPage + 1) * drilldownPageSize }} of {{ drilldownData.length }} records
+      </div>
+      <div class="pagination-actions">
+        <button class="btn-prev" [disabled]="drilldownCurrentPage === 0" (click)="changeDrilldownPage(-1)">Prev</button>
+        <button class="btn-page active">{{ drilldownCurrentPage + 1 }}</button>
+        <button class="btn-next" [disabled]="drilldownCurrentPage >= drilldownTotalPages - 1" (click)="changeDrilldownPage(1)">Next</button>
+        <select class="form-select page-size" [(ngModel)]="drilldownPageSize" (change)="onDrilldownPageSizeChange()">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="20">20</option>
+          <option [ngValue]="30">30</option>
+          <option [ngValue]="50">50</option>
+        </select>
+      </div>
     </div>
 
     <!-- SALES MANAGER: full paginated table -->
