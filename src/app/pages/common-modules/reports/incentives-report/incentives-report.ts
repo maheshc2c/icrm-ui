@@ -350,11 +350,13 @@ export class IncentivesReportComponent implements OnInit {
     const roleCode = (clickedBar.name || clickedBar.role || '').toUpperCase();
     const fullRoleName = this.getRoleFullName(roleCode);
     
-    // Filter the details array to show users matching the clicked role
+    // Filter the details array to show ONLY users matching the clicked role
     let filtered = this.drilldownDetails.filter(d => {
-      const r = (d.role || '').toLowerCase();
+      const r = (d.role || '').trim().toLowerCase();
       if (roleCode === 'SE') {
-        return r.includes('sales manager') || r.includes('sales engineer') || r === 'se';
+        // Must be Sales Manager / Sales Engineer / SE, but NOT Regional, National, or Country
+        return (r.includes('sales manager') || r.includes('sales engineer') || r === 'se' || r === 'sm') &&
+               !r.includes('regional') && !r.includes('national') && !r.includes('country');
       } else if (roleCode === 'RSM') {
         return r.includes('regional sales manager') || r === 'rsm';
       } else if (roleCode === 'RBH') {
