@@ -260,7 +260,7 @@
                     </div>
 
                     <!-- Region -->
-                    <div class="form-row" *ngIf="regionOptions.length">
+                    <div class="form-row" *ngIf="regionOptions.length && !isCountryLevelOnlyRole">
                         <label class="form-label inline-label text-right">Assign Region</label>
                         <div class="input-container">
                             <select class="form-select" [(ngModel)]="selRegion" name="selRegion"
@@ -273,7 +273,7 @@
                     </div>
 
                     <!-- States (checkboxes) -->
-                    <div class="form-row" *ngIf="stateOptions.length">
+                    <div class="form-row" *ngIf="stateOptions.length && !isCountryLevelOnlyRole && !isRegionLevelOnlyRole">
                         <label class="form-label inline-label text-right">Assign States</label>
                         <div class="input-container">
                             <div class="checkbox-list">
@@ -288,7 +288,7 @@
                     </div>
 
                     <!-- Districts (checkboxes) -->
-                    <div class="form-row" *ngIf="districtOptions.length">
+                    <div class="form-row" *ngIf="districtOptions.length && !isCountryLevelOnlyRole && !isRegionLevelOnlyRole">
                         <label class="form-label inline-label text-right">Assign Districts</label>
                         <div class="input-container">
                             <div class="checkbox-list">
@@ -303,7 +303,7 @@
                     </div>
 
                     <!-- Cities (checkboxes) -->
-                    <div class="form-row" *ngIf="cityOptions.length">
+                    <div class="form-row" *ngIf="cityOptions.length && !isCountryLevelOnlyRole && !isRegionLevelOnlyRole">
                         <label class="form-label inline-label text-right">Assign Cities</label>
                         <div class="input-container">
                             <div class="checkbox-list">
