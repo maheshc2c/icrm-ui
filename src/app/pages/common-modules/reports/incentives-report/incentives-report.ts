@@ -164,6 +164,8 @@ export class IncentivesReportComponent implements OnInit {
     };
     const apiQuarter = this.quarter ? (quarterMap[this.quarter] || 'Q1') : 'Q1';
 
+    const sizeToFetch = this.isHigherRole ? 1000 : this.pageSize;
+
     const body = {
       financialYearId: financialYearId,
       regionId: this.selectedRegion ? Number(this.selectedRegion) : null,
@@ -171,8 +173,8 @@ export class IncentivesReportComponent implements OnInit {
       roleId: null,
       quarter: apiQuarter,
       pagination: {
-        pageNumber: this.currentPage,
-        pageSize: this.pageSize,
+        pageNumber: this.isHigherRole ? 0 : this.currentPage,
+        pageSize: sizeToFetch,
         sortBy: 'id',
         sortOrder: 'ASC'
       }
@@ -238,18 +240,23 @@ export class IncentivesReportComponent implements OnInit {
   // ─── Chart Building ────────────────────────────────────────────────────────
 
   buildChart(data: any[]): void {
-    const categories = data.map(d => d.role || d.name);
+    const categories = data.map(d => d.name || d.role);
     this.chartCategories = categories;
     this.chartDataMap = data;
 
-    // When all values are 0, we still want ApexCharts to render the flat line (Image 2 style)
-    this.allZero = data.every(d => +(d.incentiveAmount || 0) === 0);
+    const getVal = (d: any) => +(d?.y ?? d?.incentiveAmount ?? d?.value ?? 0);
 
-    // If allZero, provide a tiny value (0.05) so the bars render with enough physical height to click.
-    // The Y-axis is forced to -1 to 1, so 0.05 is just a small sliver, and labels still show 0 L.
+    // When all values are 0, we still want ApexCharts to render the flat line
+    this.allZero = data.every(d => getVal(d) === 0);
+
+    // Calculate maximum value to determine minimum clickable height for 0-value bars
+    const maxVal = Math.max(...data.map(d => getVal(d)), 1);
+    const minDisplayVal = maxVal * 0.015; // 1.5% height sliver so 0-value bars have physical clickable SVG area
+
     const incentiveData = data.map(d => {
-      const actual = +(d.incentiveAmount || 0);
-      return this.allZero ? 0.05 : actual;
+      const actual = getVal(d);
+      if (this.allZero) return 0.05;
+      return actual === 0 ? minDisplayVal : actual;
     });
 
     this.chartOptions = {
@@ -266,7 +273,18 @@ export class IncentivesReportComponent implements OnInit {
             }
           },
           click: (event: any, chartContext: any, config: any) => {
-            const index = config.dataPointIndex;
+            let index = config.dataPointIndex;
+            if (index === undefined || index === -1) {
+              // Handle clicks on data label or X-axis label text elements
+              const target = event?.target;
+              if (target) {
+                const text = (target.textContent || target.innerText || '').trim();
+                const idx = categories.findIndex(c => c.toLowerCase() === text.toLowerCase());
+                if (idx !== -1) {
+                  index = idx;
+                }
+              }
+            }
             if (index !== undefined && index !== -1) {
               this.onChartBarClick(index);
             }
@@ -287,7 +305,7 @@ export class IncentivesReportComponent implements OnInit {
         style: { fontSize: '11px', colors: ['#444'] },
         formatter: (val: number, opts: any) => {
           // Show real value from chartDataMap, not the display value
-          const realVal = +(this.chartDataMap[opts?.dataPointIndex]?.incentiveAmount || 0);
+          const realVal = getVal(this.chartDataMap[opts?.dataPointIndex]);
           return `${realVal} L`;
         }
       },
@@ -319,7 +337,7 @@ export class IncentivesReportComponent implements OnInit {
         y: {
           formatter: (val: number, opts: any) => {
             // Show real value from chartDataMap
-            const realVal = +(this.chartDataMap[opts?.dataPointIndex]?.incentiveAmount || 0);
+            const realVal = getVal(this.chartDataMap[opts?.dataPointIndex]);
             return `${realVal} L`;
           }
         }
@@ -340,20 +358,57 @@ export class IncentivesReportComponent implements OnInit {
     return map[abbreviation] || abbreviation;
   }
 
+  // Drilldown pagination state
+  drilldownCurrentPage = 0;
+  drilldownPageSize = 10;
+
+  get pagedDrilldownData(): any[] {
+    if (!this.drilldownData || this.drilldownData.length === 0) return [];
+    const start = this.drilldownCurrentPage * this.drilldownPageSize;
+    return this.drilldownData.slice(start, start + this.drilldownPageSize);
+  }
+
+  get drilldownTotalPages(): number {
+    if (!this.drilldownData || this.drilldownData.length === 0) return 0;
+    return Math.ceil(this.drilldownData.length / this.drilldownPageSize);
+  }
+
+  changeDrilldownPage(delta: number): void {
+    const newPage = this.drilldownCurrentPage + delta;
+    if (newPage >= 0 && newPage < this.drilldownTotalPages) {
+      this.drilldownCurrentPage = newPage;
+    }
+  }
+
+  onDrilldownPageSizeChange(): void {
+    this.drilldownCurrentPage = 0;
+  }
+
   onChartBarClick(index: number): void {
     const clickedBar = this.chartDataMap[index];
     if (!clickedBar) return;
 
-    const fullRoleName = this.getRoleFullName(clickedBar.name || clickedBar.role);
+    this.drilldownCurrentPage = 0;
+    const roleCode = (clickedBar.name || clickedBar.role || '').toUpperCase();
+    const fullRoleName = this.getRoleFullName(roleCode);
     
-    // Filter the details array to only show users matching the clicked role
-    let filtered = this.drilldownDetails.filter(d => d.role === fullRoleName);
-    
-    // Fallback: if no users matched exactly, just show all details returned by API
-    if (filtered.length === 0) {
-      filtered = this.drilldownDetails;
-    }
-    
+    // Filter the details array to show ONLY users matching the clicked role
+    let filtered = this.drilldownDetails.filter(d => {
+      const r = (d.role || '').trim().toLowerCase();
+      if (roleCode === 'SE') {
+        // Must be Sales Manager / Sales Engineer / SE, but NOT Regional, National, or Country
+        return (r.includes('sales manager') || r.includes('sales engineer') || r === 'se' || r === 'sm') &&
+               !r.includes('regional') && !r.includes('national') && !r.includes('country');
+      } else if (roleCode === 'RSM') {
+        return r.includes('regional sales manager') || r === 'rsm';
+      } else if (roleCode === 'RBH') {
+        return r.includes('regional branch head') || r === 'rbh';
+      } else if (roleCode === 'NSM') {
+        return r.includes('national sales manager') || r === 'nsm';
+      }
+      return d.role === fullRoleName;
+    });
+
     this.drilldownData = filtered;
     this.viewMode = 'table';
   }
