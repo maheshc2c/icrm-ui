@@ -14,10 +14,7 @@ import { ReportService } from '../../../../service/report.service';
 })
 export class MarginAnalysisReportComponent implements OnInit {
   title = 'Margin Analysis Report';
-  breadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/dashboard' },
-    { label: 'Margin Analysis Report' }
-  ];
+  breadcrumbs: Breadcrumb[] = [];
 
   selectedRegionId: number | null = null;
   fromDate = '';
@@ -39,8 +36,37 @@ export class MarginAnalysisReportComponent implements OnInit {
   constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
+    this.setDynamicHomeRoute();
     this.loadDropdowns();
     this.onSearch();
+  }
+
+  setDynamicHomeRoute(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      let homeRoute = '/dashboard';
+
+      if (role === 'SUPERADMIN') {
+        homeRoute = '/superadmindashboard';
+      } else if (role === 'Admin') {
+        homeRoute = '/admindashboard';
+      } else if (role === 'Regional Branch Head') {
+        homeRoute = '/regional-branch-head-dashboard';
+      } else if (role === 'Regional Sales Manager') {
+        homeRoute = '/regional-sales-manager-dashboard';
+      } else if (role === 'Country Head') {
+        homeRoute = '/country-head';
+      } else if (role === 'Sales Engineer' || role === 'SALES_MANAGER' || role === 'SALESMANAGER' || role === 'Sales Manager') {
+        homeRoute = '/sales-manager-dashboard';
+      } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
+        homeRoute = '/adminmarketingdashboard';
+      }
+
+      this.breadcrumbs = [
+        { label: 'Home', route: homeRoute },
+        { label: 'Margin Analysis Report' }
+      ];
+    }
   }
 
   loadDropdowns(): void {

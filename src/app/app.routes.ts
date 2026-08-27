@@ -541,8 +541,17 @@ export const routes: Routes = [
 {
   path: 'contact',
   loadComponent: () =>
-    import('./pages/common-modules/contact/contact').then(m => m.Contact)
+    import('./pages/common-modules/contact/contact').then(m => m.Contact),
+    canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director','ADMIN', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'
+        ]
+      }
 },
+
+
 {
   path: 'contact/add',
   loadComponent: () =>
@@ -960,37 +969,37 @@ export const routes: Routes = [
         path: 'salesmanager/customer',
         loadComponent: () => import('./pages/common-modules/customer/customer').then(m => m.Customer),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/customer/add',
         loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/customer/edit/:id',
         loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/contact',
         loadComponent: () => import('./pages/common-modules/contact/contact').then(m => m.Contact),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/contact/add',
         loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'salesmanager/contact/edit/:id',
         loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
       },
       {
         path: 'planDemo',
@@ -1214,13 +1223,33 @@ export const routes: Routes = [
       },
 
       {
-        path: 'quotes-view',
-        loadComponent: () => import('./pages/common-modules/quote-approval/quote-approval').then(m => m.QuoteApproval),
-      },
-      {
-        path: 'c-note',
-        loadComponent: () => import('./pages/common-modules/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
-      },
+  path: 'quotes-view',
+  loadComponent: () =>
+    import('./pages/common-modules/quote-approval/quote-approval')
+      .then(m => m.QuoteApproval),
+  canActivate: [authGuard],
+  data: {
+    roles: [
+      'Regional Branch Head',
+      'National Sales Manager',
+      'Country Head',
+      'ADMIN'
+    ]
+  }
+},
+       {
+  path: 'c-note',
+  loadComponent: () =>
+    import('./pages/common-modules/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
+  canActivate: [authGuard],
+  data: {
+    roles: [
+      'Regional Branch Head',
+      'National Sales Manager',
+      'Country Head'
+    ]
+  }
+},
       {
         path: 'PO-Approval',
         loadComponent: () => import('./pages/Regional-Branch-Head/purchase-order-approval/purchase-order-approval').then(m => m.PurchaseOrderApproval),

@@ -148,6 +148,16 @@
                           <span class="status-badge" [class.cleared]="row[col.field] === 'Cleared'" [class.invoiced]="row[col.field] === 'Invoiced'" [class.pending]="row[col.field] !== 'Cleared' && row[col.field] !== 'Invoiced'">
                             {{ row[col.field] }}
                           </span>
+                        } @else if (col.field === 'quoteTrackingStatus') {
+                          <span class="badge-quote-status" [ngClass]="{
+                            'approved': row[col.field] === 'Quote Approved',
+                            'pending': row[col.field] === 'Pending',
+                            'converted': row[col.field] === 'Converted to Contract Note',
+                            'previous': row[col.field] === 'Previous Quote',
+                            'lost': row[col.field] === 'Rejected' || row[col.field] === 'Opportunity Lost'
+                          }">
+                            {{ row[col.field] }}
+                          </span>
                         } @else if (col.type === 'currency-margin') {
                           <span [class.positive]="row[col.field] >= 0" [class.negative]="row[col.field] < 0">
                             {{ row[col.field] | number:'1.2-2' }}
