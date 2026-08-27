@@ -494,8 +494,17 @@ export const routes: Routes = [
 {
   path: 'contact',
   loadComponent: () =>
-    import('./pages/common-modules/contact/contact').then(m => m.Contact)
+    import('./pages/common-modules/contact/contact').then(m => m.Contact),
+    canActivate: [authGuard],
+      data: {
+        roles: [
+          'Sales Director','ADMIN', 'Sales Manager', 'Regional Sales Manager', 'Regional Branch Head',
+          'National Sales Manager', 'Country Head', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'
+        ]
+      }
 },
+
+
 {
   path: 'contact/add',
   loadComponent: () =>
@@ -1147,13 +1156,33 @@ export const routes: Routes = [
       },
 
       {
-        path: 'quotes-view',
-        loadComponent: () => import('./pages/common-modules/quote-approval/quote-approval').then(m => m.QuoteApproval),
-      },
-      {
-        path: 'c-note',
-        loadComponent: () => import('./pages/common-modules/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
-      },
+  path: 'quotes-view',
+  loadComponent: () =>
+    import('./pages/common-modules/quote-approval/quote-approval')
+      .then(m => m.QuoteApproval),
+  canActivate: [authGuard],
+  data: {
+    roles: [
+      'Regional Branch Head',
+      'National Sales Manager',
+      'Country Head',
+      'ADMIN'
+    ]
+  }
+},
+       {
+  path: 'c-note',
+  loadComponent: () =>
+    import('./pages/common-modules/c-note-approval/c-note-approval').then(m => m.CNoteApproval),
+  canActivate: [authGuard],
+  data: {
+    roles: [
+      'Regional Branch Head',
+      'National Sales Manager',
+      'Country Head'
+    ]
+  }
+},
       {
         path: 'PO-Approval',
         loadComponent: () => import('./pages/Regional-Branch-Head/purchase-order-approval/purchase-order-approval').then(m => m.PurchaseOrderApproval),

@@ -29,11 +29,67 @@ import { CommonModule } from '@angular/common';
       ) {}
 
       headerTitle = 'Manage Contact List';
+
+    private getHomeRoute(): string {
+  const role = localStorage.getItem('role');
+
+  switch (role) {
+    case 'ADMIN':
+    case 'Admin':
+      return '/admindashboard';
+
+    case 'ADMINMARKETING':
+    case 'ADMIN MARKETING':
+      return '/adminmarketingdashboard';
+
+    case 'Sales Director':
+      return '/sddashboard';
+
+    case 'Sales Manager':
+    case 'Sales Engineer':
+    case 'SALES_MANAGER':
+    case 'SALESMANAGER':
+      return '/sales-manager-dashboard';
+
+    case 'Regional Sales Manager':
+      return '/regional-sales-manager-dashboard';
+
+    case 'Regional Branch Head':
+      return '/regional-branch-head-dashboard';
+
+    case 'National Sales Manager':
+      return '/national-sales-manager-dashboard';
+
+    case 'Country Head':
+      return '/country-head';
+
+    case 'SUPERADMIN':
+    case 'SUPER ADMIN':
+      return '/superadmindashboard';
+
+    default:
+      return '/login';
+  }
+}
+
+headerBreadcrumbs: Breadcrumb[] = [];
+
+ngOnInit(): void {
+
+  this.headerBreadcrumbs = [
+    { label: 'Home', route: this.getHomeRoute() },
+    { label: 'Contact', route: '/contact' }
+  ];
+
+  this.loadContact();
+  this.loadCustomerDropdown();
+  this.loadSpecialities();
+}
           
-            headerBreadcrumbs: Breadcrumb[] = [
-              { label: 'Home', route: '/admindashboard' },
-              { label: 'Contact', route: '/contact' }
-            ];
+            // headerBreadcrumbs: Breadcrumb[] = [
+            //   { label: 'Home', route: '/admindashboard' },
+            //   { label: 'Contact', route: '/contact' }
+            // ];
 
             // 🔹 Table Columns
       columns = [
@@ -49,12 +105,12 @@ import { CommonModule } from '@angular/common';
     fullRows: any[] = [];   // ✅ full API data (for Excel)
 
 
-    ngOnInit(): void {
-      this.loadContact();
-      this.loadCustomerDropdown();
-      // this.loadLocations();
-      this.loadSpecialities();
-    }
+    // ngOnInit(): void {
+    //   this.loadContact();
+    //   this.loadCustomerDropdown();
+    //   // this.loadLocations();
+    //   this.loadSpecialities();
+    // }
 
 
   private loadSpecialities(): void {
