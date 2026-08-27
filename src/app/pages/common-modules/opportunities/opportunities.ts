@@ -73,7 +73,7 @@ export class OpportunitiesComponent implements OnInit {
     { name: 'expectedOrderConclusion', label: 'Expected Order Conclusion Date', type: 'date', required: true },
     { name: 'status', label: 'Status', type: 'select', options: [], required: true },
     { name: 'expectedInvoicingDate', label: 'Expected Invoice Date', type: 'date' },
-    { name: 'competitors', label: 'Competitors', type: 'text' }
+    { name: 'competitors', label: 'Competitors', type: 'select', options: [], isSearchable: true }
   ];
 
   oppModel: any = {
@@ -92,7 +92,9 @@ export class OpportunitiesComponent implements OnInit {
     expectedOrderConclusion: '',
     status: '',
     expectedInvoicingDate: '',
-    competitors: ''
+    competitors: '',
+    lostReasonId: '',
+    remarks2: ''
   };
 
   resetOppModel(): void {
@@ -100,8 +102,13 @@ export class OpportunitiesComponent implements OnInit {
       leadId: '', decisionMaker1: '', productCategoryId: '', decisionMaker2: '',
       productGroupId: '', decisionMaker3: '', productId: '', decisionMaker4: '',
       quantity: null, decisionMaker5: '', fundSourceId: '', relationshipId: '',
-      expectedOrderConclusion: '', status: '', expectedInvoicingDate: '', competitors: ''
+      expectedOrderConclusion: '', status: '', expectedInvoicingDate: '', competitors: '',
+      lostReasonId: '',
+      lostCompetitorId: '',
+      model: '',
+      remarks2: ''
     };
+    this.oppFields = this.oppFields.filter(f => f.name !== 'lostReasonId' && f.name !== 'lostCompetitorId' && f.name !== 'model' && f.name !== 'remarks2');
   }
 
   /* ================= DATA ================= */
@@ -184,7 +191,10 @@ export class OpportunitiesComponent implements OnInit {
     this.leadService.getStatus().subscribe(data => {
       const field = this.oppFields.find(f => f.name === 'status');
       if (field && data) {
-        field.options = data.map(s => ({ label: s.oppName || s.OppName, value: s.oppStatusId || s.OppStatusId }));
+        field.options = data.map(s => {
+          const weight = s.oppWeight != null ? ` (${s.oppWeight}%)` : '';
+          return { label: (s.oppName || s.OppName || 'Status') + weight, value: s.oppStatusId || s.OppStatusId };
+        });
       }
     });
   }
@@ -245,6 +255,42 @@ export class OpportunitiesComponent implements OnInit {
         }
       });
     }
+
+    if (fieldName === 'status') {
+      if (value == 7) { // Closed Lost
+        // 1. Lost Reason
+        this.leadService.getLostReasons().subscribe(reasons => {
+          let reasonField = this.oppFields.find(f => f.name === 'lostReasonId');
+          if (!reasonField) {
+            this.oppFields.push({ name: 'lostReasonId', label: 'Lost Reason', type: 'select', options: [], required: true });
+            reasonField = this.oppFields.find(f => f.name === 'lostReasonId');
+          }
+          if (reasonField && reasons) {
+            reasonField.options = reasons.map(r => ({ label: r.name, value: r.reasonId }));
+          }
+        });
+
+        // 2. Lost Competitor
+        this.leadService.getCompetitors().subscribe(competitors => {
+          let compField = this.oppFields.find(f => f.name === 'lostCompetitorId');
+          if (!compField) {
+            this.oppFields.push({ name: 'lostCompetitorId', label: 'Lost Competitor', type: 'select', options: [], required: true });
+            compField = this.oppFields.find(f => f.name === 'lostCompetitorId');
+          }
+          if (compField && competitors) {
+            compField.options = competitors.map(c => ({ label: c.competitorName || c.name || 'Unknown', value: c.competitorId || c.id }));
+          }
+        });
+
+        // 3. Model
+        let modelField = this.oppFields.find(f => f.name === 'model');
+        if (!modelField) {
+          this.oppFields.push({ name: 'model', label: 'Model', type: 'text', required: true });
+        }
+      } else {
+        this.oppFields = this.oppFields.filter(f => f.name !== 'lostReasonId' && f.name !== 'lostCompetitorId' && f.name !== 'model' && f.name !== 'remarks2');
+      }
+    }
   }
 
   /* ================= LOAD OPPORTUNITIES ================= */
@@ -256,7 +302,8 @@ export class OpportunitiesComponent implements OnInit {
           ...opp,
           product: opp.productAndCategory,
           lifeTime: opp.lifeTimeDays,
-          value: opp.value || (opp.qty ? opp.qty * 125000 : 0)
+          value: (opp.mrp && opp.qty) ? (opp.qty * opp.mrp) : (opp.value || (opp.qty ? opp.qty * 125000 : 0)),
+          probability: typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 50)
         }));
         this.filteredOpportunities = [...this.opportunities];
         this.totalElements = data.totalElements !== undefined ? data.totalElements : opps.length;
@@ -309,6 +356,14 @@ export class OpportunitiesComponent implements OnInit {
       const field = this.searchFields.find(f => f.key === 'stage');
       if (field && data) {
         field.options = data.map(s => ({ value: s.stageId, label: s.stageName }));
+      }
+    });
+
+    // 6. Load Competitors from backend for Opp Form
+    this.leadService.getCompetitors().subscribe(data => {
+      const field = this.oppFields.find(f => f.name === 'competitors');
+      if (field && data) {
+        field.options = data.map(c => ({ value: c.competitorId || c.id, label: c.competitorName || c.name || 'Unknown' }));
       }
     });
   }
@@ -402,6 +457,17 @@ export class OpportunitiesComponent implements OnInit {
     this.isEditMode = false;
     this.editOppId = null;
     this.resetOppModel();
+
+    this.leadService.getStatus().subscribe(data => {
+      const field = this.oppFields.find(f => f.name === 'status');
+      if (field && data) {
+        field.options = data.map(s => {
+          const weight = s.oppWeight != null ? ` (${s.oppWeight}%)` : '';
+          return { label: (s.oppName || s.OppName || 'Status') + weight, value: s.oppStatusId || s.OppStatusId };
+        });
+      }
+    });
+
     this.showAddModal = true;
   }
 
@@ -466,9 +532,12 @@ export class OpportunitiesComponent implements OnInit {
       demoRequirement: false,
       technicallyCleared: false,
       stageId: null,
-      competitorIds: [],
-      remarks1: this.oppModel.competitors || null,
-      remarks2: null
+      competitorIds: toNullIfEmpty(this.oppModel.competitors) ? [Number(toNullIfEmpty(this.oppModel.competitors))] : [],
+      remarks1: null,
+      remarks2: toNullIfEmpty(this.oppModel.remarks2),
+      opprLostId: toNullIfEmpty(this.oppModel.lostReasonId) ? Number(toNullIfEmpty(this.oppModel.lostReasonId)) : null,
+      lostCompetitorId: toNullIfEmpty(this.oppModel.lostCompetitorId) ? Number(toNullIfEmpty(this.oppModel.lostCompetitorId)) : null,
+      model: toNullIfEmpty(this.oppModel.model)
     };
 
     if (this.isEditMode && this.editOppId) {
@@ -509,6 +578,16 @@ export class OpportunitiesComponent implements OnInit {
     // Fetch opportunity details
     this.leadService.getOpportunityById(row.id).subscribe({
       next: (data) => {
+          // Fetch quote-sensitive status options for this specific opportunity
+          this.leadService.getStatus(row.id).subscribe(statusData => {
+            const field = this.oppFields.find(f => f.name === 'status');
+            if (field && statusData) {
+              field.options = statusData.map(s => {
+                const weight = s.oppWeight != null ? ` (${s.oppWeight}%)` : '';
+                return { label: (s.oppName || s.OppName || 'Status') + weight, value: s.oppStatusId || s.OppStatusId };
+              });
+            }
+          });
           const extractId = (val: any) => {
             if (!val || val === '0' || val === 0) return '';
             if (typeof val === 'object') return val.contactId || val.id || val.value || val.contact_id || val.fundSourceID || val.fundSourceId || val.relationshipId || val.categoryId || val.groupId || val.productId || val.oppStatusId || val.stageId || '';
@@ -547,7 +626,18 @@ export class OpportunitiesComponent implements OnInit {
           this.oppModel.decisionMaker5 = extractId(data.oppDecisionMaker5 || data.oppDecisionMaker5Id || data.decisionMaker5Id || data.DecisionMaker5Id || data.OppDecisionMaker5 || data.decisionMaker5 || data.DecisionMaker5 || data.contact5);
           this.oppModel.relationshipId = extractId(data.relationship || data.oppRelationshipId || data.OppRelationshipId || data.relationshipId || data.RelationshipId);
           this.oppModel.status = extractId(data.status || data.oppStatus || data.OppStatus || data.Status);
-          this.oppModel.competitors = data.oppRemarks1 || data.OppRemarks1 || data.competitors || data.Competitors || data.remarks1 || '';
+          this.oppModel.competitors = (() => {
+            if (data.competitors && Array.isArray(data.competitors) && data.competitors.length > 0) {
+              return String(data.competitors[0].competitorId || data.competitors[0].id || '');
+            }
+            if (data.competitorIds && Array.isArray(data.competitorIds) && data.competitorIds.length > 0) {
+              return String(data.competitorIds[0]);
+            }
+            if (data.remarks1 && !isNaN(Number(data.remarks1))) {
+              return String(data.remarks1);
+            }
+            return '';
+          })();
 
         // Load segments and products for the selected category/group
         if (this.oppModel.productCategoryId) {

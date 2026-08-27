@@ -93,8 +93,8 @@
                             <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 1)" [class.inactive]="((row.leadStatus !== undefined ? row.leadStatus : row.status) < 1)">Lead</span>
                             <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 2)" [class.inactive]="((row.leadStatus !== undefined ? row.leadStatus : row.status) < 2)">Approved</span>
                             <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 3 || row.hasOpportunity)" [class.inactive]="((row.leadStatus !== undefined ? row.leadStatus : row.status) < 3 && !row.hasOpportunity)">Opportunity</span>
-                            <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 6 || row.hasQuote)" [class.inactive]="((row.leadStatus !== undefined ? row.leadStatus : row.status) < 6 && !row.hasQuote)">Quote</span>
-                            <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 8 || row.hasCNote)" [class.inactive]="((row.leadStatus !== undefined ? row.leadStatus : row.status) < 8 && !row.hasCNote)">C Note</span>
+                            <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 6 || row.hasQuote)" [class.partial]="((row.leadStatus !== undefined ? row.leadStatus : row.status) === 6)" [class.inactive]="((row.leadStatus !== undefined ? row.leadStatus : row.status) < 6 && !row.hasQuote)">Quote</span>
+                            <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 10)" [class.partial]="((row.leadStatus !== undefined ? row.leadStatus : row.status) === 8 || (row.leadStatus !== undefined ? row.leadStatus : row.status) === 9 || ((row.leadStatus !== undefined ? row.leadStatus : row.status) < 10 && row.hasCNote))" [class.inactive]="((row.leadStatus !== undefined ? row.leadStatus : row.status) < 8 && !row.hasCNote)">C Note</span>
                           </div>
                         } @else if (col.field === 'editableQuantity') {
                           <input type="text"
@@ -137,6 +137,32 @@
                             [(ngModel)]="row[col.field]"
                             (ngModelChange)="onCellChange(row, col.field, $event)"
                             style="width: 100%; min-width: 120px;" />
+                        } @else if (col.type === 'html') {
+                          <span [innerHTML]="row[col.field]"></span>
+                        } @else if (col.field === 'cnoteTypeLabel') {
+                          <span class="badge-type" [class.regular]="row[col.field] === 'Regular'" [class.po]="row[col.field] !== 'Regular'">
+                            {{ row[col.field] }}
+                          </span>
+                        } @else if (col.field === 'orderStatusLabel') {
+                          <span class="status-badge" [class.cleared]="row[col.field] === 'Cleared'" [class.invoiced]="row[col.field] === 'Invoiced'" [class.pending]="row[col.field] !== 'Cleared' && row[col.field] !== 'Invoiced'">
+                            {{ row[col.field] }}
+                          </span>
+                        } @else if (col.field === 'quoteTrackingStatus') {
+                          <span class="badge-quote-status" [ngClass]="{
+                            'approved': row[col.field] === 'Quote Approved',
+                            'pending': row[col.field] === 'Pending',
+                            'converted': row[col.field] === 'Converted to Contract Note',
+                            'previous': row[col.field] === 'Previous Quote',
+                            'lost': row[col.field] === 'Rejected' || row[col.field] === 'Opportunity Lost'
+                          }">
+                            {{ row[col.field] }}
+                          </span>
+                        } @else if (col.type === 'currency-margin') {
+                          <span [class.positive]="row[col.field] >= 0" [class.negative]="row[col.field] < 0">
+                            {{ row[col.field] | number:'1.2-2' }}
+                          </span>
+                        } @else if (col.type === 'number') {
+                          {{ row[col.field] | number:'1.2-2' }}
                         } @else {
                           {{ row[col.field] }}
                         }

@@ -63,6 +63,23 @@ export class EditUsersComponent implements OnInit {
     return this.userData?.roleName?.toLowerCase() === 'stockist';
   }
 
+  get currentRoleName(): string {
+    return (this.userData?.roleName || '').trim();
+  }
+
+  get isRegionLevelOnlyRole(): boolean {
+    const r = this.currentRoleName.toLowerCase();
+    return r.includes('rbh') || r.includes('regional branch head') ||
+           r.includes('rsm') || r.includes('regional sales manager') ||
+           r.includes('otr');
+  }
+
+  get isCountryLevelOnlyRole(): boolean {
+    const r = this.currentRoleName.toLowerCase();
+    return r.includes('nsm') || r.includes('national sales manager') ||
+           r.includes('country head') || r === 'ch';
+  }
+
   constructor(
     private userService: Userservice,
     private userTargetService: UserTargetService,
@@ -265,13 +282,13 @@ export class EditUsersComponent implements OnInit {
           this.userService.getLocationsByLevel(3, geoObj.locationId).subscribe((countries: any[]) => {
             this.countryOptions = countries;
             this.selCountry = this.userData.countryNames?.[0] || '';
-            if (this.selCountry) {
+            if (this.selCountry && !this.isCountryLevelOnlyRole) {
               const countryObj = this.countryOptions.find(c => c.locationName === this.selCountry);
               if (countryObj) {
                 this.userService.getLocationsByLevel(4, countryObj.locationId).subscribe((regions: any[]) => {
                   this.regionOptions = regions;
                   this.selRegion = this.userData.regionNames?.[0] || '';
-                  if (this.selRegion) {
+                  if (this.selRegion && !this.isRegionLevelOnlyRole) {
                     const regionObj = this.regionOptions.find(r => r.locationName === this.selRegion);
                     if (regionObj) {
                       this.userService.getLocationsByLevel(5, regionObj.locationId).subscribe((states: any[]) => {
@@ -489,10 +506,10 @@ export class EditUsersComponent implements OnInit {
     this.userData.worldNames = this.locationMode === 'world' && this.selWorld ? [this.selWorld] : [];
     this.userData.geoNames = this.selGeo ? [this.selGeo] : [];
     this.userData.countryNames = this.locationMode === 'cascade' && this.selCountry ? [this.selCountry] : [];
-    this.userData.regionNames = this.locationMode === 'cascade' && this.selRegion ? [this.selRegion] : [];
-    this.userData.stateNames = this.locationMode === 'cascade' ? this.selStates : [];
-    this.userData.districtNames = this.locationMode === 'cascade' ? this.selDistricts : [];
-    this.userData.cityNames = this.locationMode === 'cascade' ? this.selCities : [];
+    this.userData.regionNames = (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && this.selRegion) ? [this.selRegion] : [];
+    this.userData.stateNames = (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selStates : [];
+    this.userData.districtNames = (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selDistricts : [];
+    this.userData.cityNames = (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selCities : [];
 
     this.userService.updateUser(this.userId, this.getCleanPayload()).subscribe({
       next: () => {
@@ -578,7 +595,7 @@ export class EditUsersComponent implements OnInit {
     this.districtOptions = []; this.selDistricts = [];
     this.cityOptions = []; this.selCities = [];
 
-    if (val) {
+    if (val && !this.isCountryLevelOnlyRole) {
       const country = this.countryOptions.find(c => c.locationName === val);
       if (country) {
         this.userService.getLocationsByLevel(4, country.locationId).subscribe(
@@ -594,7 +611,7 @@ export class EditUsersComponent implements OnInit {
     this.districtOptions = []; this.selDistricts = [];
     this.cityOptions = []; this.selCities = [];
 
-    if (val) {
+    if (val && !this.isRegionLevelOnlyRole && !this.isCountryLevelOnlyRole) {
       const region = this.regionOptions.find(r => r.locationName === val);
       if (region) {
         this.userService.getLocationsByLevel(5, region.locationId).subscribe(
@@ -609,13 +626,36 @@ export class EditUsersComponent implements OnInit {
     this.selStates = checked
       ? [...this.selStates, name]
       : this.selStates.filter(s => s !== name);
-    this.districtOptions = []; this.selDistricts = [];
-    this.cityOptions = []; this.selCities = [];
 
     const selectedObjs = this.stateOptions.filter(s => this.selStates.includes(s.locationName));
     if (selectedObjs.length) {
       forkJoin(selectedObjs.map(s => this.userService.getLocationsByLevel(6, s.locationId)))
-        .subscribe(results => this.districtOptions = results.flat());
+        .subscribe(results => {
+          const newDistricts = results.flat();
+          this.districtOptions = newDistricts;
+          const validDistrictNames = new Set(newDistricts.map(d => d.locationName));
+          this.selDistricts = this.selDistricts.filter(d => validDistrictNames.has(d));
+
+          // Fetch cities for valid selected districts
+          const selectedDistObjs = this.districtOptions.filter(d => this.selDistricts.includes(d.locationName));
+          if (selectedDistObjs.length) {
+            forkJoin(selectedDistObjs.map(d => this.userService.getLocationsByLevel(7, d.locationId)))
+              .subscribe((cityResults: any[][]) => {
+                const newCities = cityResults.flat();
+                this.cityOptions = newCities;
+                const validCityNames = new Set(newCities.map(c => c.locationName));
+                this.selCities = this.selCities.filter(c => validCityNames.has(c));
+              });
+          } else {
+            this.cityOptions = [];
+            this.selCities = [];
+          }
+        });
+    } else {
+      this.districtOptions = [];
+      this.selDistricts = [];
+      this.cityOptions = [];
+      this.selCities = [];
     }
   }
 
@@ -624,12 +664,19 @@ export class EditUsersComponent implements OnInit {
     this.selDistricts = checked
       ? [...this.selDistricts, name]
       : this.selDistricts.filter(d => d !== name);
-    this.cityOptions = []; this.selCities = [];
 
     const selectedObjs = this.districtOptions.filter(d => this.selDistricts.includes(d.locationName));
     if (selectedObjs.length) {
       forkJoin(selectedObjs.map(d => this.userService.getLocationsByLevel(7, d.locationId)))
-        .subscribe((results: any[][]) => this.cityOptions = results.flat());
+        .subscribe((results: any[][]) => {
+          const newCities = results.flat();
+          this.cityOptions = newCities;
+          const validCityNames = new Set(newCities.map(c => c.locationName));
+          this.selCities = this.selCities.filter(c => validCityNames.has(c));
+        });
+    } else {
+      this.cityOptions = [];
+      this.selCities = [];
     }
   }
 
@@ -648,13 +695,32 @@ export class EditUsersComponent implements OnInit {
     this.selCategories = checked
       ? [...this.selCategories, name]
       : this.selCategories.filter(c => c !== name);
-    this.groupOptions = []; this.selGroups = [];
-    this.productOptions = []; this.selProducts = [];
 
     if (this.selCategories.length) {
       this.groupOptions = this.allGroups.filter(g =>
         this.selCategories.includes(g.category?.categoryName)
       );
+      const validGroupNames = new Set(this.groupOptions.map(g => g.groupName));
+      this.selGroups = this.selGroups.filter(g => validGroupNames.has(g));
+
+      const selectedGroupObjs = this.groupOptions.filter(g => this.selGroups.includes(g.groupName));
+      if (selectedGroupObjs.length) {
+        forkJoin(selectedGroupObjs.map(g => this.userService.getProductsByGroupId(g.groupId)))
+          .subscribe((results: any[][]) => {
+            const newProducts = Array.from(new Set(results.flat()));
+            this.productOptions = newProducts;
+            const validProductNames = new Set(newProducts);
+            this.selProducts = this.selProducts.filter(p => validProductNames.has(p));
+          });
+      } else {
+        this.productOptions = [];
+        this.selProducts = [];
+      }
+    } else {
+      this.groupOptions = [];
+      this.selGroups = [];
+      this.productOptions = [];
+      this.selProducts = [];
     }
   }
 
@@ -663,14 +729,19 @@ export class EditUsersComponent implements OnInit {
     this.selGroups = checked
       ? [...this.selGroups, name]
       : this.selGroups.filter(g => g !== name);
-    this.productOptions = []; this.selProducts = [];
 
     const selectedObjs = this.groupOptions.filter(g => this.selGroups.includes(g.groupName));
     if (selectedObjs.length) {
       forkJoin(selectedObjs.map(g => this.userService.getProductsByGroupId(g.groupId)))
         .subscribe((results: any[][]) => {
-          this.productOptions = Array.from(new Set(results.flat()));
+          const newProducts = Array.from(new Set(results.flat()));
+          this.productOptions = newProducts;
+          const validProductNames = new Set(newProducts);
+          this.selProducts = this.selProducts.filter(p => validProductNames.has(p));
         });
+    } else {
+      this.productOptions = [];
+      this.selProducts = [];
     }
   }
 

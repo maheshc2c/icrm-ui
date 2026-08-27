@@ -453,21 +453,21 @@ constructor() {
         {
           label: 'Leads',
           icon: 'fas fa-users',
-          route: '/countryhead/leads',
+          route: '/salesmanager/leads/add',
           children: [
-            { label: 'New', icon: 'fas fa-edit', route: '/countryhead/leads/new' },
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/countryhead/leads/open' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/countryhead/leads/closed' }
+            { label: 'New', icon: 'fas fa-edit', route: '/salesmanager/leads/add' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/openleads' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-leads' }
           ]
         },
         {
           label: 'Opportunity',
           icon: 'fas fa-briefcase',
-          route: '/country-head/dashboard/opportunity',
+          route: '/salesmanager/opportunities',
           children: [
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/dashboard/opportunity/open' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/dashboard/opportunity/closed' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-opportunities' },
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/salesmanager/funnel-history' }
           ]
         },
         {
@@ -496,10 +496,10 @@ constructor() {
         {
           label: 'Manage Customer',
           icon: 'fas fa-user-cog',
-          route: '/country-head/dashboard/manage-customer',
+          route: '/salesmanager/customer',
           children: [
-            { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
-            { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' },
+            { label: 'Customer', icon: 'fas fa-user', route: '/salesmanager/customer' },
+            { label: 'Contact', icon: 'fas fa-address-book', route: '/salesmanager/contact' },
           ]
         },
         {

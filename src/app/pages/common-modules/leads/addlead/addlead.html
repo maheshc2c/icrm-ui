@@ -355,9 +355,11 @@
                   <button class="btn btn-sm btn-primary view-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionInfo(row)" title="View Revision">
                     <i class="fa-solid fa-info"></i>
                   </button>
-                  <button class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
-                    <i class="fa-solid fa-plus"></i>
-                  </button>
+                  @if (canAddRevision(row)) {
+                    <button class="btn btn-sm btn-info add-revision-btn" style="background: #3b82f6; border-color: #3b82f6; color: white; width: 26px; height: 26px; padding: 0; display: flex; justify-content: center; align-items: center; border-radius: 4px;" (click)="onQuoteRevisionAdd(row)" title="Add Revision">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  }
                 </div>
               </td>
               <td style="padding: 12px; border: 1px solid #dee2e6;">
@@ -680,7 +682,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let row of installationBaseDetails">
-          <td>{{ row.competitor || 'N/A' }}</td>
+          <td>{{ row.competitors || row.competitor || 'N/A' }}</td>
           <td>{{ row.productModel || 'N/A' }}</td>
           <td>{{ row.quantity !== null && row.quantity !== undefined ? row.quantity : 'N/A' }}</td>
           <td>{{ row.make || 'N/A' }}</td>
@@ -759,12 +761,13 @@
                 <div class="options-container" style="max-height: 150px; overflow-y: auto; padding: 4px 0;">
                   <div class="option-item" 
                        *ngFor="let opt of getOppFilteredOptions(field)"
-                       [class.selected]="oppModel[field.name] === opt.value"
+                       [class.selected]="isOppOptionSelected(field, opt)"
                        (click)="selectOppOption(field, opt)"
-                       style="padding: 6px 12px; font-size: 13px; cursor: pointer; color: #334155; transition: background 0.2s;"
+                       style="padding: 6px 12px; font-size: 13px; cursor: pointer; color: #334155; transition: background 0.2s; display: flex; align-items: center; gap: 8px;"
                        onmouseover="this.style.background='#f1f5f9'; this.style.color='#3b82f6'"
                        onmouseout="this.style.background='transparent'; this.style.color='#334155'">
-                    {{ opt.label }}
+                    <input *ngIf="field.isMultiSelect" type="checkbox" [checked]="isOppOptionSelected(field, opt)" (click)="$event.stopPropagation(); selectOppOption(field, opt)" style="margin: 0; cursor: pointer;">
+                    <span>{{ opt.label }}</span>
                   </div>
                   <div class="no-results" *ngIf="getOppFilteredOptions(field).length === 0" style="padding: 8px 12px; font-size: 13px; color: #94a3b8; text-align: center;">
                     No matches found
@@ -880,7 +883,7 @@
           </div>
 
           <div class="dropdown-menu" *ngIf="openQuoteDropdown === 'dealer'" (click)="$event.stopPropagation()"
-               style="position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
+               style="position: absolute; bottom: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; z-index: 1000; box-shadow: 0 -4px 6px rgba(0,0,0,0.1); margin-bottom: 4px;">
             <div class="search-box-wrapper" style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
               <input type="text" 
                      class="search-input" 
@@ -888,7 +891,7 @@
                      [(ngModel)]="quoteDealerSearchQuery"
                      style="width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; outline: none;">
             </div>
-            <div class="options-container" style="max-height: 150px; overflow-y: auto; padding: 4px 0;">
+            <div class="options-container" style="max-height: 120px; overflow-y: auto; padding: 4px 0;">
               <div class="option-item" 
                    (click)="selectQuoteDealer('')"
                    style="padding: 6px 12px; font-size: 13px; cursor: pointer; color: #94a3b8;">
@@ -927,7 +930,7 @@
           </div>
 
           <div class="dropdown-menu" *ngIf="openQuoteDropdown === 'company'" (click)="$event.stopPropagation()"
-               style="position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px;">
+               style="position: absolute; bottom: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 4px; z-index: 1000; box-shadow: 0 -4px 6px rgba(0,0,0,0.1); margin-bottom: 4px;">
             <div class="search-box-wrapper" style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
               <input type="text" 
                      class="search-input" 
@@ -935,7 +938,7 @@
                      [(ngModel)]="quoteCompanySearchQuery"
                      style="width: 100%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; outline: none;">
             </div>
-            <div class="options-container" style="max-height: 150px; overflow-y: auto; padding: 4px 0;">
+            <div class="options-container" style="max-height: 120px; overflow-y: auto; padding: 4px 0;">
               <div class="option-item" 
                    (click)="selectQuoteCompany('')"
                    style="padding: 6px 12px; font-size: 13px; cursor: pointer; color: #94a3b8;">
@@ -974,10 +977,10 @@
   <div style="padding: 20px; font-family: 'Inter', sans-serif;">
     <div style="display: grid; grid-template-columns: 200px 1fr; gap: 10px; font-size: 13px; color: #64748b; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto; padding-right: 50px;">
       <div style="text-align: right;">Quote ID:</div>
-      <div style="color: #334155;">KAR-26-S</div>
+      <div style="color: #334155; font-weight: 600;">{{ revisionHistoryData.quoteRef }}</div>
       
       <div style="text-align: right;">Opportunities:</div>
-      <div style="color: #334155;">101 - Defense (Qty -1)</div>
+      <div style="color: #334155; font-weight: 500;">{{ revisionHistoryData.opportunityDetails || 'N/A' }}</div>
       
       <div style="text-align: right;">Revisions:</div>
       <div></div>
@@ -987,27 +990,25 @@
       <table class="table table-bordered table-striped soft-header text-center" style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #dee2e6;">
         <thead>
           <tr>
-            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Revision</th>
-            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Billing</th>
-            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Discount</th>
-            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Total Price (Rs)</th>
-            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">Status</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: center; font-weight: 500; width: 60px;">S NO</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">REV NO</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">BILLING</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">DISCOUNT</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">TOTAL PRICE (RS)</th>
+            <th style="padding: 10px; border: 1px solid #dee2e6; text-align: left; font-weight: 500;">STATUS</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">1</td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">Company</td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">0%</td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">400</td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">MRP Quote</td>
+          <tr *ngFor="let item of revisionHistoryData.revisionHistory; let idx = index">
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center; color: #333;">{{ idx + 1 }}</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">{{ item.revisionName || ('Revision ' + (idx + 1)) }}</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">{{ item.billing || 'Company' }}</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">{{ item.discount || '0.00%' }}</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">{{ item.totalPrice || '0.00' }}</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">{{ item.status || 'Pending' }}</td>
           </tr>
-          <tr>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">2</td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">Company</td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">1%</td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">396</td>
-            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: left; color: #333;">Current Quote</td>
+          <tr *ngIf="!revisionHistoryData.revisionHistory || revisionHistoryData.revisionHistory.length === 0">
+            <td colspan="6" style="padding: 12px; text-align: center; color: #94a3b8;">No revision history found</td>
           </tr>
         </tbody>
       </table>

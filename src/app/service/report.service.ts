@@ -1,8 +1,9 @@
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth-service';
+import { ApiResponse, LostDealsReportResponseDto, LostRegionDto, LostProductDto } from '../models/opportunity-lost.model';
 
 export interface FunnelReportFilter {
   userId?: number | null;
@@ -81,18 +82,26 @@ export interface IncentiveFilterRequest {
   providedIn: 'root'
 })
 export class ReportService {
+
   private baseUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private auth: AuthService
+  ) {}
 
+  // ================= COMMON AUTH HEADER =================
   private getAuthHeaders(): HttpHeaders {
     const token = this.auth.getToken();
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    });
+    return token
+      ? new HttpHeaders({
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        })
+      : new HttpHeaders({ 'Content-Type': 'application/json' });
   }
 
+  // ================= FUNNEL REPORT METHODS =================
   getFunnelReport(filter: FunnelReportFilter): Observable<FunnelReportResponseDto> {
     return this.http.post<any>(`${this.baseUrl}/reports/funnel`, filter, {
       headers: this.getAuthHeaders()
@@ -118,6 +127,12 @@ export class ReportService {
     }).pipe(map(res => res.data as FunnelReportDrillDownResponseDto));
   }
 
+  getFunnelLevel4(filter: FunnelReportDrillDownDto): Observable<any[]> {
+     return this.http.post<any>(`${this.baseUrl}/reports/funnel/table`, filter, {
+       headers: this.getAuthHeaders()
+     }).pipe(map(res => res.data));
+  }
+
   getFunnelTable(filter: FunnelReportDrillDownDto): Observable<FunnelReportTableResponseDto> {
     return this.http.post<any>(`${this.baseUrl}/reports/funnel/table`, filter, {
       headers: this.getAuthHeaders()
@@ -137,11 +152,6 @@ export class ReportService {
     );
   }
 
-  /**
-   * POST /user/search – fetches users for the "Select Users" dropdown.
-   * Sends an empty search (no filters) to get all users, with a large page size.
-   * The backend returns a Spring Page<User> object: { content: User[], totalElements, ... }
-   */
   getUsersForDropdown(): Observable<{ id: number; label: string }[]> {
     const payload: UserSearchPayload = {
       roleName: null,
@@ -163,7 +173,6 @@ export class ReportService {
       { headers: this.getAuthHeaders() }
     ).pipe(
       map((response: any) => {
-        // Spring Page returns { content: [...], totalElements, ... }
         const users: any[] = response?.content ?? (Array.isArray(response) ? response : []);
         return users.map((u: any) => ({
           id: u.id ?? u.userId,
@@ -174,6 +183,7 @@ export class ReportService {
     );
   }
 
+  // ================= INCENTIVES METHODS =================
   getIncentivesReport(filter: IncentiveFilterRequest): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/reports/incentives/filter`, filter, {
       headers: this.getAuthHeaders()
@@ -192,6 +202,7 @@ export class ReportService {
     });
   }
 
+  // ================= REGION DROPDOWNS =================
   getRegionsForDropdown(): Observable<{ id: number; label: string }[]> {
     return this.http.get<any[]>(
       `${this.baseUrl}/location/locations?territoryLevelId=4`,
@@ -207,6 +218,7 @@ export class ReportService {
     );
   }
 
+  // ================= MARGIN ANALYSIS METHODS =================
   getMarginAnalysisReport(filter: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/reports/margin-analysis`, filter, {
       headers: this.getAuthHeaders()
@@ -263,5 +275,202 @@ export class ReportService {
       })
     );
   }
-}
 
+  // ================= FRESH BUSINESS METHODS =================
+  getFreshBusinessReport(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/fresh-business`, filter, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (!res.status) {
+          throw new Error(res.message || 'Failed to fetch fresh business report');
+        }
+        return res.data;
+      })
+    );
+  }
+
+  getFreshBusinessDrillDown(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/fresh-business/drilldown`, filter, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (!res.status) {
+          throw new Error(res.message || 'Failed to fetch fresh business drilldown');
+        }
+        return res.data;
+      })
+    );
+  }
+
+  // ================= CATEGORIES METHODS =================
+  getCategoriesForDropdown(): Observable<{ id: number; label: string }[]> {
+    return this.http.get<any>(`${this.baseUrl}/product/category`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        const categories = Array.isArray(res) ? res : (res?.data || res?.content || []);
+        return categories.map((c: any) => ({
+          id: c.categoryId ?? c.id,
+          label: c.categoryName || c.name || `Category ${c.categoryId}`
+        }));
+      })
+    );
+  }
+
+  // ================= RUN RATE METHODS =================
+  getRunRateProjection(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/runrate-projection`, filter, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (!res.status) {
+          throw new Error(res.message || 'Failed to fetch run rate projection report');
+        }
+        return res.data;
+      })
+    );
+  }
+
+  // ================= TARGET VS SALES METHODS =================
+  getTargetVsSales(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/target-vs-sales`, filter, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      map(res => {
+        if (!res.status) {
+          throw new Error(res.message || 'Failed to fetch target vs sales report');
+        }
+        return res.data;
+      })
+    );
+  }
+
+  // ================= STOCK IN HAND METHODS =================
+  getStockInHandReport(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/stock-in-hand`, filter, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  downloadStockInHandReport(filter: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/reports/stock-in-hand/download`, filter, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+
+  // ================= OUTSTANDING METHODS =================
+  getOutstandingUploadReport(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/outstanding-upload`, filter, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  downloadOutstandingUploadReport(filter: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/reports/outstanding-upload/download`, filter, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+
+  // ================= OPPORTUNITY LOST METHODS =================
+  getLostDealsLevel1(startDate?: string, endDate?: string, userId?: number, groupId?: number, regionId?: number): Observable<ApiResponse<LostDealsReportResponseDto>> {
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams();
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+    if (userId) params = params.set('userId', userId.toString());
+    if (groupId) params = params.set('groupId', groupId.toString());
+    if (regionId) params = params.set('regionId', regionId.toString());
+
+    return this.http.get<ApiResponse<LostDealsReportResponseDto>>(
+      `${this.baseUrl}/reports/lost-deals/level1`,
+      { headers, params }
+    );
+  }
+
+  getLostDealsLevel2(reasonId?: number, competitorId?: number, startDate?: string, endDate?: string, groupId?: number, regionId?: number): Observable<ApiResponse<LostRegionDto[]>> {
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams();
+    if (reasonId) params = params.set('reasonId', reasonId.toString());
+    if (competitorId) params = params.set('competitorId', competitorId.toString());
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+    if (groupId) params = params.set('groupId', groupId.toString());
+    if (regionId) params = params.set('regionId', regionId.toString());
+
+    return this.http.get<ApiResponse<LostRegionDto[]>>(
+      `${this.baseUrl}/reports/lost-deals/level2`,
+      { headers, params }
+    );
+  }
+
+  getLostDealsLevel3(regionId: number, reasonId?: number, competitorId?: number, startDate?: string, endDate?: string, groupId?: number): Observable<ApiResponse<LostProductDto[]>> {
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams();
+    params = params.set('regionId', regionId.toString());
+    if (reasonId) params = params.set('reasonId', reasonId.toString());
+    if (competitorId) params = params.set('competitorId', competitorId.toString());
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+    if (groupId) params = params.set('groupId', groupId.toString());
+
+    return this.http.get<ApiResponse<LostProductDto[]>>(
+      `${this.baseUrl}/reports/lost-deals/level3`,
+      { headers, params }
+    );
+  }
+
+  getLostReasonsDropdown(): Observable<ApiResponse<any[]>> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/opportunity/lost-reasons-dropdown`,
+      { headers }
+    );
+  }
+
+  getActiveUsersDropdown(search?: string): Observable<ApiResponse<any[]>> {
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams();
+    if (search) params = params.set('search', search);
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/reports/lost-deals/active-users-dropdown`,
+      { headers, params }
+    );
+  }
+
+  getSegmentsDropdown(search?: string): Observable<ApiResponse<any[]>> {
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams();
+    if (search) params = params.set('search', search);
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/reports/lost-deals/segments-dropdown`,
+      { headers, params }
+    );
+  }
+
+  getRegionsDropdown(search?: string): Observable<ApiResponse<any[]>> {
+    const headers = this.getAuthHeaders();
+    let params = new HttpParams();
+    if (search) params = params.set('search', search);
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.baseUrl}/reports/lost-deals/regions-dropdown`,
+      { headers, params }
+    );
+  }
+
+  // ================= C-NOTE MARGIN ANALYSIS METHODS =================
+  getCNoteMarginAnalysisReport(filter: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/reports/margin-analysis-c-note`, filter, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  downloadCNoteMarginAnalysisReport(filter: any): Observable<Blob> {
+    return this.http.post(`${this.baseUrl}/reports/margin-analysis-c-note/download`, filter, {
+      headers: this.getAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+}

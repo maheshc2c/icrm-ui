@@ -178,7 +178,7 @@ export class AddleadComponent implements OnInit {
     { name: 'expectedInvoicingDate', label: 'Expected Invoice Date', type: 'date' },
     { name: 'status', label: 'Status', type: 'select', options: [], required: true },
     // Row 8
-    { name: 'competitors', label: 'Competitors', type: 'text' }
+    { name: 'competitors', label: 'Competitors', type: 'select', options: [], isSearchable: true, isMultiSelect: true }
   ];
 
   oppModel: any = {
@@ -653,26 +653,28 @@ export class AddleadComponent implements OnInit {
           ];
         }
 
+        const getStr = (val: any) => (val !== null && val !== undefined && val !== '') ? val.toString() : '';
+
         this.leadForm = {
-          source: data.sourceId ? data.sourceId.toString() : '',
-          campaign: data.campaignId ? data.campaignId.toString() : '',
-          customer: data.customerId ? data.customerId.toString() : '',
-          rapportWithCustomer: data.relationshipId ? data.relationshipId.toString() : '',
-          contact1: data.contactId ? data.contactId.toString() : '',
-          contact2: data.contact2Id ? data.contact2Id.toString() : '',
-          purchasePotentialRs: data.purchasePotential ? data.purchasePotential.toString() : (data.leadPurchasePotential ? data.leadPurchasePotential.toString() : ''),
-          purchasePotential: data.leadCmdLine3 || '',
-          siteReadiness: data.siteReadinessId ? data.siteReadinessId.toString() : '',
+          source: getStr(data.sourceId || data.source?.sourceId),
+          campaign: getStr(data.campaignId || data.campaign?.campaignId),
+          customer: getStr(data.customerId || data.customer?.customerId),
+          rapportWithCustomer: getStr(data.relationshipId || data.relationship?.relationshipId),
+          contact1: getStr(data.contactId || data.contact1?.contactId || data.contactPerson1Id),
+          contact2: getStr(data.contact2Id || data.contact2?.contactId || data.contactPerson2Id),
+          purchasePotentialRs: getStr(data.purchasePotential || data.leadPurchasePotential),
+          purchasePotential: data.leadCmdLine3 || data.purchasePotentialRemarks || '',
+          siteReadiness: getStr(data.siteReadinessId || data.siteReadiness?.siteReadinessID),
           visitRequirement: data.visitRequirement === true ? 'Yes' : (data.leadVisitRequirement === 1 ? 'Yes' : 'No'),
           resourceRequirement: data.resourceRequirement === true ? 'Yes' : (data.leadResourceRequirement === 1 ? 'Yes' : 'No'),
-          distributor: data.distributorId ? data.distributorId.toString() : '',
+          distributor: getStr(data.distributorId || data.distributor?.userId),
           commentLine1: data.remarks1 || data.leadCmdLine1 || '',
           commentLine2: data.remarks2 || data.leadCmdLine2 || ''
         };
         
         // Filter contacts specifically for this loaded customer if contact data is already fetched
-        if (this.contactPersonsData && this.contactPersonsData.length > 0) {
-          const selectedCustomerId = data.customerId;
+        const selectedCustomerId = data.customerId || data.customer?.customerId;
+        if (this.contactPersonsData && this.contactPersonsData.length > 0 && selectedCustomerId) {
           const filteredContacts = this.contactPersonsData.filter((c: any) => 
             (c.customer && (c.customer.customerId == selectedCustomerId || c.customer.id == selectedCustomerId)) || 
             c.customerId == selectedCustomerId
@@ -683,6 +685,7 @@ export class AddleadComponent implements OnInit {
 
         // Trigger field binding refresh
         this.leadFields = [...this.leadFields];
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed to load lead details:', err)
     });
@@ -706,14 +709,24 @@ export class AddleadComponent implements OnInit {
     ];
     console.log(`Dropdown Options for field '${fieldName}':`, field.options);
     this.leadFields = [...this.leadFields];
+    this.cdr.detectChanges();
   }
 
   /* ================= CONTACT SPECIFIC UPDATER ================= */
   private updateContactOptions(fieldName: string, data: any[]): void {
     const field = this.leadFields.find(f => f.name === fieldName);
     if (field) {
+      const uniqueContactsMap = new Map<string | number, any>();
+      (data || []).forEach((c: any) => {
+        const id = c.contactId || c.id;
+        if (id && !uniqueContactsMap.has(id)) {
+          uniqueContactsMap.set(id, c);
+        }
+      });
+      const uniqueList = Array.from(uniqueContactsMap.values());
+
       field.options = [
-        ...data.map((c: any) => ({
+        ...uniqueList.map((c: any) => ({
           label: `${c.contactFirstName || ''} ${c.contactLastName || ''}`.trim() || c.name || 'Unknown',
           value: c.contactId || c.id
         }))
@@ -986,14 +999,50 @@ export class AddleadComponent implements OnInit {
   }
 
   selectOppOption(field: any, opt: any) {
-    this.oppModel[field.name] = opt.value;
-    this.openOppDropdown = null;
-    this.oppSearchQueries[field.name] = ''; // clear search after selection
-    this.onOppFieldChange({ name: field.name, value: opt.value });
+    if (field.isMultiSelect) {
+      if (!Array.isArray(this.oppModel[field.name])) {
+        this.oppModel[field.name] = this.oppModel[field.name] ? [this.oppModel[field.name]] : [];
+      }
+      const arr: any[] = this.oppModel[field.name];
+      const valStr = String(opt.value);
+      const idx = arr.findIndex((v: any) => String(v) === valStr);
+      if (idx > -1) {
+        arr.splice(idx, 1);
+      } else {
+        arr.push(opt.value);
+      }
+      this.onOppFieldChange({ name: field.name, value: [...arr] });
+    } else {
+      this.oppModel[field.name] = opt.value;
+      this.openOppDropdown = null;
+      this.oppSearchQueries[field.name] = ''; // clear search after selection
+      this.onOppFieldChange({ name: field.name, value: opt.value });
+    }
+  }
+
+  isOppOptionSelected(field: any, opt: any): boolean {
+    const val = this.oppModel[field.name];
+    if (val === null || val === undefined || val === '') return false;
+    if (field.isMultiSelect) {
+      if (Array.isArray(val)) {
+        return val.some((v: any) => String(v) === String(opt.value));
+      }
+      return String(val) === String(opt.value);
+    }
+    return String(val) === String(opt.value);
   }
 
   getOppSelectedLabel(field: any): string {
     const value = this.oppModel[field.name];
+    if (field.isMultiSelect) {
+      if (!value || (Array.isArray(value) && value.length === 0)) return '-- Select --';
+      const arr = Array.isArray(value) ? value : [value];
+      const labels = arr.map((v: any) => {
+        const opt = field.options.find((o: any) => String(o.value) === String(v));
+        return opt ? opt.label : null;
+      }).filter(Boolean);
+      return labels.length > 0 ? labels.join(', ') : '-- Select --';
+    }
     if (value === null || value === undefined || value === '') return '-- Select --';
     const opt = field.options.find((o: any) => String(o.value) === String(value));
     return opt ? opt.label : '-- Select --';
@@ -1232,6 +1281,17 @@ export class AddleadComponent implements OnInit {
         console.log("Fetched full Opportunity data:", fullOpp);
         this.isEditOppMode = true;
         this.editOppId = oppId;
+
+        // Fetch quote-sensitive status options for this specific opportunity
+        this.leadservice.getStatus(oppId).subscribe((statusData: any) => {
+          const field = this.oppFields.find(f => f.name === 'status');
+          if (field && statusData) {
+            field.options = statusData.map((d: any) => {
+              const weight = d.oppWeight != null ? ` (${d.oppWeight}%)` : '';
+              return { label: (d.oppName || d.OppName || 'Status') + weight, value: d.oppStatusId || d.OppStatusId };
+            });
+          }
+        });
         
           // Map the full API data back to oppModel
           const extractId = (val: any) => {
@@ -1267,7 +1327,22 @@ export class AddleadComponent implements OnInit {
           decisionMaker3: extractId(fullOpp.oppDecisionMaker3 || fullOpp.oppDecisionMaker3Id || fullOpp.decisionMaker3Id || fullOpp.DecisionMaker3Id || fullOpp.OppDecisionMaker3 || fullOpp.decisionMaker3 || fullOpp.DecisionMaker3 || fullOpp.contact3),
           decisionMaker4: extractId(fullOpp.oppDecisionMaker4 || fullOpp.oppDecisionMaker4Id || fullOpp.decisionMaker4Id || fullOpp.DecisionMaker4Id || fullOpp.OppDecisionMaker4 || fullOpp.decisionMaker4 || fullOpp.DecisionMaker4 || fullOpp.contact4),
           decisionMaker5: extractId(fullOpp.oppDecisionMaker5 || fullOpp.oppDecisionMaker5Id || fullOpp.decisionMaker5Id || fullOpp.DecisionMaker5Id || fullOpp.OppDecisionMaker5 || fullOpp.decisionMaker5 || fullOpp.DecisionMaker5 || fullOpp.contact5),
-          competitors: fullOpp.oppRemarks1 || fullOpp.OppRemarks1 || fullOpp.competitors || fullOpp.Competitors || fullOpp.remarks || ''
+          competitors: (() => {
+            if (fullOpp.competitors && Array.isArray(fullOpp.competitors) && fullOpp.competitors.length > 0) {
+              return fullOpp.competitors.map((c: any) => c.competitorId || c.id).filter(Boolean);
+            }
+            if (fullOpp.competitorIds && Array.isArray(fullOpp.competitorIds) && fullOpp.competitorIds.length > 0) {
+              return fullOpp.competitorIds;
+            }
+            if (fullOpp.remarks1 && !isNaN(Number(fullOpp.remarks1))) {
+              return [Number(fullOpp.remarks1)];
+            }
+            return [];
+          })(),
+          lostReasonId: extractId(fullOpp.oppLostReason || fullOpp.opprLostId || fullOpp.lostReasonId || ''),
+          lostCompetitorId: extractId(fullOpp.lostCompetitor || fullOpp.lostCompetitorId || ''),
+          model: fullOpp.model || '',
+          remarks2: fullOpp.remarks2 || ''
         };
 
         if (this.oppModel.productCategoryId) {
@@ -1352,7 +1427,27 @@ export class AddleadComponent implements OnInit {
     // Status
     this.leadservice.getStatus().subscribe((data: any) => {
       const field = this.oppFields.find(f => f.name === 'status');
-      if (field) field.options = data.map((d: any) => ({ label: d.oppName || d.OppName, value: d.oppStatusId || d.OppStatusId }));
+      if (field) {
+        field.options = data.map((d: any) => {
+          const weight = d.oppWeight != null ? ` (${d.oppWeight}%)` : '';
+          return { label: (d.oppName || d.OppName || 'Status') + weight, value: d.oppStatusId || d.OppStatusId };
+        });
+      }
+    });
+
+    // Competitors
+    this.leadservice.getCompetitors().subscribe({
+      next: (data: any[]) => {
+        const field = this.oppFields.find(f => f.name === 'competitors');
+        if (field && data) {
+          field.options = data.map((c: any) => ({
+            label: c.competitorName || c.name || 'Unknown',
+            value: c.competitorId || c.id
+          }));
+        }
+        this.oppFields = [...this.oppFields];
+      },
+      error: (err) => console.error("Failed to fetch competitors:", err)
     });
   }
 
@@ -1388,6 +1483,42 @@ export class AddleadComponent implements OnInit {
       }
       this.oppModel.productId = '';
     }
+
+    if (event.name === 'status') {
+      if (event.value == 7) { // Closed Lost
+        // 1. Lost Reason
+        this.leadservice.getLostReasons().subscribe((reasons: any) => {
+          let reasonField = this.oppFields.find(f => f.name === 'lostReasonId');
+          if (!reasonField) {
+            this.oppFields.push({ name: 'lostReasonId', label: 'Lost Reason', type: 'select', options: [], required: true });
+            reasonField = this.oppFields.find(f => f.name === 'lostReasonId');
+          }
+          if (reasonField && reasons) {
+            reasonField.options = reasons.map((r: any) => ({ label: r.name, value: r.reasonId }));
+          }
+        });
+
+        // 2. Lost Competitor
+        this.leadservice.getCompetitors().subscribe((competitors: any) => {
+          let compField = this.oppFields.find(f => f.name === 'lostCompetitorId');
+          if (!compField) {
+            this.oppFields.push({ name: 'lostCompetitorId', label: 'Lost Competitor', type: 'select', options: [], required: true });
+            compField = this.oppFields.find(f => f.name === 'lostCompetitorId');
+          }
+          if (compField && competitors) {
+            compField.options = competitors.map((c: any) => ({ label: c.competitorName || c.name || 'Unknown', value: c.competitorId || c.id }));
+          }
+        });
+
+        // 3. Model
+        let modelField = this.oppFields.find(f => f.name === 'model');
+        if (!modelField) {
+          this.oppFields.push({ name: 'model', label: 'Model', type: 'text', required: true });
+        }
+      } else {
+        this.oppFields = this.oppFields.filter(f => f.name !== 'lostReasonId' && f.name !== 'lostCompetitorId' && f.name !== 'model' && f.name !== 'remarks2');
+      }
+    }
   }
 
   isEditOppMode: boolean = false;
@@ -1411,8 +1542,13 @@ export class AddleadComponent implements OnInit {
       status: '',
       expectedOrderConclusion: '',
       expectedInvoicingDate: '',
-      competitors: ''
+      competitors: '',
+      lostReasonId: '',
+      lostCompetitorId: '',
+      model: '',
+      remarks2: ''
     };
+    this.oppFields = this.oppFields.filter(f => f.name !== 'lostReasonId' && f.name !== 'lostCompetitorId' && f.name !== 'model' && f.name !== 'remarks2');
     this.showOppModal = true;
   }
 
@@ -1484,9 +1620,17 @@ export class AddleadComponent implements OnInit {
       demoRequirement: false,
       technicallyCleared: false,
       stageId: null,
-      competitorIds: [],
-      remarks1: Array.isArray(this.oppModel.competitors) ? this.oppModel.competitors.map((c: any) => c.competitorName || c.name || String(c)).join(', ') : (this.oppModel.competitors || null),
-      remarks2: null
+      competitorIds: (() => {
+        const compVal = this.oppModel.competitors;
+        if (!compVal) return [];
+        if (Array.isArray(compVal)) return compVal.map(Number);
+        return [Number(compVal)];
+      })(),
+      remarks1: null,
+      remarks2: toNullIfEmpty(this.oppModel.remarks2),
+      opprLostId: toNullIfEmpty(this.oppModel.lostReasonId) ? Number(toNullIfEmpty(this.oppModel.lostReasonId)) : null,
+      lostCompetitorId: toNullIfEmpty(this.oppModel.lostCompetitorId) ? Number(toNullIfEmpty(this.oppModel.lostCompetitorId)) : null,
+      model: toNullIfEmpty(this.oppModel.model)
     };
 
     console.log("?? SENDING OPPORTUNITY PAYLOAD TO BACKEND:", payload);
@@ -1613,10 +1757,10 @@ export class AddleadComponent implements OnInit {
     }
 
     this.customerService.getCustomerById(Number(customerId)).subscribe({
-      next: (customer) => {
-        this.selectedCustomer = customer;
+      next: (res: any) => {
+        this.selectedCustomer = res && res.customer ? res.customer : res;
         this.showCustomerDetailsModal = true;
-        console.log('Opening Customer Details Modal for:', customer);
+        console.log('Opening Customer Details Modal for:', this.selectedCustomer);
       },
       error: (err) => {
         console.error('Failed to load customer details:', err);
@@ -1633,8 +1777,8 @@ export class AddleadComponent implements OnInit {
     }
     
     this.customerService.getInstallationBase(Number(customerId)).subscribe({
-      next: (records: any[]) => {
-        this.installationBaseDetails = records;
+      next: (records: any) => {
+        this.installationBaseDetails = Array.isArray(records) ? records : (records && Array.isArray(records.installedBases) ? records.installedBases : []);
         this.showInstallationBaseDetailsModal = true;
         console.log('Loaded customer installation base from backend:', this.installationBaseDetails);
       },
@@ -1667,8 +1811,55 @@ export class AddleadComponent implements OnInit {
     return String(val).trim();
   }
 
+  revisionHistoryData: any = {
+    quoteRef: '',
+    opportunityDetails: '',
+    revisionHistory: []
+  };
+
   onQuoteRevisionInfo(row: any) {
-    this.showRevisionHistoryModal = true;
+    const numId = this.getNumericQuoteId(row);
+    if (numId > 0) {
+      this.leadservice.getQuoteRevisionDetails(numId).subscribe({
+        next: (res: any) => {
+          console.log('Quote Revision Details loaded:', res);
+          if (res && res.data) {
+            this.revisionHistoryData = res.data;
+          }
+          this.showRevisionHistoryModal = true;
+        },
+        error: (err: any) => {
+          console.error('Error loading revision history:', err);
+          this.showRevisionHistoryModal = true;
+        }
+      });
+    } else {
+      this.showRevisionHistoryModal = true;
+    }
+  }
+
+  canAddRevision(row: any): boolean {
+    if (!row) return false;
+
+    // 1. Only show + on the latest revision of the quote
+    if (row.quoteRevisionId && row.maxQuoteRevisionId && row.quoteRevisionId !== row.maxQuoteRevisionId) {
+      return false;
+    }
+
+    const status = (row.quoteStatus || row.status || '').toString().toLowerCase();
+
+    // 2. If already converted to Contract Note, lost, or dropped, hide '+'
+    if (status.includes('contract note') || status.includes('lost') || status.includes('dropped')) {
+      return false;
+    }
+
+    // 3. If currently Pending approval, hide '+' (vanishes)
+    if (status.includes('pending')) {
+      return false;
+    }
+
+    // 4. If Rejected or Approved, show '+'
+    return true;
   }
 
   onQuoteRevisionAdd(row: any) {
@@ -1767,8 +1958,27 @@ export class AddleadComponent implements OnInit {
   loadQuotes(): void {
     if (this.leadId) {
       this.leadservice.getQuotesByLead(this.leadId).subscribe({
-        next: (data) => {
-          this.quotes = data || [];
+        next: (res: any) => {
+          const list = Array.isArray(res) ? res : (res?.data || res?.content || []);
+          const latestOnly = list.filter((q: any) => 
+            !q.quoteRevisionId || !q.maxQuoteRevisionId || q.quoteRevisionId == q.maxQuoteRevisionId
+          );
+          const quotesToDisplay = latestOnly.length > 0 ? latestOnly : list;
+          this.quotes = quotesToDisplay.map((q: any) => {
+            let disc = q.discount;
+            if (typeof disc === 'string') {
+              const num = parseFloat(disc.replace('%', ''));
+              if (!isNaN(num)) {
+                disc = num.toFixed(2) + '%';
+              }
+            } else if (typeof disc === 'number') {
+              disc = disc.toFixed(2) + '%';
+            }
+            return {
+              ...q,
+              discount: disc
+            };
+          });
         },
         error: (err) => console.error('Failed to load quotes:', err)
       });
@@ -1846,11 +2056,34 @@ export class AddleadComponent implements OnInit {
         next: (res: any) => {
           console.log('openAddQuoteModal: fetched opportunities:', res);
           const data = res?.data || res?.content || (Array.isArray(res) ? res : []);
-          this.quoteOpportunities = data || [];
-          if (this.quoteOpportunities.length > 0) {
-            this.quoteForm.opportunityId = this.quoteOpportunities[0].id || this.quoteOpportunities[0].opportunityId;
+          const allOpps = data || [];
+          const filterOpps = (quotesList: any[]) => {
+            const existingOppIds = new Set(
+              (quotesList || []).map((q: any) => Number(q.opportunityId || q.opportunity_id)).filter((id: any) => !isNaN(id) && id > 0)
+            );
+            this.quoteOpportunities = allOpps.filter((opp: any) => {
+              const oppId = Number(opp.id || opp.opportunityId);
+              return !existingOppIds.has(oppId);
+            });
+            if (this.quoteOpportunities.length > 0) {
+              this.quoteForm.opportunityId = this.quoteOpportunities[0].id || this.quoteOpportunities[0].opportunityId;
+            } else {
+              this.quoteForm.opportunityId = '';
+            }
+            this.cdr.detectChanges();
+          };
+
+          if (this.leadId) {
+            this.leadservice.getQuotesByLead(this.leadId).subscribe({
+              next: (qRes: any) => {
+                this.quotes = qRes || [];
+                filterOpps(this.quotes);
+              },
+              error: () => filterOpps(this.quotes || [])
+            });
+          } else {
+            filterOpps(this.quotes || []);
           }
-          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to load opportunities for quote:', err)
       });
@@ -1901,14 +2134,19 @@ export class AddleadComponent implements OnInit {
     };
 
     this.leadservice.saveQuote(payload).subscribe({
-      next: (res) => {
-        this.toastService.success('Quote saved successfully!');
-        this.showAddQuoteModal = false;
-        this.loadQuotes();
+      next: (res: any) => {
+        if (res && res.status === false) {
+          this.toastService.error(res.message || 'Quote already exists for this opportunity.');
+        } else {
+          this.toastService.success('Quote saved successfully!');
+          this.showAddQuoteModal = false;
+          this.loadQuotes();
+        }
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Failed to save quote:', err);
-        this.toastService.error('Failed to save quote');
+        const errMsg = err?.error?.message || 'Failed to save quote';
+        this.toastService.error(errMsg);
       }
     });
   }

@@ -14,10 +14,7 @@ import { ReportService } from '../../../../service/report.service';
 })
 export class MarginAnalysisReportComponent implements OnInit {
   title = 'Margin Analysis Report';
-  breadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/dashboard' },
-    { label: 'Margin Analysis Report' }
-  ];
+  breadcrumbs: Breadcrumb[] = [];
 
   selectedRegionId: number | null = null;
   fromDate = '';
@@ -39,8 +36,37 @@ export class MarginAnalysisReportComponent implements OnInit {
   constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
+    this.setDynamicHomeRoute();
     this.loadDropdowns();
     this.onSearch();
+  }
+
+  setDynamicHomeRoute(): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      let homeRoute = '/dashboard';
+
+      if (role === 'SUPERADMIN') {
+        homeRoute = '/superadmindashboard';
+      } else if (role === 'Admin') {
+        homeRoute = '/admindashboard';
+      } else if (role === 'Regional Branch Head') {
+        homeRoute = '/regional-branch-head-dashboard';
+      } else if (role === 'Regional Sales Manager') {
+        homeRoute = '/regional-sales-manager-dashboard';
+      } else if (role === 'Country Head') {
+        homeRoute = '/country-head';
+      } else if (role === 'Sales Engineer' || role === 'SALES_MANAGER' || role === 'SALESMANAGER' || role === 'Sales Manager') {
+        homeRoute = '/sales-manager-dashboard';
+      } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
+        homeRoute = '/adminmarketingdashboard';
+      }
+
+      this.breadcrumbs = [
+        { label: 'Home', route: homeRoute },
+        { label: 'Margin Analysis Report' }
+      ];
+    }
   }
 
   loadDropdowns(): void {
@@ -105,19 +131,31 @@ export class MarginAnalysisReportComponent implements OnInit {
             totalQuantity: item.totalQuantity ?? 0,
             totalCost: item.totalCost ?? 0,
             expanded: false,
-            details: [
-              {
-                sno: 1,
-                desc: item.segmentName + ' General',
-                code: 'SEG-' + (item.groupId || idx + 1),
-                revenue: item.totalRevenue ?? 0,
-                margin: item.grossMarginPercentage ?? 0,
-                qty: item.totalQuantity ?? 0,
-                asp: item.totalQuantity > 0 ? (item.totalRevenue / item.totalQuantity).toFixed(2) : 0,
-                unitDp: 0,
-                var: 0
-              }
-            ]
+            details: Array.isArray(item.details) && item.details.length > 0
+              ? item.details.map((d: any, dIdx: number) => ({
+                  sno: d.sno || dIdx + 1,
+                  desc: d.productDescription || (item.segmentName + ' General'),
+                  code: d.productCode || ('SEG-' + (item.groupId || idx + 1)),
+                  revenue: d.revenue ?? 0,
+                  margin: d.grossMarginPercentage ?? 0,
+                  qty: d.quantity ?? 0,
+                  asp: d.asp ?? 0,
+                  unitDp: d.unitDp ?? 0,
+                  var: d.variancePercentage ?? 0
+                }))
+              : [
+                  {
+                    sno: 1,
+                    desc: item.segmentName + ' General',
+                    code: 'SEG-' + (item.groupId || idx + 1),
+                    revenue: item.totalRevenue ?? 0,
+                    margin: item.grossMarginPercentage ?? 0,
+                    qty: item.totalQuantity ?? 0,
+                    asp: item.totalQuantity > 0 ? (item.totalRevenue / item.totalQuantity).toFixed(2) : 0,
+                    unitDp: 0,
+                    var: 0
+                  }
+                ]
           }));
         } else {
           this.rows = [];
@@ -131,8 +169,12 @@ export class MarginAnalysisReportComponent implements OnInit {
     });
   }
 
-  toggleRow(row: any): void {
-    row.expanded = !row.expanded;
+   toggleRow(row: any): void {
+    const isCurrentlyExpanded = row.expanded;
+    // Collapse all rows first
+    this.rows.forEach(r => r.expanded = false);
+    // Expand the clicked row only if it wasn't already expanded
+    row.expanded = !isCurrentlyExpanded;
   }
 
   getSubTotalQty(row: any): number {
@@ -158,6 +200,10 @@ export class MarginAnalysisReportComponent implements OnInit {
 
   onDownload(): void {
     this.isDownloading = true;
+    const expandedSegmentIds = this.rows
+      .filter(r => r.expanded)
+      .map(r => Number(r.id));
+
     const filter = {
       fromDate: this.fromDate || null,
       toDate: this.toDate || null,
@@ -166,7 +212,8 @@ export class MarginAnalysisReportComponent implements OnInit {
       segmentId: this.selectedSegmentId ? Number(this.selectedSegmentId) : null,
       productId: this.selectedProductId ? Number(this.selectedProductId) : null,
       customerId: this.selectedCustomer ? Number(this.selectedCustomer) : null,
-      dealerId: this.selectedDealer ? Number(this.selectedDealer) : null
+      dealerId: this.selectedDealer ? Number(this.selectedDealer) : null,
+      expandedSegmentIds: expandedSegmentIds
     };
 
     this.reportService.downloadMarginAnalysisReport(filter).subscribe({

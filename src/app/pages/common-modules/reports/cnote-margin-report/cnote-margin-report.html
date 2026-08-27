@@ -1,0 +1,28 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+ title="Cnote Margin Report"
+ [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<app-data-table
+  [title]="title"
+  [breadcrumbs]="breadcrumbs"
+  [searchFields]="searchFields"
+  [columns]="columns"
+  [rows]="items"
+  [showSno]="false"
+  [showAdd]="false"
+  [showImport]="false"
+  [showRefresh]="true"
+  [showActions]="false"
+  [totalElements]="totalRecords"
+  [currentPage]="currentPage"
+  [pageSize]="pageSize"
+  (searchChange)="onSearchChange($event)"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)"
+  (refresh)="loadReportData()"
+  (download)="onDownload()">
+</app-data-table>

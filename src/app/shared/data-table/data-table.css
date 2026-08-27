@@ -676,14 +676,20 @@
 
 .status-badge.active{
 
-    background:#5cb85c;
-    color:#fff;
+    background:#5cb85c !important;
+    color:#fff !important;
+}
+
+.status-badge.partial{
+
+    background: linear-gradient(90deg, #5cb85c 50%, #ececec 50%) !important;
+    color:#111 !important;
 }
 
 .status-badge.inactive{
 
-    background:#ececec;
-    color:#666;
+    background:#ececec !important;
+    color:#666 !important;
 }
  
  
@@ -723,4 +729,98 @@
 
 .upload-btn:hover {
     background: #218838;
+}
+
+/* C-Note Custom Badges and Positive/Negative colors */
+.badge-type {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-type.regular {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-type.po {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-badge.cleared {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.status-badge.invoiced {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.status-badge.pending {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.positive {
+  color: #15803d !important;
+  font-weight: bold;
+}
+
+.negative {
+  color: #b91c1c !important;
+  font-weight: bold;
+}
+
+/* Quote Tracking Custom Badges */
+.badge-quote-status {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-align: center;
+  min-width: 90px;
+}
+
+.badge-quote-status.approved {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.badge-quote-status.pending {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.badge-quote-status.converted {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-quote-status.previous {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.badge-quote-status.lost {
+  background-color: #fee2e2;
+  color: #b91c1c;
 }

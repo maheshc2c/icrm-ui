@@ -2,6 +2,23 @@
   display: block;
 }
 
+/* ─── Page header alignment (matches Funnel Report) ──────────────── */
+::ng-deep .page-header {
+  background: #fff !important;
+  padding: 1.25rem 2rem !important;
+  margin: 0 0 20px 0 !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  width: calc(100% - 200px) !important;
+  margin-left: 255px !important;
+  border-bottom: 1px solid #edf2f7 !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 80px !important;
+  margin-top: -40px !important;
+  box-sizing: border-box !important;
+}
+
+
 .report-toolbar {
   display: flex;
   align-items: flex-end;

@@ -228,6 +228,23 @@ export class AddUsersComponent implements OnInit {
     return this.selectedRole?.toLowerCase() === 'stockist';
   }
 
+  get currentRoleName(): string {
+    return (this.selectedRole || this.formInitialData?.roleName || '').trim();
+  }
+
+  get isRegionLevelOnlyRole(): boolean {
+    const r = this.currentRoleName.toLowerCase();
+    return r.includes('rbh') || r.includes('regional branch head') ||
+           r.includes('rsm') || r.includes('regional sales manager') ||
+           r.includes('otr');
+  }
+
+  get isCountryLevelOnlyRole(): boolean {
+    const r = this.currentRoleName.toLowerCase();
+    return r.includes('nsm') || r.includes('national sales manager') ||
+           r.includes('country head') || r === 'ch';
+  }
+
   /* ================= SAVE & NAVIGATION ================= */
 
   handleFormError(form?: any): void {
@@ -311,10 +328,10 @@ export class AddUsersComponent implements OnInit {
       worldNames: this.locationMode === 'world' && this.selWorld ? [this.selWorld] : [],
       geoNames: this.selGeo ? [this.selGeo] : [],
       countryNames: this.locationMode === 'cascade' && this.selCountry ? [this.selCountry] : [],
-      regionNames: this.locationMode === 'cascade' && this.selRegion ? [this.selRegion] : [],
-      stateNames: this.locationMode === 'cascade' ? this.selStates : [],
-      districtNames: this.locationMode === 'cascade' ? this.selDistricts : [],
-      cityNames: this.locationMode === 'cascade' ? this.selCities : [],
+      regionNames: (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && this.selRegion) ? [this.selRegion] : [],
+      stateNames: (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selStates : [],
+      districtNames: (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selDistricts : [],
+      cityNames: (this.locationMode === 'cascade' && !this.isCountryLevelOnlyRole && !this.isRegionLevelOnlyRole) ? this.selCities : [],
 
       // Product Details
       categoryNames: this.selCategories,
@@ -427,7 +444,7 @@ export class AddUsersComponent implements OnInit {
     this.districtOptions = []; this.selDistricts = [];
     this.cityOptions = []; this.selCities = [];
 
-    if (val) {
+    if (val && !this.isCountryLevelOnlyRole) {
       const country = this.countryOptions.find(c => c.locationName === val);
       if (country) {
         this.userService.getLocationsByLevel(4, country.locationId).subscribe(
@@ -444,7 +461,7 @@ export class AddUsersComponent implements OnInit {
     this.districtOptions = []; this.selDistricts = [];
     this.cityOptions = []; this.selCities = [];
 
-    if (val) {
+    if (val && !this.isRegionLevelOnlyRole && !this.isCountryLevelOnlyRole) {
       const region = this.regionOptions.find(r => r.locationName === val);
       if (region) {
         this.userService.getLocationsByLevel(5, region.locationId).subscribe(
@@ -462,15 +479,40 @@ export class AddUsersComponent implements OnInit {
       this.selStates = this.selStates.filter(s => s !== name);
     }
     this.formInitialData.stateNames = this.selStates;
-    // Reset downstream
-    this.districtOptions = []; this.selDistricts = [];
-    this.cityOptions = []; this.selCities = [];
 
-    // Load districts for ALL checked states
     const selectedStateObjs = this.stateOptions.filter(s => this.selStates.includes(s.locationName));
     if (selectedStateObjs.length) {
       forkJoin(selectedStateObjs.map(s => this.userService.getLocationsByLevel(6, s.locationId)))
-        .subscribe(results => this.districtOptions = results.flat());
+        .subscribe(results => {
+          const newDistricts = results.flat();
+          this.districtOptions = newDistricts;
+          const validDistrictNames = new Set(newDistricts.map(d => d.locationName));
+          this.selDistricts = this.selDistricts.filter(d => validDistrictNames.has(d));
+          this.formInitialData.districtNames = this.selDistricts;
+
+          const selectedDistrictObjs = this.districtOptions.filter(d => this.selDistricts.includes(d.locationName));
+          if (selectedDistrictObjs.length) {
+            forkJoin(selectedDistrictObjs.map(d => this.userService.getLocationsByLevel(7, d.locationId)))
+              .subscribe((cityResults: any[][]) => {
+                const newCities = cityResults.flat();
+                this.cityOptions = newCities;
+                const validCityNames = new Set(newCities.map(c => c.locationName));
+                this.selCities = this.selCities.filter(c => validCityNames.has(c));
+                this.formInitialData.cityNames = this.selCities;
+              });
+          } else {
+            this.cityOptions = [];
+            this.selCities = [];
+            this.formInitialData.cityNames = [];
+          }
+        });
+    } else {
+      this.districtOptions = [];
+      this.selDistricts = [];
+      this.formInitialData.districtNames = [];
+      this.cityOptions = [];
+      this.selCities = [];
+      this.formInitialData.cityNames = [];
     }
   }
 
@@ -482,14 +524,21 @@ export class AddUsersComponent implements OnInit {
       this.selDistricts = this.selDistricts.filter(d => d !== name);
     }
     this.formInitialData.districtNames = this.selDistricts;
-    // Reset cities
-    this.cityOptions = []; this.selCities = [];
 
-    // Load cities for ALL checked districts
     const selectedDistrictObjs = this.districtOptions.filter(d => this.selDistricts.includes(d.locationName));
     if (selectedDistrictObjs.length) {
       forkJoin(selectedDistrictObjs.map(d => this.userService.getLocationsByLevel(7, d.locationId)))
-        .subscribe((results: any[][]) => this.cityOptions = results.flat());
+        .subscribe((results: any[][]) => {
+          const newCities = results.flat();
+          this.cityOptions = newCities;
+          const validCityNames = new Set(newCities.map(c => c.locationName));
+          this.selCities = this.selCities.filter(c => validCityNames.has(c));
+          this.formInitialData.cityNames = this.selCities;
+        });
+    } else {
+      this.cityOptions = [];
+      this.selCities = [];
+      this.formInitialData.cityNames = [];
     }
   }
 
@@ -512,22 +561,46 @@ export class AddUsersComponent implements OnInit {
       this.selCategories = this.selCategories.filter(c => c !== name);
     }
     this.formInitialData.categoryNames = this.selCategories;
-    
-    this.groupOptions = []; this.selGroups = []; this.formInitialData.groupNames = [];
-    this.groupedGroups = [];
-    this.productOptions = []; this.selProducts = []; this.formInitialData.productNames = [];
 
     if (this.selCategories.length) {
       this.groupOptions = this.allGroups.filter(g =>
         this.selCategories.includes(g.category?.categoryName)
       );
+      const validGroupNames = new Set(this.groupOptions.map(g => g.groupName));
+      this.selGroups = this.selGroups.filter(g => validGroupNames.has(g));
+      this.formInitialData.groupNames = this.selGroups;
 
+      this.groupedGroups = [];
       this.selCategories.forEach(cat => {
         const catGroups = this.groupOptions.filter(g => g.category?.categoryName === cat);
         if (catGroups.length > 0) {
           this.groupedGroups.push({ category: cat, groups: catGroups });
         }
       });
+
+      const selectedGroupObjs = this.groupOptions.filter(g => this.selGroups.includes(g.groupName));
+      if (selectedGroupObjs.length) {
+        forkJoin(selectedGroupObjs.map(g => this.userService.getProductsByGroupId(g.groupId)))
+          .subscribe((results: any[][]) => {
+            const newProducts = Array.from(new Set(results.flat()));
+            this.productOptions = newProducts;
+            const validProductNames = new Set(newProducts);
+            this.selProducts = this.selProducts.filter(p => validProductNames.has(p));
+            this.formInitialData.productNames = this.selProducts;
+          });
+      } else {
+        this.productOptions = [];
+        this.selProducts = [];
+        this.formInitialData.productNames = [];
+      }
+    } else {
+      this.groupOptions = [];
+      this.selGroups = [];
+      this.formInitialData.groupNames = [];
+      this.groupedGroups = [];
+      this.productOptions = [];
+      this.selProducts = [];
+      this.formInitialData.productNames = [];
     }
   }
 
@@ -540,15 +613,16 @@ export class AddUsersComponent implements OnInit {
     }
     this.formInitialData.groupNames = this.selGroups;
 
-    this.productOptions = []; this.selProducts = []; this.formInitialData.productNames = [];
-    this.groupedProducts = [];
-
     const selectedGroupObjs = this.groupOptions.filter(g => this.selGroups.includes(g.groupName));
     if (selectedGroupObjs.length) {
       forkJoin(selectedGroupObjs.map(g => this.userService.getProductsByGroupId(g.groupId)))
         .subscribe((results: any[][]) => {
-          this.productOptions = Array.from(new Set(results.flat()));
-          
+          const newProducts = Array.from(new Set(results.flat()));
+          this.productOptions = newProducts;
+          const validProductNames = new Set(newProducts);
+          this.selProducts = this.selProducts.filter(p => validProductNames.has(p));
+          this.formInitialData.productNames = this.selProducts;
+
           this.groupedProducts = selectedGroupObjs.map((g, index) => {
             return {
               group: g.groupName,
@@ -556,6 +630,11 @@ export class AddUsersComponent implements OnInit {
             };
           }).filter(g => g.products && g.products.length > 0);
         });
+    } else {
+      this.productOptions = [];
+      this.selProducts = [];
+      this.formInitialData.productNames = [];
+      this.groupedProducts = [];
     }
   }
 

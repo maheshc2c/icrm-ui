@@ -104,11 +104,7 @@ export class Addcustomer implements OnInit {
       this.customerId = Number(idParam);
  
       this.headerTitle = 'Edit Customer';
-      this.headerBreadcrumbs = [
-        { label: 'Home', route: '/admindashboard' },
-        { label: 'Customer', route: '/customer' },
-        { label: 'Edit Customer' }
-      ];
+      this.buildBreadcrumbs(this.isEditMode);
 
       const stateData = history.state.customerData;
       if (stateData && stateData.customerId === this.customerId) {
@@ -145,12 +141,45 @@ export class Addcustomer implements OnInit {
     } else {
       this.isEditMode = false;
       this.headerTitle = 'Add New Customer';
-      this.headerBreadcrumbs = [
-        { label: 'Home', route: '/admindashboard' },
-        { label: 'Customer', route: '/customer' },
-        { label: 'Add Customer' }
-      ];
+      this.buildBreadcrumbs(this.isEditMode);
       this.loadDropdowns();
+    }
+  }
+
+  private buildBreadcrumbs(isEditMode: boolean): void {
+    let homeRoute = '/dashboard';
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      if (role === 'SUPERADMIN') {
+        homeRoute = '/superadmindashboard';
+      } else if (role === 'Admin') {
+        homeRoute = '/admindashboard';
+      } else if (role === 'Regional Branch Head') {
+        homeRoute = '/regional-branch-head-dashboard';
+      } else if (role === 'Regional Sales Manager') {
+        homeRoute = '/regional-sales-manager-dashboard';
+      } else if (role === 'Country Head') {
+        homeRoute = '/country-head';
+      } else if (role === 'Sales Engineer' || role === 'SALES_MANAGER' || role === 'SALESMANAGER' || role === 'Sales Manager') {
+        homeRoute = '/sales-manager-dashboard';
+      } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
+        homeRoute = '/adminmarketingdashboard';
+      }
+    }
+
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (returnUrl && (returnUrl.includes('leads') || returnUrl.includes('lead'))) {
+      this.headerBreadcrumbs = [
+        { label: 'Home', route: homeRoute },
+        { label: 'Lead', route: returnUrl },
+        { label: isEditMode ? 'Edit Customer' : 'Add Customer' }
+      ];
+    } else {
+      this.headerBreadcrumbs = [
+        { label: 'Home', route: homeRoute },
+        { label: 'Customer', route: '/customer' },
+        { label: isEditMode ? 'Edit Customer' : 'Add Customer' }
+      ];
     }
   }
 
@@ -339,22 +368,26 @@ export class Addcustomer implements OnInit {
   saveCompany(data: any): void {
  
     // Filter out rows where all fields are empty and format numbers correctly
-      const cleanInstalledBases = this.installedBases
-        .filter(b => 
-          (b.competitors && b.competitors.trim() !== '') || 
-          (b.productModel && b.productModel.trim() !== '') || 
-          (b.make && b.make.trim() !== '') || 
-          b.quantity !== null ||
-          (b.yearOfPurchase && b.yearOfPurchase.trim() !== '') || 
-          (b.replacementYear && b.replacementYear.trim() !== '')
-        )
-        .map(b => ({
-          ...b,
-          customerInstalledBaseId: b.customerInstalledId || b.customerInstalledBaseId || null,
-          quantity: b.quantity ? Number(b.quantity) : null,
-          yearOfPurchase: b.yearOfPurchase ? Number(b.yearOfPurchase) : null,
-          replacementYear: b.replacementYear ? Number(b.replacementYear) : null
-        }));
+    const cleanInstalledBases = (this.installedBases || [])
+      .filter(b => {
+        if (!b) return false;
+        const comp = (b.competitors || b.competitor || '').toString().trim();
+        const model = (b.productModel || '').toString().trim();
+        const make = (b.make || '').toString().trim();
+        const qty = b.quantity;
+        const yop = (b.yearOfPurchase || '').toString().trim();
+        const repYr = (b.replacementYear || '').toString().trim();
+        return comp !== '' || model !== '' || make !== '' || (qty !== null && qty !== undefined && qty !== '') || yop !== '' || repYr !== '';
+      })
+      .map(b => ({
+        customerInstalledBaseId: b.customerInstalledBaseId || b.customerInstalledId || null,
+        competitors: (b.competitors || b.competitor || '').toString().trim(),
+        productModel: (b.productModel || '').toString().trim(),
+        make: (b.make || '').toString().trim(),
+        quantity: (b.quantity !== null && b.quantity !== undefined && b.quantity !== '') ? Number(b.quantity) : null,
+        yearOfPurchase: (b.yearOfPurchase !== null && b.yearOfPurchase !== undefined && b.yearOfPurchase !== '') ? Number(b.yearOfPurchase) : null,
+        replacementYear: (b.replacementYear !== null && b.replacementYear !== undefined && b.replacementYear !== '') ? Number(b.replacementYear) : null
+      }));
 
     const payload = {
       ...data,

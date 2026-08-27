@@ -1,0 +1,270 @@
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
+</app-pageheader>
+
+<div class="report-container">
+  
+  <!-- Levels navigation bar (mockup-style breadcrumbs) -->
+  <div class="levels-bar" [class.hidden]="currentLevel === 1">
+    <span class="lvl" (click)="navigateToLevel(1)">Level 1</span>
+    <span class="sep" *ngIf="currentLevel >= 2">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </span>
+    <span class="lvl" [class.current]="currentLevel === 2" (click)="navigateToLevel(2)" *ngIf="currentLevel >= 2">
+      Level 2 — {{ selectedName }}
+    </span>
+    <span class="sep" *ngIf="currentLevel === 3">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </span>
+    <span class="lvl current" *ngIf="currentLevel === 3">
+      Level 3 — Region: {{ selectedRegionName }}
+    </span>
+  </div>
+
+  <!-- Mockup-styled Filters panel -->
+  <div class="block-flat">
+    <div class="filters-row">
+      <!-- Searchable Salesperson Dropdown -->
+      <div class="field searchable-dropdown-field">
+        <label>Salesperson</label>
+        <div class="searchable-dropdown" (click)="$event.stopPropagation()">
+          <button class="dropdown-trigger-btn" (click)="toggleSalespersonDropdown($event)" [disabled]="currentLevel > 1">
+            <span>{{ selectedSalespersonName }}</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-trigger-icon">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="dropdown-popover" *ngIf="showSalespersonDropdown">
+            <div class="dropdown-search-wrap">
+              <input 
+                type="text" 
+                placeholder="Search salesperson..." 
+                [ngModel]="salespersonSearchQuery" 
+                (ngModelChange)="onSalespersonSearchChange($event)"
+                class="dropdown-search-input"
+                (click)="$event.stopPropagation()">
+            </div>
+            <ul class="dropdown-options-list">
+              <li (click)="selectSalesperson(null)" [class.selected]="selectedUserId === null">All Users</li>
+              <li *ngFor="let u of usersList" (click)="selectSalesperson(u)" [class.selected]="selectedUserId === u.id">
+                {{ u.name }}
+              </li>
+              <li *ngIf="usersList.length === 0" class="no-options">No users found</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Searchable Segment Dropdown -->
+      <div class="field searchable-dropdown-field">
+        <label>Segment</label>
+        <div class="searchable-dropdown" (click)="$event.stopPropagation()">
+          <button class="dropdown-trigger-btn" (click)="toggleSegmentDropdown($event)" [disabled]="currentLevel > 1">
+            <span>{{ selectedSegmentName }}</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-trigger-icon">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="dropdown-popover" *ngIf="showSegmentDropdown">
+            <div class="dropdown-search-wrap">
+              <input 
+                type="text" 
+                placeholder="Search segment..." 
+                [ngModel]="segmentSearchQuery" 
+                (ngModelChange)="onSegmentSearchChange($event)"
+                class="dropdown-search-input"
+                (click)="$event.stopPropagation()">
+            </div>
+            <ul class="dropdown-options-list">
+              <li (click)="selectSegment(null)" [class.selected]="selectedSegmentId === null">All Segments</li>
+              <li *ngFor="let seg of segmentsList" (click)="selectSegment(seg)" [class.selected]="selectedSegmentId === seg.groupId">
+                {{ seg.groupName }}
+              </li>
+              <li *ngIf="segmentsList.length === 0" class="no-options">No segments found</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Searchable Region Dropdown -->
+      <div class="field searchable-dropdown-field">
+        <label>Region</label>
+        <div class="searchable-dropdown" (click)="$event.stopPropagation()">
+          <button class="dropdown-trigger-btn" (click)="toggleRegionDropdown($event)" [disabled]="currentLevel > 1">
+            <span>{{ selectedRegionFilterName }}</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-trigger-icon">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="dropdown-popover" *ngIf="showRegionDropdown">
+            <div class="dropdown-search-wrap">
+              <input 
+                type="text" 
+                placeholder="Search region..." 
+                [ngModel]="regionSearchQuery" 
+                (ngModelChange)="onRegionSearchChange($event)"
+                class="dropdown-search-input"
+                (click)="$event.stopPropagation()">
+            </div>
+            <ul class="dropdown-options-list">
+              <li (click)="selectRegionFilter(null)" [class.selected]="selectedRegionFilterId === null">All Regions</li>
+              <li *ngFor="let r of regionsList" (click)="selectRegionFilter(r)" [class.selected]="selectedRegionFilterId === r.id">
+                {{ r.name }}
+              </li>
+              <li *ngIf="regionsList.length === 0" class="no-options">No regions found</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="field" style="min-width:auto;">
+        <label>Timeline</label>
+        <div class="timeline-toggle">
+          <button (click)="setTimeline('w')" [class.active]="selectedTimeline === 'w'" [disabled]="currentLevel > 1">Week</button>
+          <button (click)="setTimeline('m')" [class.active]="selectedTimeline === 'm'" [disabled]="currentLevel > 1">Month</button>
+          <button (click)="setTimeline('q')" [class.active]="selectedTimeline === 'q'" [disabled]="currentLevel > 1">Quarter</button>
+          <button (click)="setTimeline('y')" [class.active]="selectedTimeline === 'y'" [disabled]="currentLevel > 1">Year</button>
+          <button (click)="setTimeline('all')" [class.active]="selectedTimeline === 'all'" [disabled]="currentLevel > 1">All Time</button>
+        </div>
+      </div>
+
+      <div class="field" style="min-width:auto;" *ngIf="currentLevel === 1">
+        <button class="nav-btn reset-btn" (click)="resetFilters()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          Reset Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State Indicator -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading report data, please wait...</p>
+  </div>
+
+  <!-- Level 1 Display (Dual Pie/Donut Charts) -->
+  <div class="charts-grid animate-fade-in" *ngIf="currentLevel === 1 && !isLoading">
+    <div class="chart-card">
+      <div class="chart-card-head">
+        <div>
+          <h3>By Reason — Opportunity Lost</h3>
+          <div class="sub">Click a slice or legend item to drill down</div>
+        </div>
+      </div>
+      <div class="chart-body">
+        <apx-chart 
+          *ngIf="reasonsChartOptions && reasonsData.length > 0"
+          [series]="reasonsChartOptions.series"
+          [chart]="reasonsChartOptions.chart"
+          [labels]="reasonsChartOptions.labels"
+          [colors]="reasonsChartOptions.colors"
+          [plotOptions]="reasonsChartOptions.plotOptions"
+          [legend]="reasonsChartOptions.legend"
+          [tooltip]="reasonsChartOptions.tooltip">
+        </apx-chart>
+        <div class="empty-state" *ngIf="reasonsData.length === 0">
+          <mat-icon class="huge-icon">analytics</mat-icon>
+          <p>No lost deals found for the selected filter period.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card-head">
+        <div>
+          <h3>By Competitor — Opportunity Lost</h3>
+          <div class="sub">Click a slice or legend item to drill down</div>
+        </div>
+      </div>
+      <div class="chart-body">
+        <apx-chart 
+          *ngIf="competitorsChartOptions && competitorsData.length > 0"
+          [series]="competitorsChartOptions.series"
+          [chart]="competitorsChartOptions.chart"
+          [labels]="competitorsChartOptions.labels"
+          [colors]="competitorsChartOptions.colors"
+          [plotOptions]="competitorsChartOptions.plotOptions"
+          [legend]="competitorsChartOptions.legend"
+          [tooltip]="competitorsChartOptions.tooltip">
+        </apx-chart>
+        <div class="empty-state" *ngIf="competitorsData.length === 0">
+          <mat-icon class="huge-icon">analytics</mat-icon>
+          <p>No lost deals found for the selected filter period.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level 2 Display (Region Bar Chart) -->
+  <div class="charts-grid hidden" [class.hidden]="currentLevel !== 2 || isLoading" style="grid-template-columns:1fr;">
+    <div class="chart-card">
+      <div class="chart-card-head">
+        <div>
+          <h3>{{ selectedName }} — split by region ({{ selectedType }})</h3>
+          <div class="sub">Click a bar to view detailed product specifications</div>
+        </div>
+      </div>
+      <div class="chart-body" style="align-items:stretch;">
+        <apx-chart
+          *ngIf="regionChartOptions && regionData.length > 0"
+          [series]="regionChartOptions.series"
+          [chart]="regionChartOptions.chart"
+          [colors]="regionChartOptions.colors"
+          [plotOptions]="regionChartOptions.plotOptions"
+          [dataLabels]="regionChartOptions.dataLabels"
+          [xaxis]="regionChartOptions.xaxis"
+          [yaxis]="regionChartOptions.yaxis"
+          [tooltip]="regionChartOptions.tooltip">
+        </apx-chart>
+        <div class="empty-state" *ngIf="regionData.length === 0">
+          <mat-icon class="huge-icon">location_off</mat-icon>
+          <p>No geographic data was found for this criteria.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level 3 Display (Product Details Table) -->
+  <div class="charts-grid hidden" [class.hidden]="currentLevel !== 3 || isLoading" style="grid-template-columns:1fr;">
+    <div class="chart-card">
+      <div class="chart-card-head">
+        <div>
+          <h3>Deal detail — Region: {{ selectedRegionName }}</h3>
+          <div class="sub">Lost product specifications, highest lost value first</div>
+        </div>
+      </div>
+      <div class="chart-body" style="align-items:stretch;">
+        <table class="data-table" *ngIf="productData.length > 0">
+          <thead>
+            <tr>
+              <th class="text-left">Product Name</th>
+              <th class="text-center">Quantity Lost</th>
+              <th class="text-right">Unit Price (INR)</th>
+              <th class="text-right">Total Lost Value (Lakhs)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let prod of productData">
+              <td class="text-left font-semibold">{{ prod.productName }}</td>
+              <td class="text-center">{{ prod.quantity }}</td>
+              <td class="text-right">{{ prod.price | number:'1.0-2' }}</td>
+              <td class="text-right text-highlight" style="font-weight:700; color:#ef4444;">{{ prod.totalValueLakhs.toFixed(2) }} L</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="empty-state" *ngIf="productData.length === 0">
+          <mat-icon class="huge-icon">shopping_bag</mat-icon>
+          <p>No product specifications are available for this region's lost deals.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
