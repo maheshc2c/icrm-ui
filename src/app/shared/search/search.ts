@@ -36,6 +36,11 @@ export class Search implements OnInit, OnChanges {
   @Output() searchChange = new EventEmitter<any>();
   @Output() fieldChange = new EventEmitter<{ key: string; value: any }>();
   @Output() dropdownSearch = new EventEmitter<{ key: string; query: string }>();
+  @Output() enterSearch = new EventEmitter<void>();
+
+  onEnterKey() {
+    this.enterSearch.emit();
+  }
 
 
   ngOnInit() {

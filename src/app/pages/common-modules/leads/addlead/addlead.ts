@@ -413,10 +413,10 @@ export class AddleadComponent implements OnInit {
         // Map API response to { id, label } shape used by the template
         this.contractNoteQuoteOptions = (data || []).map(item => ({
           id: item.quoteRevisionId ?? item.id ?? item.quoteId,
-          label: item.quoteRefId ?? item.quoteId ?? item.label ?? item.name ?? JSON.stringify(item),
+          label: item.quoteRefId ?? item.customerName ?? (item.quoteId ? ('Quote #' + item.quoteId) : item.label) ?? item.name ?? JSON.stringify(item),
           quoteId: item.quoteId,
           quoteRevisionId: item.quoteRevisionId,
-          quoteRefId: item.quoteRefId,
+          quoteRefId: item.quoteRefId ?? item.customerName,
           raw: item
         }));
       },

@@ -218,7 +218,7 @@ export class FreshBusinessReportComponent implements OnInit, AfterViewInit, OnDe
     const options: any = {
       chart: {
         type: 'column',
-        backgroundColor: 'transparent'
+        backgroundColor: '#ffffff'
       },
       title: {
         text: data.chartTitle || 'Fresh & Repeat Business report',

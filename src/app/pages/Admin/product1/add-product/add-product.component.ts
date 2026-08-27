@@ -90,7 +90,7 @@ export class AddProduct implements OnInit {
 
     this.headerTitle = 'Add New Product';
     this.headerBreadcrumbs = [
-      { label: 'Home', route: '/admin' },
+      { label: 'Home', route: '/admindashboard' },
       { label: 'Product', route: '/admin/product' },
       { label: 'Add Product' }
     ];

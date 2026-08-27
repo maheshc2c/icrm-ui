@@ -13,7 +13,8 @@
       [type]="field.type || 'text'"
       [placeholder]="field.placeholder"
       [value]="values[field.key] || ''"
-      (input)="onTextInput(field.key, $event)" />
+      (input)="onTextInput(field.key, $event)"
+      (keyup.enter)="onEnterKey()" />
 
     <!-- 🔹 NATIVE DROPDOWN -->
     <select *ngIf="field.type === 'native-select'" 

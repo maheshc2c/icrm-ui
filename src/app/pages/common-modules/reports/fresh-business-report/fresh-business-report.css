@@ -388,3 +388,22 @@
 .data-table tbody tr:hover {
   background-color: #f8fafc;
 }
+
+/* ─── Highcharts Fullscreen White Background Override ────────────────── */
+::ng-deep :fullscreen,
+::ng-deep ::backdrop,
+::ng-deep :-webkit-full-screen,
+::ng-deep :-moz-full-screen,
+::ng-deep :-ms-fullscreen,
+::ng-deep .highcharts-fullscreen-container {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+::ng-deep .highcharts-fullscreen-container > .highcharts-container,
+::ng-deep .highcharts-fullscreen-container .highcharts-root,
+::ng-deep .highcharts-fullscreen-container rect.highcharts-background {
+  fill: #ffffff !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}

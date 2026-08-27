@@ -43,7 +43,7 @@ export class SegmentComponent implements OnInit {
   headerTitle = 'Segment List';
  
   headerBreadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/admin' },
+    { label: 'Home', route: '/admindashboard' },
     { label: 'Segment', route: '/segment' }
   ];
  
