@@ -38,7 +38,7 @@ export class EditSegment implements OnInit {
  
   headerTitle = 'Edit Segment';
   headerBreadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/admin' },
+    { label: 'Home', route: '/admindashboard' },
     { label: 'Segment', route: '/segment' },
     { label: 'Edit' }
   ];

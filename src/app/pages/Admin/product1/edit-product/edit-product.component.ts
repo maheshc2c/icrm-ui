@@ -39,7 +39,7 @@ export class EditProduct implements OnInit {
   headerTitle = 'Edit Product';
  
   headerBreadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/admin' },
+    { label: 'Home', route: '/admindashboard' },
     { label: 'Product', route: '/admin/product' },
     { label: 'Edit' }
   ];

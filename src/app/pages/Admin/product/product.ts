@@ -45,7 +45,7 @@ export class Product implements OnInit {
   headerTitle = 'Product List';
  
   headerBreadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/admin' },
+    { label: 'Home', route: '/admindashboard' },
     { label: 'Product', route: '/product' }
   ];
  
