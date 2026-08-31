@@ -969,37 +969,37 @@ export const routes: Routes = [
         path: 'salesmanager/customer',
         loadComponent: () => import('./pages/common-modules/customer/customer').then(m => m.Customer),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director'] }
       },
       {
         path: 'salesmanager/customer/add',
         loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director'] }
       },
       {
         path: 'salesmanager/customer/edit/:id',
         loadComponent: () => import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director'] }
       },
       {
         path: 'salesmanager/contact',
         loadComponent: () => import('./pages/common-modules/contact/contact').then(m => m.Contact),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director'] }
       },
       {
         path: 'salesmanager/contact/add',
         loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director'] }
       },
       {
         path: 'salesmanager/contact/edit/:id',
         loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
         canActivate: [authGuard],
-        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Country Head'] }
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director'] }
       },
       {
         path: 'planDemo',
@@ -1347,19 +1347,19 @@ export const routes: Routes = [
   
         {
           path: 'adminmarketing/assing-leads',
-          loadComponent: () => import('./pages/AdminMarketing/assing-leads/assing-leads').then(m => m.AssignLeads),
+          loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/track-leads',
-          loadComponent: () => import('./pages/AdminMarketing/track-leads/track-leads').then(m => m.TrackLeads),
+          loadComponent: () => import('./pages/common-modules/leads/open-leads/open-leads').then(m => m.OpenLeads),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/track-leads/open-leads',
-          loadComponent: () => import('./pages/AdminMarketing/track-leads/open-leads/open-leads').then(m => m.OpenLeads),
+          loadComponent: () => import('./pages/common-modules/leads/open-leads/open-leads').then(m => m.OpenLeads),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
@@ -1385,19 +1385,19 @@ export const routes: Routes = [
   
         {
           path: 'adminmarketing/contact',
-          loadComponent: () => import('./pages/AdminMarketing/contact/contact').then(m => m.Contact),
+          loadComponent: () => import('./pages/common-modules/contact/contact').then(m => m.Contact),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/contact/add',
-          loadComponent: () => import('./pages/AdminMarketing/contact/addcontact/addcontact').then(m => m.Addcontact),
+          loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },
         {
           path: 'adminmarketing/contact/edit/:id',
-          loadComponent: () => import('./pages/AdminMarketing/contact/addcontact/addcontact').then(m => m.Addcontact),
+          loadComponent: () => import('./pages/common-modules/contact/addcontact/addcontact').then(m => m.Addcontact),
           canActivate: [authGuard],
           data: { roles: ['ADMINMARKETING', 'ADMIN MARKETING'] }
         },

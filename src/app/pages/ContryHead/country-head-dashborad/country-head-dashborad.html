@@ -18,7 +18,7 @@
                     </div>
 
                     <div class="section-cards">
-                        <div class="dashboard-card leads-new-card" routerLink="/countryhead/leads/new">
+                        <div class="dashboard-card leads-new-card" routerLink="/salesmanager/leads/add" style="cursor: pointer;">
                             <div class="card-icon leads-new-bg">
                                 <i class="fa-solid fa-edit"></i>
                             </div>
@@ -27,7 +27,7 @@
                             </div>
                         </div>
 
-                        <div class="dashboard-card leads-open-card" routerLink="/countryhead/leads/open">
+                        <div class="dashboard-card leads-open-card" routerLink="/openleads" style="cursor: pointer;">
                             <div class="card-icon leads-open-bg">
                                 <i class="fa-solid fa-folder-open"></i>
                             </div>
@@ -36,7 +36,7 @@
                             </div>
                         </div>
 
-                        <div class="dashboard-card leads-close-card" routerLink="/countryhead/leads/closed">
+                        <div class="dashboard-card leads-close-card" routerLink="/salesmanager/closed-leads" style="cursor: pointer;">
                             <div class="card-icon leads-close-bg">
                                 <i class="fa-solid fa-folder"></i>
                             </div>
@@ -55,16 +55,14 @@
                     </div>
 
                     <div class="section-cards">
-                        <a routerLink="View Calendar.html">
-                            <div class="dashboard-card calendar-card">
-                                <div class="card-icon calendar-bg">
-                                    <i class="fa-solid fa-calendar"></i>
-                                </div>
-                                <div class="card-title">
-                                    <h3>Calendar</h3>
-                                </div>
+                        <div class="dashboard-card calendar-card" routerLink="/salesmanager/calender" style="cursor: pointer;">
+                            <div class="card-icon calendar-bg">
+                                <i class="fa-solid fa-calendar"></i>
                             </div>
-                        </a>
+                            <div class="card-title">
+                                <h3>Calendar</h3>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -76,7 +74,7 @@
                     </div>
 
                     <div class="section-cards">
-                        <div class="dashboard-card target-card">
+                        <div class="dashboard-card target-card" routerLink="/reports/target-vs-sales" style="cursor: pointer;">
                             <div class="card-icon target-bg">
                                 <i class="fa-solid fa-chart-bar"></i>
                             </div>
@@ -100,7 +98,7 @@
                     </div>
 
                     <div class="section-cards">
-                        <div class="dashboard-card opportunities-open-card">
+                        <div class="dashboard-card opportunities-open-card" routerLink="/oppurtunity/open" style="cursor: pointer;">
                             <div class="card-icon opportunities-open-bg">
                                 <i class="fa-solid fa-folder-open"></i>
                             </div>
@@ -109,7 +107,7 @@
                             </div>
                         </div>
 
-                        <div class="dashboard-card opportunities-close-card">
+                        <div class="dashboard-card opportunities-close-card" routerLink="/oppurtunity/close" style="cursor: pointer;">
                             <div class="card-icon opportunities-close-bg">
                                 <i class="fa-solid fa-folder"></i>
                             </div>
