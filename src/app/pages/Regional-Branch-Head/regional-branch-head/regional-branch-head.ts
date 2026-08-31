@@ -5,10 +5,12 @@ import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../models/breadcrumb';
 
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-regional-branch-head',
   standalone: true,
-  imports: [CommonModule, Header, Sidebar, Pageheader],
+  imports: [CommonModule, Header, Sidebar, Pageheader, RouterLink],
   templateUrl: './regional-branch-head.html',
   styleUrl: './regional-branch-head.css',
 })
