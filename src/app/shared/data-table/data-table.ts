@@ -78,6 +78,7 @@ export class DataTable
   @Input() showPagination = true;
   @Input() showAssign = false;
   @Input() showUpload = false;
+  @Input() showUploadHeader = false;
   @Input() showSearch = true;
   @Input() showEdit = true;
   @Input() showDelete = true;
