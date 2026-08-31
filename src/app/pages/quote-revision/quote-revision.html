@@ -177,8 +177,8 @@
           <button (click)="goBack()" style="background: #fff; border: 1px solid #ced4da; color: #495057; padding: 8px 24px; border-radius: 4px; font-size: 14px; cursor: pointer; transition: all 0.2s;">
             Cancel
           </button>
-          <button (click)="onSubmit()" style="background: #4285f4; color: white; border: none; padding: 8px 24px; border-radius: 4px; font-size: 14px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            Submit
+          <button (click)="onSubmit()" [disabled]="isSubmitting" style="background: #4285f4; color: white; border: none; padding: 8px 24px; border-radius: 4px; font-size: 14px; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            {{ isSubmitting ? 'Submitting...' : 'Submit' }}
           </button>
         </div>
 

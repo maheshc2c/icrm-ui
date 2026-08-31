@@ -420,21 +420,10 @@ approve(row: any): void {
 
         this.showApprovalPopup = false;
         this.showHistoryPopup = false;
-
-        this.rows = this.rows.filter(
-          x => x.quoteRevisionId !== row.quoteRevisionId
-        );
-
-        this.fullRows = this.fullRows.filter(
-          x => x.quoteRevisionId !== row.quoteRevisionId
-        );
-
-        if (this.totalElements > 0) {
-          this.totalElements--;
-        }
-
         this.selectedQuote = null;
         this.remarks = '';
+
+        this.loadQuotes();
       }
 
       this.approvalInProgress = false;
@@ -572,7 +561,7 @@ reject(row: any): void {
   if (response?.status === true) {
 
     this.toastService.success(
-      response?.message || 'Quote approved successfully.'
+      response?.message || 'Quote rejected successfully.'
     );
 
     this.showApprovalPopup = false;
@@ -580,19 +569,7 @@ reject(row: any): void {
     this.selectedQuote = null;
     this.remarks = '';
 
-    // Remove the approved quote immediately from the current list
-    this.rows = this.rows.filter(
-      x => x.quoteRevisionId !== row.quoteRevisionId
-    );
-
-    this.fullRows = this.fullRows.filter(
-      x => x.quoteRevisionId !== row.quoteRevisionId
-    );
-
-    // Update total count
-    if (this.totalElements > 0) {
-      this.totalElements--;
-    }
+    this.loadQuotes();
 
   } else {
 
