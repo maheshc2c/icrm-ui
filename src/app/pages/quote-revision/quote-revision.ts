@@ -167,7 +167,13 @@ export class QuoteRevisionComponent implements OnInit {
     }
   }
 
+  isSubmitting: boolean = false;
+
   onSubmit() {
+    if (this.isSubmitting) {
+      return;
+    }
+
     // 1. Calculate the total discount from all selected products in the table
     const totalProductDiscount = this.quotes
       .filter(q => q.selected)
@@ -213,9 +219,12 @@ export class QuoteRevisionComponent implements OnInit {
     const token = localStorage.getItem('token');
     const headers = { 'Authorization': `Bearer ${token}` };
 
+    this.isSubmitting = true;
+
     this.http.post('http://localhost:8080/quote/create/quote-revision', payload, { headers }).subscribe({
       next: (res: any) => {
         if (res && res.status === false) {
+          this.isSubmitting = false;
           alert('Failed to save quote revision: ' + (res.message || ''));
         } else {
           if (this.leadId) {
@@ -226,6 +235,7 @@ export class QuoteRevisionComponent implements OnInit {
         }
       },
       error: (err: any) => {
+        this.isSubmitting = false;
         console.error('Error saving quote revision:', err);
         const msg = err?.error?.message || err?.message || 'Unknown error';
         alert('Failed to save quote revision: ' + msg);
