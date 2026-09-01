@@ -155,7 +155,7 @@ export class ApproveLeads implements OnInit {
       pageNumber: this.currentPage,
       pageSize: this.pageSize,
       sortBy: 'leadId',
-      sortOrder: 'asc'
+      sortOrder: 'desc'
     };
 
     this.cicService.getTrackLeads(pagination).subscribe({

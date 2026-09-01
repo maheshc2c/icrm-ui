@@ -112,12 +112,9 @@ export class Addcontact implements OnInit {
 
   }
 
-  this.headerBreadcrumbs = [
-    { label: 'Home', route: '/admindashboard' },
-    { label: 'Contact', route: '/contact' },
-    { label: this.isEditMode ? 'Edit Contact' : 'Add Contact' }
-  ];
+  this.buildBreadcrumbs(this.isEditMode);
 }
+
 private loadContactById(id: number): void {
 
   this.adminService.getContactById(id).subscribe({
@@ -214,22 +211,34 @@ private loadContactById(id: number): void {
 
   private buildBreadcrumbs(isEditMode: boolean): void {
     let homeRoute = '/dashboard';
+    let contactRoute = '/contact';
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
-      if (role === 'SUPERADMIN') {
+      if (role === 'SUPERADMIN' || role === 'SUPER ADMIN') {
         homeRoute = '/superadmindashboard';
-      } else if (role === 'Admin') {
+      } else if (role === 'Admin' || role === 'ADMIN') {
         homeRoute = '/admindashboard';
       } else if (role === 'Regional Branch Head') {
         homeRoute = '/regional-branch-head-dashboard';
+        contactRoute = '/salesmanager/contact';
       } else if (role === 'Regional Sales Manager') {
         homeRoute = '/regional-sales-manager-dashboard';
-      } else if (role === 'Country Head') {
+        contactRoute = '/salesmanager/contact';
+      } else if (role === 'National Sales Manager') {
+        homeRoute = '/national-sales-manager-dashboard';
+        contactRoute = '/salesmanager/contact';
+      } else if (role === 'Country Head' || role === 'Global Head') {
         homeRoute = '/country-head';
+        contactRoute = '/salesmanager/contact';
       } else if (role === 'Sales Engineer' || role === 'SALES_MANAGER' || role === 'SALESMANAGER' || role === 'Sales Manager') {
         homeRoute = '/sales-manager-dashboard';
+        contactRoute = '/salesmanager/contact';
       } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
         homeRoute = '/adminmarketingdashboard';
+        contactRoute = '/adminmarketing/contact';
+      } else if (role === 'Sales Director') {
+        homeRoute = '/sddashboard';
+        contactRoute = '/salesdirector/contact';
       }
     }
 
@@ -243,7 +252,7 @@ private loadContactById(id: number): void {
     } else {
       this.headerBreadcrumbs = [
         { label: 'Home', route: homeRoute },
-        { label: 'Contact', route: '/contact' },
+        { label: 'Contact', route: contactRoute },
         { label: isEditMode ? 'Edit Contact' : 'Add Contact' }
       ];
     }

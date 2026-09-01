@@ -353,10 +353,41 @@ export class AddleadComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef
   ) {}
 
+  private getHomeRoute(): string {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      if (role === 'SUPERADMIN' || role === 'SUPER ADMIN') {
+        return '/superadmindashboard';
+      } else if (role === 'Admin' || role === 'ADMIN') {
+        return '/admindashboard';
+      } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
+        return '/adminmarketingdashboard';
+      } else if (role === 'Sales Director') {
+        return '/sddashboard';
+      } else if (role === 'Regional Branch Head') {
+        return '/regional-branch-head-dashboard';
+      } else if (role === 'Regional Sales Manager') {
+        return '/regional-sales-manager-dashboard';
+      } else if (role === 'National Sales Manager') {
+        return '/national-sales-manager-dashboard';
+      } else if (role === 'Global Head') {
+        return '/globalhead-dashboard';
+      } else if (role === 'Country Head') {
+        return '/country-head';
+      }
+    }
+    return '/sales-manager-dashboard';
+  }
+
   /* ================= INIT ================= */
   ngOnInit(): void {
     console.log('AddLead component initialized');
     (window as any).debugLeads = this;
+
+    this.breadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      { label: 'Lead' }
+    ];
     
     this.route.params.subscribe(params => {
       if (params['id']) {
@@ -377,13 +408,13 @@ export class AddleadComponent implements OnInit {
         // Update breadcrumbs for edit/view mode
         if (this.isReadOnly) {
           this.breadcrumbs = [
-            { label: 'Home', route: '/sales-manager-dashboard' },
+            { label: 'Home', route: this.getHomeRoute() },
             { label: 'Closed Leads', route: '/salesmanager/closed-leads' },
             { label: 'Lead ID - ' + this.leadId }
           ];
         } else {
           this.breadcrumbs = [
-            { label: 'Home', route: '/sales-manager-dashboard' },
+            { label: 'Home', route: this.getHomeRoute() },
             { label: 'Open Leads', route: '/openleads' },
             { label: 'Lead ID - ' + this.leadId }
           ];
@@ -401,7 +432,8 @@ export class AddleadComponent implements OnInit {
 
   /* ================= CONTRACT NOTE QUOTE OPTIONS LOAD ================= */
   loadContractNoteQuoteOptions(): void {
-    const url = 'http://localhost:8080/contractnote/quote';
+    const baseUrl = 'http://localhost:8080/contractnote/quote';
+    const url = this.leadId ? `${baseUrl}?leadId=${this.leadId}` : baseUrl;
     const token = this.auth.getToken?.();
     let headers = new HttpHeaders();
     if (token) {
@@ -413,7 +445,7 @@ export class AddleadComponent implements OnInit {
         // Map API response to { id, label } shape used by the template
         this.contractNoteQuoteOptions = (data || []).map(item => ({
           id: item.quoteRevisionId ?? item.id ?? item.quoteId,
-          label: item.quoteRefId ?? item.customerName ?? (item.quoteId ? ('Quote #' + item.quoteId) : item.label) ?? item.name ?? JSON.stringify(item),
+          label: item.label ?? item.quoteRefId ?? item.customerName ?? (item.quoteId ? ('Quote #' + item.quoteId) : item.name) ?? JSON.stringify(item),
           quoteId: item.quoteId,
           quoteRevisionId: item.quoteRevisionId,
           quoteRefId: item.quoteRefId ?? item.customerName,
@@ -647,7 +679,7 @@ export class AddleadComponent implements OnInit {
         if (data.leadStatus === 21 || data.leadStatus === 22 || data.leadStatus === 3) {
           this.isReadOnly = true;
           this.breadcrumbs = [
-            { label: 'Home', route: '/sales-manager-dashboard' },
+            { label: 'Home', route: this.getHomeRoute() },
             { label: 'Closed Leads', route: '/salesmanager/closed-leads' },
             { label: 'Lead ID - ' + this.leadId }
           ];
@@ -1742,11 +1774,29 @@ export class AddleadComponent implements OnInit {
   }
 
   onAddCustomer() {
-    this.router.navigate(['/salesmanager/customer/add'], { queryParams: { returnUrl: this.router.url } });
+    let customerAddRoute = '/salesmanager/customer/add';
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
+        customerAddRoute = '/adminmarketing/customer/add';
+      } else if (role === 'Sales Director') {
+        customerAddRoute = '/salesdirector/customer/add';
+      }
+    }
+    this.router.navigate([customerAddRoute], { queryParams: { returnUrl: this.router.url } });
   }
 
   onAddContact() {
-    this.router.navigate(['/salesmanager/contact/add'], { queryParams: { returnUrl: this.router.url } });
+    let contactAddRoute = '/salesmanager/contact/add';
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role');
+      if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
+        contactAddRoute = '/adminmarketing/contact/add';
+      } else if (role === 'Sales Director') {
+        contactAddRoute = '/salesdirector/contact/add';
+      }
+    }
+    this.router.navigate([contactAddRoute], { queryParams: { returnUrl: this.router.url } });
   }
 
   onCustomerDetails(customerId: any): void {
