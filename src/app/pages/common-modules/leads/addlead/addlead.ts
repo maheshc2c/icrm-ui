@@ -401,7 +401,8 @@ export class AddleadComponent implements OnInit {
 
   /* ================= CONTRACT NOTE QUOTE OPTIONS LOAD ================= */
   loadContractNoteQuoteOptions(): void {
-    const url = 'http://localhost:8080/contractnote/quote';
+    const baseUrl = 'http://localhost:8080/contractnote/quote';
+    const url = this.leadId ? `${baseUrl}?leadId=${this.leadId}` : baseUrl;
     const token = this.auth.getToken?.();
     let headers = new HttpHeaders();
     if (token) {
@@ -413,7 +414,7 @@ export class AddleadComponent implements OnInit {
         // Map API response to { id, label } shape used by the template
         this.contractNoteQuoteOptions = (data || []).map(item => ({
           id: item.quoteRevisionId ?? item.id ?? item.quoteId,
-          label: item.quoteRefId ?? item.quoteId ?? item.label ?? item.name ?? JSON.stringify(item),
+          label: item.label ?? item.quoteRefId ?? item.quoteId ?? item.name ?? JSON.stringify(item),
           quoteId: item.quoteId,
           quoteRevisionId: item.quoteRevisionId,
           quoteRefId: item.quoteRefId,
