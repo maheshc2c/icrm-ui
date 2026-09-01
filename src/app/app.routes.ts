@@ -1117,6 +1117,33 @@ export const routes: Routes = [
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },
+      { path: 'countryhead/leads/new', redirectTo: 'salesmanager/leads/add', pathMatch: 'full' },
+      { path: 'countryhead/leads/open', redirectTo: 'openleads', pathMatch: 'full' },
+      { path: 'countryhead/leads/closed', redirectTo: 'salesmanager/closed-leads', pathMatch: 'full' },
+      { path: 'country-head/leads/new', redirectTo: 'salesmanager/leads/add', pathMatch: 'full' },
+      { path: 'country-head/leads/open', redirectTo: 'openleads', pathMatch: 'full' },
+      { path: 'country-head/leads/closed', redirectTo: 'salesmanager/closed-leads', pathMatch: 'full' },
+      { path: 'country-head/opportunities/open', redirectTo: 'salesmanager/opportunities', pathMatch: 'full' },
+      { path: 'country-head/opportunities/closed', redirectTo: 'salesmanager/closed-opportunities', pathMatch: 'full' },
+      { path: 'country-head/dashboard/view-calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
+      { path: 'country-head/dashboard/leads-dashboard', redirectTo: 'leads-dashboard', pathMatch: 'full' },
+      { path: 'country-head/dashboard/opportunity-dashboard', redirectTo: 'opportunity-dashboard', pathMatch: 'full' },
+      { path: 'country-head/dashboard/approvals', redirectTo: 'quotes-view', pathMatch: 'full' },
+      { path: 'country-head/dashboard/purchase-order-approval', redirectTo: 'PO-Approval', pathMatch: 'full' },
+      { path: 'country-head/dashboard/demo-product', redirectTo: 'demoproduct', pathMatch: 'full' },
+
+      // Legacy / Role-specific Aliases
+      { path: 'regional-sales-manager-view-calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
+      { path: 'salesmanager/calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
+      { path: 'salesmanager/marketing-documents', redirectTo: 'country-head/marketing-document', pathMatch: 'full' },
+      { path: 'salesmanager/report', redirectTo: 'reports/target-vs-sales', pathMatch: 'full' },
+      { path: 'salesdirector/addleads', redirectTo: 'salesmanager/leads/add', pathMatch: 'full' },
+      { path: 'salesmanager/leads', redirectTo: 'openleads', pathMatch: 'full' },
+      { path: 'salesmanager/plan-demo', redirectTo: 'planDemo', pathMatch: 'full' },
+      { path: 'salesdirector/viewCampaignDocuments', redirectTo: 'country-head/marketing-document', pathMatch: 'full' },
+      { path: 'globalhead/create-lead', redirectTo: 'salesmanager/leads/add', pathMatch: 'full' },
+      { path: 'globalhead/assign-lead', redirectTo: 'openleads', pathMatch: 'full' },
+      { path: 'globalhead/view-calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
 
       // Regional Branch Head Track Quote/PO
       {
