@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportService, FunnelReportFilter, FunnelSeriesDto } from '../../../../service/report.service';
@@ -61,9 +61,12 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
     return u ? u.label : 'Select Users';
   }
 
-  toggleDropdown() {
+  toggleDropdown(event?: MouseEvent) {
+    if (event) event.stopPropagation();
     this.dropdownOpen = !this.dropdownOpen;
-    if (!this.dropdownOpen) {
+    if (this.dropdownOpen) {
+      this.regionDropdownOpen = false;
+    } else {
       this.searchQuery = '';
     }
   }
@@ -92,9 +95,12 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
     return r ? r.label : 'Select Region';
   }
 
-  toggleRegionDropdown() {
+  toggleRegionDropdown(event?: MouseEvent) {
+    if (event) event.stopPropagation();
     this.regionDropdownOpen = !this.regionDropdownOpen;
-    if (!this.regionDropdownOpen) {
+    if (this.regionDropdownOpen) {
+      this.dropdownOpen = false;
+    } else {
       this.regionSearchQuery = '';
     }
   }
@@ -146,7 +152,18 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  constructor(private reportService: ReportService) {}
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.dropdownOpen = false;
+      this.regionDropdownOpen = false;
+    }
+  }
+
+  constructor(
+    private reportService: ReportService,
+    private elementRef: ElementRef
+  ) {}
 
   // ─────────────────────────────────────────────────────────────────────────
   // Lifecycle
@@ -354,7 +371,6 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
   // ─────────────────────────────────────────────────────────────────────────
 
   loadReport(): void {
-    if (!this.selectedUserId) return;
     this.isLoading = true;
     this.hasError = false;
     this.currentLevel = 1;

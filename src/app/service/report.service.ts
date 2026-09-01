@@ -173,7 +173,7 @@ export class ReportService {
       { headers: this.getAuthHeaders() }
     ).pipe(
       map((response: any) => {
-        const users: any[] = response?.content ?? (Array.isArray(response) ? response : []);
+        const users: any[] = response?.content ?? response?.data?.content ?? response?.data ?? (Array.isArray(response) ? response : []);
         return users.map((u: any) => ({
           id: u.id ?? u.userId,
           label: [u.firstName, u.lastName].filter(Boolean).join(' ').trim()

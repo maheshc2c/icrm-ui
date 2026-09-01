@@ -11,7 +11,7 @@
 
     <!-- User selector (Searchable Dropdown) -->
     <div class="filter-control custom-dropdown-container">
-      <div class="dropdown-trigger" [class.active]="dropdownOpen" (click)="toggleDropdown()">
+      <div class="dropdown-trigger" [class.active]="dropdownOpen" (click)="toggleDropdown($event)">
         <span class="trigger-text">{{ selectedUserName }}</span>
         <i class="fas fa-chevron-down arrow-icon"></i>
       </div>
@@ -32,7 +32,7 @@
 
     <!-- Region selector (Searchable Dropdown) -->
     <div class="filter-control custom-dropdown-container">
-      <div class="dropdown-trigger" [class.active]="regionDropdownOpen" (click)="toggleRegionDropdown()">
+      <div class="dropdown-trigger" [class.active]="regionDropdownOpen" (click)="toggleRegionDropdown($event)">
         <span class="trigger-text">{{ selectedRegionName }}</span>
         <i class="fas fa-chevron-down arrow-icon"></i>
       </div>
