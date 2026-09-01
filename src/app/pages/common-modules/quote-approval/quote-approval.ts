@@ -34,10 +34,57 @@ export class QuoteApproval {
 
   headerTitle = 'Quote Approval';
 
-  headerBreadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/admindashboard' },
-    { label: 'Quote Approval', route: '/RegionalBranchHead/quotes-view' }
+  headerBreadcrumbs: Breadcrumb[] = [];
+
+  ngOnInit(): void {
+
+  this.loggedInRole = localStorage.getItem('role') || '';
+
+  const role = this.loggedInRole
+    .replace(/[\s_]+/g, '')
+    .toUpperCase();
+
+  let dashboardRoute = '/login';
+
+  switch (role) {
+
+    case 'REGIONALBRANCHHEAD':
+      dashboardRoute = '/regional-branch-head-dashboard';
+      break;
+
+    case 'NATIONALSALESMANAGER':
+      dashboardRoute = '/national-sales-manager-dashboard';
+      break;
+
+    case 'COUNTRYHEAD':
+      dashboardRoute = '/country-head';
+      break;
+
+  }
+
+  this.headerBreadcrumbs = [
+    { label: 'Home', route: dashboardRoute },
+    { label: 'Quote Approval' }
   ];
+
+  this.showRegionFilter =
+      role === 'NATIONALSALESMANAGER' ||
+      role === 'COUNTRYHEAD';
+
+  this.updateSearchFields();
+
+  if (this.showRegionFilter) {
+    this.loadRegions();
+  }
+
+  this.loadQuotes();
+}
+
+  // headerBreadcrumbs: Breadcrumb[] = [
+  //   { label: 'Home', route: '/admindashboard' },
+  //   { label: 'Quote Approval', route: '/RegionalBranchHead/quotes-view' }
+  // ];
+  
 
   // columns = [
   //   { header: 'Customer', field: 'customer' },
@@ -130,22 +177,6 @@ loadQuotes(): void {
 
 }
 
-ngOnInit(): void {
-
-  this.loggedInRole = localStorage.getItem('role') || '';
-
-  this.showRegionFilter =
-      this.loggedInRole === 'National Sales Manager' ||
-      this.loggedInRole === 'Country Head';
-
-  this.updateSearchFields();
-
-  if (this.showRegionFilter) {
-    this.loadRegions();
-  }
-
-  this.loadQuotes();
-}
 
 
 loadRegions(): void {

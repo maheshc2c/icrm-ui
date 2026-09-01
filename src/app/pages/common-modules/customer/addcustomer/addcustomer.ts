@@ -148,22 +148,34 @@ export class Addcustomer implements OnInit {
 
   private buildBreadcrumbs(isEditMode: boolean): void {
     let homeRoute = '/dashboard';
+    let customerRoute = '/customer';
     if (typeof window !== 'undefined' && window.localStorage) {
       const role = localStorage.getItem('role');
-      if (role === 'SUPERADMIN') {
+      if (role === 'SUPERADMIN' || role === 'SUPER ADMIN') {
         homeRoute = '/superadmindashboard';
-      } else if (role === 'Admin') {
+      } else if (role === 'Admin' || role === 'ADMIN') {
         homeRoute = '/admindashboard';
       } else if (role === 'Regional Branch Head') {
         homeRoute = '/regional-branch-head-dashboard';
+        customerRoute = '/salesmanager/customer';
       } else if (role === 'Regional Sales Manager') {
         homeRoute = '/regional-sales-manager-dashboard';
-      } else if (role === 'Country Head') {
+        customerRoute = '/salesmanager/customer';
+      } else if (role === 'National Sales Manager') {
+        homeRoute = '/national-sales-manager-dashboard';
+        customerRoute = '/salesmanager/customer';
+      } else if (role === 'Country Head' || role === 'Global Head') {
         homeRoute = '/country-head';
+        customerRoute = '/salesmanager/customer';
       } else if (role === 'Sales Engineer' || role === 'SALES_MANAGER' || role === 'SALESMANAGER' || role === 'Sales Manager') {
         homeRoute = '/sales-manager-dashboard';
+        customerRoute = '/salesmanager/customer';
       } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
         homeRoute = '/adminmarketingdashboard';
+        customerRoute = '/adminmarketing/customer';
+      } else if (role === 'Sales Director') {
+        homeRoute = '/sddashboard';
+        customerRoute = '/salesdirector/customer';
       }
     }
 
@@ -177,7 +189,7 @@ export class Addcustomer implements OnInit {
     } else {
       this.headerBreadcrumbs = [
         { label: 'Home', route: homeRoute },
-        { label: 'Customer', route: '/customer' },
+        { label: 'Customer', route: customerRoute },
         { label: isEditMode ? 'Edit Customer' : 'Add Customer' }
       ];
     }

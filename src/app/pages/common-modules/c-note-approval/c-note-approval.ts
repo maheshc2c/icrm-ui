@@ -31,11 +31,52 @@ export class CNoteApproval {
   ) {}
 
   headerTitle = 'Manage C Notes';
+headerBreadcrumbs: Breadcrumb[] = [];
 
-  headerBreadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/admindashboard' },
-    { label: 'C Notes', route: '/admin/c-note' }
+ngOnInit(): void {
+
+   console.log('Role:', localStorage.getItem('role'));
+  console.log('Token:', localStorage.getItem('token'));
+
+
+  const role = (localStorage.getItem('role') || '')
+    .replace(/[\s_]+/g, '')
+    .toUpperCase();
+
+  let dashboardRoute = '/login';
+
+  switch (role) {
+
+    case 'REGIONALBRANCHHEAD':
+      dashboardRoute = '/regional-branch-head-dashboard';
+      break;
+
+    case 'NATIONALSALESMANAGER':
+      dashboardRoute = '/national-sales-manager-dashboard';
+      break;
+
+    case 'COUNTRYHEAD':
+      dashboardRoute = '/country-head';
+      break;
+
+    case 'ADMIN':
+      dashboardRoute = '/admindashboard';
+      break;
+  }
+
+  this.headerBreadcrumbs = [
+    
+    { label: 'Home', route: dashboardRoute },
+    { label: 'C Notes', route: '/c-note' }
   ];
+  console.log(this.headerBreadcrumbs);
+
+  this.searchContractNotes();
+}
+  // headerBreadcrumbs: Breadcrumb[] = [
+  //   { label: 'Home', route: '/admindashboard' },
+  //   { label: 'C Notes', route: '/admin/c-note' }
+  // ];
 
   columns = [
   { header: 'C Note ID', field: 'contractNoteId' },
@@ -92,9 +133,6 @@ pageSize = 10;
 totalPages = 0;
 totalElements = 0;
 
-ngOnInit(): void {
-  this.searchContractNotes();
-}
 
 
 

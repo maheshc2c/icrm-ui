@@ -1,0 +1,18 @@
+/* Highcharts & Browser Fullscreen Mode White Background Override */
+:fullscreen,
+::backdrop,
+:-webkit-full-screen,
+:-moz-full-screen,
+:-ms-fullscreen,
+.highcharts-fullscreen-container {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+.highcharts-fullscreen-container > .highcharts-container,
+.highcharts-fullscreen-container .highcharts-root,
+.highcharts-fullscreen-container rect.highcharts-background {
+  fill: #ffffff !important;
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}

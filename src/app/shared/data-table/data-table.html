@@ -1,12 +1,13 @@
 <!-- MAIN -->
 <main class="content" [style.margin-left]="noMargin ? '0' : ''" [style.width]="noMargin ? '100%' : ''" [style.padding]="noMargin ? '0' : ''" [style.min-height]="noMargin ? 'auto' : ''" (click)="hostClick()">
-<div class="datatable-toolbar" *ngIf="showSearch || showImport || showAdd || showReset || showRefresh || showUpload || showDownload || showBulkUpload || showSubmit">
+<div class="datatable-toolbar" *ngIf="showSearch || showImport || showAdd || showReset || showRefresh || showUploadHeader || showDownload || showBulkUpload || showSubmit">
   @if (showSearch) {
     <app-search
       [fields]="searchFields"
       (searchChange)="onSearchFromChild($event)"
       (fieldChange)="fieldChange.emit($event)"
-      (dropdownSearch)="dropdownSearch.emit($event)">
+      (dropdownSearch)="dropdownSearch.emit($event)"
+      (enterSearch)="onSearchClick()">
     </app-search>
   }
   <app-button
@@ -15,7 +16,7 @@
     [showAdd]="showAdd"
     [showReset]="showReset"
     [showRefresh]="showRefresh"
-    [showUpload]="showUpload"
+    [showUpload]="showUploadHeader"
     [showDownload]="showDownload"
     (upload)="uploadRow.emit()"
     (reset)="onResetClick()"

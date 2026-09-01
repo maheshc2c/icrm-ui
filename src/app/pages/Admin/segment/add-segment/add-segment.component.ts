@@ -77,7 +77,7 @@ export class AddSegment implements OnInit {
  
     this.headerTitle = 'Add New Segment';
     this.headerBreadcrumbs = [
-      { label: 'Home', route: '/admin' },
+      { label: 'Home', route: '/admindashboard' },
       { label: 'Segment', route: '/segment' },
       { label: 'Add Segment' }
     ];

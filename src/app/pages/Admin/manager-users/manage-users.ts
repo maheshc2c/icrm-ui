@@ -74,6 +74,7 @@ export class ManageUsersComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.loadRoles();
         this.loadUsers();
     }
 
@@ -122,9 +123,6 @@ export class ManageUsersComponent implements OnInit {
                         productDetails: isAllGeosRole ? 'No Products Assigned' : (c.productNames?.length ? c.productNames.join(', ') : 'N/A')
                     };
                 });
-
-                // Load roles after users are loaded
-                this.loadRoles();
             },
             error: (err: any) => {
                 console.error("Failed to load users list:", err);
@@ -168,10 +166,15 @@ export class ManageUsersComponent implements OnInit {
     updateSearchFieldsWithRoles() {
         const roleFieldIndex = this.searchFields.findIndex(field => field.key === 'role');
         if (roleFieldIndex !== -1) {
-            this.searchFields[roleFieldIndex] = {
-                ...this.searchFields[roleFieldIndex],
-                options: this.availableRoles
-            };
+            this.searchFields = this.searchFields.map((field, idx) => {
+                if (idx === roleFieldIndex) {
+                    return {
+                        ...field,
+                        options: this.availableRoles
+                    };
+                }
+                return field;
+            });
         }
     }
 

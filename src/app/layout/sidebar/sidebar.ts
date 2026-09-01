@@ -244,20 +244,20 @@ constructor() {
         {
           label: 'Leads',
           icon: 'fas fa-users',
-          route: '/regional-branch-head/approve-leads',
+          route: '/openleads',
           children: [
-            { label: 'New', icon: 'fas fa-edit', route: '/regional-branch-head/approve-leads' },
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/regional-branch-head/approve-leads' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/regional-branch-head/approve-leads' }
+            { label: 'New', icon: 'fas fa-edit', route: '/salesmanager/leads/add' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/openleads' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-leads' }
           ]
         },
         {
           label: 'Opportunity',
           icon: 'fas fa-briefcase',
-          route: '/regional-branch-head/so-number-entry/open',
+          route: '/salesmanager/opportunities',
           children: [
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/regional-branch-head/so-number-entry/open' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/regional-branch-head/so-number-entry/closed' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-opportunities' },
             { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
@@ -358,20 +358,20 @@ constructor() {
         {
           label: 'Leads',
           icon: 'fas fa-users',
-          route: '/customer-interaction-center/approve-leads',
+          route: '/openleads',
           children: [
-            { label: 'New', icon: 'fas fa-edit', route: '/customer-interaction-center/approve-leads' },
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/customer-interaction-center/approve-leads' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/customer-interaction-center/approve-leads' }
+            { label: 'New', icon: 'fas fa-edit', route: '/salesmanager/leads/add' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/openleads' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-leads' }
           ]
         },
         {
           label: 'Opportunity',
           icon: 'fas fa-briefcase',
-          route: '/regional-sales-manager-dashboard/so-number-entry/open',
+          route: '/salesmanager/opportunities',
           children: [
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/so-number-entry/open' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/so-number-entry/closed' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-opportunities' },
             { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
@@ -453,7 +453,7 @@ constructor() {
         {
           label: 'Leads',
           icon: 'fas fa-users',
-          route: '/salesmanager/leads/add',
+          route: '/openleads',
           children: [
             { label: 'New', icon: 'fas fa-edit', route: '/salesmanager/leads/add' },
             { label: 'Open', icon: 'fas fa-folder-open', route: '/openleads' },
@@ -467,7 +467,7 @@ constructor() {
           children: [
             { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
             { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-opportunities' },
-            { label: 'Funnel History', icon: 'fas fa-history', route: '/salesmanager/funnel-history' }
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -544,20 +544,20 @@ constructor() {
         {
           label: 'Leads',
           icon: 'fas fa-users',
-          route: '/globalhead-dashboard/leads',
+          route: '/openleads',
           children: [
-            { label: 'New', icon: 'fas fa-edit', route: '/globalhead-dashboard/leads/new' },
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/globalhead-dashboard/leads/open' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/globalhead-dashboard/leads/closed' }
+            { label: 'New', icon: 'fas fa-edit', route: '/salesmanager/leads/add' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/openleads' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-leads' }
           ]
         },
         {
           label: 'Opportunity',
           icon: 'fas fa-briefcase',
-          route: '/globalhead-dashboard/opportunity',
+          route: '/salesmanager/opportunities',
           children: [
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/globalhead-dashboard/opportunity/open' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/globalhead-dashboard/opportunity/closed' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-opportunities' },
             { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
@@ -640,21 +640,21 @@ constructor() {
         {
           label: 'Leads',
           icon: 'fas fa-users',
-          route: '/countryhead/leads',
+          route: '/openleads',
           children: [
-            { label: 'New', icon: 'fas fa-edit', route: '/countryhead/leads/new' },
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/countryhead/leads/open' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/countryhead/leads/closed' }
+            { label: 'New', icon: 'fas fa-edit', route: '/salesmanager/leads/add' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/openleads' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-leads' }
           ]
         },
         {
           label: 'Opportunity',
           icon: 'fas fa-briefcase',
-          route: `/opportunity`,
+          route: '/salesmanager/opportunities',
           children: [
-            { label: 'Open', icon: 'fas fa-folder-open', route: `/opportunity/open` },
-            { label: 'Closed', icon: 'fas fa-folder', route: `/opportunity/closed` },
-            { label: 'Funnel History', icon: 'fas fa-history', route: `/OppurtunityStatus/FunnelHistory` }
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-opportunities' },
+            { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
         {
@@ -860,21 +860,21 @@ constructor() {
     {
       label: 'Leads',
       icon: 'fas fa-user-plus',
-      route: '/salesdirector/report',
+      route: '/openleads',
         children: [
-          { label: 'New', icon: 'fas fa-circle-plus', route: '/' },
-          { label: 'Open', icon: 'fas fa-folder-open', route: '/' },
-          { label: 'Closed', icon: 'fas fa-circle-check', route: '/' },
+          { label: 'New', icon: 'fas fa-circle-plus', route: '/salesmanager/leads/add' },
+          { label: 'Open', icon: 'fas fa-folder-open', route: '/openleads' },
+          { label: 'Closed', icon: 'fas fa-circle-check', route: '/salesmanager/closed-leads' },
         ]
     },
     {
       label: 'Oppurtunity',
       icon: 'fas fa-lightbulb',
-      route: '/salesdirector/report',
+      route: '/salesmanager/opportunities',
         children: [
-          { label: 'New', icon: 'fas fa-circle-plus', route: '/' },
-          { label: 'Open', icon: 'fas fa-folder-open', route: '/' },
-          { label: 'Closed', icon: 'fas fa-circle-check', route: '/' },
+          { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
+          { label: 'Closed', icon: 'fas fa-circle-check', route: '/salesmanager/closed-opportunities' },
+          { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' },
         ]
     },
     {

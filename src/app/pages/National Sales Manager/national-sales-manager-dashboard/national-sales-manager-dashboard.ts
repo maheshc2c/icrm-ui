@@ -5,10 +5,12 @@ import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../../models/breadcrumb';
 
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-national-sales-manager-dashboard',
   standalone: true,
-  imports: [CommonModule, Header, Sidebar, Pageheader],
+  imports: [CommonModule, Header, Sidebar, Pageheader, RouterLink],
   templateUrl: './national-sales-manager-dashboard.html',
   styleUrl: './national-sales-manager-dashboard.css',
 })

@@ -38,6 +38,8 @@ export class ViewUserComponent implements OnInit {
   userData: any = null;
   userName = '';
   isUserLoading = true;
+  locationMode: 'world' | 'geo' | 'cascade' = 'cascade';
+  productType: string = '';
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -61,13 +63,36 @@ export class ViewUserComponent implements OnInit {
         if (user) {
           const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
           this.userName = fullName || user.username || 'User';
-          const roleLabel = user.roleName ? ` (${user.roleName})` : '';
+          const roleName = user.role?.roleName || user.roleName || '';
+          const roleLabel = roleName ? ` (${roleName})` : '';
           
           this.headerBreadcrumbs = [
             { label: 'Home', route: '/admindashboard' },
             { label: 'Manage Users', route: '/users' },
             { label: `View ${this.userName}${roleLabel}` }
           ];
+
+          if (roleName) {
+            this.userService.getRoleConfiguration(roleName).subscribe({
+              next: (config) => {
+                const locType = config?.locationType?.toUpperCase() || '';
+                if (locType === 'ALL_GEOS' || locType === 'WORLD') {
+                  this.locationMode = 'world';
+                } else if (locType === 'SELECT_GEO' || locType === 'GEO') {
+                  this.locationMode = 'geo';
+                } else {
+                  this.locationMode = 'cascade';
+                }
+                this.productType = config?.productType || '';
+                this.isUserLoading = false;
+              },
+              error: (err) => {
+                console.error('Failed to fetch role configuration:', err);
+                this.isUserLoading = false;
+              }
+            });
+            return;
+          }
         }
         this.isUserLoading = false;
       },
@@ -87,6 +112,58 @@ export class ViewUserComponent implements OnInit {
   get isStockist(): boolean {
     const roleName = this.userData?.role?.roleName || this.userData?.roleName || '';
     return roleName.toUpperCase() === 'STOCKIST';
+  }
+
+  /* ─── Assigned Location & Product Getters ─────────────── */
+  get assignedGeos(): string[] {
+    if (this.locationMode === 'world' || (this.userData?.worldNames && this.userData.worldNames.length > 0)) {
+      return ['All GEOS'];
+    }
+    return this.userData?.geoNames || [];
+  }
+
+  get assignedCountries(): string[] {
+    return this.userData?.countryNames || [];
+  }
+
+  get assignedRegions(): string[] {
+    return this.userData?.regionNames || [];
+  }
+
+  get assignedStates(): string[] {
+    return this.userData?.stateNames || [];
+  }
+
+  get assignedDistricts(): string[] {
+    return this.userData?.districtNames || [];
+  }
+
+  get assignedCities(): string[] {
+    return this.userData?.cityNames || [];
+  }
+
+  get assignedCategories(): string[] {
+    if (this.productType === 'ALL_PRODUCTS') {
+      return ['All Categories'];
+    }
+    return this.userData?.categoryNames || [];
+  }
+
+  get assignedGroups(): string[] {
+    if (this.productType === 'ALL_PRODUCTS') {
+      return ['All Groups'];
+    }
+    return this.userData?.groupNames || [];
+  }
+
+  get assignedProducts(): string[] {
+    if (this.productType === 'ALL_PRODUCTS') {
+      return ['All Products Assigned'];
+    }
+    if (this.productType === 'NO_PRODUCTS') {
+      return ['No Products Assigned'];
+    }
+    return this.userData?.productNames || [];
   }
 
   goBack(): void {

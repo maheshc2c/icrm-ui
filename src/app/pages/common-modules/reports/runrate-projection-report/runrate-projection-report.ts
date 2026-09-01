@@ -282,7 +282,7 @@ export class RunrateProjectionReportComponent implements OnInit, AfterViewInit, 
     const options: any = {
       chart: {
         type: 'spline',
-        backgroundColor: 'transparent'
+        backgroundColor: '#ffffff'
       },
       title: {
         text: chartTitle,

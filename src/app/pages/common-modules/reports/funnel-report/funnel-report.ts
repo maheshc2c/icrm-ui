@@ -526,6 +526,7 @@ export class FunnelReportComponent implements OnInit, AfterViewInit, OnDestroy {
       plotOptions: {
         column: {
           stacking: 'normal',
+          minPointLength: 5,
           dataLabels: { enabled: true, color: '#ffffff' }
         },
         series: {

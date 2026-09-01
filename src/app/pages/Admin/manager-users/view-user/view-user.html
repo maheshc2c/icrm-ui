@@ -49,10 +49,10 @@
         </div>
       </div>
 
-      <!-- Module 2: Organization & Assignment -->
+      <!-- Module 2: Organization Details -->
       <div class="grid-section">
         <div class="section-title">
-          Location & Products
+          Organization Details
         </div>
         <div class="info-grid">
           <div class="info-item">
@@ -81,6 +81,77 @@
         <div class="full-width-item">
           <label>Address Line 2</label>
           <span class="value block-text">{{ userData.address2 || '' }}</span>
+        </div>
+      </div>
+
+      <!-- Module 3: Assigned Location Details -->
+      <div class="grid-section" *ngIf="assignedGeos.length || assignedCountries.length || assignedRegions.length || assignedStates.length || assignedDistricts.length || assignedCities.length">
+        <div class="section-title">
+          Assigned Location Details
+        </div>
+        <div class="info-grid">
+          <div class="info-item" *ngIf="assignedGeos.length > 0">
+            <label>Assigned Geo</label>
+            <div class="tags-container">
+              <span class="tag-chip location-chip" *ngFor="let geo of assignedGeos">{{ geo }}</span>
+            </div>
+          </div>
+          <div class="info-item" *ngIf="assignedCountries.length > 0">
+            <label>Assigned Country</label>
+            <div class="tags-container">
+              <span class="tag-chip location-chip" *ngFor="let country of assignedCountries">{{ country }}</span>
+            </div>
+          </div>
+          <div class="info-item" *ngIf="assignedRegions.length > 0">
+            <label>Assigned Region</label>
+            <div class="tags-container">
+              <span class="tag-chip location-chip" *ngFor="let region of assignedRegions">{{ region }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="full-width-item mt-2" *ngIf="assignedStates.length > 0">
+          <label>Assigned States</label>
+          <div class="tags-container">
+            <span class="tag-chip location-chip" *ngFor="let state of assignedStates">{{ state }}</span>
+          </div>
+        </div>
+        <div class="full-width-item mt-2" *ngIf="assignedDistricts.length > 0">
+          <label>Assigned Districts</label>
+          <div class="tags-container">
+            <span class="tag-chip location-chip" *ngFor="let dist of assignedDistricts">{{ dist }}</span>
+          </div>
+        </div>
+        <div class="full-width-item mt-2" *ngIf="assignedCities.length > 0">
+          <label>Assigned Cities</label>
+          <div class="tags-container">
+            <span class="tag-chip location-chip" *ngFor="let city of assignedCities">{{ city }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 4: Assigned Product Details -->
+      <div class="grid-section" *ngIf="assignedCategories.length || assignedGroups.length || assignedProducts.length">
+        <div class="section-title">
+          Assigned Product Details
+        </div>
+        <div class="full-width-item" *ngIf="assignedCategories.length > 0">
+          <label>Assigned Categories</label>
+          <div class="tags-container">
+            <span class="tag-chip product-chip" *ngFor="let cat of assignedCategories">{{ cat }}</span>
+          </div>
+        </div>
+        <div class="full-width-item mt-2" *ngIf="assignedGroups.length > 0">
+          <label>Assigned Groups</label>
+          <div class="tags-container">
+            <span class="tag-chip product-chip" *ngFor="let grp of assignedGroups">{{ grp }}</span>
+          </div>
+        </div>
+        <div class="full-width-item mt-2" *ngIf="assignedProducts.length > 0">
+          <label>Assigned Products</label>
+          <div class="tags-container">
+            <span class="tag-chip product-chip" *ngFor="let prod of assignedProducts">{{ prod }}</span>
+          </div>
         </div>
       </div>
 
