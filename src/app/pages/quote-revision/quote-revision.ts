@@ -8,6 +8,7 @@ import { Pageheader } from '../../shared/pageheader/pageheader';
 import { Breadcrumb } from '../../models/breadcrumb';
 import { Sidebar } from '../../layout/sidebar/sidebar';
 import { Header } from '../../layout/header/header';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-quote-revision',
@@ -16,6 +17,7 @@ import { Header } from '../../layout/header/header';
   templateUrl: './quote-revision.html'
 })
 export class QuoteRevisionComponent implements OnInit {
+  private baseUrl = environment.baseUrl;
   quoteId: string = '';
   leadId: number | null = null;
   breadcrumbs: Breadcrumb[] = [
@@ -85,7 +87,7 @@ export class QuoteRevisionComponent implements OnInit {
       quoteIdNum = parseInt(this.quoteId, 10) || 0;
     }
 
-    this.http.get(`http://localhost:8080/quote/quote-revision-details/${quoteIdNum}`, { headers }).subscribe({
+    this.http.get(`${this.baseUrl}/quote/quote-revision-details/${quoteIdNum}`, { headers }).subscribe({
       next: (res: any) => {
         if (res.status && res.data) {
           const data = res.data;
@@ -221,7 +223,7 @@ export class QuoteRevisionComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    this.http.post('http://localhost:8080/quote/create/quote-revision', payload, { headers }).subscribe({
+    this.http.post(`${this.baseUrl}/quote/create/quote-revision`, payload, { headers }).subscribe({
       next: (res: any) => {
         if (res && res.status === false) {
           this.isSubmitting = false;

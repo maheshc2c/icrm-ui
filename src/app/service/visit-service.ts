@@ -20,11 +20,13 @@ export interface VisitDto {
   modifiedTime?: string;
 }
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class VisitService {
-  private baseUrl = 'http://localhost:8080/SalesEngineer';
+  private baseUrl = `${environment.baseUrl}/SalesEngineer`;
 
   constructor(private http: HttpClient, private auth: AuthService) { }
 

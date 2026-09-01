@@ -5,12 +5,14 @@ import { Product, ProductDto } from '../models/product';
 import { AuthService } from './auth-service';
 import { isPlatformBrowser } from '@angular/common';
  
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private baseUrl = 'http://localhost:8080/admin';
-  private productApiUrl = 'http://localhost:8080/product';
+  private baseUrl = `${environment.baseUrl}/admin`;
+  private productApiUrl = `${environment.baseUrl}/product`;
  
   constructor(
     private http: HttpClient,

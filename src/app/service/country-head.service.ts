@@ -5,13 +5,15 @@ import { AuthService } from './auth-service';
 import { QuoteTrackingModel } from '../models/quote-tracking.model';
 import { PurchaseOrderTrackingModel } from '../models/purchase-order-tracking.model';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class CountryHeadService {
-  private baseUrl = 'http://localhost:8080/CountryHead';
+  private baseUrl = `${environment.baseUrl}/CountryHead`;
 
-  private commonUrl = 'http://localhost:8080/track-quote-po';
+  private commonUrl = `${environment.baseUrl}/track-quote-po`;
 
   constructor(
     private http: HttpClient,

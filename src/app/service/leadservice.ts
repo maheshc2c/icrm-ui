@@ -5,11 +5,13 @@ import { AuthService } from './auth-service';
 import { LeadSummary, LeadPayload } from '../models/lead-model';
 import { OpportunityTableModel } from '../models/opportunity-table.model';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class Leadservice {
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
 
   constructor(private http: HttpClient, private auth: AuthService) { }
 

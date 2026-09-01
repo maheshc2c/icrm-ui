@@ -17,6 +17,7 @@ import { Customerservice } from '../../../../service/customerservice';
 import { LeadPayload } from '../../../../models/lead-model';
 import { ConfirmDialogService } from '../../../../service/confirm-dialog.service';
 import { ToastService } from '../../../../service/toast.service';
+import { environment } from '../../../../../environments/environment';
 
 interface FormField {
   name: string;
@@ -432,7 +433,7 @@ export class AddleadComponent implements OnInit {
 
   /* ================= CONTRACT NOTE QUOTE OPTIONS LOAD ================= */
   loadContractNoteQuoteOptions(): void {
-    const baseUrl = 'http://localhost:8080/contractnote/quote';
+    const baseUrl = `${environment.baseUrl}/contractnote/quote`;
     const url = this.leadId ? `${baseUrl}?leadId=${this.leadId}` : baseUrl;
     const token = this.auth.getToken?.();
     let headers = new HttpHeaders();

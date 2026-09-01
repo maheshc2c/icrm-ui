@@ -4,12 +4,14 @@ import { AuthService } from "../../../service/auth-service";
 import { SearchQuoteApproval } from "../../../models/QouteApproval/search-quote-approval.model";
 import { QuoteApprovalAction } from "../../../models/QouteApproval/quote-approval-action.model";
 
+import { environment } from '../../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class QuoteApprovalService {
 
-  private baseUrl = "http://localhost:8080";
+  private baseUrl = environment.baseUrl;
 
   constructor(
       private http: HttpClient,

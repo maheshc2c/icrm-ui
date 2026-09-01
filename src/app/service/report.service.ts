@@ -78,12 +78,14 @@ export interface IncentiveFilterRequest {
   };
 }
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ReportService {
 
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,

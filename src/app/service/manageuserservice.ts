@@ -5,12 +5,14 @@ import { map, shareReplay } from 'rxjs/operators';
 import { AuthService } from './auth-service';
 import { SuperAdminManageUser } from '../models/super-admin-mange-user-model';
  
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ManageUserService {
  
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
   private usersCache$: Observable<SuperAdminManageUser[]> | null = null;
  
   constructor(
