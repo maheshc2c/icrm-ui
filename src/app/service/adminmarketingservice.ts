@@ -12,6 +12,8 @@ import { catchError, of, tap, Subject, map } from "rxjs";
 import * as XLSX from 'xlsx';
 import { DropdownOption } from "../models/assign-lead.model";
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,7 +23,7 @@ export class adminMarketingservice {
   public refreshSubject = new Subject<void>();
 
 
-  public baseUrl = 'http://localhost:8080'; 
+  public baseUrl = environment.baseUrl; 
 
   constructor(
     private http: HttpClient,
