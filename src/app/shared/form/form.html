@@ -26,7 +26,6 @@
               <input *ngIf="field.type === 'text' || field.type === 'number' || field.type === 'email'"
                 [type]="field.type" class="company-text-input" [placeholder]="field.placeholder || ''"
                 [(ngModel)]="formData[field.name]" [name]="field.name" [required]="field.required"
-                [disabled]="!!field.disabled"
                 [pattern]="field.pattern || '.*'"
                 [id]="'form-field-' + field.name"
                 (ngModelChange)="onFieldInput(field.name); fieldChange.emit({ name: field.name, value: $event }); field.onChange?.($event)" />

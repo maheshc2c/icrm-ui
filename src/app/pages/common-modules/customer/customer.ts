@@ -39,7 +39,6 @@ export class Customer {
 
    // 🔹 Table Columns
   columns = [
-    { header: 'Customer Code', field: 'customerCode' },
     { header: 'Customer Name', field: 'customerName' },
     { header: 'Category', field: 'customerCategory' },
     { header: 'Sub Category', field: 'subCategory' },
@@ -103,11 +102,9 @@ export class Customer {
 
           this.rows = customerList.map((c: any, index: number) => {
             const cust = c.customer ? c.customer : c;
-            const codeVal = cust.customerName1 || cust.customerCode || (cust.customerId ? 'CUST-' + String(cust.customerId).padStart(4, '0') : '');
             return {
               sno: (this.currentPage - 1) * this.pageSize + index + 1,
               customerId: cust.customerId,
-              customerCode: codeVal,
               customerName: cust.customerName,
               customerCategory: cust.customerCategory?.customerCategoryName || cust.customerCategoryName || cust.category || '',
               subCategory: cust.subCategory?.subcategoryName || cust.subcategoryName || cust.subCategory || '',

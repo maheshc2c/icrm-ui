@@ -46,7 +46,7 @@ export class EditProduct implements OnInit {
   ];
 
   productFields = [
-    { name: 'productCode', label: 'Product Code', type: 'text', required: false, disabled: true },
+    { name: 'productCode', label: 'Product Code', placeholder: 'Product Code', type: 'text', required: true },
     { name: 'productCategory', label: 'Category', placeholder: 'Select Category', type: 'select', required: true, options: [] }, // Dynamic
     { name: 'productSegment', label: 'Segment', placeholder: 'Select Segment', type: 'select', required: true, options: [] }, // Dynamic key: Group
     { name: 'productSubSystem', label: 'Sub System', placeholder: 'Select Sub System', type: 'select', required: true, options: [] }, // Dynamic
@@ -128,7 +128,7 @@ export class EditProduct implements OnInit {
           // Flatten the nested object to match form control names
           this.productData = {
             ...product,
-            productCode: product.productSecondaryName || (product.productId ? 'PROD-' + String(product.productId).padStart(4, '0') : ''),
+            productCode: hasSecondaryName ? product.productSecondaryName : (product.productName || ''),
             productName: hasSecondaryName ? (product.productName || '') : (product.productDescription || product.productName || ''),
             productDescription: hasSecondaryName ? (product.productDescription || '') : '',
             productCategory: product.group?.category?.categoryName,
