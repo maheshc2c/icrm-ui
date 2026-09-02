@@ -9,6 +9,8 @@ import { Breadcrumb } from '../../../../models/breadcrumb';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../../service/auth-service';
 
+import { environment } from '../../../../../environments/environment';
+
 @Component({
   selector: 'app-addcity',
   standalone: true,
@@ -21,7 +23,7 @@ export class Addcity implements OnInit {
   model: any = {};
   isEditMode: boolean = false;
   cityId: number | null = null;
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
 
   /* ================= HEADER ================= */
   headerTitle: string = 'Add City';

@@ -6,6 +6,7 @@ import { Sidebar } from '../../../layout/sidebar/sidebar';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
 import { DashboardService } from '../../../service/dashboard.service';
 import { Userservice } from '../../../service/userservice';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-leads-dashboard',
@@ -392,7 +393,7 @@ export class LeadsDashboardComponent implements OnInit {
         const imageBase64 = canvas.toDataURL('image/png');
         const token = localStorage.getItem('token');
 
-        fetch('http://localhost:8080/leads/export-chart-pdf', {
+        fetch(`${environment.baseUrl}/leads/export-chart-pdf`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

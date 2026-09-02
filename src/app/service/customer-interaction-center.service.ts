@@ -4,12 +4,14 @@ import { Observable, map } from "rxjs";
 import { TrackLead, PaginationRequest, TrackLeadResponse } from "../models/track-lead-cic.model";
 import { AuthService } from "./auth-service";
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
 export class CustomerInteractionCenterService {
 
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,

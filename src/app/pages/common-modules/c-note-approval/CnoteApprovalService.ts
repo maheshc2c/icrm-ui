@@ -6,12 +6,14 @@ import { QuoteApprovalAction } from "../../../models/QouteApproval/quote-approva
 import { SearchContractNoteApproval } from "../../../models/SearchContractNoteApproval";
 import { Observable } from "rxjs";
 
+import { environment } from '../../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class CNoteApprovalService {
 
-  private baseUrl = "http://localhost:8080";
+  private baseUrl = environment.baseUrl;
 
   constructor(
       private http: HttpClient,

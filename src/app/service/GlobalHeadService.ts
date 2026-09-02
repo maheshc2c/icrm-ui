@@ -4,12 +4,15 @@ import { Observable } from 'rxjs';
 import { Visit } from '../models/visit';
 import { AuthService } from './auth-service';
  
+import { environment } from '../../environments/environment';
+
 @Injectable({
     providedIn: 'root'
 })
 export class GlobalHeadService {
  
-    private baseUrl = 'http://localhost:8080/GlobalHead';
+    private baseUrl = `${environment.baseUrl}/GlobalHead`;
+    private rootUrl = environment.baseUrl;
  
     constructor(private http: HttpClient, private auth: AuthService) { }
  
@@ -99,7 +102,7 @@ export class GlobalHeadService {
  
     // Visits
     createVisit(visitDto: Visit): Observable<any> {
-        return this.http.post(`http://localhost:8080/demo-visit/create`, visitDto, { headers: this.getAuthHeaders() });
+        return this.http.post(`${this.rootUrl}/demo-visit/create`, visitDto, { headers: this.getAuthHeaders() });
     }
  
     getAllVisits(): Observable<Visit[]> {
@@ -107,38 +110,38 @@ export class GlobalHeadService {
     }
  
     getVisitById(id: number): Observable<Visit> {
-        return this.http.get<Visit>(`http://localhost:8080/demo-visit/${id}`, { headers: this.getAuthHeaders() });
+        return this.http.get<Visit>(`${this.rootUrl}/demo-visit/${id}`, { headers: this.getAuthHeaders() });
     }
  
     updateVisit(id: number, visitDto: Visit): Observable<any> {
-        return this.http.put(`http://localhost:8080/demo-visit/update/${id}`, visitDto, { headers: this.getAuthHeaders() });
+        return this.http.put(`${this.rootUrl}/demo-visit/update/${id}`, visitDto, { headers: this.getAuthHeaders() });
     }
 
     toggleVisitStatus(id: number): Observable<any> {
-        return this.http.put(`http://localhost:8080/demo-visit/toggle-status/${id}`, {}, { headers: this.getAuthHeaders() });
+        return this.http.put(`${this.rootUrl}/demo-visit/toggle-status/${id}`, {}, { headers: this.getAuthHeaders() });
     }
 
     downloadDemoVisits(requestPayload: any): Observable<Blob> {
-        return this.http.post(`http://localhost:8080/demo-visit/download-excel`, requestPayload, {
+        return this.http.post(`${this.rootUrl}/demo-visit/download-excel`, requestPayload, {
             headers: this.getAuthHeaders(),
             responseType: 'blob'
         });
     }
 
     searchPlanDemoVisits(requestPayload: any): Observable<any> {
-        return this.http.post(`http://localhost:8080/demo-visit/search`, requestPayload, { headers: this.getAuthHeaders() });
+        return this.http.post(`${this.rootUrl}/demo-visit/search`, requestPayload, { headers: this.getAuthHeaders() });
     }
 
     getCustomersForDemoVisit(): Observable<any[]> {
-        return this.http.get<any[]>(`http://localhost:8080/demo-visit/customers`, { headers: this.getAuthHeaders() });
+        return this.http.get<any[]>(`${this.rootUrl}/demo-visit/customers`, { headers: this.getAuthHeaders() });
     }
 
     getLeadsForDemoVisit(): Observable<any[]> {
-        return this.http.get<any[]>(`http://localhost:8080/demo-visit/leads`, { headers: this.getAuthHeaders() });
+        return this.http.get<any[]>(`${this.rootUrl}/demo-visit/leads`, { headers: this.getAuthHeaders() });
     }
 
     getPurposesForDemoVisit(): Observable<any[]> {
-        return this.http.get<any[]>(`http://localhost:8080/demo-visit/purposes`, { headers: this.getAuthHeaders() });
+        return this.http.get<any[]>(`${this.rootUrl}/demo-visit/purposes`, { headers: this.getAuthHeaders() });
     }
  
     // Leads

@@ -9,6 +9,8 @@ import { Districtservice } from '../../../../service/Districtservice';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../../service/auth-service';
 
+import { environment } from '../../../../../environments/environment';
+
 @Component({
   selector: 'app-adddistrict',
   standalone: true,
@@ -26,7 +28,7 @@ export class Adddistrict implements OnInit {
   isEditMode = false;
   districtId!: number;
   model: any = {};
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
 
   constructor(
     private districtService: Districtservice,

@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth-service';
 import { Region } from '../models/region';
  
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class Regionservice {
  
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
  
   constructor(
     private http: HttpClient,

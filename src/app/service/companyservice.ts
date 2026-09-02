@@ -5,12 +5,14 @@ import { map } from 'rxjs/operators';
 import { AuthService } from './auth-service';
 import { Company } from '../models/company';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class Companyservice {
 
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,
@@ -34,7 +36,7 @@ export class Companyservice {
 // ================= SEARCH =================
 searchCompany(name: string) {
   const headers = this.getAuthHeaders();
-  console.log('Search headers:', headers);   // 👈 check token here
+  console.log('Search headers:', headers);  
 
   return this.http.get<Company[]>(
     `${this.baseUrl}/superadmin/search-company`,
@@ -48,7 +50,7 @@ searchCompany(name: string) {
 downloadCompanyExcel(data: Company[]): Observable<Blob> {
   return this.http.post(
     `${this.baseUrl}/superadmin/company-excel`,
-    data,    // ✅ send actual table data
+    data,
     {
       headers: this.getAuthHeaders(),
       responseType: 'blob'

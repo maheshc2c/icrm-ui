@@ -3,12 +3,14 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth-service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserTargetService {
-    private apiUrl = 'http://localhost:8080/admin';
+    private apiUrl = `${environment.baseUrl}/admin`;
+    private productApiUrl = `${environment.baseUrl}/product`;
 
     constructor(
         private http: HttpClient,
@@ -37,7 +39,7 @@ export class UserTargetService {
                 sortOrder: "DESC"
             }
         };
-        return this.http.post<any>('http://localhost:8080/product/user-target-search', body, { headers: this.getAuthHeaders() });
+        return this.http.post<any>(`${this.productApiUrl}/user-target-search`, body, { headers: this.getAuthHeaders() });
     }
 
     // PUT /admin/toggle-user-status/{userId} - Toggle active/inactive status
@@ -68,7 +70,7 @@ export class UserTargetService {
                 sortOrder: "DESC"
             }
         };
-        return this.http.post<any>('http://localhost:8080/product/user-target-search', body, { headers: this.getAuthHeaders() });
+        return this.http.post<any>(`${this.productApiUrl}/user-target-search`, body, { headers: this.getAuthHeaders() });
     }
 
     // GET /admin/user-products/{userId} — get product names assigned to user
@@ -91,7 +93,7 @@ export class UserTargetService {
         const token = this.auth.getToken();
         let headers = new HttpHeaders();
         if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-        return this.http.post<any>(`http://localhost:8080/product/upload-userTarget/${userId}`, formData, { headers });
+        return this.http.post<any>(`${this.productApiUrl}/upload-userTarget/${userId}`, formData, { headers });
     }
 
     // POST /product/download-userTarget — download CSV template
@@ -99,7 +101,7 @@ export class UserTargetService {
         const token = this.auth.getToken();
         let headers = new HttpHeaders();
         if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-        return this.http.post(`http://localhost:8080/product/download-userTarget`, { userId, financialYearName }, { headers, responseType: 'blob' });
+        return this.http.post(`${this.productApiUrl}/download-userTarget`, { userId, financialYearName }, { headers, responseType: 'blob' });
     }
 
     // GET /product/download-empty-userTarget — download empty CSV template
@@ -107,7 +109,7 @@ export class UserTargetService {
         const token = this.auth.getToken();
         let headers = new HttpHeaders();
         if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-        return this.http.get(`http://localhost:8080/product/download-empty-userTarget`, { headers, responseType: 'blob' });
+        return this.http.get(`${this.productApiUrl}/download-empty-userTarget`, { headers, responseType: 'blob' });
     }
 
     // DELETE /admin/delete-user/{userId} — Delete a user
@@ -122,11 +124,11 @@ export class UserTargetService {
 
     // GET /product/assign-target/{userId}/{financialYearId}
     getProductTargetsForUser(userId: number, financialYearId: number): Observable<any[]> {
-        return this.http.get<any[]>(`http://localhost:8080/product/assign-target/${userId}/${financialYearId}`, { headers: this.getAuthHeaders() });
+        return this.http.get<any[]>(`${this.productApiUrl}/assign-target/${userId}/${financialYearId}`, { headers: this.getAuthHeaders() });
     }
 
     // POST /product/assign-target/{userId}/{financialYearId}
     saveProductTargetsForUser(userId: number, financialYearId: number, targetDTOs: any[]): Observable<any> {
-        return this.http.post<any>(`http://localhost:8080/product/assign-target/${userId}/${financialYearId}`, targetDTOs, { headers: this.getAuthHeaders(), responseType: 'text' as 'json' });
+        return this.http.post<any>(`${this.productApiUrl}/assign-target/${userId}/${financialYearId}`, targetDTOs, { headers: this.getAuthHeaders(), responseType: 'text' as 'json' });
     }
 }

@@ -6,6 +6,7 @@ import { Breadcrumb } from '../../../../models/breadcrumb';
 import { ReportsLayoutComponent } from '../reports-layout/reports-layout';
 import { AuthService } from '../../../../service/auth-service';
 import { NgApexchartsModule, ApexOptions } from 'ng-apexcharts';
+import { environment } from '../../../../../environments/environment';
 
 export type ChartOptions = Partial<ApexOptions>;
 
@@ -17,6 +18,7 @@ export type ChartOptions = Partial<ApexOptions>;
   styleUrl: './incentives-report.css'
 })
 export class IncentivesReportComponent implements OnInit {
+  private baseUrl = environment.baseUrl;
   title = 'Incentives Report';
   breadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/sales-manager-dashboard' },
@@ -90,7 +92,7 @@ export class IncentivesReportComponent implements OnInit {
     const token = this.auth.getToken();
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
 
-    this.http.get<any[]>('http://localhost:8080/user/active-users-dropdown', { headers }).subscribe({
+    this.http.get<any[]>(`${this.baseUrl}/user/active-users-dropdown`, { headers }).subscribe({
       next: (data) => {
         this.users = data;
         this.filteredUsers = data;
@@ -103,7 +105,7 @@ export class IncentivesReportComponent implements OnInit {
     const token = this.auth.getToken();
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
 
-    this.http.get<any>('http://localhost:8080/user/incentives/financialyears', { headers }).subscribe({
+    this.http.get<any>(`${this.baseUrl}/user/incentives/financialyears`, { headers }).subscribe({
       next: (response) => {
         if (response.status && response.data) {
           this.financialYears = response.data;
@@ -117,7 +119,7 @@ export class IncentivesReportComponent implements OnInit {
     const token = this.auth.getToken();
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
 
-    this.http.get<any[]>('http://localhost:8080/location/locations?territoryLevelId=4', { headers }).subscribe({
+    this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=4`, { headers }).subscribe({
       next: (data) => {
         this.regions = Array.isArray(data) ? data : [];
       },
@@ -181,7 +183,7 @@ export class IncentivesReportComponent implements OnInit {
     };
 
     this.isLoading = true;
-    this.http.post<any>('http://localhost:8080/reports/incentives/filter', body, { headers }).subscribe({
+    this.http.post<any>(`${this.baseUrl}/reports/incentives/filter`, body, { headers }).subscribe({
       next: (response) => {
         this.isLoading = false;
         if (response.status && response.data) {
@@ -473,7 +475,7 @@ export class IncentivesReportComponent implements OnInit {
       pagination: { pageNumber: 0, pageSize: 100, sortBy: 'id', sortOrder: 'ASC' }
     };
 
-    this.http.post('http://localhost:8080/reports/incentives/download', body, {
+    this.http.post(`${this.baseUrl}/reports/incentives/download`, body, {
       headers, responseType: 'blob'
     }).subscribe({
       next: (blob: Blob) => {
