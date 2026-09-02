@@ -1304,6 +1304,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/Superadmin/superadmin-manage-users/superadmin-manage-users').then(m => m.SuperadminManageUsers)
   },
+  {
+    path: 'superadmin/superadmin-manage-users',
+    loadComponent: () =>
+      import('./pages/Superadmin/superadmin-manage-users/superadmin-manage-users').then(m => m.SuperadminManageUsers)
+  },
 
 {
           path: 'superadmin/add-manage-user',
