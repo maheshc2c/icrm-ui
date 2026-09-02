@@ -21,8 +21,8 @@ export class Form implements OnChanges {
   @Input() title: string = '';
   @Input() fields: any[] = [];
   @Input() model: any;
- 
- 
+  @Input() isSubmitting: boolean = false;
+
   @Output() formSubmit = new EventEmitter<any>();
   @Output() cancelForm  = new EventEmitter<void>();
   @Output() fieldChange = new EventEmitter<{ name: string, value: any }>();
@@ -278,6 +278,7 @@ export class Form implements OnChanges {
   }
  
   submit(form: any) {
+    if (this.isSubmitting) return;
     this.errors = {};
     let firstInvalidFieldName: string | null = null;
  
