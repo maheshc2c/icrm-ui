@@ -106,6 +106,13 @@ export class Addcustomer implements OnInit {
       this.headerTitle = 'Edit Customer';
       this.buildBreadcrumbs(this.isEditMode);
 
+      // In Edit mode: make Customer Code disabled
+      const codeField = this.customerFields.find(f => f.name === 'customerName1');
+      if (codeField) {
+        codeField.required = false;
+        codeField.disabled = true;
+      }
+
       const stateData = history.state.customerData;
       if (stateData && stateData.customerId === this.customerId) {
         
@@ -142,6 +149,10 @@ export class Addcustomer implements OnInit {
       this.isEditMode = false;
       this.headerTitle = 'Add New Customer';
       this.buildBreadcrumbs(this.isEditMode);
+
+      // In Add mode: hide Customer Code from form input fields
+      this.customerFields = this.customerFields.filter(f => f.name !== 'customerName1');
+
       this.loadDropdowns();
     }
   }
@@ -325,6 +336,12 @@ export class Addcustomer implements OnInit {
   }
 
   private populateCustomerForm(customer: any): void {
+    const codeField = this.customerFields.find(f => f.name === 'customerName1');
+    if (codeField) {
+      codeField.required = false;
+      codeField.disabled = true;
+    }
+
     if (customer.customerInstalledBaseDTO && Array.isArray(customer.customerInstalledBaseDTO)) {
       this.installedBases = JSON.parse(JSON.stringify(customer.customerInstalledBaseDTO));
     }
@@ -427,8 +444,11 @@ export class Addcustomer implements OnInit {
         replacementYear: (b.replacementYear !== null && b.replacementYear !== undefined && b.replacementYear !== '') ? Number(b.replacementYear) : null
       }));
 
+    const autoCustomerCode = data.customerName1 || ('CUST-' + Math.floor(10000 + Math.random() * 90000));
+
     const payload = {
       ...data,
+      customerName1: autoCustomerCode,
       customerStatus: 1,
       customerCategoryName: data.customerCategory,
       subcategoryName: data.subCategory,

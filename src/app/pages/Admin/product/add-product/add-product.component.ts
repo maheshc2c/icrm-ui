@@ -105,7 +105,6 @@ export class AddProduct implements OnInit {
 
   /* ================= FORM FIELDS ================= */
   productFields = [
-    { name: 'productCode', label: 'Product Code', placeholder: 'Product Code', type: 'text', required: true },
     { name: 'productCategory', label: 'Category', placeholder: 'Select Category', type: 'select', required: true, options: [] }, // Dynamic
     { name: 'productSegment', label: 'Segment', placeholder: 'Select Segment', type: 'select', required: true, options: [] }, // Dynamic key: Group
     { name: 'productSubSystem', label: 'Sub System', placeholder: 'Select Sub System', type: 'select', required: true, options: [] }, // Dynamic
@@ -238,13 +237,15 @@ export class AddProduct implements OnInit {
     const selectedType = this.productTypes.find(t => t.typeName === data.productType);
     const selectedSubSys = this.subSystems.find(s => s.subcategoryName === data.productSubSystem);
  
+    const autoProductCode = data.productCode || ('PROD-' + Math.floor(10000 + Math.random() * 90000));
+ 
     const payload = {
       ...data,
       groupId: selectedGroup ? selectedGroup.groupId : null,
       productTypeId: selectedType ? selectedType.productTypeId : null,
       subCategoryId: selectedSubSys ? selectedSubSys.subCategoryId : null,
      
-      productSecondaryName: data.productCode,
+      productSecondaryName: autoProductCode,
       productFeatures: data.productTechnicalSpecifications,
       productScope: data.productScopeOfSupply,
       productStatus: 1,

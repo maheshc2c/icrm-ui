@@ -50,6 +50,7 @@ export class Product implements OnInit {
   ];
  
   columns = [
+    { header: 'Product Code', field: 'productCode' },
     { header: 'Category', field: 'category' },
     { header: 'Segment', field: 'segment' },
     { header: 'Product', field: 'productName' },
@@ -83,10 +84,11 @@ export class Product implements OnInit {
  
         // Sort descending by productId to show newest first
         products.sort((a: any, b: any) => (b.productId || 0) - (a.productId || 0));
-
+ 
         this.fullRows = products;
         this.rows = products.map((c, index) => ({
           productId: c.productId ?? null,
+          productCode: c.productSecondaryName || c.productCode || (c.productId ? 'PROD-' + String(c.productId).padStart(4, '0') : ''),
           category: c.group?.category?.categoryName ?? '',
           segment: c.group?.groupName ?? '',
           productName: c.productName ?? '',
@@ -130,6 +132,7 @@ export class Product implements OnInit {
       // 🔁 Restore full list from fullRows
       this.rows = this.fullRows.map((c) => ({
         productId: c.productId ?? null,
+        productCode: c.productSecondaryName || c.productCode || (c.productId ? 'PROD-' + String(c.productId).padStart(4, '0') : ''),
         category: c.group?.category?.categoryName ?? '',
         segment: c.group?.groupName ?? '',
         productName: c.productName ?? '',
@@ -162,6 +165,7 @@ export class Product implements OnInit {
     // Update table rows
     this.rows = filtered.map((c) => ({
       productId: c.productId ?? null,
+      productCode: c.productSecondaryName || c.productCode || (c.productId ? 'PROD-' + String(c.productId).padStart(4, '0') : ''),
       category: c.group?.category?.categoryName ?? '',
       segment: c.group?.groupName ?? '',
       productName: c.productName ?? '',
