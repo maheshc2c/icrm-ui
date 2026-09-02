@@ -86,6 +86,27 @@ export class AddUsersComponent implements OnInit {
   selProducts: string[] = [];
   categories: string[] = [];
   step4Submitted: boolean = false;
+  isSubmitting: boolean = false;
+
+  private formatErrorMessage(err: any, fallbackMessage: string): string {
+    const rawMessage = typeof err?.error === 'string'
+      ? err.error
+      : (err?.error?.message || err?.message || '');
+
+    const lower = rawMessage.toLowerCase();
+    if (
+      lower.includes('employee id already exists') ||
+      lower.includes('already exists') ||
+      lower.includes('duplicate') ||
+      err?.status === 400 || err?.status === 409
+    ) {
+      const empId = this.formInitialData?.username || '';
+      return empId
+        ? `A user already exists with Employee ID "${empId}". Please try changing the Employee ID and submit again.`
+        : 'A user already exists with this Employee ID. Please try changing the Employee ID and submit again.';
+    }
+    return rawMessage || fallbackMessage;
+  }
 
   /* ================= ON INIT ================= */
   ngOnInit(): void {
@@ -261,6 +282,7 @@ export class AddUsersComponent implements OnInit {
   }
 
   onFormSubmit(data: any): void {
+    if (this.isSubmitting) return;
     if (data) {
       this.formInitialData = { ...this.formInitialData, ...data };
     }
@@ -279,6 +301,7 @@ export class AddUsersComponent implements OnInit {
   }
 
   handleStepSubmit(data?: any): void {
+    if (this.isSubmitting) return;
     const maxStep = 4;
     if (this.currentStep < maxStep) {
       this.goToNextStep(data);
@@ -296,6 +319,9 @@ export class AddUsersComponent implements OnInit {
   }
 
   saveUser(data: any): void {
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
+
     const payload = {
       roleName: data.roleName || this.selectedRole,
       firstName: data.firstName,
@@ -343,11 +369,13 @@ export class AddUsersComponent implements OnInit {
       this.userService.updateUser(this.userId, payload).subscribe({
         next: () => {
           this.toastService.success('User updated successfully');
+          this.isSubmitting = false;
           this.router.navigate(['/users']);
         },
         error: (err: any) => {
           console.error('Update failed', err);
-          const msg = err.error?.message || err.error || 'Failed to update Users';
+          this.isSubmitting = false;
+          const msg = this.formatErrorMessage(err, 'Failed to update user');
           this.toastService.error(msg);
         }
       });
@@ -355,11 +383,14 @@ export class AddUsersComponent implements OnInit {
       this.userService.createUserAdmin(payload).subscribe({
         next: () => {
           this.toastService.success('User created successfully');
+          this.isSubmitting = false;
           this.router.navigate(['/users']);
         },
         error: (err: any) => {
           console.error('Create failed', err);
-          this.toastService.error('Failed to create user. Please check your input and try again.');
+          this.isSubmitting = false;
+          const msg = this.formatErrorMessage(err, 'Failed to create user. Please check your input and try again.');
+          this.toastService.error(msg);
         }
       });
     }

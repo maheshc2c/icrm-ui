@@ -203,8 +203,33 @@ export class AddManageUser implements OnInit {
     { name: 'branch', label: 'Branch', placeholder: 'Branch', type: 'select', required: true, options: [] as any[] }
   ];
 
+  isSubmitting = false;
+
+  private formatErrorMessage(err: any, fallbackMessage: string, employeeId?: string): string {
+    const rawMessage = typeof err?.error === 'string'
+      ? err.error
+      : (err?.error?.message || err?.message || '');
+
+    const lower = rawMessage.toLowerCase();
+    if (
+      lower.includes('employee id already exists') ||
+      lower.includes('already exists') ||
+      lower.includes('duplicate') ||
+      err?.status === 400 || err?.status === 409
+    ) {
+      const empId = employeeId || '';
+      return empId
+        ? `A user already exists with Employee ID "${empId}". Please try changing the Employee ID and submit again.`
+        : 'A user already exists with this Employee ID. Please try changing the Employee ID and submit again.';
+    }
+    return rawMessage || fallbackMessage;
+  }
+
   /* ================= SAVE ================= */
   saveManageUser(data: any): void {
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
+
     // Transform payload to match backend DTO
     const payload = {
       ...data,
@@ -219,26 +244,30 @@ export class AddManageUser implements OnInit {
 
     if (this.isEditMode) {
       this.manageUserService.updateUser(this.manageUserId, payload).subscribe({
-        // next: () => this.router.navigate(['/superadmin/manage-users']),
-         next: () => {
+        next: () => {
+          this.isSubmitting = false;
           this.manageUserService.clearUsersCache();
           this.router.navigate(['/superadmin/manage-users']);
         },
         error: (err: any) => {
           console.error('Update failed', err);
-          alert('Failed to update user');
+          this.isSubmitting = false;
+          const msg = this.formatErrorMessage(err, 'Failed to update user', data.employeeId);
+          alert(msg);
         }
       });
     } else {
       this.manageUserService.createUser(payload).subscribe({
-        // next: () => this.router.navigate(['/superadmin/manage-users']),
-         next: () => {
+        next: () => {
+          this.isSubmitting = false;
           this.manageUserService.clearUsersCache();
           this.router.navigate(['/superadmin/manage-users']);
         },
         error: (err: any) => {
           console.error('Create failed', err);
-          alert('Failed to create user');
+          this.isSubmitting = false;
+          const msg = this.formatErrorMessage(err, 'Failed to create user', data.employeeId);
+          alert(msg);
         }
       });
     }
