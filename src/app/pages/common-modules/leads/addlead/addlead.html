@@ -683,11 +683,11 @@
       <tbody>
         <tr *ngFor="let row of installationBaseDetails">
           <td>{{ row.competitors || row.competitor || 'N/A' }}</td>
-          <td>{{ row.productModel || 'N/A' }}</td>
+          <td>{{ row.productModel || row.product_model || 'N/A' }}</td>
           <td>{{ row.quantity !== null && row.quantity !== undefined ? row.quantity : 'N/A' }}</td>
           <td>{{ row.make || 'N/A' }}</td>
-          <td>{{ row.yearOfPurchase || 'N/A' }}</td>
-          <td>{{ row.replacementYear || 'N/A' }}</td>
+          <td>{{ row.yearOfPurchase || row.year_of_purchase || 'N/A' }}</td>
+          <td>{{ row.replacementYear || row.replacement_year || 'N/A' }}</td>
         </tr>
         <tr *ngIf="installationBaseDetails.length === 0" class="no-records-row">
           <td colspan="6" class="text-center py-4" style="padding: 20px; background: #fdfdfd;">
@@ -964,9 +964,9 @@
 
     <!-- Actions -->
     <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; border-top: 1px solid #eee; padding-top: 16px;">
-      <button class="btn btn-light btn-sm" style="border: 1px solid #ccc; border-radius: 4px; padding: 6px 16px;" (click)="showAddQuoteModal = false">Cancel</button>
-      <button class="btn btn-primary btn-sm" style="background-color: #3b82f6; border: none; border-radius: 4px; padding: 6px 16px; color: white;" (click)="submitQuote()" [disabled]="!quoteForm.opportunityId">
-        <i class="fas fa-check"></i> Submit
+      <button class="btn btn-light btn-sm" style="border: 1px solid #ccc; border-radius: 4px; padding: 6px 16px;" (click)="showAddQuoteModal = false" [disabled]="quoteSubmitting">Cancel</button>
+      <button class="btn btn-primary btn-sm" style="background-color: #3b82f6; border: none; border-radius: 4px; padding: 6px 16px; color: white; display: inline-flex; align-items: center; gap: 6px;" (click)="submitQuote()" [disabled]="!quoteForm.opportunityId || quoteSubmitting" [style.opacity]="quoteSubmitting ? 0.6 : 1">
+        <i class="fas" [ngClass]="quoteSubmitting ? 'fa-spinner fa-spin' : 'fa-check'"></i> {{ quoteSubmitting ? 'Submitting...' : 'Submit' }}
       </button>
     </div>
   </div>

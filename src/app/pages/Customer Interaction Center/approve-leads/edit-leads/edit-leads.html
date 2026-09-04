@@ -390,12 +390,12 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of installationBaseList">
-          <td>{{ item.competitors || '—' }}</td>
-          <td>{{ item.productModel || '—' }}</td>
+          <td>{{ item.competitors || item.competitor || '—' }}</td>
+          <td>{{ item.productModel || item.product_model || '—' }}</td>
           <td>{{ item.quantity !== null && item.quantity !== undefined ? item.quantity : '—' }}</td>
           <td>{{ item.make || '—' }}</td>
-          <td>{{ item.yearOfPurchase || '—' }}</td>
-          <td>{{ item.replacementYear || '—' }}</td>
+          <td>{{ item.yearOfPurchase || item.year_of_purchase || '—' }}</td>
+          <td>{{ item.replacementYear || item.replacement_year || '—' }}</td>
         </tr>
         <tr *ngIf="installationBaseList.length === 0" class="no-records-row">
           <td colspan="6" class="text-center py-4" style="padding: 20px; background: #fdfdfd;">

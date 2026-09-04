@@ -61,20 +61,20 @@ export class Customerservice {
     });
   }
 
+  getCustomerById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/customer/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   getInstallationBase(customerId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/customer-installation-base/${customerId}`, {
+    return this.http.get<any[]>(`${this.baseUrl}/customer/customer-installation-base/${customerId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
   saveInstallationBase(customerId: number, records: any[]): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/customer-installation-base/${customerId}`, records, {
-      headers: this.getAuthHeaders()
-    });
-  }
-
-  getCustomerById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/customer/${id}`, {
+    return this.http.post<any>(`${this.baseUrl}/customer/customer-installation-base/${customerId}`, records, {
       headers: this.getAuthHeaders()
     });
   }

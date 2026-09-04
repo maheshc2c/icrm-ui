@@ -97,6 +97,25 @@
                             <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 6 || row.hasQuote)" [class.partial]="((row.leadStatus !== undefined ? row.leadStatus : row.status) === 6)" [class.inactive]="((row.leadStatus !== undefined ? row.leadStatus : row.status) < 6 && !row.hasQuote)">Quote</span>
                             <span class="status-badge" [class.active]="((row.leadStatus !== undefined ? row.leadStatus : row.status) >= 10 || row.isContractNoteCompleted)" [class.partial]="!row.isContractNoteCompleted && ((row.leadStatus !== undefined ? row.leadStatus : row.status) === 8 || (row.leadStatus !== undefined ? row.leadStatus : row.status) === 9 || ((row.leadStatus !== undefined ? row.leadStatus : row.status) < 10 && row.hasCNote))" [class.inactive]="!row.isContractNoteCompleted && ((row.leadStatus !== undefined ? row.leadStatus : row.status) < 8 && !row.hasCNote)">C Note</span>
                           </div>
+                        } @else if (col.field === 'leadId') {
+                          <ng-container *ngIf="row.leadIdsList && row.leadIdsList.length > 0; else singleLead">
+                            <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                              <a *ngFor="let lId of row.leadIdsList"
+                                 [routerLink]="['/salesmanager/leads/edit', lId]"
+                                 style="display: inline-block; padding: 2px 8px; background: #e0f2fe; color: #0284c7; border-radius: 4px; font-weight: 600; text-decoration: none; font-size: 12px;"
+                                 title="View Lead #{{ lId }}">
+                                 {{ lId }}
+                              </a>
+                            </div>
+                          </ng-container>
+                          <ng-template #singleLead>
+                            <span *ngIf="row[col.field] !== null && row[col.field] !== undefined && row[col.field] !== '' && row[col.field] !== '—'; else noLead" style="font-weight: 600; color: #334155;">
+                              {{ row[col.field] }}
+                            </span>
+                            <ng-template #noLead>
+                              <span style="color: #94a3b8;">—</span>
+                            </ng-template>
+                          </ng-template>
                         } @else if (col.field === 'editableQuantity') {
                           <input type="text"
                             [value]="row[col.field]"
