@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { Button } from "../button/button";
 import { Search, SearchFieldConfig } from "../search/search";
 import { ConfirmDialogService } from '../../service/confirm-dialog.service';
 @Component({
   selector: 'app-data-table',
    standalone: true,
-  imports: [CommonModule, FormsModule, Button, Search],
+  imports: [CommonModule, FormsModule, RouterModule, Button, Search],
   templateUrl: './data-table.html',
   styleUrl: './data-table.css'
 })

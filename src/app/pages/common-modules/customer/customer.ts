@@ -40,6 +40,7 @@ export class Customer {
    // 🔹 Table Columns
   columns = [
     { header: 'Customer Name', field: 'customerName' },
+    { header: 'Lead ID', field: 'leadId' },
     { header: 'Category', field: 'customerCategory' },
     { header: 'Sub Category', field: 'subCategory' },
     { header: 'Telephone', field: 'customerTelephone' },
@@ -102,10 +103,17 @@ export class Customer {
 
           this.rows = customerList.map((c: any, index: number) => {
             const cust = c.customer ? c.customer : c;
+            const leadIdsArr = c.leadIds || cust.leadIds || [];
+            const leadIdDisplay = Array.isArray(leadIdsArr) && leadIdsArr.length > 0
+              ? leadIdsArr.join(', ')
+              : '—';
+
             return {
               sno: (this.currentPage - 1) * this.pageSize + index + 1,
               customerId: cust.customerId,
               customerName: cust.customerName,
+              leadId: leadIdDisplay,
+              leadIdsList: leadIdsArr,
               customerCategory: cust.customerCategory?.customerCategoryName || cust.customerCategoryName || cust.category || '',
               subCategory: cust.subCategory?.subcategoryName || cust.subcategoryName || cust.subCategory || '',
               customerTelephone: cust.customerTelephone,

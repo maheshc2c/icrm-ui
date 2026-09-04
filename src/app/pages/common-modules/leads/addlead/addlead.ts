@@ -106,6 +106,7 @@ export class AddleadComponent implements OnInit {
   quoteBillingOptions: any[] = [];
   quoteCompanyOptions: any[] = [];
   quoteDealerOptions: any[] = [];
+  quoteSubmitting: boolean = false;
 
   /* ================= CONTRACT NOTE DATA TABLE ================= */
   contractNoteColumns = [
@@ -1822,21 +1823,155 @@ export class AddleadComponent implements OnInit {
 
   onCustomerAction2(customerId: any): void {
     console.log('Customer action 2 clicked for customer ID:', customerId);
-    if (!customerId) {
+    let id = customerId || this.leadForm?.customer || (this.originalLeadData as any)?.customerId || (this.originalLeadData as any)?.customer?.customerId;
+    if (typeof id === 'object' && id !== null) {
+      id = id.customerId || id.id || id.value;
+    }
+    const numericId = Number(id);
+    if (!numericId || isNaN(numericId)) {
       alert('No customer selected');
       return;
     }
-    
-    this.customerService.getInstallationBase(Number(customerId)).subscribe({
-      next: (records: any) => {
-        this.installationBaseDetails = Array.isArray(records) ? records : (records && Array.isArray(records.installedBases) ? records.installedBases : []);
-        this.showInstallationBaseDetailsModal = true;
-        console.log('Loaded customer installation base from backend:', this.installationBaseDetails);
-      },
-      error: (err) => {
-        console.error('Failed to load customer installation base details from backend:', err);
+
+    const extractList = (res: any): any[] => {
+      if (!res) return [];
+      if (Array.isArray(res)) return res;
+      if (Array.isArray(res.installedBases)) return res.installedBases;
+      if (Array.isArray(res.customerInstalledBaseDTO)) return res.customerInstalledBaseDTO;
+      if (Array.isArray(res.data)) return res.data;
+      if (res.data && Array.isArray(res.data.installedBases)) return res.data.installedBases;
+      if (res.customer && Array.isArray(res.customer.installedBases)) return res.customer.installedBases;
+      if (Array.isArray(res.content)) return res.content;
+      return [];
+    };
+
+    const getCustomerName = (): string => {
+      const selectedOpt = this.leadFields.find(f => f.name === 'customer')?.options?.find(o => o.value == numericId);
+      return selectedOpt?.label || (this.originalLeadData as any)?.customerName || (this.originalLeadData as any)?.customer?.customerName || '';
+    };
+
+    const fetchByNameFallback = () => {
+      const name = getCustomerName();
+      if (!name) {
         this.installationBaseDetails = [];
         this.showInstallationBaseDetailsModal = true;
+        return;
+      }
+      const matchName = name.trim().toLowerCase();
+      const matchingCusts = (this.customersData || []).filter((c: any) => {
+        const cName = (c.customerName || c.name || '').trim().toLowerCase();
+        return cName === matchName;
+      });
+
+      const altIds = matchingCusts
+        .map((c: any) => c.customerId || c.id)
+        .filter((idVal: any) => idVal && Number(idVal) !== numericId);
+
+      if (altIds.length > 0) {
+        let foundRecords: any[] = [];
+        let completed = 0;
+        altIds.forEach((altId: any) => {
+          this.customerService.getInstallationBase(Number(altId)).subscribe({
+            next: (records: any) => {
+              completed++;
+              let list = extractList(records);
+              if (list.length === 0) {
+                this.customerService.getCustomerById(Number(altId)).subscribe({
+                  next: (res: any) => {
+                    const installed = extractList(res);
+                    if (installed.length > 0 && foundRecords.length === 0) {
+                      foundRecords = installed;
+                    }
+                    if (completed === altIds.length) {
+                      this.installationBaseDetails = foundRecords;
+                      this.showInstallationBaseDetailsModal = true;
+                    }
+                  },
+                  error: () => {
+                    if (completed === altIds.length) {
+                      this.installationBaseDetails = foundRecords;
+                      this.showInstallationBaseDetailsModal = true;
+                    }
+                  }
+                });
+              } else {
+                if (list.length > 0 && foundRecords.length === 0) {
+                  foundRecords = list;
+                }
+                if (completed === altIds.length) {
+                  this.installationBaseDetails = foundRecords;
+                  this.showInstallationBaseDetailsModal = true;
+                }
+              }
+            },
+            error: () => {
+              completed++;
+              if (completed === altIds.length) {
+                this.installationBaseDetails = foundRecords;
+                this.showInstallationBaseDetailsModal = true;
+              }
+            }
+          });
+        });
+      } else {
+        this.installationBaseDetails = [];
+        this.showInstallationBaseDetailsModal = true;
+      }
+    };
+
+    // Level 1: Check if already present in original lead data
+    const origCustId = (this.originalLeadData as any)?.customerId || (this.originalLeadData as any)?.customer?.customerId;
+    const origInstalled = (this.originalLeadData as any)?.installedBases;
+    if (origCustId == numericId && Array.isArray(origInstalled) && origInstalled.length > 0) {
+      console.log('Using pre-loaded installation base from originalLeadData:', origInstalled);
+      this.installationBaseDetails = origInstalled;
+      this.showInstallationBaseDetailsModal = true;
+      return;
+    }
+
+    // Level 2: Try getInstallationBase API
+    this.customerService.getInstallationBase(numericId).subscribe({
+      next: (records: any) => {
+        const list = extractList(records);
+        console.log('Loaded customer installation base from getInstallationBase API:', list);
+        if (list.length > 0) {
+          this.installationBaseDetails = list;
+          this.showInstallationBaseDetailsModal = true;
+        } else {
+          // Level 3: Try getCustomerById API
+          this.customerService.getCustomerById(numericId).subscribe({
+            next: (res: any) => {
+              const installed = extractList(res);
+              console.log('Loaded customer installation base from getCustomerById API:', installed);
+              if (installed.length > 0) {
+                this.installationBaseDetails = installed;
+                this.showInstallationBaseDetailsModal = true;
+              } else {
+                fetchByNameFallback();
+              }
+            },
+            error: () => {
+              fetchByNameFallback();
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load customer installation base details from backend, trying fallback:', err);
+        this.customerService.getCustomerById(numericId).subscribe({
+          next: (res: any) => {
+            const installed = extractList(res);
+            if (installed.length > 0) {
+              this.installationBaseDetails = installed;
+              this.showInstallationBaseDetailsModal = true;
+            } else {
+              fetchByNameFallback();
+            }
+          },
+          error: () => {
+            fetchByNameFallback();
+          }
+        });
       }
     });
   }
@@ -2098,6 +2233,7 @@ export class AddleadComponent implements OnInit {
   }
 
   openAddQuoteModal(): void {
+    this.quoteSubmitting = false;
     this.showAddQuoteModal = true;
     this.quoteForm = { opportunityId: '', billingInfoId: '', dealerCommission: '', companyId: '', dealerId: '' };
     
@@ -2171,6 +2307,10 @@ export class AddleadComponent implements OnInit {
   }
 
   submitQuote(): void {
+    if (this.quoteSubmitting) {
+      return;
+    }
+
     if (!this.quoteForm.opportunityId || !this.quoteForm.billingInfoId || !this.quoteForm.companyId) {
       this.toastService.error('Please fill required fields (Opportunity, Billing Name, Billing Through)');
       return;
@@ -2184,8 +2324,11 @@ export class AddleadComponent implements OnInit {
       companyId: Number(this.quoteForm.companyId)
     };
 
+    this.quoteSubmitting = true;
+
     this.leadservice.saveQuote(payload).subscribe({
       next: (res: any) => {
+        this.quoteSubmitting = false;
         if (res && res.status === false) {
           this.toastService.error(res.message || 'Quote already exists for this opportunity.');
         } else {
@@ -2195,6 +2338,7 @@ export class AddleadComponent implements OnInit {
         }
       },
       error: (err: any) => {
+        this.quoteSubmitting = false;
         console.error('Failed to save quote:', err);
         const errMsg = err?.error?.message || 'Failed to save quote';
         this.toastService.error(errMsg);
