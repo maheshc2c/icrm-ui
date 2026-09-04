@@ -87,16 +87,22 @@
         </div>
       </div>
 
-      <!-- PURCHASE POTENTIAL -->
+      <!-- STAGE -->
       <div class="form-row">
-        <div class="field-label">Purchase Potential (Rs)</div>
+        <div class="field-label">Lead Stage<span class="req">*</span></div>
         <div class="field-wrap">
           <div style="width: 100%;">
-            <input type="number" name="purchasePotential" [(ngModel)]="lead.leadPurchasePotential"
-              placeholder="Purchase Potential" class="form-control" [class.is-invalid]="errors['leadPurchasePotential']"
-              (ngModelChange)="clearError('leadPurchasePotential')">
-            <div *ngIf="errors['leadPurchasePotential']" class="validation-error">
-              {{ errors['leadPurchasePotential'] }}
+            <select name="stage" [(ngModel)]="lead.stage" class="form-select"
+              [class.is-invalid]="errors['stage']" (ngModelChange)="clearError('stage')">
+              <option value="">Select Lead Stage</option>
+              <option value="HOT">Hot</option>
+              <option value="COLD">Cold</option>
+              <option value="UPSIDE">Upside</option>
+              <option value="COMMIT">Commit</option>
+              <option value="NEGOTIATION">Negotiation</option>
+            </select>
+            <div *ngIf="errors['stage']" class="validation-error">
+              {{ errors['stage'] }}
             </div>
           </div>
         </div>

@@ -49,6 +49,7 @@ export interface LeadPayload {
   remarks1?: string;
   remarks2?: string;
   
+  stage?: string;
   leadStatus?: number;
   leadCreatedTime?: string;
   leadModifiedTime?: string;

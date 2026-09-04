@@ -286,6 +286,13 @@ export class Leadservice {
     });
   }
 
+  /* ================= GET LEAD STAGES DROPDOWN ================= */
+  getLeadStages(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/leads/stages-dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   /* ================= GET DEALERS DROPDOWN ================= */
   getDealers(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/quote/dealers`, {

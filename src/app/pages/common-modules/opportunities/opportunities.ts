@@ -68,7 +68,19 @@ export class OpportunitiesComponent implements OnInit {
     { name: 'decisionMaker4', label: 'Decision Maker4', type: 'select', options: [] },
     { name: 'quantity', label: 'Quantity', type: 'number', required: true },
     { name: 'decisionMaker5', label: 'Decision Maker5', type: 'select', options: [] },
-    { name: 'fundSourceId', label: 'Source of Funding', type: 'select', options: [], required: true },
+    {
+      name: 'stage',
+      label: 'Lead Stage',
+      type: 'select',
+      required: true,
+      options: [
+        { label: 'Hot', value: 'HOT' },
+        { label: 'Cold', value: 'COLD' },
+        { label: 'Upside', value: 'UPSIDE' },
+        { label: 'Commit', value: 'COMMIT' },
+        { label: 'Negotiation', value: 'NEGOTIATION' }
+      ]
+    },
     { name: 'relationshipId', label: 'Relationship with Decision Maker', type: 'select', options: [], required: true },
     { name: 'expectedOrderConclusion', label: 'Expected Order Conclusion Date', type: 'date', required: true },
     { name: 'status', label: 'Status', type: 'select', options: [], required: true },
@@ -87,7 +99,7 @@ export class OpportunitiesComponent implements OnInit {
     decisionMaker4: '',
     quantity: null,
     decisionMaker5: '',
-    fundSourceId: '',
+    stage: '',
     relationshipId: '',
     expectedOrderConclusion: '',
     status: '',
@@ -101,7 +113,7 @@ export class OpportunitiesComponent implements OnInit {
     this.oppModel = {
       leadId: '', decisionMaker1: '', productCategoryId: '', decisionMaker2: '',
       productGroupId: '', decisionMaker3: '', productId: '', decisionMaker4: '',
-      quantity: null, decisionMaker5: '', fundSourceId: '', relationshipId: '',
+      quantity: null, decisionMaker5: '', stage: '', relationshipId: '',
       expectedOrderConclusion: '', status: '', expectedInvoicingDate: '', competitors: '',
       lostReasonId: '',
       lostCompetitorId: '',
@@ -179,11 +191,11 @@ export class OpportunitiesComponent implements OnInit {
       }
     });
 
-    // Load Funds
-    this.leadService.getFunds().subscribe(data => {
-      const field = this.oppFields.find(f => f.name === 'fundSourceId');
+    // Load Lead Stages from API
+    this.leadService.getLeadStages().subscribe(data => {
+      const field = this.oppFields.find(f => f.name === 'stage');
       if (field && data) {
-        field.options = data.map(f => ({ label: f.fundSourceName || f.FundSourceName, value: f.fundSourceID || f.FundSourceID }));
+        field.options = data.map(s => ({ label: s.label || s.id, value: s.id }));
       }
     });
 
@@ -487,10 +499,6 @@ export class OpportunitiesComponent implements OnInit {
       alert('Please select Category, Segment, and Product Name.');
       return;
     }
-    if (!this.oppModel.fundSourceId) {
-      alert('Please select a Source of Funding.');
-      return;
-    }
     if (!this.oppModel.status) {
       alert('Please select a Status.');
       return;
@@ -519,7 +527,8 @@ export class OpportunitiesComponent implements OnInit {
       productId: toNullIfEmpty(this.oppModel.productId) ? Number(toNullIfEmpty(this.oppModel.productId)) : null,
       status: toNullIfEmpty(this.oppModel.status) ? Number(toNullIfEmpty(this.oppModel.status)) : null,
       requiredQuantity: toNullIfEmpty(this.oppModel.quantity) ? Number(toNullIfEmpty(this.oppModel.quantity)) : null,
-      fundSourceId: toNullIfEmpty(this.oppModel.fundSourceId) ? Number(toNullIfEmpty(this.oppModel.fundSourceId)) : null,
+      stage: this.oppModel.stage || null,
+      fundSourceId: null,
       fundingStatus: null,
       expectedOrderConclusion: toNullIfEmpty(this.oppModel.expectedOrderConclusion),
       expectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),

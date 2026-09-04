@@ -22,7 +22,7 @@ export class EditLeads implements OnInit {
   lead: any = {
     leadVisitRequirement: 0,
     leadResourceRequirement: 0,
-    leadPurchasePotential: 0,
+    stage: '',
     leadCmdLine1: '',
     leadCmdLine2: '',
     siteReadinessName: '',
@@ -50,7 +50,7 @@ export class EditLeads implements OnInit {
   touched: any = {};
   fieldIdMap: any = {
     'relationshipName': 'edit-leads-relationship',
-    'leadPurchasePotential': 'edit-leads-purchase-potential',
+    'stage': 'edit-leads-stage',
     'siteReadinessName': 'edit-leads-site-readiness',
     'resourceRequiredDetails': 'edit-leads-resource-details',
     'distributorId': 'edit-leads-distributor'
@@ -110,6 +110,7 @@ export class EditLeads implements OnInit {
           username: res.createdUserName,
           sourceName: res.sourceName,
           leadStatus: res.status,
+          stage: res.stage || '',
           leadPurchasePotential: res.purchasePotential !== null && res.purchasePotential !== undefined ? res.purchasePotential : 0,
           relationshipName: res.relationshipName || '',
           siteReadinessName: res.siteReadiness || '',
@@ -190,13 +191,10 @@ export class EditLeads implements OnInit {
       if (!firstInvalidField) firstInvalidField = 'relationshipName';
     }
 
-    // 2. Purchase Potential
-    if (this.lead.leadPurchasePotential !== null && this.lead.leadPurchasePotential !== undefined && this.lead.leadPurchasePotential !== '') {
-      const val = Number(this.lead.leadPurchasePotential);
-      if (isNaN(val) || val < 0) {
-        this.errors['leadPurchasePotential'] = 'Purchase Potential must be a positive number';
-        if (!firstInvalidField) firstInvalidField = 'leadPurchasePotential';
-      }
+    // 2. Stage
+    if (!this.lead.stage) {
+      this.errors['stage'] = 'Stage is required';
+      if (!firstInvalidField) firstInvalidField = 'stage';
     }
 
     // 3. Site Readiness
@@ -233,13 +231,10 @@ export class EditLeads implements OnInit {
           errorMessage = 'Rapport with Customer is required';
         }
         break;
-      case 'leadPurchasePotential':
-        if (this.lead.leadPurchasePotential !== null && this.lead.leadPurchasePotential !== undefined && this.lead.leadPurchasePotential !== '') {
-          const val = Number(this.lead.leadPurchasePotential);
-          if (isNaN(val) || val < 0) {
-            hasError = true;
-            errorMessage = 'Purchase Potential must be a positive number';
-          }
+      case 'stage':
+        if (!this.lead.stage) {
+          hasError = true;
+          errorMessage = 'Stage is required';
         }
         break;
       case 'siteReadinessName':
@@ -346,6 +341,7 @@ export class EditLeads implements OnInit {
       createdBy: this.lead.username || 'System',
       leadSource: this.lead.sourceName,
       leadStatus: this.lead.leadStatus,
+      stage: this.lead.stage || '',
       purchasePotential: this.lead.leadPurchasePotential || 0,
       relationship: this.lead.relationshipName,
       siteReadiness: this.lead.siteReadinessName,

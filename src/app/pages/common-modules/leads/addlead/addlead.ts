@@ -173,7 +173,19 @@ export class AddleadComponent implements OnInit {
     { name: 'quantity', label: 'Quantity', type: 'number', required: true },
     { name: 'decisionMaker5', label: 'Decision Maker5', type: 'select', options: [], isSearchable: true },
     // Row 6
-    { name: 'fundSourceId', label: 'Source of Funding', type: 'select', options: [], required: true },
+    {
+      name: 'stage',
+      label: 'Lead Stage',
+      type: 'select',
+      required: true,
+      options: [
+        { label: 'Hot', value: 'HOT' },
+        { label: 'Cold', value: 'COLD' },
+        { label: 'Upside', value: 'UPSIDE' },
+        { label: 'Commit', value: 'COMMIT' },
+        { label: 'Negotiation', value: 'NEGOTIATION' }
+      ]
+    },
     { name: 'relationshipId', label: 'Relationship with Decision Maker', type: 'select', options: [], required: true },
     // Row 7
     { name: 'expectedInvoicingDate', label: 'Expected Invoice Date', type: 'date' },
@@ -191,8 +203,8 @@ export class AddleadComponent implements OnInit {
     decisionMaker3: '',
     quantity: null,
     decisionMaker4: '',
-    fundSourceId: '',
     decisionMaker5: '',
+    stage: '',
     relationshipId: '',
     status: '',
     expectedOrderConclusion: '',
@@ -213,8 +225,7 @@ export class AddleadComponent implements OnInit {
     rapportWithCustomer: '',
     contact1: '' as string | number,
     contact2: '' as string | number,
-    purchasePotentialRs: '',
-    purchasePotential: '',
+    stage: '',
     siteReadiness: '',
     visitRequirement: '',
     resourceRequirement: '',
@@ -273,17 +284,17 @@ export class AddleadComponent implements OnInit {
       options: []
     },
     {
-      name: 'purchasePotentialRs',
-      label: 'Purchase Potential (Rs)',
-      type: 'number',
+      name: 'stage',
+      label: 'Lead Stage',
+      type: 'select',
       required: true,
-      placeholder: 'Enter amount in Rs'
-    },
-    {
-      name: 'purchasePotential',
-      label: 'Purchase Potential',
-      type: 'text',
-      placeholder: 'Enter purchase potential details'
+      options: [
+        { label: 'Hot', value: 'HOT' },
+        { label: 'Cold', value: 'COLD' },
+        { label: 'Upside', value: 'UPSIDE' },
+        { label: 'Commit', value: 'COMMIT' },
+        { label: 'Negotiation', value: 'NEGOTIATION' }
+      ]
     },
     {
       name: 'siteReadiness',
@@ -695,8 +706,7 @@ export class AddleadComponent implements OnInit {
           rapportWithCustomer: getStr(data.relationshipId || data.relationship?.relationshipId),
           contact1: getStr(data.contactId || data.contact1?.contactId || data.contactPerson1Id),
           contact2: getStr(data.contact2Id || data.contact2?.contactId || data.contactPerson2Id),
-          purchasePotentialRs: getStr(data.purchasePotential || data.leadPurchasePotential),
-          purchasePotential: data.leadCmdLine3 || data.purchasePotentialRemarks || '',
+          stage: data.stage || '',
           siteReadiness: getStr(data.siteReadinessId || data.siteReadiness?.siteReadinessID),
           visitRequirement: data.visitRequirement === true ? 'Yes' : (data.leadVisitRequirement === 1 ? 'Yes' : 'No'),
           resourceRequirement: data.resourceRequirement === true ? 'Yes' : (data.leadResourceRequirement === 1 ? 'Yes' : 'No'),
@@ -1153,7 +1163,7 @@ export class AddleadComponent implements OnInit {
       relationshipId: toNullIfEmpty(formData.rapportWithCustomer) ? Number(extractId(formData.rapportWithCustomer)) : null,
       contactId: toNullIfEmpty(formData.contact1) ? Number(extractId(formData.contact1)) : null,
       contact2Id: toNullIfEmpty(formData.contact2) ? Number(extractId(formData.contact2)) : null,
-      purchasePotential: formData.purchasePotentialRs ? Number(formData.purchasePotentialRs) : 0,
+      stage: formData.stage || '',
       siteReadinessId: toNullIfEmpty(formData.siteReadiness) ? Number(extractId(formData.siteReadiness)) : null,
       siteLocationId: toNullIfEmpty(formData.siteLocation) ? Number(extractId(formData.siteLocation)) : null,
       visitRequirement: formData.visitRequirement === 'Yes',
@@ -1445,10 +1455,15 @@ export class AddleadComponent implements OnInit {
       if (field) field.options = data.map((d: any) => ({ label: d.categoryName || d.CategoryName, value: d.categoryId || d.CategoryId }));
     });
 
-    // Funding Source
-    this.leadservice.getFunds().subscribe((data: any) => {
-      const field = this.oppFields.find(f => f.name === 'fundSourceId');
-      if (field) field.options = data.map((d: any) => ({ label: d.fundSourceName || d.FundSourceName, value: d.fundSourceID || d.FundSourceID }));
+    // Lead Stages API
+    this.leadservice.getLeadStages().subscribe((data: any) => {
+      if (data && Array.isArray(data)) {
+        const options = data.map((d: any) => ({ label: d.label || d.id, value: d.id }));
+        const oppStageField = this.oppFields.find(f => f.name === 'stage');
+        if (oppStageField) oppStageField.options = options;
+        const leadStageField = this.leadFields.find(f => f.name === 'stage');
+        if (leadStageField) leadStageField.options = options;
+      }
     });
 
     // Relationship
@@ -1569,8 +1584,8 @@ export class AddleadComponent implements OnInit {
       decisionMaker3: '',
       quantity: null,
       decisionMaker4: '',
-      fundSourceId: '',
       decisionMaker5: '',
+      stage: '',
       relationshipId: '',
       status: '',
       expectedOrderConclusion: '',
@@ -1640,7 +1655,8 @@ export class AddleadComponent implements OnInit {
       productId: this.oppModel.productId ? Number(this.oppModel.productId) : null,
       status: toNullIfEmpty(this.oppModel.status) ? Number(toNullIfEmpty(this.oppModel.status)) : null,
       requiredQuantity: this.oppModel.quantity ? Number(this.oppModel.quantity) : null,
-      fundSourceId: toNullIfEmpty(this.oppModel.fundSourceId) ? Number(toNullIfEmpty(this.oppModel.fundSourceId)) : null,
+      stage: this.oppModel.stage || null,
+      fundSourceId: null,
       fundingStatus: null,
       expectedOrderConclusion: this.oppModel.expectedOrderConclusion,
       expectedInvoicingDate: toNullIfEmpty(this.oppModel.expectedInvoicingDate),
