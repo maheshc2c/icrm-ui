@@ -95,10 +95,10 @@ export class AddUsersComponent implements OnInit {
 
     const lower = rawMessage.toLowerCase();
     if (
-      lower.includes('employee id already exists') ||
+      lower.includes('employee id') ||
+      lower.includes('username') ||
       lower.includes('already exists') ||
-      lower.includes('duplicate') ||
-      err?.status === 400 || err?.status === 409
+      lower.includes('duplicate user')
     ) {
       const empId = this.formInitialData?.username || '';
       return empId
