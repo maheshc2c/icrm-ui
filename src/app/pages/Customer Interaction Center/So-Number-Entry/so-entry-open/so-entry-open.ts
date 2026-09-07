@@ -27,13 +27,18 @@ export class SoEntryOpen implements OnInit {
 
   /* SEARCH FIELDS */
   searchFields: SearchFieldConfig[] = [
-    { key: 'cnoteId', label: 'C-Note ID', type: 'text' },
-    { key: 'cnoteType', label: 'C-Note Type', type: 'select', options: [
-      { value: '', label: 'Select C-Note Type' },
-      { value: 'Regular', label: 'Regular' },
-      { value: 'Purchase Order', label: 'Purchase Order' }
-    ] },
-    { key: 'customerName', label: 'Customer Name', type: 'text' }
+    { key: 'cnoteId', label: 'Cnote ID', placeholder: 'Cnote ID', type: 'text' },
+    {
+      key: 'cnoteType',
+      label: 'C-Note Type',
+      type: 'select',
+      options: [
+        { label: 'Select C-Note Type', value: '' },
+        { label: 'Regular', value: 'Regular' },
+        { label: 'Purchase Order', value: 'Purchase Order' }
+      ]
+    },
+    { key: 'customerName', label: 'Customer Name', placeholder: 'Customer Name', type: 'text' }
   ];
 
   /* TABLE COLUMNS */
@@ -217,13 +222,17 @@ export class SoEntryOpen implements OnInit {
 
     this.cicService.bulkUploadSoEntries(this.selectedFile).subscribe({
       next: (res: any) => {
-        this.toastService.success('Bulk upload successful!');
+        const msg = typeof res === 'string' && res.trim() ? res : 'Bulk upload successful!';
+        this.toastService.success(msg);
         this.loadOpenSoEntries();
         this.closeBulkUpload();
       },
       error: (err: any) => {
         console.error('Error bulk uploading:', err);
-        this.toastService.error('Bulk upload failed: ' + (err.error || err.message));
+        const errorMsg = typeof err.error === 'string' && err.error.trim() 
+          ? err.error 
+          : (err.message || 'Bulk upload failed');
+        this.toastService.error(errorMsg);
         this.closeBulkUpload();
       }
     });
@@ -250,12 +259,16 @@ export class SoEntryOpen implements OnInit {
 
     this.cicService.updateSoNumbers(updates).subscribe({
       next: (res: any) => {
-        this.toastService.success('SO Numbers updated successfully!');
+        const msg = typeof res === 'string' && res.trim() ? res : 'SO Numbers updated successfully!';
+        this.toastService.success(msg);
         this.loadOpenSoEntries();
       },
       error: (err: any) => {
         console.error('Error updating SO numbers:', err);
-        this.toastService.error('Failed to update SO numbers');
+        const errorMsg = typeof err.error === 'string' && err.error.trim() 
+          ? err.error 
+          : 'Failed to update SO numbers';
+        this.toastService.error(errorMsg);
       }
     });
   }

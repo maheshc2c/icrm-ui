@@ -269,7 +269,60 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
   canActivate: [authGuard],
-  data: { roles: ['SUPERADMIN', 'SUPER ADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+  data: {
+    roles: [
+      'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+      'Regional Sales Manager', 'Regional Branch Head',
+      'National Sales Manager', 'Country Head', 'Global Head',
+      'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING',
+      'SUPERADMIN', 'SUPER ADMIN', 'Admin', 'ADMIN'
+    ]
+  }
+},
+{
+  path: 'quote-revision/:id',
+  loadComponent: () =>
+    import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
+  canActivate: [authGuard],
+  data: {
+    roles: [
+      'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+      'Regional Sales Manager', 'Regional Branch Head',
+      'National Sales Manager', 'Country Head', 'Global Head',
+      'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING',
+      'SUPERADMIN', 'SUPER ADMIN', 'Admin', 'ADMIN'
+    ]
+  }
+},
+{
+  path: 'salesmanager/leads/quoteRevision/:id',
+  loadComponent: () =>
+    import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
+  canActivate: [authGuard],
+  data: {
+    roles: [
+      'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+      'Regional Sales Manager', 'Regional Branch Head',
+      'National Sales Manager', 'Country Head', 'Global Head',
+      'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING',
+      'SUPERADMIN', 'SUPER ADMIN', 'Admin', 'ADMIN'
+    ]
+  }
+},
+{
+  path: 'salesmanager/leads/quote-revision/:id',
+  loadComponent: () =>
+    import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
+  canActivate: [authGuard],
+  data: {
+    roles: [
+      'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+      'Regional Sales Manager', 'Regional Branch Head',
+      'National Sales Manager', 'Country Head', 'Global Head',
+      'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING',
+      'SUPERADMIN', 'SUPER ADMIN', 'Admin', 'ADMIN'
+    ]
+  }
 },
 
 {
