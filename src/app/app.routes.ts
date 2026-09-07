@@ -269,7 +269,13 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
   canActivate: [authGuard],
-  data: { roles: ['SUPERADMIN', 'SUPER ADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+  data: {
+    roles: [
+      'SUPERADMIN', 'SUPER ADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER',
+      'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head',
+      'Global Head', 'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING', 'ADMIN'
+    ]
+  }
 },
 
 {
