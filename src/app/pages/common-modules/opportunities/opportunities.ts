@@ -138,7 +138,25 @@ export class OpportunitiesComponent implements OnInit {
     private leadService: Leadservice
   ) { }
 
+  private getHomeRoute(): string {
+    const role = localStorage.getItem('role') || '';
+    const upper = role.toUpperCase();
+
+    if (upper.includes('COUNTRY')) return '/country-head';
+    if (upper.includes('GLOBAL')) return '/globalhead-dashboard';
+    if (upper.includes('NATIONAL')) return '/national-sales-manager-dashboard';
+    if (upper.includes('REGIONAL')) return '/regional-sales-manager-dashboard';
+    if (upper.includes('DIRECTOR')) return '/sddashboard';
+    if (upper.includes('SUPERADMIN') || upper.includes('SUPER ADMIN')) return '/superadmindashboard';
+    if (upper.includes('ADMIN')) return '/admindashboard';
+    return '/sales-manager-dashboard';
+  }
+
   ngOnInit(): void {
+    this.headerBreadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      { label: 'Opportunities' }
+    ];
     this.loadOpportunities();
     this.loadDropdownData();
   }
@@ -192,8 +210,9 @@ export class OpportunitiesComponent implements OnInit {
       const field = this.oppFields.find(f => f.name === 'status');
       if (field && data) {
         field.options = data.map(s => {
+          const rawName = s.oppName || s.OppName || 'Status';
           const weight = s.oppWeight != null ? ` (${s.oppWeight}%)` : '';
-          return { label: (s.oppName || s.OppName || 'Status') + weight, value: s.oppStatusId || s.OppStatusId };
+          return { label: rawName + weight, value: s.oppStatusId || s.OppStatusId, oppName: rawName };
         });
       }
     });
@@ -462,8 +481,9 @@ export class OpportunitiesComponent implements OnInit {
       const field = this.oppFields.find(f => f.name === 'status');
       if (field && data) {
         field.options = data.map(s => {
+          const rawName = s.oppName || s.OppName || 'Status';
           const weight = s.oppWeight != null ? ` (${s.oppWeight}%)` : '';
-          return { label: (s.oppName || s.OppName || 'Status') + weight, value: s.oppStatusId || s.OppStatusId };
+          return { label: rawName + weight, value: s.oppStatusId || s.OppStatusId, oppName: rawName };
         });
       }
     });
@@ -503,21 +523,15 @@ export class OpportunitiesComponent implements OnInit {
     // Helper to convert empty strings to null for backend Long/Integer fields
     const toNullIfEmpty = (val: any) => (val === '' || val === undefined) ? null : val;
 
-    // Helper to extract the label (name) for dropdown fields
-    const getOptionLabel = (fieldName: string, value: any) => {
-      if (!value) return null;
-      const field = this.oppFields.find(f => f.name === fieldName);
-      if (field && field.options) {
-        const opt = field.options.find((o: any) => o.value == value);
-        return opt ? opt.label : null;
-      }
-      return null;
-    };
+    const statusField = this.oppFields.find(f => f.name === 'status');
+    const selectedOpt = statusField?.options?.find((o: any) => o.value == this.oppModel.status);
+    const oppStatusStr = selectedOpt ? (selectedOpt.oppName || selectedOpt.label.replace(/\s*\(\d+%\)/, '').trim()) : '';
 
     const payload = {
       leadId: toNullIfEmpty(this.oppModel.leadId) ? Number(toNullIfEmpty(this.oppModel.leadId)) : null,
       productId: toNullIfEmpty(this.oppModel.productId) ? Number(toNullIfEmpty(this.oppModel.productId)) : null,
       status: toNullIfEmpty(this.oppModel.status) ? Number(toNullIfEmpty(this.oppModel.status)) : null,
+      oppStatus: oppStatusStr,
       requiredQuantity: toNullIfEmpty(this.oppModel.quantity) ? Number(toNullIfEmpty(this.oppModel.quantity)) : null,
       fundSourceId: toNullIfEmpty(this.oppModel.fundSourceId) ? Number(toNullIfEmpty(this.oppModel.fundSourceId)) : null,
       fundingStatus: null,

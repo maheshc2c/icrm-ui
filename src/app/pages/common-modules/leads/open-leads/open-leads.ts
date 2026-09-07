@@ -63,7 +63,25 @@ export class OpenLeads implements OnInit {
     private leadService: Leadservice
   ) { }
 
+  private getHomeRoute(): string {
+    const role = localStorage.getItem('role') || '';
+    const upper = role.toUpperCase();
+
+    if (upper.includes('COUNTRY')) return '/country-head';
+    if (upper.includes('GLOBAL')) return '/globalhead-dashboard';
+    if (upper.includes('NATIONAL')) return '/national-sales-manager-dashboard';
+    if (upper.includes('REGIONAL')) return '/regional-sales-manager-dashboard';
+    if (upper.includes('DIRECTOR')) return '/sddashboard';
+    if (upper.includes('SUPERADMIN') || upper.includes('SUPER ADMIN')) return '/superadmindashboard';
+    if (upper.includes('ADMIN')) return '/admindashboard';
+    return '/sales-manager-dashboard';
+  }
+
   ngOnInit(): void {
+    this.breadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      { label: 'Open Leads' }
+    ];
     this.loadLeads();
     this.loadCustomers();
   }
@@ -257,12 +275,12 @@ this.rows.forEach((row: any) => {
   }
 
   onAdd(): void {
-    this.router.navigate(['/salesmanager/leads/add']);
+    this.router.navigate(['/leads/add']);
   }
 
   onEdit(row: any): void {
     console.log('Edit lead:', row);
-    this.router.navigate(['salesmanager/leads/edit', row.leadId]);
+    this.router.navigate(['/leads/edit', row.leadId]);
   }
 
   onDownload(): void {

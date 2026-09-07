@@ -1,0 +1,75 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+
+<app-pageheader
+  title="Edit Rejected Lead"
+  [breadcrumbs]="breadcrumbs">
+</app-pageheader>
+
+<div class="edit-rejected-lead-container" style="margin-left: 287px; margin-right: 30px; margin-top: 16px; margin-bottom: 40px;">
+  <div class="card" style="background: #ffffff; border-radius: 4px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 32px 48px;">
+    
+    <form (ngSubmit)="onSubmit()" #rejectedForm="ngForm" class="form-horizontal">
+      
+      <!-- CUSTOMER -->
+      <div class="form-group-row" style="display: flex; align-items: center; margin-bottom: 20px;">
+        <label style="width: 200px; text-align: right; font-weight: 600; color: #4a5568; margin-right: 20px;">Customer</label>
+        <div style="font-weight: 500; color: #2d3748;">{{ customerName }}</div>
+      </div>
+
+      <!-- CONTACT PERSON 1 -->
+      <div class="form-group-row" style="display: flex; align-items: center; margin-bottom: 20px;">
+        <label style="width: 200px; text-align: right; font-weight: 600; color: #4a5568; margin-right: 20px;">Contact Person 1</label>
+        <div style="font-weight: 500; color: #2d3748;">{{ contactPersonName }}</div>
+      </div>
+
+      <!-- TELEPHONE -->
+      <div class="form-group-row" style="display: flex; align-items: center; margin-bottom: 20px;">
+        <label style="width: 200px; text-align: right; font-weight: 600; color: #4a5568; margin-right: 20px;">Telephone</label>
+        <div style="display: flex; gap: 10px; width: 500px;">
+          <select [(ngModel)]="isd1" name="isd1" class="form-control" style="width: 90px; height: 38px; border: 1px solid #cbd5e0; border-radius: 4px; padding: 6px 12px; background: #fff;">
+            <option value="91">91</option>
+            <option value="1">1</option>
+            <option value="44">44</option>
+          </select>
+          <input type="text" [(ngModel)]="telephone" name="telephone" placeholder="Telephone" maxlength="10" class="form-control" style="flex: 1; height: 38px; border: 1px solid #cbd5e0; border-radius: 4px; padding: 6px 12px;">
+        </div>
+      </div>
+
+      <!-- MOBILE -->
+      <div class="form-group-row" style="display: flex; align-items: center; margin-bottom: 20px;">
+        <label style="width: 200px; text-align: right; font-weight: 600; color: #4a5568; margin-right: 20px;">Mobile <span style="color: #e53e3e;">*</span></label>
+        <div style="display: flex; gap: 10px; width: 500px;">
+          <select [(ngModel)]="isd2" name="isd2" class="form-control" style="width: 90px; height: 38px; border: 1px solid #cbd5e0; border-radius: 4px; padding: 6px 12px; background: #fff;">
+            <option value="91">91</option>
+            <option value="1">1</option>
+            <option value="44">44</option>
+          </select>
+          <input type="text" [(ngModel)]="mobileNo" name="mobileNo" required placeholder="Mobile Number" maxlength="10" class="form-control" style="flex: 1; height: 38px; border: 1px solid #cbd5e0; border-radius: 4px; padding: 6px 12px;">
+        </div>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="form-group-row" style="display: flex; align-items: center; margin-bottom: 24px;">
+        <label style="width: 200px; text-align: right; font-weight: 600; color: #4a5568; margin-right: 20px;">Email <span style="color: #e53e3e;">*</span></label>
+        <div style="width: 500px;">
+          <input type="email" [(ngModel)]="email" name="email" required placeholder="Email" maxlength="80" class="form-control" style="width: 100%; height: 38px; border: 1px solid #cbd5e0; border-radius: 4px; padding: 6px 12px;">
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="form-group-row" style="display: flex; align-items: center;">
+        <div style="width: 200px; margin-right: 20px;"></div>
+        <div style="display: flex; gap: 12px;">
+          <button type="submit" class="btn btn-primary" style="background: #4299e1; border-color: #3182ce; color: #fff; padding: 8px 20px; font-weight: 600; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <i class="fa fa-check"></i> Update
+          </button>
+          <button type="button" class="btn btn-danger" (click)="onCancel()" style="background: #f56565; border-color: #e53e3e; color: #fff; padding: 8px 20px; font-weight: 600; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <i class="fa fa-times"></i> Cancel
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

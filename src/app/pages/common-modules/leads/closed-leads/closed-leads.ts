@@ -64,7 +64,7 @@ export class ClosedLeadsComponent implements OnInit {
     { header: 'Customer', field: 'customerName' },
     { header: 'Contact Person', field: 'contactPerson' },
     { header: 'Created Time', field: 'createdTime' },
-    { header: 'Status', field: 'status' },
+    { header: 'Status', field: 'status', type: 'text' },
     { header: 'Life Time(Days)', field: 'lifetimeDays' }
   ];
 
@@ -73,7 +73,26 @@ export class ClosedLeadsComponent implements OnInit {
     private leadService: Leadservice
   ) { }
 
+  private getHomeRoute(): string {
+    const role = localStorage.getItem('role') || '';
+    const upper = role.toUpperCase();
+
+    if (upper.includes('COUNTRY')) return '/country-head';
+    if (upper.includes('GLOBAL')) return '/globalhead-dashboard';
+    if (upper.includes('NATIONAL')) return '/national-sales-manager-dashboard';
+    if (upper.includes('REGIONAL')) return '/regional-sales-manager-dashboard';
+    if (upper.includes('DIRECTOR')) return '/sddashboard';
+    if (upper.includes('SUPERADMIN') || upper.includes('SUPER ADMIN')) return '/superadmindashboard';
+    if (upper.includes('ADMIN')) return '/admindashboard';
+    return '/sales-manager-dashboard';
+  }
+
   ngOnInit(): void {
+    this.headerBreadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      { label: 'Leads', route: '/openleads' },
+      { label: 'Closed Leads' }
+    ];
     this.loadClosedLeads();
   }
 
@@ -84,21 +103,55 @@ export class ClosedLeadsComponent implements OnInit {
       next: (response: any) => {
         const data = Array.isArray(response) ? response : (response.data || []);
         this.closedLeads = data.map((item: any) => {
-          let statusLabel = 'Lead';
-          if (item.leadStatus === 0 || item.leadStatus === 21) statusLabel = 'Lead Dropped';
-          else if (item.leadStatus === 2) statusLabel = 'Won';
-          else if (item.leadStatus === 3) statusLabel = 'Opportunity';
-          else if (item.leadStatus === 4) statusLabel = 'Converted';
-          else if (item.leadStatus === 22) statusLabel = 'Closed';
-          
+          let statusLabel = 'Lead Dropped';
+          const st = item.leadStatus !== undefined ? item.leadStatus : item.status;
+          if (st === 20) statusLabel = 'Lead Rejected';
+          else if (st === 0 || st === 21) statusLabel = 'Lead Dropped';
+          else if (st === 22) statusLabel = 'Lead Closed';
+          else if (st === 2) statusLabel = 'Won';
+          else if (st === 3) statusLabel = 'Opportunity';
+          else if (st === 4) statusLabel = 'Converted';
+          else if (typeof item.status === 'string' && item.status) statusLabel = item.status;
+          else if (typeof item.leadStatusName === 'string' && item.leadStatusName) statusLabel = item.leadStatusName;
+
+          const contactStr = item.contactPerson
+            ? item.contactPerson
+            : (item.contactFirstName 
+              ? (item.contactFirstName + (item.contactLastName ? ' ' + item.contactLastName : '') + (item.mobileNo ? ` (${item.mobileNo})` : ''))
+              : 'N/A');
+
+          let formattedDate = 'N/A';
+          const rawDate = item.leadCreatedTime || item.createdTime;
+          if (rawDate) {
+            try {
+              const d = new Date(rawDate);
+              if (!isNaN(d.getTime())) {
+                formattedDate = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + 
+                  ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+              } else {
+                formattedDate = rawDate;
+              }
+            } catch (e) {
+              formattedDate = rawDate;
+            }
+          }
+
+          const currentUserId = Number(localStorage.getItem('userId') || 0);
+          const ownerId = item.userId || item.ownerId || item.createdBy || item.user_id;
+          const isRejected = (st === 20);
+          const isOwner = !currentUserId || !ownerId || Number(ownerId) === currentUserId;
+          const canEdit = isRejected && isOwner;
+
           return {
             leadId: item.leadId,
-            sourceOfLead: item.leadSource,
-            customerName: item.customerName,
-            contactPerson: item.contactFirstName,
-            createdTime: item.leadCreatedTime,
+            sourceOfLead: item.sourceOfLead || item.leadSource || 'N/A',
+            customerName: item.customerName || 'N/A',
+            contactPerson: contactStr,
+            createdTime: formattedDate,
             status: statusLabel,
-            lifetimeDays: item.lifeTimeDays
+            leadStatus: st,
+            canEdit: canEdit,
+            lifetimeDays: item.lifeTimeDays !== undefined ? item.lifeTimeDays : (item.lifetimeDays || 0)
           };
         });
         this.filteredLeads = [...this.closedLeads];
@@ -106,22 +159,6 @@ export class ClosedLeadsComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Failed to load closed leads:', err);
-        console.error('Error details:', err.error);
-        
-        // Fallback to dummy data for testing UI
-        console.log('Using dummy data for testing...');
-        this.closedLeads = [
-          {
-            leadId: 17,
-            sourceOfLead: 'Visit',
-            customerName: 'C2C Advanced Systems (Chittoor)',
-            contactPerson: 'Test - Test (91-9988997700)',
-            createdTime: '31 Jul 2025 11:17 AM',
-            status: 'Lead Dropped',
-            lifetimeDays: 43
-          }
-        ];
-        this.filteredLeads = [...this.closedLeads];
       }
     });
   }
@@ -145,7 +182,14 @@ export class ClosedLeadsComponent implements OnInit {
   /* ================= NAVIGATION ================= */
   viewLead(leadId: number): void {
     if (leadId) {
-      this.router.navigate(['/salesmanager/leads/edit', leadId], { queryParams: { readOnly: true } });
+      this.router.navigate(['/leads/edit', leadId], { queryParams: { readOnly: true } });
+    }
+  }
+
+  editLead(row: any): void {
+    const leadId = row?.leadId || row?.id || (typeof row === 'number' ? row : null);
+    if (leadId) {
+      this.router.navigate(['/leads/edit-rejected', leadId]);
     }
   }
 

@@ -269,7 +269,7 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/quote-revision/quote-revision').then(m => m.QuoteRevisionComponent),
   canActivate: [authGuard],
-  data: { roles: ['SUPERADMIN', 'SUPER ADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER'] }
+  data: { roles: ['SUPERADMIN', 'SUPER ADMIN', 'Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING', 'ADMIN'] }
 },
 
 {
@@ -947,6 +947,30 @@ export const routes: Routes = [
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director'] }
       },
       {
+        path: 'leads/add',
+        loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'] }
+      },
+      {
+        path: 'leads/edit/:id',
+        loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'] }
+      },
+      {
+        path: 'leads/edit-rejected/:id',
+        loadComponent: () => import('./pages/common-modules/leads/edit-rejected-lead/edit-rejected-lead').then(m => m.EditRejectedLeadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'] }
+      },
+      {
+        path: 'closed-leads',
+        component: ClosedLeadsComponent,
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'] }
+      },
+      {
         path: 'salesmanager/leads/add',
         loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
         canActivate: [authGuard],
@@ -959,6 +983,18 @@ export const routes: Routes = [
         data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'] }
       },
 
+      {
+        path: 'salesmanager/leads/edit-rejected/:id',
+        loadComponent: () => import('./pages/common-modules/leads/edit-rejected-lead/edit-rejected-lead').then(m => m.EditRejectedLeadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'] }
+      },
+      {
+        path: 'editRejectedLead/:id',
+        loadComponent: () => import('./pages/common-modules/leads/edit-rejected-lead/edit-rejected-lead').then(m => m.EditRejectedLeadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Sales Engineer', 'Sales Manager', 'SALES_MANAGER', 'SALESMANAGER', 'Regional Sales Manager', 'Regional Branch Head', 'National Sales Manager', 'Country Head', 'Global Head', 'Sales Director', 'ADMINMARKETING', 'ADMIN MARKETING', 'SUPERADMIN', 'SUPER ADMIN'] }
+      },
       {
         path: 'salesmanager/closed-leads',
         component: ClosedLeadsComponent,
@@ -1066,6 +1102,54 @@ export const routes: Routes = [
         {
         path: 'country-head',
         loadComponent: () => import('./pages/ContryHead/country-head-dashborad/country-head-dashborad').then(m => m.CountryHead),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/leads/add',
+        loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/leads/edit/:id',
+        loadComponent: () => import('./pages/common-modules/leads/addlead/addlead').then(m => m.AddleadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/leads/edit-rejected/:id',
+        loadComponent: () => import('./pages/common-modules/leads/edit-rejected-lead/edit-rejected-lead').then(m => m.EditRejectedLeadComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/closed-leads',
+        component: ClosedLeadsComponent,
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/opportunities',
+        loadComponent: () => import('./pages/common-modules/opportunities/opportunities').then(m => m.OpportunitiesComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/closed-opportunities',
+        loadComponent: () => import('./pages/common-modules/opportunities/closed-opportunities/closed-opportunities').then(m => m.ClosedOpportunitiesComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/customer',
+        loadComponent: () => import('./pages/common-modules/customer/customer').then(m => m.Customer),
+        canActivate: [authGuard],
+        data: { roles: ['Country Head'] }
+      },
+      {
+        path: 'country-head/contact',
+        loadComponent: () => import('./pages/common-modules/contact/contact').then(m => m.Contact),
         canActivate: [authGuard],
         data: { roles: ['Country Head'] }
       },

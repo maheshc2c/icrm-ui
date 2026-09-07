@@ -455,18 +455,18 @@ constructor() {
           icon: 'fas fa-users',
           route: '/openleads',
           children: [
-            { label: 'New', icon: 'fas fa-edit', route: '/salesmanager/leads/add' },
+            { label: 'New', icon: 'fas fa-edit', route: '/leads/add' },
             { label: 'Open', icon: 'fas fa-folder-open', route: '/openleads' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-leads' }
+            { label: 'Closed', icon: 'fas fa-folder', route: '/closed-leads' }
           ]
         },
         {
           label: 'Opportunity',
           icon: 'fas fa-briefcase',
-          route: '/salesmanager/opportunities',
+          route: '/country-head/opportunities',
           children: [
-            { label: 'Open', icon: 'fas fa-folder-open', route: '/salesmanager/opportunities' },
-            { label: 'Closed', icon: 'fas fa-folder', route: '/salesmanager/closed-opportunities' },
+            { label: 'Open', icon: 'fas fa-folder-open', route: '/country-head/opportunities' },
+            { label: 'Closed', icon: 'fas fa-folder', route: '/country-head/closed-opportunities' },
             { label: 'Funnel History', icon: 'fas fa-history', route: '/OppurtunityStatus/FunnelHistory' }
           ]
         },
@@ -496,10 +496,10 @@ constructor() {
         {
           label: 'Manage Customer',
           icon: 'fas fa-user-cog',
-          route: '/salesmanager/customer',
+          route: '/country-head/customer',
           children: [
-            { label: 'Customer', icon: 'fas fa-user', route: '/salesmanager/customer' },
-            { label: 'Contact', icon: 'fas fa-address-book', route: '/salesmanager/contact' },
+            { label: 'Customer', icon: 'fas fa-user', route: '/country-head/customer' },
+            { label: 'Contact', icon: 'fas fa-address-book', route: '/country-head/contact' },
           ]
         },
         {
