@@ -250,4 +250,72 @@ export class ApproveLeads implements OnInit {
     this.isPopupVisible = false;
     this.selectedLeadId = null;
   }
+
+  onDownload(): void {
+    const pagination: PaginationRequest = {
+      pageNumber: 0,
+      pageSize: 10000,
+      sortBy: 'leadId',
+      sortOrder: 'desc'
+    };
+
+    this.cicService.getTrackLeads(pagination).subscribe({
+      next: (response) => {
+        let exportData = (response.content || []).map((lead: TrackLead) => ({
+          leadId: lead.leadId,
+          leadSource: lead.leadSource,
+          customerName: lead.customerName,
+          contactFirstName: lead.contactFirstName,
+          createdBy: lead.createdBy,
+          createdTime: lead.createdTime
+        }));
+
+        const searchTerm = this.searchValues?.leadId?.toLowerCase() || '';
+        const customerFilter = this.searchValues?.customer || '';
+        const ownerFilter = this.searchValues?.createdBy || '';
+
+        if (searchTerm || customerFilter || ownerFilter) {
+          exportData = exportData.filter(row => {
+            const matchesId = !searchTerm || (row.leadId && row.leadId.toString().includes(searchTerm));
+            const matchesCustomer = !customerFilter || row.customerName === customerFilter;
+            const matchesOwner = !ownerFilter || (row.createdBy && row.createdBy.includes(ownerFilter));
+            return matchesId && matchesCustomer && matchesOwner;
+          });
+        }
+
+        if (exportData.length === 0) {
+          this.toastService.error('No data available to download');
+          return;
+        }
+
+        const headers = ['Lead ID', 'Source of Lead', 'Customer', 'Contact Person', 'Created By', 'Created Time'];
+        const csvData: string[] = [headers.join(',')];
+
+        exportData.forEach(row => {
+          const line = [
+            `"${row.leadId || ''}"`,
+            `"${(row.leadSource || '').replace(/"/g, '""')}"`,
+            `"${(row.customerName || '').replace(/"/g, '""')}"`,
+            `"${(row.contactFirstName || '').replace(/"/g, '""')}"`,
+            `"${(row.createdBy || '').replace(/"/g, '""')}"`,
+            `"${(row.createdTime || '').replace(/"/g, '""')}"`
+          ];
+          csvData.push(line.join(','));
+        });
+
+        const blob = new Blob(['\uFEFF' + csvData.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `approve_leads_${new Date().getTime()}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.toastService.success('CSV downloaded successfully');
+      },
+      error: (err) => {
+        console.error('Failed to download leads via API:', err);
+        this.toastService.error('Failed to download leads');
+      }
+    });
+  }
 }

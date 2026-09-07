@@ -20,8 +20,47 @@ export class QuoteRevisionComponent implements OnInit {
   private baseUrl = environment.baseUrl;
   quoteId: string = '';
   leadId: number | null = null;
+
+  private getHomeRoute(): string {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role')?.trim();
+      if (role) {
+        const normalizedRole = role.replace(/[\s_]+/g, '').toUpperCase();
+        switch (normalizedRole) {
+          case 'SUPERADMIN':
+            return '/superadmindashboard';
+          case 'ADMIN':
+            return '/admindashboard';
+          case 'ADMINMARKETING':
+            return '/adminmarketingdashboard';
+          case 'SALESDIRECTOR':
+            return '/sddashboard';
+          case 'REGIONALBRANCHHEAD':
+            return '/regional-branch-head-dashboard';
+          case 'REGIONALSALESMANAGER':
+            return '/regional-sales-manager-dashboard';
+          case 'NATIONALSALESMANAGER':
+            return '/national-sales-manager-dashboard';
+          case 'GLOBALHEAD':
+            return '/globalhead-dashboard';
+          case 'COUNTRYHEAD':
+            return '/country-head';
+          case 'CUSTOMERINTERACTIONCENTER':
+            return '/Approve-Leads';
+          case 'OTR':
+            return '/Cnotedownload';
+          case 'SALESENGINEER':
+          case 'SALESMANAGER':
+          default:
+            return '/sales-manager-dashboard';
+        }
+      }
+    }
+    return '/sales-manager-dashboard';
+  }
+
   breadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/' },
+    { label: 'Home', route: this.getHomeRoute() },
     { label: 'Quote Details' },
     { label: 'Quote Revision' }
   ];
@@ -64,11 +103,32 @@ export class QuoteRevisionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe(queryParams => {
+      const qLeadId = queryParams.get('leadId');
+      if (qLeadId && !isNaN(Number(qLeadId))) {
+        this.leadId = Number(qLeadId);
+        this.updateBreadcrumbs();
+      }
+    });
+
     this.route.paramMap.subscribe(params => {
       this.quoteId = params.get('id') || '1783402869854';
-      this.breadcrumbs[2] = { label: `Quote ID - ${this.quoteId}` };
+      this.updateBreadcrumbs();
       this.fetchQuoteDetails();
     });
+  }
+
+  updateBreadcrumbs(): void {
+    this.breadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      ...(this.leadId ? [
+        { label: 'Leads', route: '/openleads' },
+        { label: `Lead #${this.leadId}`, route: `/salesmanager/leads/edit/${this.leadId}` }
+      ] : [
+        { label: 'Quote Details' }
+      ]),
+      { label: `Quote Revision (${this.quoteId})` }
+    ];
   }
 
   fetchQuoteDetails() {
@@ -101,7 +161,10 @@ export class QuoteRevisionComponent implements OnInit {
           if (data.stockistId != null) this.quoteForm.stockistId = data.stockistId;
           if (data.discount != null) this.quoteForm.discount = data.discount;
           if (data.balancePaymentDays != null) this.quoteForm.balancePaymentDays = data.balancePaymentDays;
-          if (data.leadId != null) this.leadId = data.leadId;
+          if (data.leadId != null) {
+            this.leadId = data.leadId;
+            this.updateBreadcrumbs();
+          }
 
           if (data.billingOptions) this.billingOptions = data.billingOptions;
           if (data.productOptions) this.productOptions = data.productOptions;

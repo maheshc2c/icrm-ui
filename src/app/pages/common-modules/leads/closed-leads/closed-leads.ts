@@ -19,8 +19,46 @@ import { Leadservice } from '../../../../service/leadservice';
 })
 export class ClosedLeadsComponent implements OnInit {
   /* ================= HEADER ================= */
+  private getHomeRoute(): string {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role')?.trim();
+      if (role) {
+        const normalizedRole = role.replace(/[\s_]+/g, '').toUpperCase();
+        switch (normalizedRole) {
+          case 'SUPERADMIN':
+            return '/superadmindashboard';
+          case 'ADMIN':
+            return '/admindashboard';
+          case 'ADMINMARKETING':
+            return '/adminmarketingdashboard';
+          case 'SALESDIRECTOR':
+            return '/sddashboard';
+          case 'REGIONALBRANCHHEAD':
+            return '/regional-branch-head-dashboard';
+          case 'REGIONALSALESMANAGER':
+            return '/regional-sales-manager-dashboard';
+          case 'NATIONALSALESMANAGER':
+            return '/national-sales-manager-dashboard';
+          case 'GLOBALHEAD':
+            return '/globalhead-dashboard';
+          case 'COUNTRYHEAD':
+            return '/country-head';
+          case 'CUSTOMERINTERACTIONCENTER':
+            return '/Approve-Leads';
+          case 'OTR':
+            return '/Cnotedownload';
+          case 'SALESENGINEER':
+          case 'SALESMANAGER':
+          default:
+            return '/sales-manager-dashboard';
+        }
+      }
+    }
+    return '/sales-manager-dashboard';
+  }
+
   headerBreadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/sales-manager-dashboard' },
+    { label: 'Home', route: this.getHomeRoute() },
     { label: 'Leads', route: '/openleads' },
     { label: 'Closed Leads' }
   ];
@@ -74,6 +112,11 @@ export class ClosedLeadsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.headerBreadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      { label: 'Leads', route: '/openleads' },
+      { label: 'Closed Leads' }
+    ];
     this.loadClosedLeads();
   }
 

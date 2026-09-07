@@ -357,25 +357,37 @@ export class AddleadComponent implements OnInit {
 
   private getHomeRoute(): string {
     if (typeof window !== 'undefined' && window.localStorage) {
-      const role = localStorage.getItem('role');
-      if (role === 'SUPERADMIN' || role === 'SUPER ADMIN') {
-        return '/superadmindashboard';
-      } else if (role === 'Admin' || role === 'ADMIN') {
-        return '/admindashboard';
-      } else if (role === 'ADMINMARKETING' || role === 'ADMIN MARKETING') {
-        return '/adminmarketingdashboard';
-      } else if (role === 'Sales Director') {
-        return '/sddashboard';
-      } else if (role === 'Regional Branch Head') {
-        return '/regional-branch-head-dashboard';
-      } else if (role === 'Regional Sales Manager') {
-        return '/regional-sales-manager-dashboard';
-      } else if (role === 'National Sales Manager') {
-        return '/national-sales-manager-dashboard';
-      } else if (role === 'Global Head') {
-        return '/globalhead-dashboard';
-      } else if (role === 'Country Head') {
-        return '/country-head';
+      const role = localStorage.getItem('role')?.trim();
+      if (role) {
+        const normalizedRole = role.replace(/[\s_]+/g, '').toUpperCase();
+        switch (normalizedRole) {
+          case 'SUPERADMIN':
+            return '/superadmindashboard';
+          case 'ADMIN':
+            return '/admindashboard';
+          case 'ADMINMARKETING':
+            return '/adminmarketingdashboard';
+          case 'SALESDIRECTOR':
+            return '/sddashboard';
+          case 'REGIONALBRANCHHEAD':
+            return '/regional-branch-head-dashboard';
+          case 'REGIONALSALESMANAGER':
+            return '/regional-sales-manager-dashboard';
+          case 'NATIONALSALESMANAGER':
+            return '/national-sales-manager-dashboard';
+          case 'GLOBALHEAD':
+            return '/globalhead-dashboard';
+          case 'COUNTRYHEAD':
+            return '/country-head';
+          case 'CUSTOMERINTERACTIONCENTER':
+            return '/Approve-Leads';
+          case 'OTR':
+            return '/Cnotedownload';
+          case 'SALESENGINEER':
+          case 'SALESMANAGER':
+          default:
+            return '/sales-manager-dashboard';
+        }
       }
     }
     return '/sales-manager-dashboard';
@@ -2049,8 +2061,10 @@ export class AddleadComponent implements OnInit {
   }
 
   onQuoteRevisionAdd(row: any) {
-    const id = row.quoteId || row.id || this.leadId || '31';
-    this.router.navigate(['/quoteRevision', id]);
+    const id = row?.quoteId || row?.quoteRevisionId || row?.id || this.leadId || '31';
+    this.router.navigate(['/quoteRevision', id], {
+      queryParams: { leadId: this.leadId }
+    });
   }
 
   openAddContractNoteModal(): void {
