@@ -487,10 +487,10 @@ constructor() {
         {
           label: 'Manage Customer',
           icon: 'fas fa-user-cog',
-          route: '/country-head/customer',
+          route: '/customer',
           children: [
-            { label: 'Customer', icon: 'fas fa-user', route: '/country-head/customer' },
-            { label: 'Contact', icon: 'fas fa-address-book', route: '/country-head/contact' },
+            { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
+            { label: 'Contact', icon: 'fas fa-address-book', route: '/contact' },
           ]
         },
         {

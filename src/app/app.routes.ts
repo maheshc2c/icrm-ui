@@ -1195,18 +1195,6 @@ export const routes: Routes = [
         data: { roles: ['Country Head'] }
       },
       {
-        path: 'country-head/customer',
-        loadComponent: () => import('./pages/common-modules/customer/customer').then(m => m.Customer),
-        canActivate: [authGuard],
-        data: { roles: ['Country Head'] }
-      },
-      {
-        path: 'country-head/contact',
-        loadComponent: () => import('./pages/common-modules/contact/contact').then(m => m.Contact),
-        canActivate: [authGuard],
-        data: { roles: ['Country Head'] }
-      },
-      {
         path: 'country-head/marketing-document',
         loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
         canActivate: [authGuard],
