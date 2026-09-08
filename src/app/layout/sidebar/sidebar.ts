@@ -274,7 +274,7 @@ constructor() {
         {
           label: 'Demo Products',
           icon: 'fas fa-lightbulb',
-          route: '/regional-branch-head/demo-product'
+          route: '/demoproduct'
         },
         {
           label: 'Manage Customer',
@@ -482,7 +482,7 @@ constructor() {
         {
           label: 'Demo Products',
           icon: 'fas fa-lightbulb',
-          route: '/country-head/dashboard/demo-product'
+          route: '/demoproduct'
         },
         {
           label: 'Manage Customer',
@@ -670,7 +670,7 @@ constructor() {
         {
           label: 'Demo Products',
           icon: 'fas fa-lightbulb',
-          route: `/demo-product`
+          route: `/demoproduct`
         },
         {
           label: 'Manage Customer',
