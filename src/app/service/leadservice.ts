@@ -49,8 +49,8 @@ export class Leadservice {
   }
 
   /* ================= GET CLOSED LEADS ================= */
-  getClosedLeads(): Observable<LeadSummary[]> {
-    return this.http.get<LeadSummary[]>(`${this.baseUrl}/salesengineer/salesmanager/leads-closed`, {
+  getClosedLeads(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/leads/closed`, {
       headers: this.getAuthHeaders()
     });
   }

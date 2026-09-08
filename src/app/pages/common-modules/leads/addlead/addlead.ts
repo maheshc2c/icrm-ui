@@ -1185,7 +1185,7 @@ export class AddleadComponent implements OnInit {
     if (this.isEditMode && this.leadId) {
       this.leadservice.updateLead(this.leadId, payload).subscribe({
         next: (response) => {
-          this.toastService.success('Lead updated successfully!');
+          this.toastService.success('Lead updated successfully and resubmitted to CIC for approval!');
           this.router.navigate(['/openleads']);
         },
         error: (err) => {
@@ -1333,8 +1333,9 @@ export class AddleadComponent implements OnInit {
           const field = this.oppFields.find(f => f.name === 'status');
           if (field && statusData) {
             field.options = statusData.map((d: any) => {
+              const rawName = d.oppName || d.OppName || 'Status';
               const weight = d.oppWeight != null ? ` (${d.oppWeight}%)` : '';
-              return { label: (d.oppName || d.OppName || 'Status') + weight, value: d.oppStatusId || d.OppStatusId };
+              return { label: rawName + weight, value: d.oppStatusId || d.OppStatusId, oppName: rawName };
             });
           }
         });
@@ -1475,8 +1476,9 @@ export class AddleadComponent implements OnInit {
       const field = this.oppFields.find(f => f.name === 'status');
       if (field) {
         field.options = data.map((d: any) => {
+          const rawName = d.oppName || d.OppName || 'Status';
           const weight = d.oppWeight != null ? ` (${d.oppWeight}%)` : '';
-          return { label: (d.oppName || d.OppName || 'Status') + weight, value: d.oppStatusId || d.OppStatusId };
+          return { label: rawName + weight, value: d.oppStatusId || d.OppStatusId, oppName: rawName };
         });
       }
     });
@@ -1648,10 +1650,15 @@ export class AddleadComponent implements OnInit {
 
     const toNullIfEmpty = (val: any) => (val === '' || val === null || val === undefined) ? null : val;
 
+    const statusField = this.oppFields.find(f => f.name === 'status');
+    const selectedOpt = statusField?.options?.find((o: any) => o.value == this.oppModel.status);
+    const oppStatusStr = selectedOpt ? (selectedOpt.oppName || selectedOpt.label.replace(/\s*\(\d+%\)/, '').trim()) : '';
+
     const payload = {
       leadId: this.leadId,
       productId: this.oppModel.productId ? Number(this.oppModel.productId) : null,
       status: toNullIfEmpty(this.oppModel.status) ? Number(toNullIfEmpty(this.oppModel.status)) : null,
+      oppStatus: oppStatusStr,
       requiredQuantity: this.oppModel.quantity ? Number(this.oppModel.quantity) : null,
       fundSourceId: toNullIfEmpty(this.oppModel.fundSourceId) ? Number(toNullIfEmpty(this.oppModel.fundSourceId)) : null,
       fundingStatus: null,

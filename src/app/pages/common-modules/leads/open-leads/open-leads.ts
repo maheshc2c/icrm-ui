@@ -300,12 +300,12 @@ this.rows.forEach((row: any) => {
   }
 
   onAdd(): void {
-    this.router.navigate(['/salesmanager/leads/add']);
+    this.router.navigate(['/leads/add']);
   }
 
   onEdit(row: any): void {
     console.log('Edit lead:', row);
-    this.router.navigate(['salesmanager/leads/edit', row.leadId]);
+    this.router.navigate(['/leads/edit', row.leadId]);
   }
 
   onDownload(): void {

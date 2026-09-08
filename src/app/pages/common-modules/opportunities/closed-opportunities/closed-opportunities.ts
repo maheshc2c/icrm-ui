@@ -83,7 +83,25 @@ export class ClosedOpportunitiesComponent implements OnInit {
 
   constructor(private router: Router, private leadService: Leadservice) { }
 
+  private getHomeRoute(): string {
+    const role = localStorage.getItem('role') || '';
+    const upper = role.toUpperCase();
+
+    if (upper.includes('COUNTRY')) return '/country-head';
+    if (upper.includes('GLOBAL')) return '/globalhead-dashboard';
+    if (upper.includes('NATIONAL')) return '/national-sales-manager-dashboard';
+    if (upper.includes('REGIONAL')) return '/regional-sales-manager-dashboard';
+    if (upper.includes('DIRECTOR')) return '/sddashboard';
+    if (upper.includes('SUPERADMIN') || upper.includes('SUPER ADMIN')) return '/superadmindashboard';
+    if (upper.includes('ADMIN')) return '/admindashboard';
+    return '/sales-manager-dashboard';
+  }
+
   ngOnInit(): void {
+    this.headerBreadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      { label: 'Closed Opportunities' }
+    ];
     this.loadClosedOpportunities();
   }
 

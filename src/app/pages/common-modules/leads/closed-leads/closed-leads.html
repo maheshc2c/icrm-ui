@@ -12,10 +12,11 @@
   [searchFields]="searchFields"
   [showImport]="true"
   [showAdd]="false"
-  [showEditButton]="false"
+  [showEditButton]="true"
   [showDeleteButton]="false"
   [showViewButton]="true"
   (searchChange)="onSearchChange($event)"
   (download)="downloadExcel()"
+  (editRow)="editLead($event)"
   (viewRow)="viewLead($event?.leadId)">
 </app-data-table>

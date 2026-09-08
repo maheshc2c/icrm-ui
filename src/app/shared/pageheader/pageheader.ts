@@ -6,6 +6,7 @@ import { Breadcrumb } from '../../models/breadcrumb';
 
 @Component({
   selector: 'app-pageheader',
+  standalone: true,
   imports: [RouterLink,CommonModule,FormsModule],
   templateUrl: './pageheader.html',
   styleUrl: './pageheader.css'
