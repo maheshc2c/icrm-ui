@@ -51,14 +51,16 @@
             <span>Calendar</span>
           </div>
           <div class="section-cards">
-            <div class="dashboard-card calendar-card" routerLink="/salesmanager/calender" style="cursor: pointer;">
-              <div class="card-icon calendar-bg">
-                <i class="fas fa-calendar"></i>
+            <a routerLink="/salesdirector/calender" style="cursor: pointer;">
+              <div class="dashboard-card calendar-card">
+                <div class="card-icon calendar-bg">
+                  <i class="fas fa-calendar"></i>
+                </div>
+                <div class="card-title">
+                  <h3>Calendar</h3>
+                </div>
               </div>
-              <div class="card-title">
-                <h3>Calendar</h3>
-              </div>
-            </div>
+            </a>
           </div>
         </div>
  
@@ -90,7 +92,7 @@
             <span>Opportunities</span>
           </div>
           <div class="section-cards">
-            <div class="dashboard-card opportunities-open-card" routerLink="/oppurtunity/open" style="cursor: pointer;">
+            <div class="dashboard-card opportunities-open-card" routerLink="/salesmanager/opportunities" style="cursor: pointer;">
               <div class="card-icon opportunities-open-bg">
                 <i class="fas fa-folder-open"></i>
               </div>
@@ -98,7 +100,7 @@
                 <h3>Open</h3>
               </div>
             </div>
-            <div class="dashboard-card opportunities-close-card" routerLink="/oppurtunity/close" style="cursor: pointer;">
+            <div class="dashboard-card opportunities-close-card" routerLink="/salesmanager/closed-opportunities" style="cursor: pointer;">
               <div class="card-icon opportunities-close-bg">
                 <i class="fas fa-folder"></i>
               </div>

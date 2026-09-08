@@ -5,12 +5,14 @@ import { catchError } from 'rxjs/operators';
 import { AuthService } from './auth-service';
 import { State } from '../models/state';
  
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class Stateservice {
  
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
  
   constructor(
     private http: HttpClient,

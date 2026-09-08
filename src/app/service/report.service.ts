@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { AuthService } from './auth-service';
 import { ApiResponse, LostDealsReportResponseDto, LostRegionDto, LostProductDto } from '../models/opportunity-lost.model';
 
@@ -78,12 +78,14 @@ export interface IncentiveFilterRequest {
   };
 }
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ReportService {
 
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,
@@ -173,12 +175,24 @@ export class ReportService {
       { headers: this.getAuthHeaders() }
     ).pipe(
       map((response: any) => {
-        const users: any[] = response?.content ?? (Array.isArray(response) ? response : []);
+        const users: any[] = response?.content ?? response?.data?.content ?? response?.data ?? (Array.isArray(response) ? response : []);
         return users.map((u: any) => ({
           id: u.id ?? u.userId,
           label: [u.firstName, u.lastName].filter(Boolean).join(' ').trim()
                   + (u.username ? ` (${u.username})` : '')
         }));
+      }),
+      catchError(() => {
+        return this.http.get<any>(`${this.baseUrl}/dashboard/users-dropdown`, { headers: this.getAuthHeaders() }).pipe(
+          map((res: any) => {
+            const list: any[] = res?.data ?? (Array.isArray(res) ? res : []);
+            return list.map((u: any) => ({
+              id: u.id ?? u.userId,
+              label: u.name ?? [u.firstName, u.lastName].filter(Boolean).join(' ').trim() ?? u.username ?? 'User'
+            }));
+          }),
+          catchError(() => of([]))
+        );
       })
     );
   }

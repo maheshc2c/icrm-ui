@@ -39,11 +39,15 @@
         </div>
 
         <div class="tabs-actions">
-            <button class="nav-btn" (click)="handleStepCancel()">
+            <button class="nav-btn" (click)="handleStepCancel()" [disabled]="isSubmitting">
                 <i class="fas fa-arrow-left"></i> Prev
             </button>
-            <button class="nav-btn" (click)="handleStepSubmit(formInitialData)">
-                Next <i class="fas fa-arrow-right"></i>
+            <button class="nav-btn" (click)="handleStepSubmit(formInitialData)" [disabled]="isSubmitting">
+                <ng-container *ngIf="currentStep < 4">Next <i class="fas fa-arrow-right"></i></ng-container>
+                <ng-container *ngIf="currentStep === 4">
+                    <span *ngIf="isSubmitting"><i class="fas fa-spinner fa-spin me-1"></i>Submitting...</span>
+                    <span *ngIf="!isSubmitting">Submit <i class="fas fa-check"></i></span>
+                </ng-container>
             </button>
         </div>
     </div>
@@ -173,17 +177,20 @@
 
                 <div class="form-actions mt-4">
                       <button type="button" class="btn btn-outline-secondary btn-rounded"
+                          [disabled]="isSubmitting"
                           (click)="handleStepCancel()">Cancel</button>
 
                       <button *ngIf="locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS')"
                               type="button" 
                               class="btn btn-primary btn-rounded ms-3"
+                              [disabled]="isSubmitting"
                               (click)="step2Form.form.valid ? onFormSubmit(formInitialData) : handleFormError(step2Form)">
-                          Submit
+                          <span *ngIf="isSubmitting"><i class="fas fa-spinner fa-spin me-1"></i>Submitting...</span>
+                          <span *ngIf="!isSubmitting">Submit</span>
                       </button>
 
                       <button *ngIf="!(locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'))"
-                              type="submit" class="btn btn-primary btn-rounded ms-3">Next Step</button>
+                              type="submit" class="btn btn-primary btn-rounded ms-3" [disabled]="isSubmitting">Next Step</button>
                   </div>
             </form>
         </div>
@@ -322,17 +329,20 @@
 
                   <div class="form-actions mt-4">
                       <button type="button" class="btn btn-outline-secondary btn-rounded"
+                          [disabled]="isSubmitting"
                           (click)="handleStepCancel()">Previous</button>
 
                       <button *ngIf="locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS')"
                               type="button" 
                               class="btn btn-primary btn-rounded ms-3"
+                              [disabled]="isSubmitting"
                               (click)="onFormSubmit({})">
-                          Submit
+                          <span *ngIf="isSubmitting"><i class="fas fa-spinner fa-spin me-1"></i>Submitting...</span>
+                          <span *ngIf="!isSubmitting">Submit</span>
                       </button>
 
                       <button *ngIf="!(locationMode === 'world' && (productType === 'NO_PRODUCTS' || productType === 'ALL_PRODUCTS'))"
-                              type="submit" class="btn btn-primary btn-rounded ms-3">Next Step</button>
+                              type="submit" class="btn btn-primary btn-rounded ms-3" [disabled]="isSubmitting">Next Step</button>
                   </div>
 
             </form>
@@ -423,8 +433,11 @@
                 </ng-container>
 
                 <div class="form-actions mt-4">
-                    <button type="button" class="btn btn-outline-secondary btn-rounded" (click)="handleStepCancel()">Previous</button>
-                    <button type="submit" class="btn btn-primary btn-rounded ms-3">Submit</button>
+                    <button type="button" class="btn btn-outline-secondary btn-rounded" [disabled]="isSubmitting" (click)="handleStepCancel()">Previous</button>
+                    <button type="submit" class="btn btn-primary btn-rounded ms-3" [disabled]="isSubmitting">
+                        <span *ngIf="isSubmitting"><i class="fas fa-spinner fa-spin me-1"></i>Submitting...</span>
+                        <span *ngIf="!isSubmitting">Submit</span>
+                    </button>
                 </div>
             </form>
         </div>

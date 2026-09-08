@@ -13,12 +13,14 @@ import { Visit } from '../models/visit';
 import { OpportunityTableModel } from '../models/opportunity-table.model';
 
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
 export class SalesDirectorService {
 
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,
@@ -41,7 +43,7 @@ export class SalesDirectorService {
     return headers;
   }
 
-  private commonUrl = 'http://localhost:8080/track-quote-po';
+  private commonUrl = `${environment.baseUrl}/track-quote-po`;
 
   getQuoteListPaginated(
     page: number,

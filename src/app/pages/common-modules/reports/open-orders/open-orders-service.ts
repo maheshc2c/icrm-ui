@@ -90,12 +90,14 @@ export interface OpenOrderDrillDownResponseDto {
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 
+import { environment } from '../../../../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class OpenOrdersService {
 
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 

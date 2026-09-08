@@ -18,6 +18,7 @@
   [title]="isEditMode ? 'Edit Customer' : 'Add New Customer'"
   [fields]="customerFields"
   [model]="formInitialData"
+  [isSubmitting]="isSubmitting"
   (fieldChange)="onFieldChange($event)"
   (formSubmit)="saveCompany($event)"
   (cancelForm)="onCancel()">

@@ -19,6 +19,8 @@ import { DiscountQuoteModel } from '../models/discountqoute-model';
 import { GeneralSettingsResponse } from '../models/general-settings.model';
 
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,27 +29,12 @@ export class Adminservice {
   private customerCache: CustomerModel[] | null = null;
 
 
-  private baseUrl = 'http://localhost:8080'; // ✅ no trailing slash
-
+  private baseUrl = environment.baseUrl; 
   constructor(
     private http: HttpClient,
     private auth: AuthService,
   ) { }
 
-  // ================= AUTH HEADERS =================
-//   private getAuthHeaders(): HttpHeaders {
-//     const token = this.auth.getToken();
-
-// const formattedToken = token?.startsWith('Bearer ')
-//   ? token
-//   : `Bearer ${token}`;
-//     return token
-//       ? new HttpHeaders({
-//         Authorization: `Bearer ${token}`,
-//         'Content-Type': 'application/json'
-//       })
-//       : new HttpHeaders({ 'Content-Type': 'application/json' });
-//   }
   private getAuthHeaders(): HttpHeaders {
   const token = this.auth.getToken();
 
@@ -359,16 +346,6 @@ downloadCompetitor(payload: any) {
     );
   }
 
-  // downloadCustomer(data: CustomerModel[]): Observable<Blob> {
-  //   return this.http.post(
-  //     `${this.baseUrl}/admin/customer-excel`,
-  //     data,    // ✅ send actual table data
-  //     {
-  //       headers: this.getAuthHeaders(),
-  //       responseType: 'blob'
-  //     }
-  //   );
-  // }
 
   downloadCustomer(
   customerName: string | null,
@@ -575,38 +552,7 @@ getFinancialYearCalendar(fyId: number) {
     }
   );
 }
-  // downloadSpecialityExcel(
-  //   name: string | null,
-  //   pageNumber: number = 0,
-  //   pageSize: number = 10,
-  //   sortBy: string = 'specialityName',
-  //   sortOrder: string = 'ASC'
-  // ): Observable<Blob> {
-  //   const payload = {
-  //     pageNumber,
-  //     pageSize,
-  //     sortBy,
-  //     sortOrder
-  //   };
-    
-  //   let params = new HttpParams();
-  //   if (name) {
-  //     params = params.set('name', name);
-  //   } else {
-  //     params = params.set('name', '');
-  //   }
-    
-  //   return this.http.post(
-  //     `${this.baseUrl}/customer/speciality-download`,
-  //     payload,
-  //     {
-  //       headers: this.getAuthHeaders(),
-  //       params,
-  //       responseType: 'blob'
-  //     }
-  //   );
-  // }
-
+  
   // ================= View Demo =================
   getDemo(): Observable<any[]> {
     const body = {
@@ -652,24 +598,6 @@ activateDemo(id: number) {
   );
 }
 
-
-
-
-  //  createDemo(data: DemoProductDetailModel) {
-  //   return this.http.post(
-  //     `${this.baseUrl}/admin/create-Demo`,
-  //     data,
-  //     { headers: this.getAuthHeaders() }
-  //   );
-  // }
-  // createDemo(data: DemoProductModel) {
-  //   return this.http.post(
-  //     `${this.baseUrl}/admin/create-Demo`,
-  //     data,
-  //     { headers: this.getAuthHeaders() }
-  //   );
-  // }
-
   createDemo(data: any) {
     return this.http.post(
       `${this.baseUrl}/product/demo`,
@@ -691,23 +619,7 @@ activateDemo(id: number) {
     );
   }
 
-  // ================= SEARCH DEMO =================
-  // searchDemo(filters: any) {
-  //   return this.http.get<any[]>(
-  //     `${this.baseUrl}/admin/demo-view/search`,
-  //     {
-  //       headers: this.getAuthHeaders(),
-  //       params: {
-  //   categoryName: filters.categoryName || null,
-  //   groupName: filters.groupName || null,
-  //   productName: filters.productName || null,
-  //   location: filters.location || null,
-  //   serialNo: filters.serialNo || null,
-  //   regionName: filters.regionName || null
-  // }
-  //     }
-  //   );
-  // }
+ 
     searchDemoPaginated(filters: any, page: number = 0, size: number = 10) {
       const body = {
         categoryId: filters.categoryId || null,
@@ -944,15 +856,7 @@ toggleContactStatus(id: number) {
     }
   );
 }
-// getSpecialityDropDown(search: string = '') {
-//   return this.http.get<any[]>(
-//     `${this.baseUrl}/contact/speciality`,
-//     {
-//       headers: this.getAuthHeaders(),
-//       params: { name: search }
-//     }
-//   );
-// }   
+
 
 private specialityDropdownCache$: Observable<any[]> | null = null;
 
@@ -1005,10 +909,7 @@ updateContact(id: number, payload: any) {
   );
 }
 
-
-
-
-  downloadContact(payload: any): Observable<Blob> {
+downloadContact(payload: any): Observable<Blob> {
   return this.http.post(
     `${this.baseUrl}/contact/download`,
     payload,
@@ -1123,9 +1024,7 @@ downloadSubSystemExcel(payload: any) {
   );
 }
   
-
-
-  getUserLogs(): Observable<UserlogModel[]> {
+getUserLogs(): Observable<UserlogModel[]> {
     return this.http.get<UserlogModel[]>(
       `${this.baseUrl}/auth/report/latest-login`,
       { headers: this.getAuthHeaders() }
@@ -1162,129 +1061,6 @@ downloadSubSystemExcel(payload: any) {
       }
     ) as Observable<Blob>;
   }
-
-  //channel partner
-
-//   // VIEW
-//   getChannelPartners() {
-//     return this.http.get<ChannelPartnerModel[]>(
-//       `${this.baseUrl}/admin/view-chanel`,
-//       { headers: this.getAuthHeaders() }
-//     );
-//   }
-//   getChannelPartnerById(id: number) {
-//   return this.http.get<ChannelPartnerModel>(
-//     `${this.baseUrl}/admin/view-chanel/${id}`,
-//     { headers: this.getAuthHeaders() }
-//   );
-// }
-
-//   deactivateChannelPartners(id: number) {
-//   const token = localStorage.getItem('token'); // or your existing token key
-//   const headers = new HttpHeaders({
-//     Authorization: `Bearer ${token}`
-//   });
-
-//   return this.http.put<ChannelPartnerModel>(
-//     `${this.baseUrl}/admin/deactivate-chanelpartner/${id}`,
-//     {},
-//     { headers }
-//   );
-// }
-
-// activateChannelPartners(id: number) {
-//   const token = localStorage.getItem('token'); // or your existing token key
-//   const headers = new HttpHeaders({
-//     Authorization: `Bearer ${token}`
-//   });
-
-//   return this.http.put<ChannelPartnerModel>(
-//     `${this.baseUrl}/admin/activate-chanelpartner/${id}`,
-//     {},
-//     { headers }
-//   );
-// }
-
-//   // SEARCH
-//   searchChannelPartner(name: string) {
-//     return this.http.get<ChannelPartnerModel[]>(
-//       `${this.baseUrl}/admin/search-chanelpartner`,
-//       {
-//         headers: this.getAuthHeaders(),
-//         params: { name }
-//       }
-//     );
-//   }
-
-//   createChannelPartner(data: ChannelPartnerModel) {
-//     return this.http.post(
-//       `${this.baseUrl}/admin/create-chanelpartner`,
-//       data,
-//       { headers: this.getAuthHeaders() }
-//     );
-//   }
-
-//   updateChannelPartner(id: number, data: ChannelPartnerModel) {
-//     return this.http.put(
-//       `${this.baseUrl}/admin/edit-chanelpartner/${id}`,
-//       data,
-//       { headers: this.getAuthHeaders() }
-//     );
-//   }
-
-//   // EXCEL DOWNLOAD
-//   downloadChannelExcel(data: ChannelPartnerModel[]) {
-//     return this.http.post(
-//       `${this.baseUrl}/admin/chanel-excel`,
-//       data,
-//       {
-//         headers: this.getAuthHeaders(),
-//         responseType: 'blob'
-//       }
-//     ) as Observable<Blob>;
-//   }
-
-// ================= CHANNEL PARTNER =================
-
-// Search
-// searchChannelPartners(
-//   channelPartnerName: string | null = null
-// ): Observable<any> {
-
-//   const payload = {
-//     channelPartnerName
-//   };
-
-//   return this.http.post<any>(
-//     `${this.baseUrl}/channelPartner/search`,
-//     payload,
-//     {
-//       headers: this.getAuthHeaders()
-//     }
-//   );
-// }
-
-
-
-// Get By Id (if endpoint exists)
-// getChannelPartnerById(id: number) {
-//   return this.http.get<any>(
-//     `${this.baseUrl}/channelPartner/${id}`,
-//     {
-//       headers: this.getAuthHeaders()
-//     }
-//   );
-// }
-
-// searchChannelPartners(payload: any): Observable<any> {
-//   return this.http.post<any>(
-//     `${this.baseUrl}/channelPartner/search`,
-//     payload,
-//     {
-//       headers: this.getAuthHeaders()
-//     }
-//   );
-// }
 
 searchChannelPartners(
   channelPartnerName: string | null = null,

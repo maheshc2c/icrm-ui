@@ -219,7 +219,32 @@ export class EditProduct implements OnInit {
     }
   }
  
+  isSubmitting = false;
+
+  private formatErrorMessage(err: any, fallbackMessage: string, productCode?: string): string {
+    const rawMessage = typeof err?.error === 'string'
+      ? err.error
+      : (err?.error?.message || err?.message || '');
+
+    const lower = rawMessage.toLowerCase();
+    if (
+      lower.includes('product code') ||
+      lower.includes('productcode') ||
+      lower.includes('already exists') ||
+      lower.includes('duplicate') ||
+      err?.status === 400 || err?.status === 409
+    ) {
+      const code = productCode || this.productData?.productCode || '';
+      return code
+        ? `A product already exists with Product Code "${code}". Please try changing the Product Code and submit again.`
+        : 'A product already exists with this Product Code. Please try changing the Product Code and submit again.';
+    }
+    return rawMessage || fallbackMessage;
+  }
+
   updateProduct(formData: any): void {
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
  
     // Look up IDs from the names selected in the dropdowns
     const selectedGroup = this.segments.find(s => s.groupName === formData.productSegment);
@@ -248,11 +273,14 @@ export class EditProduct implements OnInit {
     this.productService.updateProduct(this.productId, payload).subscribe({
       next: (res) => {
         this.toastService.success('Product updated successfully');
+        this.isSubmitting = false;
         this.router.navigate(['/product']);
       },
       error: (err) => {
         console.error('Update failed:', err);
-        this.toastService.error('Update failed');
+        this.isSubmitting = false;
+        const msg = this.formatErrorMessage(err, 'Update failed', formData.productCode);
+        this.toastService.error(msg);
       }
     });
   }

@@ -4,12 +4,14 @@ import { map, Observable } from 'rxjs';
 import { AuthService } from './auth-service';
 import { Segment, SegmentDto, Competitor } from '../models/segment';
  
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class SegmentService {
-  private baseUrl = 'http://localhost:8080/admin';
-  private productUrl = 'http://localhost:8080/product';
+  private baseUrl = `${environment.baseUrl}/admin`;
+  private productUrl = `${environment.baseUrl}/product`;
  
   constructor(
     private http: HttpClient,

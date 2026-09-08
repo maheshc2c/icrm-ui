@@ -41,6 +41,8 @@
   gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 100;
 }
 
 .filter-control {
@@ -334,6 +336,7 @@
 .custom-dropdown-container {
   position: relative;
   width: 220px; /* Increased to allow full user names */
+  z-index: 100;
 }
 
 .dropdown-trigger {

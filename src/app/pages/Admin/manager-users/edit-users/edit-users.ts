@@ -409,7 +409,28 @@ export class EditUsersComponent implements OnInit {
     };
   }
 
+  private formatErrorMessage(err: any, fallbackMessage: string): string {
+    const rawMessage = typeof err?.error === 'string'
+      ? err.error
+      : (err?.error?.message || err?.message || '');
+
+    const lower = rawMessage.toLowerCase();
+    if (
+      lower.includes('employee id already exists') ||
+      lower.includes('already exists') ||
+      lower.includes('duplicate') ||
+      err?.status === 400 || err?.status === 409
+    ) {
+      const empId = this.userData?.username || '';
+      return empId
+        ? `A user already exists with Employee ID "${empId}". Please try changing the Employee ID and submit again.`
+        : 'A user already exists with this Employee ID. Please try changing the Employee ID and submit again.';
+    }
+    return rawMessage || fallbackMessage;
+  }
+
   saveUserDetails(): void {
+    if (this.isSubmitting) return;
     this.userDetailsSubmitted = true;
     if (
       !this.userData.firstName || 
@@ -444,8 +465,9 @@ export class EditUsersComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error updating user details:', err);
-        this.toastService.error('Failed to update user details. Please try again.');
         this.isSubmitting = false;
+        const msg = this.formatErrorMessage(err, 'Failed to update user details. Please try again.');
+        this.toastService.error(msg);
       }
     });
   }
@@ -454,6 +476,7 @@ export class EditUsersComponent implements OnInit {
      CHANGE ROLE SAVE
   ══════════════════════════════════════════════════════ */
   saveRole(): void {
+    if (this.isSubmitting) return;
     if (!this.userData.roleName) {
       this.toastService.error('Please select a role.');
       return;
@@ -491,8 +514,9 @@ export class EditUsersComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error updating role:', err);
-        this.toastService.error('Failed to update role. Please try again.');
         this.isSubmitting = false;
+        const msg = this.formatErrorMessage(err, 'Failed to update role. Please try again.');
+        this.toastService.error(msg);
       }
     });
   }
@@ -501,6 +525,7 @@ export class EditUsersComponent implements OnInit {
      LOCATIONS SAVE
   ══════════════════════════════════════════════════════ */
   saveLocations(): void {
+    if (this.isSubmitting) return;
     this.isSubmitting = true;
 
     this.userData.worldNames = this.locationMode === 'world' && this.selWorld ? [this.selWorld] : [];
@@ -519,8 +544,9 @@ export class EditUsersComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error updating locations:', err);
-        this.toastService.error('Failed to update location details. Please try again.');
         this.isSubmitting = false;
+        const msg = this.formatErrorMessage(err, 'Failed to update location details. Please try again.');
+        this.toastService.error(msg);
       }
     });
   }
@@ -529,6 +555,7 @@ export class EditUsersComponent implements OnInit {
      PRODUCTS SAVE
   ══════════════════════════════════════════════════════ */
   saveProducts(): void {
+    if (this.isSubmitting) return;
     this.productsSubmitted = true;
     if (this.categories.length > 0 && this.selCategories.length === 0) {
       this.toastService.error('Please select at least one Category.');
@@ -559,8 +586,9 @@ export class EditUsersComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error updating products:', err);
-        this.toastService.error('Failed to update product details. Please try again.');
         this.isSubmitting = false;
+        const msg = this.formatErrorMessage(err, 'Failed to update product details. Please try again.');
+        this.toastService.error(msg);
       }
     });
   }

@@ -12,6 +12,8 @@ import { catchError, of, tap, Subject, map } from "rxjs";
 import * as XLSX from 'xlsx';
 import { DropdownOption } from "../models/assign-lead.model";
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,22 +23,14 @@ export class adminMarketingservice {
   public refreshSubject = new Subject<void>();
 
 
-  public baseUrl = 'http://localhost:8080'; // ✅ no trailing slash
+  public baseUrl = environment.baseUrl; 
 
   constructor(
     private http: HttpClient,
     private auth: AuthService,
   ) { }
 
-  // ================= AUTH HEADERS =================
-//   private getAuthHeaders(): HttpHeaders {
-//     const token = this.auth.getToken();
 
-// const formattedToken = token?.startsWith('Bearer ')
-//   ? token
-//   : `Bearer ${token}`;
-//     return token
-//       ? new HttpHeaders({
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
 
@@ -153,13 +147,6 @@ getContact(): Observable<Contactmodel | Contactmodel[]> {
       { headers: this.getAuthHeaders() }
     );
   }
-
-  // getCustomerDropdown() {
-  //   return this.http.get<CustomerModel[]>(
-  //     `${this.baseUrl}/admin/dropdown-customer`,
-  //     { headers: this.getAuthHeaders() }
-  //   );
-  // }
 
   searchContactByNumber(number: string) {
     return this.http.get<Contactmodel[]>(

@@ -7,6 +7,7 @@
  'Edit Product' : 'Add New Product'" 
  [fields]="productFields"
   [model]="formInitialData"
+  [isSubmitting]="isSubmitting"
   (formSubmit)="saveProduct($event)" 
   (cancelForm)="onCancel()"
    (fieldChange)="onFieldChange($event)">

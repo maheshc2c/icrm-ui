@@ -4,5 +4,6 @@
 </app-pageheader>
 
 <app-form *ngIf="productData" [title]="'Edit Product'" [fields]="productFields" [model]="productData"
+   [isSubmitting]="isSubmitting"
    (formSubmit)="updateProduct($event)" (cancelForm)="cancelEdit()" (fieldChange)="onFieldChange($event)">
 </app-form>

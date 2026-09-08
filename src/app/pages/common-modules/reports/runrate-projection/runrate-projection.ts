@@ -6,6 +6,7 @@ import { NgApexchartsModule, ChartComponent, ApexOptions } from 'ng-apexcharts';
 import { ReportsLayoutComponent } from '../reports-layout/reports-layout';
 import { Breadcrumb } from '../../../../models/breadcrumb';
 import { AuthService } from '../../../../service/auth-service';
+import { environment } from '../../../../../environments/environment';
 
 export type ChartOptions = {
   series: ApexOptions['series'];
@@ -37,6 +38,7 @@ export type ChartOptions = {
   styleUrls: ['./runrate-projection.css']
 })
 export class RunrateProjectionComponent implements OnInit {
+  private baseUrl = environment.baseUrl;
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions!: Partial<ChartOptions>;
 
@@ -93,7 +95,7 @@ export class RunrateProjectionComponent implements OnInit {
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
 
     // Categories dropdown
-    this.http.get<any>('http://localhost:8080/product/category', { headers }).subscribe({
+    this.http.get<any>(`${this.baseUrl}/product/category`, { headers }).subscribe({
       next: (res) => {
         if (Array.isArray(res)) this.categories = res;
         else if (res && Array.isArray(res.data)) this.categories = res.data;
@@ -103,7 +105,7 @@ export class RunrateProjectionComponent implements OnInit {
     });
 
     // Products dropdown
-    this.http.post<any>('http://localhost:8080/product', {}, { headers }).subscribe({
+    this.http.post<any>(`${this.baseUrl}/product`, {}, { headers }).subscribe({
       next: (res) => {
         if (Array.isArray(res)) this.products = res;
         else if (res && Array.isArray(res.data)) this.products = res.data;
@@ -113,7 +115,7 @@ export class RunrateProjectionComponent implements OnInit {
     });
 
     // Regions dropdown
-    this.http.get<any[]>('http://localhost:8080/location/locations?territoryLevelId=4', { headers }).subscribe({
+    this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=4`, { headers }).subscribe({
       next: (res) => {
         if (Array.isArray(res)) this.regions = res;
       },
@@ -121,7 +123,7 @@ export class RunrateProjectionComponent implements OnInit {
     });
 
     // Users dropdown
-    this.http.get<any[]>('http://localhost:8080/user/active-users-dropdown', { headers }).subscribe({
+    this.http.get<any[]>(`${this.baseUrl}/user/active-users-dropdown`, { headers }).subscribe({
       next: (res) => {
         if (Array.isArray(res)) this.users = res;
       },
@@ -145,7 +147,7 @@ export class RunrateProjectionComponent implements OnInit {
       endDate: "2027-03-31"
     };
 
-    this.http.post<any>('http://localhost:8080/reports/runrate-projection', body, { headers }).subscribe({
+    this.http.post<any>(`${this.baseUrl}/reports/runrate-projection`, body, { headers }).subscribe({
       next: (response) => {
         if (response && response.status && response.data) {
           this.processApiResponse(response.data);

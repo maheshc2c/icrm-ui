@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 import { Authmodel } from '../models/authmodel';
 import { isPlatformBrowser } from '@angular/common';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private baseUrl = 'http://localhost:8080/auth';
+  private baseUrl = `${environment.baseUrl}/auth`;
   private platformId = inject(PLATFORM_ID);
 
   constructor(private http: HttpClient) {}

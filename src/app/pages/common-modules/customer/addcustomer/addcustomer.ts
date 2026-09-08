@@ -376,8 +376,34 @@ export class Addcustomer implements OnInit {
     }
   }
 
+  isSubmitting = false;
+
+  private formatErrorMessage(err: any, fallbackMessage: string, customerCode?: string): string {
+    const rawMessage = typeof err?.error === 'string'
+      ? err.error
+      : (err?.error?.message || err?.message || '');
+
+    const lower = rawMessage.toLowerCase();
+    if (
+      lower.includes('customer code') ||
+      lower.includes('customercode') ||
+      lower.includes('customername1') ||
+      lower.includes('already exists') ||
+      lower.includes('duplicate') ||
+      err?.status === 400 || err?.status === 409
+    ) {
+      const code = customerCode || this.formInitialData?.customerName1 || '';
+      return code
+        ? `A customer already exists with Customer Code "${code}". Please try changing the Customer Code and submit again.`
+        : 'A customer already exists with this Customer Code. Please try changing the Customer Code and submit again.';
+    }
+    return rawMessage || fallbackMessage;
+  }
+
   /* ================= SAVE ================= */
   saveCompany(data: any): void {
+    if (this.isSubmitting) return;
+    this.isSubmitting = true;
  
     // Filter out rows where all fields are empty and format numbers correctly
     const cleanInstalledBases = (this.installedBases || [])
@@ -427,11 +453,14 @@ export class Addcustomer implements OnInit {
       this.adminService.updateCustomer(this.customerId, updatePayload).subscribe({
         next: () => {
           this.toastService.success('Customer updated successfully');
+          this.isSubmitting = false;
           this.navigateBackToList();
         },
         error: (err: any) => {
           console.error('Update failed:', err);
-          this.toastService.error('Update failed. Check console.');
+          this.isSubmitting = false;
+          const msg = this.formatErrorMessage(err, 'Update failed', data.customerName1);
+          this.toastService.error(msg);
         }
       });
     }
@@ -440,11 +469,14 @@ export class Addcustomer implements OnInit {
       this.adminService.createCustomer(payload).subscribe({
         next: () => {
           this.toastService.success('Customer created successfully');
+          this.isSubmitting = false;
           this.navigateBackToList();
         },
         error: (err: any) => {
           console.error('Create failed:', err);
-          this.toastService.error('Create failed. Check console.');
+          this.isSubmitting = false;
+          const msg = this.formatErrorMessage(err, 'Create failed', data.customerName1);
+          this.toastService.error(msg);
         }
       });
     }

@@ -11,6 +11,8 @@ import { Country } from '../../../../models/country';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../../../service/auth-service';
 
+import { environment } from '../../../../../environments/environment';
+
 @Component({
   selector: 'app-addcountry',
   standalone: true,
@@ -19,6 +21,8 @@ import { AuthService } from '../../../../service/auth-service';
   styleUrl: './addcountry.css'
 })
 export class Addcountry implements OnInit {
+
+  private baseUrl = environment.baseUrl;
 
   /* ================= HEADER ================= */
   headerTitle = 'Add New Country';
@@ -63,7 +67,7 @@ export class Addcountry implements OnInit {
     const token = this.auth?.getToken?.();
     const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
 
-    this.http.get<any[]>(`${'http://localhost:8080'}/location/locations?territoryLevelId=2`, { headers })
+    this.http.get<any[]>(`${this.baseUrl}/location/locations?territoryLevelId=2`, { headers })
       .subscribe({
         next: (geos: any[]) => {
           console.log('Geo options loaded:', geos);

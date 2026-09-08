@@ -3,11 +3,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth-service';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class Contactservice {
-  private baseUrl = 'http://localhost:8080/salesengineer';
+  private baseUrl = `${environment.baseUrl}/salesengineer`;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 

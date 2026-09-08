@@ -229,11 +229,12 @@
 
         <!-- BUTTONS -->
         <div class="form-action-buttons">
-          <button type="button" class="btn-cancel-form" (click)="cancel()">
+          <button type="button" class="btn-cancel-form" [disabled]="isSubmitting" (click)="cancel()">
             <i class="fas fa-times"></i> Cancel
           </button>
-          <button type="submit" class="btn-submit-form">
-            <i class="fas fa-check"></i> Save
+          <button type="submit" class="btn-submit-form" [disabled]="isSubmitting">
+            <i class="fas" [ngClass]="isSubmitting ? 'fa-spinner fa-spin' : 'fa-check'"></i>
+            {{ isSubmitting ? 'Submitting...' : 'Save' }}
           </button>
         </div>
 
