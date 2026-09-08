@@ -323,7 +323,6 @@ export const routes: Routes = [
       'SUPERADMIN', 'SUPER ADMIN', 'Admin', 'ADMIN'
     ]
   }
->>>>>>> origin/main
 },
 
 {
