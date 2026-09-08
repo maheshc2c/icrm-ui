@@ -1,216 +1,278 @@
 <app-header></app-header>
 <app-sidebar></app-sidebar>
-<app-pageheader [title]="headerTitle" [breadcrumbs]="headerBreadcrumbs">
+
+<app-pageheader
+  [title]="headerTitle"
+  [breadcrumbs]="headerBreadcrumbs">
 </app-pageheader>
 
 <div class="content-area">
-    <div class="dashboard-wrapper">
-        <div class="dashboard-content">
+  <div class="dashboard-wrapper">
 
-            <!-- First Row: 3 Sections -->
-            <div class="section-row">
+    <main class="dashboard-content">
 
-                <!-- Leads Section -->
-                <div class="section-block">
-                    <div class="section-header-title">
-                        <i class="fa-solid fa-user-md"></i>
-                        <span>Leads</span>
-                    </div>
+      <!-- First Row -->
+      <div class="section-row">
 
-                    <div class="section-cards">
-                        <div class="dashboard-card leads-new-card" routerLink="/leads/add" style="cursor: pointer;">
-                            <div class="card-icon leads-new-bg">
-                                <i class="fa-solid fa-edit"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>New</h3>
-                            </div>
-                        </div>
+        <!-- Leads -->
+        <section class="section-block">
+          <div class="section-header-title">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Leads</span>
+          </div>
 
-                        <div class="dashboard-card leads-open-card" routerLink="/openleads" style="cursor: pointer;">
-                            <div class="card-icon leads-open-bg">
-                                <i class="fa-solid fa-folder-open"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>Open</h3>
-                            </div>
-                        </div>
+          <div class="section-cards">
+            <div
+              class="dashboard-card leads-new-card"
+              routerLink="/leads/add"
+              role="button"
+              tabindex="0">
 
-                        <div class="dashboard-card leads-close-card" routerLink="/closed-leads" style="cursor: pointer;">
-                            <div class="card-icon leads-close-bg">
-                                <i class="fa-solid fa-folder"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>Closed</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              <div class="card-icon leads-new-bg">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </div>
 
-                <!-- Calendar Section -->
-                <div class="section-block">
-                    <div class="section-header-title">
-                        <i class="fa-solid fa-calendar-alt"></i>
-                        <span>Calendar</span>
-                    </div>
-
-                    <div class="section-cards">
-                        <div class="dashboard-card calendar-card" routerLink="/country-head/dashboard/view-calendar" style="cursor: pointer;">
-                            <div class="card-icon calendar-bg">
-                                <i class="fa-solid fa-calendar"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>Calendar</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Target Vs Actual Section -->
-                <div class="section-block">
-                    <div class="section-header-title">
-                        <i class="fa-solid fa-file-alt"></i>
-                        <span>TargetVsActual</span>
-                    </div>
-
-                    <div class="section-cards">
-                        <div class="dashboard-card target-card" routerLink="/reports/target-vs-sales" style="cursor: pointer;">
-                            <div class="card-icon target-bg">
-                                <i class="fa-solid fa-chart-bar"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>Report</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+              <div class="card-title">
+                <h3>New</h3>
+              </div>
             </div>
 
-            <!-- Second Row -->
-            <div class="section-row">
+            <div
+              class="dashboard-card leads-open-card"
+              routerLink="/openleads"
+              role="button"
+              tabindex="0">
 
-                <!-- Opportunities -->
-                <div class="section-block">
-                    <div class="section-header-title">
-                        <i class="fa-solid fa-edit"></i>
-                        <span>Opportunities</span>
-                    </div>
+              <div class="card-icon leads-open-bg">
+                <i class="fa-solid fa-folder-open"></i>
+              </div>
 
-                    <div class="section-cards">
-                        <div class="dashboard-card opportunities-open-card" routerLink="/country-head/opportunities" style="cursor: pointer;">
-                            <div class="card-icon opportunities-open-bg">
-                                <i class="fa-solid fa-folder-open"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>Open</h3>
-                            </div>
-                        </div>
-
-                        <div class="dashboard-card opportunities-close-card" routerLink="/country-head/closed-opportunities" style="cursor: pointer;">
-                            <div class="card-icon opportunities-close-bg">
-                                <i class="fa-solid fa-folder"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>Closed</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Plan -->
-                <div class="section-block">
-                    <div class="section-header-title">
-                        <i class="fa-solid fa-calendar-check"></i>
-                        <span>Plan</span>
-                    </div>
-
-                    <div class="section-cards">
-                        <div class="dashboard-card plan-visit-card" routerLink="/plan-visit" style="cursor: pointer;">
-                            <div class="card-icon plan-visit-bg">
-                                <i class="fa-solid fa-palette"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>Visit</h3>
-                            </div>
-                        </div>
-                        <div class="dashboard-card plan-demo-card" routerLink="/planDemo" style="cursor: pointer;">
-                            <div class="card-icon plan-demo-bg">
-                                <i class="fa-solid fa-briefcase"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>Demo</h3>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Marketing -->
-                <div class="section-block">
-                    <div class="section-header-title">
-                        <i class="fa-solid fa-file-alt"></i>
-                        <span>Marketing</span>
-                    </div>
-
-                    <div class="section-cards">
-                        <div class="dashboard-card marketing-documents-card"
-                             routerLink="/country-head/marketing-document">
-                            <div class="card-icon marketing-documents-bg">
-                                <i class="fa-solid fa-file"></i>
-                            </div>
-                            <div class="card-title">
-                                <h3>Documents</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+              <div class="card-title">
+                <h3>Open</h3>
+              </div>
             </div>
 
+            <div
+              class="dashboard-card leads-close-card"
+              routerLink="/closed-leads"
+              role="button"
+              tabindex="0">
+
+              <div class="card-icon leads-close-bg">
+                <i class="fa-solid fa-folder-closed"></i>
+              </div>
+
+              <div class="card-title">
+                <h3>Closed</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Calendar -->
+        <section class="section-block">
+          <div class="section-header-title">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Calendar</span>
+          </div>
+
+          <div class="section-cards">
+            <div
+              class="dashboard-card calendar-card"
+              routerLink="/country-head/dashboard/view-calendar"
+              role="button"
+              tabindex="0">
+
+              <div class="card-icon calendar-bg">
+                <i class="fa-solid fa-calendar"></i>
+              </div>
+
+              <div class="card-title">
+                <h3>Calendar</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Target Vs Actual -->
+        <section class="section-block">
+          <div class="section-header-title">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Target Vs Actual</span>
+          </div>
+
+          <div class="section-cards">
+            <div
+              class="dashboard-card target-card"
+              routerLink="/reports/target-vs-sales"
+              role="button"
+              tabindex="0">
+
+              <div class="card-icon target-bg">
+                <i class="fa-solid fa-chart-column"></i>
+              </div>
+
+              <div class="card-title">
+                <h3>Report</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Second Row -->
+      <div class="section-row">
+
+        <!-- Opportunities -->
+        <section class="section-block">
+          <div class="section-header-title">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Opportunities</span>
+          </div>
+
+          <div class="section-cards">
+            <div
+              class="dashboard-card opportunities-open-card"
+              routerLink="/country-head/opportunities"
+              role="button"
+              tabindex="0">
+
+              <div class="card-icon opportunities-open-bg">
+                <i class="fa-solid fa-folder-open"></i>
+              </div>
+
+              <div class="card-title">
+                <h3>Open</h3>
+              </div>
+            </div>
+
+            <div
+              class="dashboard-card opportunities-close-card"
+              routerLink="/country-head/closed-opportunities"
+              role="button"
+              tabindex="0">
+
+              <div class="card-icon opportunities-close-bg">
+                <i class="fa-solid fa-folder-closed"></i>
+              </div>
+
+              <div class="card-title">
+                <h3>Closed</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Plan -->
+        <section class="section-block">
+          <div class="section-header-title">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span>Plan</span>
+          </div>
+
+          <div class="section-cards">
+            <div
+              class="dashboard-card plan-visit-card"
+              routerLink="/plan-visit"
+              role="button"
+              tabindex="0">
+
+              <div class="card-icon plan-visit-bg">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+
+              <div class="card-title">
+                <h3>Visit</h3>
+              </div>
+            </div>
+
+            <div
+              class="dashboard-card plan-demo-card"
+              routerLink="/planDemo"
+              role="button"
+              tabindex="0">
+
+              <div class="card-icon plan-demo-bg">
+                <i class="fa-solid fa-display"></i>
+              </div>
+
+              <div class="card-title">
+                <h3>Demo</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Marketing -->
+        <section class="section-block">
+          <div class="section-header-title">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Marketing</span>
+          </div>
+
+          <div class="section-cards">
+            <div
+              class="dashboard-card marketing-documents-card"
+              routerLink="/country-head/marketing-document"
+              role="button"
+              tabindex="0">
+
+              <div class="card-icon marketing-documents-bg">
+                <i class="fa-solid fa-file-lines"></i>
+              </div>
+
+              <div class="card-title">
+                <h3>Documents</h3>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Alerts -->
+    <aside class="alerts-sidebar">
+      <div class="alerts-header">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>Alerts</span>
+      </div>
+
+      <div class="alerts-list">
+        <div class="alert-item">
+          <a href="#">Leads assigned today (0)</a>
         </div>
 
-        <!-- Alerts Sidebar -->
-        <div class="alerts-sidebar">
-            <div class="alerts-header">
-                <i class="fa-solid fa-exclamation-triangle"></i>
-                <span>Alerts</span>
-            </div>
-
-            <div class="alerts-list">
-                <div class="alert-item">
-                    <a href="#">Leads assigned today (0)</a>
-                </div>
-
-                <div class="alert-item">
-                    <a href="#">Pending Quote approvals (0)</a>
-                </div>
-
-                <div class="alert-item">
-                    <a href="#">Purchase Order approvals (0)</a>
-                </div>
-
-                <div class="alert-item">
-                    <a href="#">Old Quote approvals (0)</a>
-                </div>
-
-                <div class="alert-item">
-                    <strong>Pending Tasks:</strong>
-                </div>
-
-                <div class="alert-item">
-                    <a href="#">Opportunity date Review - (0)</a>
-                </div>
-
-                <div class="alert-item">
-                    <a href="#">Demo Feedback - (0)</a>
-                </div>
-
-                <div class="alert-item">
-                    <a href="#">Visit Feedback - (0)</a>
-                </div>
-            </div>
+        <div class="alert-item">
+          <a href="#">Pending Quote approvals (0)</a>
         </div>
 
-    </div>
+        <div class="alert-item">
+          <a href="#">Purchase Order approvals (0)</a>
+        </div>
+
+        <div class="alert-item">
+          <a href="#">Old Quote approvals (0)</a>
+        </div>
+
+        <div class="alert-item pending-heading">
+          <strong>Pending Tasks:</strong>
+        </div>
+
+        <div class="alert-item">
+          <a href="#">Opportunity date Review - (0)</a>
+        </div>
+
+        <div class="alert-item">
+          <a href="#">Demo Feedback - (0)</a>
+        </div>
+
+        <div class="alert-item">
+          <a href="#">Visit Feedback - (0)</a>
+        </div>
+      </div>
+    </aside>
+
+  </div>
 </div>
