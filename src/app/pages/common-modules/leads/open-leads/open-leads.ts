@@ -117,7 +117,7 @@ export class OpenLeads implements OnInit {
         const customerField = this.searchFields.find(f => f.key === 'customer');
         if (customerField) {
           // ✅ Use unique customer names only
-          const uniqueNames = [...new Set(data.map(c => c.customerName))];
+          const uniqueNames = [...new Set((data || []).map(c => c.customerName).filter(Boolean))];
           customerField.options = uniqueNames.map(name => ({ 
             value: name, 
             label: name 

@@ -111,7 +111,7 @@ export class Search implements OnInit, OnChanges {
         field._filtered = baseOptions;
       } else {
         field._filtered = baseOptions.filter(opt => 
-          opt.label.toLowerCase().includes(searchLower)
+          (opt.label || '').toLowerCase().includes(searchLower)
         );
       }
     }
