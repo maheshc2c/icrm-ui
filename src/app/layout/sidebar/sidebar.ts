@@ -14,7 +14,9 @@ export class Sidebar {
 menuItems: any[] = [];
 
 constructor() {
-  const role = localStorage.getItem('role');
+  const rawRole = localStorage.getItem('role')?.trim() || '';
+  const role = rawRole;
+  const normalizedRole = rawRole.replace(/[\s_]+/g, '').toUpperCase();
 
 //  this.menuItems = [
 //     {
@@ -188,7 +190,14 @@ constructor() {
       );
     }
 
-     if (role === 'Regional Branch Head') {
+    const isRBH =
+      normalizedRole === 'REGIONALBRANCHHEAD' ||
+      normalizedRole === 'RBH' ||
+      role === 'Regional Branch Head' ||
+      role === 'REGIONAL BRANCH HEAD' ||
+      (role && role.toLowerCase().includes('regional branch head'));
+
+    if (isRBH) {
       this.menuItems.push(
         {
           label: 'Home',
@@ -200,8 +209,8 @@ constructor() {
           icon: 'fas fa-tachometer-alt',
           route: '/regional-branch-head-dashboard',
           children: [
-            { label: 'Leads Dashboard', icon: 'fas fa-tachometer-alt', route: '/regional-branch-head/leads-dashboard' },
-            { label: 'Opportunity Dashboard', icon: 'fas fa-chart-bar', route: '/regional-branch-head/opportunity-dashboard' }
+            { label: 'Leads Dashboard', icon: 'fas fa-tachometer-alt', route: '/leads-dashboard' },
+            { label: 'Opportunity Dashboard', icon: 'fas fa-chart-bar', route: '/opportunity-dashboard' }
           ]
         },
         {
@@ -225,7 +234,7 @@ constructor() {
         {
           label: 'Calendar',
           icon: 'fas fa-calendar',
-          route: '/regional-branch-head/view-calendar'
+          route: '/salesdirector/calender'
         },
         {
           label: 'Commission',
@@ -255,16 +264,16 @@ constructor() {
         {
           label: 'Plan Visit/Demo',
           icon: 'fas fa-calendar',
-          route: '/regional-branch-head/plan-a-visit',
+          route: '/plan-visit',
           children: [
-            { label: 'Visit', icon: 'fas fa-tachometer-alt', route: '/regional-branch-head/plan-a-visit' },
+            { label: 'Visit', icon: 'fas fa-tachometer-alt', route: '/plan-visit' },
             { label: 'Demo', icon: 'fas fa-suitcase', route: '/planDemo' }
           ]
         },
         {
           label: 'Approvals',
           icon: 'fas fa-thumbs-up',
-          route: '/regional-branch-head/quote-approval',
+          route: '/quotes-view',
           children: [
             { label: 'C-Note Approval', icon: 'fas fa-thumbs-up', route: '/c-note' },
             { label: 'Quote Approval', icon: 'fas fa-thumbs-up', route: '/quotes-view' },
@@ -279,7 +288,7 @@ constructor() {
         {
           label: 'Manage Customer',
           icon: 'fas fa-users',
-          route: '/country-head/manage-customer',
+          route: '/customer',
           children: [
             { label: 'Customer', icon: 'fas fa-user', route: '/customer' },
             { label: 'Contact', icon: 'fas fa-book', route: '/contact' },
@@ -302,12 +311,19 @@ constructor() {
         {
           label: 'Dealer opening stock',
           icon: 'fas fa-pencil',
-          route: '/regional-branch-head/dealer-opening-stock'
+          route: '/reports/stock-in-hand'
         }
       );
     }
 
-    if (role === 'Regional Sales Manager') {
+    const isRSM =
+      normalizedRole === 'REGIONALSALESMANAGER' ||
+      normalizedRole === 'RSM' ||
+      role === 'Regional Sales Manager' ||
+      role === 'REGIONAL SALES MANAGER' ||
+      (role && role.toLowerCase().includes('regional sales manager'));
+
+    if (isRSM) {
       this.menuItems.push(
         {
           label: 'Home',

@@ -188,7 +188,7 @@ export const routes: Routes = [
       canActivate: [authGuard],
       data: {
         roles: [
-          'National Sales Manager', 'Country Head'
+          'Regional Branch Head', 'National Sales Manager', 'Country Head'
         ]
       }
     },
@@ -199,7 +199,7 @@ export const routes: Routes = [
       canActivate: [authGuard],
       data: {
         roles: [
-          'National Sales Manager', 'Country Head'
+          'Regional Branch Head', 'National Sales Manager', 'Country Head'
         ]
       }
     },
@@ -669,7 +669,12 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/OTR/commission/commission').then(m => m.Commission),
   canActivate: [authGuard],
-  data: { roles: ['OTR'] }
+  data: { roles: ['OTR', 'Regional Branch Head'] }
+},
+{
+  path: 'commission',
+  redirectTo: 'comission',
+  pathMatch: 'full'
 },
 
 // Category
@@ -1198,13 +1203,13 @@ export const routes: Routes = [
         path: 'country-head/marketing-document',
         loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
         canActivate: [authGuard],
-        data: { roles: ['Country Head'] }
+        data: { roles: ['Country Head', 'Regional Branch Head'] }
       },
       {
         path: 'country-head/dashboard/marketing-document',
         loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
         canActivate: [authGuard],
-        data: { roles: ['Country Head'] }
+        data: { roles: ['Country Head', 'Regional Branch Head'] }
       },
       {
         path: 'country-head/dashboard/track-quotes',
@@ -1269,6 +1274,44 @@ export const routes: Routes = [
       { path: 'globalhead/create-lead', redirectTo: 'salesmanager/leads/add', pathMatch: 'full' },
       { path: 'globalhead/assign-lead', redirectTo: 'openleads', pathMatch: 'full' },
       { path: 'globalhead/view-calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
+
+      // Regional Branch Head Aliases & Routes
+      { path: 'regional-branch-head', redirectTo: 'regional-branch-head-dashboard', pathMatch: 'full' },
+      { path: 'regional-branch-head/leads-dashboard', redirectTo: 'leads-dashboard', pathMatch: 'full' },
+      { path: 'regional-branch-head/opportunity-dashboard', redirectTo: 'opportunity-dashboard', pathMatch: 'full' },
+      { path: 'regional-branch-head/view-calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
+      { path: 'regional-branch-head/calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
+      { path: 'regional-branch-head/plan-a-visit', redirectTo: 'plan-visit', pathMatch: 'full' },
+      { path: 'regional-branch-head/plan-visit', redirectTo: 'plan-visit', pathMatch: 'full' },
+      { path: 'regional-branch-head/plan-a-visit/add', redirectTo: 'plan-visit/add', pathMatch: 'full' },
+      { path: 'regional-branch-head/plan-a-visit/edit/:id', redirectTo: 'plan-visit/edit/:id', pathMatch: 'full' },
+      { path: 'regional-branch-head/quote-approval', redirectTo: 'quotes-view', pathMatch: 'full' },
+      { path: 'regional-branch-head/purchase-order-approval', redirectTo: 'PO-Approval', pathMatch: 'full' },
+      { path: 'regional-branch-head/manage-customer', redirectTo: 'customer', pathMatch: 'full' },
+      { path: 'country-head/manage-customer', redirectTo: 'customer', pathMatch: 'full' },
+      { path: 'regional-branch-head/dealer-opening-stock', redirectTo: 'reports/stock-in-hand', pathMatch: 'full' },
+      { path: 'regional-branch-head/leads/new', redirectTo: 'salesmanager/leads/add', pathMatch: 'full' },
+      { path: 'regional-branch-head/leads/add', redirectTo: 'salesmanager/leads/add', pathMatch: 'full' },
+      { path: 'regional-branch-head/leads/open', redirectTo: 'openleads', pathMatch: 'full' },
+      { path: 'regional-branch-head/leads/closed', redirectTo: 'salesmanager/closed-leads', pathMatch: 'full' },
+      { path: 'regional-branch-head/closed-leads', redirectTo: 'salesmanager/closed-leads', pathMatch: 'full' },
+      { path: 'regional-branch-head/opportunities', redirectTo: 'salesmanager/opportunities', pathMatch: 'full' },
+      { path: 'regional-branch-head/opportunities/open', redirectTo: 'salesmanager/opportunities', pathMatch: 'full' },
+      { path: 'regional-branch-head/opportunities/closed', redirectTo: 'salesmanager/closed-opportunities', pathMatch: 'full' },
+      { path: 'regional-branch-head/closed-opportunities', redirectTo: 'salesmanager/closed-opportunities', pathMatch: 'full' },
+      {
+        path: 'regional-branch-head/commission',
+        loadComponent: () =>
+          import('./pages/OTR/commission/commission').then(m => m.Commission),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Branch Head', 'OTR'] }
+      },
+      {
+        path: 'regional-branch-head/marketing-document',
+        loadComponent: () => import('./pages/common-modules/marketing-document/marketing-document').then(m => m.MarketingDocumentComponent),
+        canActivate: [authGuard],
+        data: { roles: ['Regional Branch Head', 'Country Head'] }
+      },
 
       // Regional Branch Head Track Quote/PO
       {

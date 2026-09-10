@@ -27,15 +27,30 @@
       <div class="company-form-container" style="box-shadow: none; border: none; margin-bottom: 0;">
 
         <div class="form-header-block">
-          <h4 class="form-title-heading">{{ isEditMode ? 'Lead Details' : 'Enter the Below Details' }}</h4>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <h4 class="form-title-heading" style="margin: 0;">{{ isEditMode ? 'Lead Details' : 'Enter the Below Details' }}</h4>
+            <span *ngIf="isEditMode" [ngStyle]="getLeadStatusBadgeStyle()" style="padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px;">
+              <i class="fa-solid fa-circle" style="font-size: 8px;"></i>
+              {{ getStatusLabel() }}
+            </span>
+          </div>
           
           <!-- Action Buttons in Header -->
           <div style="display: flex; gap: 10px; align-items: center;">
             <button *ngIf="isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onDetails()">
               <i class="fa-solid fa-circle-info"></i> Details
             </button>
+            <button *ngIf="isEditMode && canRerouteLead()" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onOpenRerouteModal()" title="Re-route Lead">
+              <i class="fa-solid fa-share"></i> Re-route
+            </button>
             <button *ngIf="isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onBlockVisit()">
               <i class="fa-regular fa-calendar-minus"></i> Block Visit
+            </button>
+            <button *ngIf="isEditMode && canDropLead()" type="button" class="action-header-btn" style="background: #dc2626; border-color: #b91c1c;" (click)="onDropLead()" title="Drop Lead">
+              <i class="fa-solid fa-times"></i> Drop Lead
+            </button>
+            <button *ngIf="isEditMode && canCloseLead()" type="button" class="action-header-btn" style="background: #dc2626; border-color: #b91c1c;" (click)="onCloseLead()" title="Close Lead">
+              <i class="fa-solid fa-times"></i> Close Lead
             </button>
 
             <!-- Add buttons (shown in create/new mode) -->
@@ -460,6 +475,43 @@
   <div style="padding: 10px 15px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; background: #fff;">
     <button (click)="closeDetailsModal()" style="padding: 4px 20px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; color: #333; font-size: 13px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;">
       Ok
+    </button>
+  </div>
+</app-modal>
+
+<!-- Re-route Modal -->
+<app-modal [show]="showRerouteModal" [title]="'Re-route Lead'" (closeDialog)="closeRerouteModal()">
+  <div style="padding: 20px;">
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 6px; font-size: 13px;">Lead ID</label>
+      <div style="padding: 8px 12px; background: #f3f4f6; border-radius: 4px; font-weight: 600; color: #1f2937;">
+        #{{ leadId }}
+      </div>
+    </div>
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 6px; font-size: 13px;">Current Owner</label>
+      <div style="padding: 8px 12px; background: #f3f4f6; border-radius: 4px; color: #4b5563;">
+        {{ originalLeadData?.ownerName || originalLeadData?.user?.username || 'N/A' }}
+      </div>
+    </div>
+    <div style="margin-bottom: 20px;">
+      <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 6px; font-size: 13px;">
+        Assign to Sales Engineer <span style="color: #ef4444;">*</span>
+      </label>
+      <select [(ngModel)]="selectedRerouteUserId" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; background: #fff; color: #111827;">
+        <option value="" disabled>-- Select Sales Engineer --</option>
+        <option *ngFor="let u of rerouteUsers" [value]="u.id">
+          {{ u.firstName ? (u.firstName + ' ' + (u.lastName || '')) : (u.name || u.username) }} ({{ u.username }})
+        </option>
+      </select>
+    </div>
+  </div>
+  <div style="padding: 12px 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 10px; background: #f9fafb;">
+    <button type="button" (click)="closeRerouteModal()" style="padding: 6px 16px; border: 1px solid #d1d5db; background: #fff; border-radius: 4px; cursor: pointer; color: #374151; font-size: 13px; font-weight: 500;">
+      Cancel
+    </button>
+    <button type="button" (click)="onSubmitReroute()" [disabled]="!selectedRerouteUserId || rerouteSubmitting" style="padding: 6px 18px; border: none; background: #3182ce; color: #fff; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500;" [style.opacity]="(!selectedRerouteUserId || rerouteSubmitting) ? '0.6' : '1'">
+      {{ rerouteSubmitting ? 'Re-routing...' : 'Confirm Re-route' }}
     </button>
   </div>
 </app-modal>
