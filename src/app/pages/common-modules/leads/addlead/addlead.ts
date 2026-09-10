@@ -52,6 +52,7 @@ export class AddleadComponent implements OnInit {
 
   isEditMode = false;
   leadId: number | null = null;
+  rawLeadStatus: number = 0;
   activeTab: string = 'Lead Details';
   showDetailsModal = false;
   originalLeadData: LeadPayload | null = null;
@@ -701,6 +702,8 @@ export class AddleadComponent implements OnInit {
 
         const getStr = (val: any) => (val !== null && val !== undefined && val !== '') ? val.toString() : '';
 
+        this.rawLeadStatus = data.status !== undefined ? data.status : (data.leadStatus !== undefined ? data.leadStatus : 0);
+
         this.leadForm = {
           source: getStr(data.sourceId || data.source?.sourceId),
           campaign: getStr(data.campaignId || data.campaign?.campaignId),
@@ -1298,19 +1301,35 @@ export class AddleadComponent implements OnInit {
       next: (res: any) => {
         console.log('Fetched Opportunities raw response:', res);
         const rawList = res?.data || res?.content || (Array.isArray(res) ? res : []);
-        this.opportunities = rawList.map((opp: any) => ({
-          ...opp,
-          id: opp.id || opp.opportunityId,
-          productAndCategory: opp.productAndCategory || opp.productName || opp.product || 'N/A',
-          qty: opp.qty !== undefined ? opp.qty : (opp.requiredQuantity || opp.quantity || 0),
-          stage: opp.stage || opp.statusName || ('Stage ' + opp.status),
-          category: opp.category || 'Warm',
-          probability: typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 40),
-          probabilityDisplay: (typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 40)) + '%'
-        }));
+        this.opportunities = rawList.map((opp: any) => {
+          const statusNum = Number(opp.status);
+          const stageStr = String(opp.stage || opp.statusName || '').toLowerCase();
+          const showDemo = statusNum === 1 || statusNum === 3 || statusNum === 4 || statusNum === 5 || stageStr.includes('demo') || stageStr.includes('need') || stageStr.includes('value');
+          return {
+            ...opp,
+            id: opp.id || opp.opportunityId,
+            productAndCategory: opp.productAndCategory || opp.productName || opp.product || 'N/A',
+            qty: opp.qty !== undefined ? opp.qty : (opp.requiredQuantity || opp.quantity || 0),
+            stage: opp.stage || opp.statusName || ('Stage ' + opp.status),
+            category: opp.category || 'Warm',
+            probability: typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 40),
+            probabilityDisplay: (typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 40)) + '%',
+            showDemoButton: showDemo
+          };
+        });
         console.log('Processed Opportunities rows:', this.opportunities);
       },
       error: (err) => console.error('Failed to fetch opportunities:', err)
+    });
+  }
+
+  onPlanDemoFromOpp(row: any): void {
+    const oppId = row.id || row.opportunityId;
+    this.router.navigate(['/planDemo/Add'], {
+      queryParams: {
+        leadId: this.leadId,
+        opportunityId: oppId
+      }
     });
   }
 
@@ -2005,8 +2024,18 @@ export class AddleadComponent implements OnInit {
     this.selectedCustomer = null;
   }
 
+  get showBlockVisitButton(): boolean {
+    const visitReq = this.leadForm?.visitRequirement === 'Yes' || this.leadForm?.visitRequirement === 1;
+    const isApproved = this.rawLeadStatus !== 1;
+    return !!(this.isEditMode && visitReq && isApproved);
+  }
+
   onBlockVisit(): void {
-    this.toastService.info('Block Visit action triggered.');
+    if (this.leadId) {
+      this.router.navigate(['/planDemo/Add'], { queryParams: { leadId: this.leadId } });
+    } else {
+      this.toastService.info('Block Visit action triggered.');
+    }
   }
 
   formatCustomerValue(val: any): string {

@@ -34,7 +34,7 @@
             <button *ngIf="isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onDetails()">
               <i class="fa-solid fa-circle-info"></i> Details
             </button>
-            <button *ngIf="isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onBlockVisit()">
+            <button *ngIf="isEditMode && showBlockVisitButton" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onBlockVisit()">
               <i class="fa-regular fa-calendar-minus"></i> Block Visit
             </button>
 
@@ -307,10 +307,12 @@
       [showSearch]="false"
       [showPagination]="false"
       [showEdit]="true"
+      [showDemo]="true"
       [showView]="false"
       [showDelete]="false"
       (editRow)="onEditOpp($event)"
-      (viewRow)="onViewOpp($event)">
+      (viewRow)="onViewOpp($event)"
+      (planDemoRow)="onPlanDemoFromOpp($event)">
     </app-data-table>
   </div>
 

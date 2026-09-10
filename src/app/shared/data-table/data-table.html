@@ -79,15 +79,18 @@
                     @for (col of columns; track col) {
                       <td>
                         @if (col.field === 'probability') {
-                          <div class="progress">
+                          <div class="progress" style="position: relative; height: 20px; background-color: #e9ecef; border-radius: 4px; overflow: hidden; min-width: 70px;">
                             <div
                               class="progress-bar"
-                              [class.progress-hot]="row[col.field] >= 70"
-                              [class.progress-warm]="row[col.field] >= 40 && row[col.field] < 70"
-                              [class.progress-cold]="row[col.field] < 40"
-                              [style.width.%]="row[col.field] || 0">
-                              {{ row[col.field] }}%
+                              [class.progress-hot]="(row[col.field] || 0) >= 70"
+                              [class.progress-warm]="(row[col.field] || 0) >= 40 && (row[col.field] || 0) < 70"
+                              [class.progress-cold]="(row[col.field] || 0) < 40"
+                              [style.width.%]="row[col.field] || 0"
+                              style="height: 100%; transition: width 0.3s ease;">
                             </div>
+                            <span style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #212529; z-index: 2;">
+                              {{ (row[col.field] !== undefined && row[col.field] !== null) ? row[col.field] : 0 }}%
+                            </span>
                           </div>
                         } @else if (col.field === 'status' && col.type !== 'text') {
                           <div class="status-badge-container">
@@ -109,9 +112,12 @@
                             </div>
                           </ng-container>
                           <ng-template #singleLead>
-                            <span *ngIf="row[col.field] !== null && row[col.field] !== undefined && row[col.field] !== '' && row[col.field] !== '—'; else noLead" style="font-weight: 600; color: #334155;">
+                            <a *ngIf="row[col.field] !== null && row[col.field] !== undefined && row[col.field] !== '' && row[col.field] !== '—'; else noLead"
+                               (click)="edit(row); $event.stopPropagation()"
+                               style="font-weight: 600; color: #0284c7; cursor: pointer; text-decoration: underline;"
+                               title="Edit/View Lead #{{ row[col.field] }}">
                               {{ row[col.field] }}
-                            </span>
+                            </a>
                             <ng-template #noLead>
                               <span style="color: #94a3b8;">—</span>
                             </ng-template>
@@ -224,6 +230,15 @@
                               (click)="edit(row)"
                               title="Edit">
                               <i class="fas fa-edit"></i>
+                            </button>
+                          } 
+                          @if ((showDemo || row.showDemoButton) && row.showDemoButton !== false) {
+                            <button
+                              class="btn btn-sm btn-primary demo-btn"
+                              style="background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; width: 32px; height: 32px; padding: 0; display: inline-flex; justify-content: center; align-items: center; border-radius: 4px; margin-right: 8px;"
+                              (click)="planDemo(row)"
+                              title="Plan Demo">
+                              <i class="fas fa-video"></i>
                             </button>
                           } 
                           @if (showApprovalAction) {

@@ -449,6 +449,18 @@ private loadLeadDropdown(): void {
 
     this.demoFields = [...this.demoFields];
 
+    // Auto-select leadId if passed via queryParams (e.g. from Block Visit button)
+    const leadIdParam = this.route.snapshot.queryParams['leadId'];
+    if (leadIdParam) {
+      const leadIdNum = Number(leadIdParam);
+      if (!isNaN(leadIdNum) && leadIdNum > 0) {
+        this.formInitialData = {
+          ...this.formInitialData,
+          leadId: leadIdNum
+        };
+        this.loadOpportunityDropdown(leadIdNum);
+      }
+    }
   });
 
 }
@@ -487,8 +499,22 @@ private loadOpportunityDropdown(leadId: number): void {
 
       this.demoFields = [...this.demoFields];
 
+      // Auto-select opportunityId if passed via queryParams (e.g. from Opportunity Plan Demo button)
+      const oppIdParam = this.route.snapshot.queryParams['opportunityId'];
+      if (oppIdParam) {
+        const oppIdNum = Number(oppIdParam);
+        if (!isNaN(oppIdNum) && oppIdNum > 0) {
+          this.formInitialData = {
+            ...this.formInitialData,
+            opportunityId: oppIdNum
+          };
+          const selectedOption = options.find((o: any) => Number(o.value) === oppIdNum);
+          if (selectedOption && selectedOption.productId) {
+            this.loadDemoMachineDropdown(selectedOption.productId);
+          }
+        }
+      }
     });
-
 }
 
 selectedProductId!: number;
