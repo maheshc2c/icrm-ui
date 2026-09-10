@@ -17,7 +17,7 @@ import { RouterLink } from '@angular/router';
 export class RegionalBranchHead implements OnInit {
   headerTitle = 'Regional Branch Head Dashboard';
   headerBreadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/regional-branch-head' },
+    { label: 'Home', route: '/regional-branch-head-dashboard' },
     { label: 'Dashboard' }
   ];
 

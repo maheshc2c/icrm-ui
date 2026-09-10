@@ -55,7 +55,7 @@ export class AddleadComponent implements OnInit {
   rawLeadStatus: number = 0;
   activeTab: string = 'Lead Details';
   showDetailsModal = false;
-  originalLeadData: LeadPayload | null = null;
+  originalLeadData: any = null;
   opportunities: any[] = [];
   isReadOnly = false;
   showCustomerDetailsModal = false;
@@ -690,12 +690,25 @@ export class AddleadComponent implements OnInit {
         console.log('Loaded Lead Data:', data);
         this.originalLeadData = data;
 
-        // Auto-detect closed/dropped leads and force read-only
-        if (data.leadStatus === 21 || data.leadStatus === 22 || data.leadStatus === 3) {
+        const rawStatus = Number(
+          data.status !== undefined
+            ? data.status
+            : (data.leadStatus !== undefined ? data.leadStatus : 0)
+        );
+
+        // Auto-detect closed/dropped leads (21: Dropped, 22: Closed) and force read-only
+        if (rawStatus === 21 || rawStatus === 22) {
           this.isReadOnly = true;
           this.breadcrumbs = [
             { label: 'Home', route: this.getHomeRoute() },
             { label: 'Closed Leads', route: '/salesmanager/closed-leads' },
+            { label: 'Lead ID - ' + this.leadId }
+          ];
+        } else if (!this.route.snapshot.queryParams['readOnly']) {
+          this.isReadOnly = false;
+          this.breadcrumbs = [
+            { label: 'Home', route: this.getHomeRoute() },
+            { label: 'Open Leads', route: '/openleads' },
             { label: 'Lead ID - ' + this.leadId }
           ];
         }
@@ -1745,70 +1758,256 @@ export class AddleadComponent implements OnInit {
     this.showDetailsModal = false;
   }
 
+  /* ================= EFFECTIVE LEAD STATUS ================= */
+  getEffectiveLeadStatus(): number {
+    if (!this.originalLeadData) return 0;
+    const rawSt = Number(
+      this.originalLeadData.status !== undefined 
+        ? this.originalLeadData.status 
+        : (this.originalLeadData.leadStatus !== undefined ? this.originalLeadData.leadStatus : 0)
+    );
+    if (rawSt > 0) return rawSt;
+
+    // Fallback if rawSt is 0 or undefined:
+    if (this.contractNotes && this.contractNotes.length > 0) {
+      const hasCompletedCNote = this.contractNotes.some((cn: any) => {
+        const stage = String(cn.stage || cn.status || '').trim().toLowerCase();
+        const soNumber = cn.soNumber ?? cn.salesOrderNo ?? cn.salesOrderNumber ?? '';
+        return stage === 'completed' || (soNumber && String(soNumber).trim() !== '' && String(soNumber).trim().toLowerCase() !== 'n/a');
+      });
+      if (hasCompletedCNote) return 10;
+    }
+    if (this.quotes && this.quotes.length > 0) {
+      return 6;
+    }
+    if (this.opportunities && this.opportunities.length > 0) {
+      return 3;
+    }
+    return 1;
+  }
+
+  /* ================= STATUS TEXT & BADGES ================= */
+  getStatusLabel(status?: number): string {
+    const st = status !== undefined ? status : this.getEffectiveLeadStatus();
+    switch (st) {
+      case 1: return 'Waiting for Approval';
+      case 2: return 'Lead Approved';
+      case 3: return 'Opportunity Created';
+      case 4: return 'All Opportunities Dropped';
+      case 5: return 'All Opps Lost/Dropped';
+      case 6: return 'Quote Created';
+      case 7: return 'Quote Approved';
+      case 8: return 'Partial C-Note';
+      case 9: return 'C-Note Submitted';
+      case 10: return 'Full Contract Note';
+      case 21: return 'Lead Dropped';
+      case 22: return 'Lead Closed';
+      default: return 'Active';
+    }
+  }
+
+  getLeadStatusBadgeStyle(): any {
+    const st = this.getEffectiveLeadStatus();
+    switch (st) {
+      case 1: return { background: '#fef3c7', color: '#92400e', border: '1px solid #fcd34d' }; // Amber
+      case 2: return { background: '#e0f2fe', color: '#0369a1', border: '1px solid #7dd3fc' }; // Blue
+      case 3: return { background: '#ede9fe', color: '#6d28d9', border: '1px solid #c4b5fd' }; // Purple
+      case 4: return { background: '#ffedd5', color: '#c2410c', border: '1px solid #fdba74' }; // Orange
+      case 5: return { background: '#fee2e2', color: '#b91c1c', border: '1px solid #fca5a5' }; // Red-orange
+      case 6:
+      case 7:
+      case 8:
+      case 9: return { background: '#ccfbf1', color: '#0f766e', border: '1px solid #5eead4' }; // Teal
+      case 10: return { background: '#dcfce7', color: '#15803d', border: '1px solid #86efac' }; // Green
+      case 21: return { background: '#fee2e2', color: '#991b1b', border: '1px solid #f87171' }; // Red
+      case 22: return { background: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1' }; // Slate
+      default: return { background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db' };
+    }
+  }
+
+  /* ================= USER PERMISSIONS ================= */
+  hasDropClosePermission(): boolean {
+    if (typeof window === 'undefined' || !window.localStorage) return true;
+    
+    const role = (localStorage.getItem('role') || '').trim();
+    const normalizedRole = role.replace(/[\s_]+/g, '').toUpperCase();
+    
+    // Check if user is RBH, CH, NSM, SuperAdmin, Admin, or Sales Director
+    const managementRoles = [
+      'SUPERADMIN', 
+      'ADMIN', 
+      'SALESDIRECTOR', 
+      'REGIONALBRANCHHEAD', 
+      'RBH',
+      'COUNTRYHEAD', 
+      'CH',
+      'NATIONALSALESMANAGER', 
+      'NSM'
+    ];
+    if (managementRoles.includes(normalizedRole)) {
+      return true;
+    }
+    
+    // Check if current user is the owner of the lead
+    const currentUserId = localStorage.getItem('userId');
+    const currentUsername = (this.getUsernameFromToken() || localStorage.getItem('sub') || '').toLowerCase().trim();
+
+    const ownerId = this.originalLeadData?.ownerId || this.originalLeadData?.user?.id;
+    if (currentUserId && ownerId && String(currentUserId) === String(ownerId)) {
+      return true;
+    }
+
+    const ownerUsername = (this.originalLeadData?.ownerName || this.originalLeadData?.user?.username || this.originalLeadData?.username || '').toLowerCase().trim();
+    if (currentUsername && ownerUsername && (currentUsername === ownerUsername || ownerUsername.includes(currentUsername))) {
+      return true;
+    }
+
+    // Default fallback if no specific owner set
+    if (!ownerId && !ownerUsername) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /* ================= BUTTON VISIBILITY CONDITIONS ================= */
+  canDropLead(): boolean {
+    if (!this.isEditMode || this.isReadOnly) return false;
+    if (!this.hasDropClosePermission()) return false;
+    
+    const st = this.getEffectiveLeadStatus();
+    // Appears ONLY when $leadStatus in { 1, 2, 4 } (Waiting for Approval, Lead Approved, All Opps Dropped)
+    // Does NOT appear for Status 3 (Opportunity Created), 5, 6-10, 21, 22
+    return st === 1 || st === 2 || st === 4;
+  }
+
+  canCloseLead(): boolean {
+    if (!this.isEditMode || this.isReadOnly) return false;
+    if (!this.hasDropClosePermission()) return false;
+
+    const st = this.getEffectiveLeadStatus();
+    // Appears ONLY when $leadStatus in { 5, 10 } (All Opps Lost/Dropped, Full Contract Note)
+    // Does NOT appear for Status 1-4, 6-9, 21, 22
+    return st === 5 || st === 10;
+  }
+
+  canRerouteLead(): boolean {
+    if (!this.isEditMode || this.isReadOnly) return false;
+    if (typeof window === 'undefined' || !window.localStorage) return false;
+
+    const role = (localStorage.getItem('role') || '').trim();
+    const normalizedRole = role.replace(/[\s_]+/g, '').toUpperCase();
+
+    // Re-route must only appear for RBH, CH, and NSM (and SuperAdmin)
+    const allowedRerouteRoles = [
+      'REGIONALBRANCHHEAD',
+      'RBH',
+      'COUNTRYHEAD',
+      'CH',
+      'NATIONALSALESMANAGER',
+      'NSM',
+      'SUPERADMIN'
+    ];
+    return allowedRerouteRoles.includes(normalizedRole);
+  }
+
+  /* ================= DROP LEAD ACTION ================= */
   onDropLead(): void {
+    if (!this.leadId) return;
+    const currentLeadId = this.leadId;
+
     this.confirmService.confirm({
-      title: 'Confirm Drop',
-      message: 'Are you sure you want to drop this lead?'
+      title: 'Confirm Drop Lead',
+      message: 'Are you sure you want to drop this lead? This will cancel non-won opportunities.'
     }).then((confirmed) => {
       if (confirmed) {
-        if (this.leadId && this.leadForm) {
-          
-          // Helper to get labels
-          const getLabel = (fieldName: string, value: any) => {
-            const field = this.leadFields.find(f => f.name === fieldName);
-            if (field && field.options) {
-               if (!value || value === '') {
-                  const firstRealOption = field.options.find(o => o.value !== '');
-                  return firstRealOption ? firstRealOption.label : '';
-               }
-               const option = field.options.find(o => o.value == value);
-               return option ? option.label : value;
-            }
-            return value || '';
-          };
+        this.leadservice.dropLead(currentLeadId).subscribe({
+          next: (res: any) => {
+            alert(res.message || 'Lead dropped successfully.');
+            this.router.navigate(['/salesmanager/closed-leads']);
+          },
+          error: (err: any) => {
+            console.error('Failed to drop lead:', err);
+            alert('Failed to drop lead: ' + (err.error?.message || err.message || 'Server error'));
+          }
+        });
+      }
+    });
+  }
 
-          const getContactFirstName = (contactId: any) => {
-            const contact = this.contactPersonsData.find(c => (c.contactId || c.id) == contactId);
-            return contact ? contact.contactFirstName : '';
-          };
+  /* ================= CLOSE LEAD ACTION ================= */
+  onCloseLead(): void {
+    if (!this.leadId) return;
+    const currentLeadId = this.leadId;
 
-          const getCustomerName = (customerId: any) => {
-            const customer = this.leadFields.find(f => f.name === 'customer')?.options?.find(o => o.value == customerId);
-            return customer ? customer.label : '';
-          };
+    this.confirmService.confirm({
+      title: 'Confirm Close Lead',
+      message: 'Are you sure you want to close this lead?'
+    }).then((confirmed) => {
+      if (confirmed) {
+        this.leadservice.closeLead(currentLeadId).subscribe({
+          next: (res: any) => {
+            alert(res.message || 'Lead closed successfully.');
+            this.router.navigate(['/salesmanager/closed-leads']);
+          },
+          error: (err: any) => {
+            console.error('Failed to close lead:', err);
+            alert('Failed to close lead: ' + (err.error?.message || err.message || 'Server error'));
+          }
+        });
+      }
+    });
+  }
 
-          const payload: LeadPayload = {
-            customerId: Number(this.leadForm.customer),
-            contactId: Number(this.leadForm.contact1),
-            contact2Id: this.leadForm.contact2 ? Number(this.leadForm.contact2) : null,
-            customerName: getCustomerName(this.leadForm.customer),
-            contactFirstName: getContactFirstName(this.leadForm.contact1),
-            sourceName: getLabel('source', this.leadForm.source),
-            campaignName: getLabel('campaign', (this.leadForm as any).campaign),
-            siteReadinessName: getLabel('siteReadiness', this.leadForm.siteReadiness),
-            distributorName: getLabel('distributor', this.leadForm.distributor),
-            relationshipName: getLabel('rapportWithCustomer', this.leadForm.rapportWithCustomer),
-            username: this.getUsernameFromToken(),
-            leadPurchasePotential: Number(this.leadForm.purchasePotentialRs) || 0,
-            leadVisitRequirement: this.leadForm.visitRequirement === 'Yes' ? 1 : 0,
-            leadResourceRequirement: this.leadForm.resourceRequirement === 'Yes' ? 1 : 0,
-            leadCmdLine1: this.leadForm.commentLine1 || '',
-            leadCmdLine2: this.leadForm.commentLine2 || '',
-            leadCmdLine3: this.leadForm.purchasePotential || '',
-            leadStatus: 3 // 3 represents Dropped
-          };
+  /* ================= RE-ROUTE LEAD MODAL & ACTION ================= */
+  showRerouteModal: boolean = false;
+  rerouteUsers: any[] = [];
+  selectedRerouteUserId: any = '';
+  rerouteSubmitting: boolean = false;
 
-          this.leadservice.updateLead(this.leadId, payload).subscribe({
-            next: () => {
-              alert('Lead has been dropped successfully.');
-              this.router.navigate(['/salesmanager/closed-leads']);
-            },
-            error: (err) => {
-              console.error('Failed to drop lead:', err);
-              alert('Failed to drop lead.');
-            }
-          });
-        }
+  onOpenRerouteModal(): void {
+    this.showRerouteModal = true;
+    this.selectedRerouteUserId = '';
+    this.leadservice.getReRouteUsers().subscribe({
+      next: (users: any[]) => {
+        this.rerouteUsers = users || [];
+      },
+      error: (err) => {
+        console.error('Failed to load reroute users:', err);
+      }
+    });
+  }
+
+  closeRerouteModal(): void {
+    this.showRerouteModal = false;
+    this.selectedRerouteUserId = '';
+    this.rerouteSubmitting = false;
+  }
+
+  onSubmitReroute(): void {
+    if (!this.leadId) {
+      alert('Invalid Lead ID');
+      return;
+    }
+    const currentLeadId = this.leadId;
+
+    if (!this.selectedRerouteUserId) {
+      alert('Please select a Sales Engineer to re-route this lead.');
+      return;
+    }
+
+    this.rerouteSubmitting = true;
+    this.leadservice.reRouteLead(currentLeadId, Number(this.selectedRerouteUserId)).subscribe({
+      next: (res: any) => {
+        this.rerouteSubmitting = false;
+        alert(res.message || 'Lead successfully re-routed!');
+        this.closeRerouteModal();
+        this.loadLeadData(currentLeadId);
+      },
+      error: (err: any) => {
+        this.rerouteSubmitting = false;
+        console.error('Failed to reroute lead:', err);
+        alert('Failed to re-route lead: ' + (err.error?.message || err.message || 'Server error'));
       }
     });
   }
