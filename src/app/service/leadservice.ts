@@ -69,6 +69,37 @@ export class Leadservice {
     });
   }
 
+  /* ================= DROP LEAD ================= */
+  dropLead(id: number | string): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}/leads/drop/${id}`, {}, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= CLOSE LEAD ================= */
+  closeLead(id: number | string): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}/leads/close/${id}`, {}, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= GET REROUTE USERS ================= */
+  getReRouteUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/leads/reroute`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /* ================= REROUTE LEAD ================= */
+  reRouteLead(leadId: number | string, targetUserId: number): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/user/reroute-inactive-leads`, {
+      leadIds: [Number(leadId)],
+      targetUserId: targetUserId
+    }, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   /* ================= SEARCH LEADS ================= */
   searchLeads(params: {
     leadId?: string | number;
