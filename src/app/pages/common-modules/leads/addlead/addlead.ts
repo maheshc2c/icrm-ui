@@ -1796,7 +1796,7 @@ export class AddleadComponent implements OnInit {
       case 4: return 'All Opportunities Dropped';
       case 5: return 'All Opps Lost/Dropped';
       case 6: return 'Quote Created';
-      case 7: return 'Quote Approved';
+      case 7: return 'Contract Note Created';
       case 8: return 'Partial C-Note';
       case 9: return 'C-Note Submitted';
       case 10: return 'Full Contract Note';
