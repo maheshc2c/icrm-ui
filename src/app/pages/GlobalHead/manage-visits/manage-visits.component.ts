@@ -20,11 +20,46 @@ import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
     styleUrl: './manage-visits.component.css'
 })
 export class ManageVisitsComponent implements OnInit {
+    private getHomeRoute(): string {
+        if (typeof window !== 'undefined' && window.localStorage) {
+            const role = localStorage.getItem('role')?.trim();
+            if (role) {
+                const normalizedRole = role.replace(/[\s_]+/g, '').toUpperCase();
+                switch (normalizedRole) {
+                    case 'SUPERADMIN':
+                        return '/superadmindashboard';
+                    case 'ADMIN':
+                        return '/admindashboard';
+                    case 'ADMINMARKETING':
+                        return '/adminmarketingdashboard';
+                    case 'SALESDIRECTOR':
+                        return '/sddashboard';
+                    case 'REGIONALBRANCHHEAD':
+                        return '/regional-branch-head-dashboard';
+                    case 'REGIONALSALESMANAGER':
+                        return '/regional-sales-manager-dashboard';
+                    case 'NATIONALSALESMANAGER':
+                        return '/national-sales-manager-dashboard';
+                    case 'GLOBALHEAD':
+                        return '/globalhead-dashboard';
+                    case 'COUNTRYHEAD':
+                        return '/country-head';
+                    case 'CUSTOMERINTERACTIONCENTER':
+                        return '/Approve-Leads';
+                    case 'OTR':
+                        return '/Cnotedownload';
+                    case 'SALESENGINEER':
+                    case 'SALESMANAGER':
+                    default:
+                        return '/sales-manager-dashboard';
+                }
+            }
+        }
+        return '/sales-manager-dashboard';
+    }
+
     headerTitle = 'Manage Visits';
-    headerBreadcrumbs: Breadcrumb[] = [
-        { label: 'Home', route: '/globalhead-dashboard' },
-        { label: 'Manage Visits' }
-    ];
+    headerBreadcrumbs: Breadcrumb[] = [];
 
     columns = [
         { header: 'Lead ID', field: 'leadId' },
@@ -53,6 +88,10 @@ export class ManageVisitsComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.headerBreadcrumbs = [
+            { label: 'Home', route: this.getHomeRoute() },
+            { label: 'Manage Visits' }
+        ];
         this.loadDropdowns();
         this.onSearchChange({});
     }
