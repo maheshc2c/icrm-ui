@@ -117,7 +117,7 @@ export class OpenLeads implements OnInit {
         const customerField = this.searchFields.find(f => f.key === 'customer');
         if (customerField) {
           // ✅ Use unique customer names only
-          const uniqueNames = [...new Set(data.map(c => c.customerName))];
+          const uniqueNames = [...new Set((data || []).map(c => c.customerName).filter(Boolean))];
           customerField.options = uniqueNames.map(name => ({ 
             value: name, 
             label: name 
@@ -240,6 +240,13 @@ this.rows.forEach((row: any) => {
         row.hasCNote = true;
         row.isContractNoteCompleted = true;
         row.contractNoteStage = 'Completed';
+        row.status = 10;
+        row.leadStatus = 10;
+
+        // If user searched for a specific status (e.g. status 7 Full Quote), filter out leads that have reached CNote (status 10)
+        if (this.currentSearchParams.status && Number(this.currentSearchParams.status) !== 10) {
+          this.rows = this.rows.filter((r: any) => r.leadId !== row.leadId);
+        }
 
         console.log(
           'C Note completed for Lead:',

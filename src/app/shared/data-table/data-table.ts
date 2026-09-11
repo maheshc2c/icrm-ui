@@ -48,6 +48,11 @@ export class DataTable
     this.viewRow.emit(row);
   }
 
+  planDemo(row: any) {
+    console.log("Plan Demo clicked:", row);
+    this.planDemoRow.emit(row);
+  }
+
   //   ngOnChanges(changes: SimpleChanges) {
   //   if (changes['rows']) {
   //     this.filteredRows = [...this.rows];
@@ -87,6 +92,7 @@ export class DataTable
   @Input() showReject = false;
 
   @Input() showView = false;
+  @Input() showDemo = false;
   @Input() showDownload = true;
   @Input() showQuoteDoc = false;
   @Input() showQuoteCloud = false;
@@ -105,6 +111,7 @@ export class DataTable
   @Output() add = new EventEmitter<void>();
   @Output() editRow = new EventEmitter<any>();
   @Output() viewRow = new EventEmitter<any>();
+  @Output() planDemoRow = new EventEmitter<any>();
   @Output() downloadRow = new EventEmitter<any>();
   @Output() assignRow = new EventEmitter<any>();
   @Output() uploadRow = new EventEmitter<any>();

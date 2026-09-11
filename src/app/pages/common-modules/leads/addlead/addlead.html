@@ -43,7 +43,7 @@
             <button *ngIf="isEditMode && canRerouteLead()" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onOpenRerouteModal()" title="Re-route Lead">
               <i class="fa-solid fa-share"></i> Re-route
             </button>
-            <button *ngIf="isEditMode" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onBlockVisit()">
+            <button *ngIf="isEditMode && showBlockVisitButton" type="button" class="action-header-btn" style="background: #3182ce; border-color: #2b6cb0;" (click)="onBlockVisit()">
               <i class="fa-regular fa-calendar-minus"></i> Block Visit
             </button>
             <button *ngIf="isEditMode && canDropLead()" type="button" class="action-header-btn" style="background: #dc2626; border-color: #b91c1c;" (click)="onDropLead()" title="Drop Lead">
@@ -322,10 +322,12 @@
       [showSearch]="false"
       [showPagination]="false"
       [showEdit]="true"
+      [showDemo]="true"
       [showView]="false"
       [showDelete]="false"
       (editRow)="onEditOpp($event)"
-      (viewRow)="onViewOpp($event)">
+      (viewRow)="onViewOpp($event)"
+      (planDemoRow)="onPlanDemoFromOpp($event)">
     </app-data-table>
   </div>
 
