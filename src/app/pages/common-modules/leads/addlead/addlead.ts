@@ -121,19 +121,7 @@ export class AddleadComponent implements OnInit {
     { header: 'Stage', field: 'stage' }
   ];
 
-  contractNotes: any[] = [
-    {
-      id: 1,
-      cNoteId: 22,
-      quoteRefId: 'KAR-26-26-Rev-1',
-      billing: 'Company',
-      discount: '0%',
-      poNumber: '1234',
-      poDate: '2026-06-19',
-      soNumber: '',
-      stage: 'Waiting at SO Entry'
-    }
-  ];
+  contractNotes: any[] = [];
 
   contractNoteCurrentPage = 1;
   contractNotePageSize = 10;
@@ -435,10 +423,11 @@ export class AddleadComponent implements OnInit {
           ];
         }
 
-        // Load existing lead details, opportunities, and quotes immediately
+        // Load existing lead details, opportunities, quotes, and contract notes immediately
         this.loadLeadData(this.leadId);
         this.fetchOpportunities(this.leadId);
         this.loadQuotes();
+        this.loadContractNoteDetails();
       }
     });
 
@@ -1766,17 +1755,32 @@ export class AddleadComponent implements OnInit {
         ? this.originalLeadData.status 
         : (this.originalLeadData.leadStatus !== undefined ? this.originalLeadData.leadStatus : 0)
     );
-    if (rawSt > 0) return rawSt;
 
-    // Fallback if rawSt is 0 or undefined:
+    // Terminal statuses (Rejected: 20, Dropped: 21, Closed: 22) should never be overridden
+    if (rawSt === 20 || rawSt === 21 || rawSt === 22) {
+      return rawSt;
+    }
+
+    // If backend already determined Full Contract Note (10)
+    if (rawSt === 10) {
+      return 10;
+    }
+
+    // Check if contract notes exist and indicate completion (Status 10)
     if (this.contractNotes && this.contractNotes.length > 0) {
       const hasCompletedCNote = this.contractNotes.some((cn: any) => {
         const stage = String(cn.stage || cn.status || '').trim().toLowerCase();
         const soNumber = cn.soNumber ?? cn.salesOrderNo ?? cn.salesOrderNumber ?? '';
-        return stage === 'completed' || (soNumber && String(soNumber).trim() !== '' && String(soNumber).trim().toLowerCase() !== 'n/a');
+        return stage === 'completed' || (soNumber && String(soNumber).trim() !== '' && String(soNumber).trim().toLowerCase() !== 'n/a' && String(soNumber).trim() !== '0');
       });
-      if (hasCompletedCNote) return 10;
+      if (hasCompletedCNote) {
+        return 10;
+      }
     }
+
+    if (rawSt > 0) return rawSt;
+
+    // Fallback if rawSt is 0 or undefined:
     if (this.quotes && this.quotes.length > 0) {
       return 6;
     }
