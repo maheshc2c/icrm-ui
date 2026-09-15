@@ -22,58 +22,78 @@ export class PlanVisit {
     private route: ActivatedRoute
   ) {}
 
-   headerTitle = 'Manage Visit';
-    
-       headerBreadcrumbs: Breadcrumb[] = [
-        { label: 'Home', route: '/sd-dashboard' },
-        { label: 'PlanVisit', route: '/salesdirector/planVisit' }
-      ];
-  
-      // 🔹 Table Columns
-    columns = [
-      //  { header: 'Lead ID', field: 'leadId' },
-      { header: 'Customer Name', field: 'customerName' },
-      { header: 'Purpose', field: 'purposeName' },
-      { header: 'Start Date', field: 'startDate' },
-      { header: 'End Date', field: 'endDate' },
-      ];
+  private getHomeRoute(): string {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const role = localStorage.getItem('role')?.trim();
+      if (role) {
+        const normalizedRole = role.replace(/[\s_]+/g, '').toUpperCase();
+        switch (normalizedRole) {
+          case 'SUPERADMIN':
+            return '/superadmindashboard';
+          case 'ADMIN':
+            return '/admindashboard';
+          case 'ADMINMARKETING':
+            return '/adminmarketingdashboard';
+          case 'SALESDIRECTOR':
+            return '/sddashboard';
+          case 'REGIONALBRANCHHEAD':
+            return '/regional-branch-head-dashboard';
+          case 'REGIONALSALESMANAGER':
+            return '/regional-sales-manager-dashboard';
+          case 'NATIONALSALESMANAGER':
+            return '/national-sales-manager-dashboard';
+          case 'GLOBALHEAD':
+            return '/globalhead-dashboard';
+          case 'COUNTRYHEAD':
+            return '/country-head';
+          case 'CUSTOMERINTERACTIONCENTER':
+            return '/Approve-Leads';
+          case 'OTR':
+            return '/Cnotedownload';
+          case 'SALESENGINEER':
+          case 'SALESMANAGER':
+          default:
+            return '/sales-manager-dashboard';
+        }
+      }
+    }
+    return '/sales-manager-dashboard';
+  }
 
+  headerTitle = 'Manage Visit';
+  headerBreadcrumbs: Breadcrumb[] = [];
 
-      // leadId: number;
-      //   purposeId: number;
-      //   purposeName: string;
-      //   startDate: string;
-      //   endDate: string;
+  columns = [
+    { header: 'Customer Name', field: 'customerName' },
+    { header: 'Purpose', field: 'purposeName' },
+    { header: 'Start Date', field: 'startDate' },
+    { header: 'End Date', field: 'endDate' },
+  ];
 
-    rows: any[] = [];
-    fullRows: any[] = []; 
+  rows: any[] = [];
+  fullRows: any[] = [];
 
-    // searchFields: SearchFieldConfig[] = [];
-
-  
   onAdd() {
     this.router.navigate(['salesdirector/planVisit/add']);
   }
 
   onEdit(row: any) {
-        this.router.navigate(['salesdirector/planVisit/edit', row.visitId]);
+    this.router.navigate(['salesdirector/planVisit/edit', row.visitId]);
+  }
 
-      }
-
-
-      isEditMode = false;
-      visitId!: number
+  isEditMode = false;
+  visitId!: number;
 
   onDelete(row: any) {
     console.log('Delete row:', row);
   }
-    
 
-  
-   ngOnInit(): void {
-
-    this.loadVisit();      // existing table load
- 
+  ngOnInit(): void {
+    this.headerBreadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      { label: 'Plan Visit', route: '/salesdirector/planVisit' }
+    ];
+    this.loadVisit();
   }
 
   // ✅ LIST API ONLY
