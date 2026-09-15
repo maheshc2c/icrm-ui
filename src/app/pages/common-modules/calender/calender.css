@@ -709,24 +709,3 @@
   color: #d9534f;
   font-size: 12px;
 }
-
-/* Weekday headings must always remain blue and readable */
-.schedule-day-heading {
-  background-color: #6b9fd0;
-  color: #ffffff;
-  font-weight: 600;
-  text-align: center;
-}
-
-/* Highlight only today's calendar cells */
-.all-day-cell.today-column,
-.week-time-cell.today-column,
-.day-time-cell.today-column {
-  background-color: #fffbed;
-}
-
-/* Prevent the today style from hiding a weekday heading */
-.schedule-day-heading.today-column {
-  background-color: #6b9fd0 !important;
-  color: #ffffff !important;
-}
