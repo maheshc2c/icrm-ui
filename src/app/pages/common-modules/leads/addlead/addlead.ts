@@ -63,6 +63,10 @@ export class AddleadComponent implements OnInit {
   showInstallationBaseDetailsModal = false;
   installationBaseDetails: any[] = [];
   
+  assignType: 'self' | 'others' = 'self';
+  assignUsers: any[] = [];
+  selectedAssignUserId: any = '';
+
   // Validation errors
   errors: { [key: string]: string } = {};
   
@@ -1126,6 +1130,13 @@ export class AddleadComponent implements OnInit {
       }
     });
 
+    if (!this.isEditMode && this.isReportingUser() && this.assignType === 'others') {
+      if (!this.selectedAssignUserId) {
+        this.errors['assignUserId'] = 'Assign To is required when assigning to others';
+        hasErrors = true;
+      }
+    }
+
     if (hasErrors) {
       return;
     }
@@ -1165,6 +1176,8 @@ export class AddleadComponent implements OnInit {
       return val;
     };
 
+    const isAssigningOthers = !this.isEditMode && this.isReportingUser() && this.assignType === 'others';
+
     const payload: any = {
       sourceId: toNullIfEmpty(formData.source) ? Number(extractId(formData.source)) : null,
       customerId: toNullIfEmpty(formData.customer) ? Number(extractId(formData.customer)) : null,
@@ -1180,8 +1193,9 @@ export class AddleadComponent implements OnInit {
       campaignId: toNullIfEmpty(formData.campaign) ? Number(extractId(formData.campaign)) : null,
       remarks1: formData.commentLine1 || '',
       remarks2: formData.commentLine2 || '',
-      assignToOthers: false,
-      assignUserId: null,
+      assignToOthers: isAssigningOthers,
+      assignUserId: isAssigningOthers && this.selectedAssignUserId ? Number(this.selectedAssignUserId) : null,
+      roleType: this.isReportingUser() ? 1 : 0,
       locationId: null
     };
 
@@ -1800,7 +1814,7 @@ export class AddleadComponent implements OnInit {
       case 4: return 'All Opportunities Dropped';
       case 5: return 'All Opps Lost/Dropped';
       case 6: return 'Quote Created';
-      case 7: return 'Contract Note Created';
+      case 7: return 'Quote Created';
       case 8: return 'Partial C-Note';
       case 9: return 'C-Note Submitted';
       case 10: return 'Full Contract Note';
@@ -1913,6 +1927,76 @@ export class AddleadComponent implements OnInit {
       'SUPERADMIN'
     ];
     return allowedRerouteRoles.includes(normalizedRole);
+  }
+
+  isReportingUser(): boolean {
+    if (typeof window === 'undefined' || !window.localStorage) return false;
+    const role = (localStorage.getItem('role') || '').trim();
+    const normalizedRole = role.replace(/[\s_]+/g, '').toUpperCase();
+    const reportingRoles = [
+      'REGIONALBRANCHHEAD',
+      'RBH',
+      'REGIONALSALESMANAGER',
+      'RSM',
+      'NATIONALSALESMANAGER',
+      'NSM',
+      'COUNTRYHEAD',
+      'CH',
+      'SALESDIRECTOR',
+      'SD',
+      'GLOBALHEAD',
+      'GH',
+      'SUPERADMIN'
+    ];
+    return reportingRoles.includes(normalizedRole);
+  }
+
+  onToggleAssignType(type: 'self' | 'others'): void {
+    this.assignType = type;
+    if (type === 'self') {
+      this.selectedAssignUserId = '';
+      delete this.errors['assignUserId'];
+    } else {
+      if (this.assignUsers.length === 0) {
+        this.loadAssignUsers();
+      }
+    }
+  }
+
+  loadAssignUsers(): void {
+    this.leadservice.getReRouteUsers().subscribe({
+      next: (users: any[]) => {
+        this.assignUsers = (users || []).map(u => {
+          const fullName = `${u.firstName || ''} ${u.lastName || ''}`.trim() || u.username || 'User';
+          const empId = u.employeeId || u.username || '';
+          const role = u.role?.roleName || u.role?.name || u.roleName || (typeof u.role === 'string' ? u.role : '') || u.role?.shortName || '';
+          
+          let displayName = fullName;
+          if (empId) {
+            displayName += ` - ${empId}`;
+          }
+          if (role) {
+            displayName += ` (${role})`;
+          } else if (!empId && (u.location || u.locationName)) {
+            displayName += ` (${u.location || u.locationName})`;
+          }
+
+          return {
+            ...u,
+            displayName
+          };
+        });
+      },
+      error: (err) => {
+        console.error('Failed to load assign users:', err);
+      }
+    });
+  }
+
+  onAssignUserChange(): void {
+    if (this.selectedAssignUserId) {
+      delete this.errors['assignUserId'];
+    }
   }
 
   /* ================= DROP LEAD ACTION ================= */
