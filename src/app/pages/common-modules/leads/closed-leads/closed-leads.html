@@ -12,10 +12,12 @@
   [searchFields]="searchFields"
   [showImport]="true"
   [showAdd]="false"
+  [showRefresh]="true"
   [showEditButton]="true"
   [showDeleteButton]="false"
   [showViewButton]="true"
   (searchChange)="onSearchChange($event)"
+  (refresh)="loadClosedLeads()"
   (download)="downloadExcel()"
   (editRow)="editLead($event)"
   (viewRow)="viewLead($event?.leadId)">

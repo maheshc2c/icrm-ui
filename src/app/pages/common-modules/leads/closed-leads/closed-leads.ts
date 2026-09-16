@@ -87,10 +87,9 @@ export class ClosedLeadsComponent implements OnInit {
       placeholder: 'Select Closed Status',
       type: 'select',
       options: [
-        { label: 'Lead Dropped', value: 'Lead Dropped' },
-        { label: 'Lost', value: 'Lost' },
-        { label: 'Converted', value: 'Converted' },
-        { label: 'Won', value: 'Won' }
+        { label: 'Lead Closed', value: '22' },
+        { label: 'Lead Dropped', value: '21' },
+        { label: 'Lead Rejected', value: '20' }
       ]
     }
   ];
@@ -196,8 +195,22 @@ export class ClosedLeadsComponent implements OnInit {
       const matchesCustomer = !searchValues.customer || 
         lead.customerName?.toLowerCase().includes(searchValues.customer.toLowerCase());
       
-      const matchesStatus = !searchValues.closedStatus || 
-        lead.status?.toLowerCase() === searchValues.closedStatus.toLowerCase();
+      let matchesStatus = true;
+      if (searchValues.closedStatus !== undefined && searchValues.closedStatus !== null && searchValues.closedStatus !== '') {
+        const sel = String(searchValues.closedStatus).toLowerCase().trim();
+        const stNum = Number(lead.leadStatus);
+        const stName = String(lead.status || '').toLowerCase().trim();
+
+        if (sel === '22' || sel === 'lead closed') {
+          matchesStatus = stNum === 22 || stName === 'lead closed';
+        } else if (sel === '21' || sel === 'lead dropped') {
+          matchesStatus = stNum === 21 || stNum === 0 || stName === 'lead dropped';
+        } else if (sel === '20' || sel === 'lead rejected') {
+          matchesStatus = stNum === 20 || stName === 'lead rejected';
+        } else {
+          matchesStatus = stName === sel || stNum === Number(sel);
+        }
+      }
       
       return matchesLeadId && matchesCustomer && matchesStatus;
     });
