@@ -35,15 +35,69 @@ export class Demo {
     { label: 'PlanVisit', route: '/salesdirector/Demo' }
   ];
 
+
+
+private getHomeRoute(): string {
+  const role = localStorage.getItem('role');
+
+  switch (role) {
+    case 'ADMIN':
+    case 'Admin':
+      return '/admindashboard';
+
+    case 'ADMINMARKETING':
+    case 'ADMIN MARKETING':
+      return '/adminmarketingdashboard';
+
+    case 'Sales Director':
+      return '/sddashboard';
+
+    case 'Sales Manager':
+    case 'Sales Engineer':
+    case 'SALES_MANAGER':
+    case 'SALESMANAGER':
+      return '/sales-manager-dashboard';
+
+    case 'Regional Sales Manager':
+      return '/regional-sales-manager-dashboard';
+
+    case 'Regional Branch Head':
+      return '/regional-branch-head-dashboard';
+
+    case 'National Sales Manager':
+      return '/national-sales-manager-dashboard';
+
+    case 'Country Head':
+      return '/country-head';
+
+    case 'SUPERADMIN':
+    case 'SUPER ADMIN':
+      return '/superadmindashboard';
+
+    default:
+      return '/login';
+  }
+}
+
+ngOnInit(): void {
+  this.headerBreadcrumbs = [
+    {
+      label: 'Home',
+      route: this.getHomeRoute()
+    },
+    {
+      label: 'Manage Demo',
+      route: '/salesdirector/Demo'
+    }
+  ];
+
+  this.loadDemo();
+  this.loadCustomerDropdown();
+}
+
   rows:any[]=[];
 fullRows:any[]=[];
 
-ngOnInit(){
-
-   this.loadDemo();
-  this.loadCustomerDropdown();
-
-}
 
   columns = [
   { header:'Customer Name', field:'customerName' },

@@ -12,14 +12,18 @@
 
     <!-- EMPLOYEE DROPDOWN -->
 
-   <div class="calendar-filter">
+  <div class="calendar-filter">
+
   <select
     class="user-dropdown"
     [(ngModel)]="selectedUserId"
     (ngModelChange)="onUserChange()"
-    [disabled]="loading"
+    [disabled]="loading && users.length === 0"
   >
-    <option [ngValue]="null" disabled>
+    <option
+      [ngValue]="null"
+      disabled
+    >
       Select employee
     </option>
 
@@ -34,11 +38,15 @@
   </select>
 
   <span
-    *ngIf="!loading && users.length === 0"
+    *ngIf="
+      !loading &&
+      users.length === 0
+    "
     class="dropdown-error"
   >
     No employees found
   </span>
+
 </div>
 
     <div
@@ -55,18 +63,24 @@
       <aside class="legend">
 
         <div class="legend-item">
-          <span class="legend-color visit-color"></span>
+          <span
+            class="legend-color visit-color">
+          </span>
+
           <span>→ Visit</span>
         </div>
 
         <div class="legend-item">
-          <span class="legend-color demo-color"></span>
+          <span
+            class="legend-color demo-color">
+          </span>
+
           <span>→ Demo</span>
         </div>
 
       </aside>
 
-      <!-- MAIN CALENDAR -->
+      <!-- CALENDAR -->
 
       <section class="calendar-main">
 
@@ -81,7 +95,9 @@
             <button
               type="button"
               (click)="setView('month')"
-              [class.active]="currentView === 'month'"
+              [class.active]="
+                currentView === 'month'
+              "
             >
               month
             </button>
@@ -89,7 +105,9 @@
             <button
               type="button"
               (click)="setView('week')"
-              [class.active]="currentView === 'week'"
+              [class.active]="
+                currentView === 'week'
+              "
             >
               week
             </button>
@@ -97,7 +115,9 @@
             <button
               type="button"
               (click)="setView('day')"
-              [class.active]="currentView === 'day'"
+              [class.active]="
+                currentView === 'day'
+              "
             >
               day
             </button>
@@ -149,8 +169,12 @@
             <div
               *ngFor="let day of monthDays"
               class="day"
-              [class.other-month]="!day.currentMonth"
-              [class.today]="isToday(day.date)"
+              [class.other-month]="
+                !day.currentMonth
+              "
+              [class.today]="
+                isToday(day.date)
+              "
             >
               <span class="day-number">
                 {{ day.dayNumber }}
@@ -165,10 +189,19 @@
                 [ngClass]="eventClass(event)"
                 [title]="event.description"
               >
-                {{ event.title }}
-              </div>
-            </div>
+                <span class="event-title">
+                  {{ event.title }}
+                </span>
 
+                <span class="event-date">
+                  {{
+                    event.start
+                      | date:'dd-MM-yyyy'
+                  }}
+                </span>
+              </div>
+
+            </div>
           </div>
         </div>
 
@@ -183,24 +216,34 @@
             <div class="time-heading"></div>
 
             <div
-  *ngFor="let day of weekDates"
-  class="schedule-day-heading"
->
-  {{ day.date | date:'EEE M/d' }}
-</div>
+              *ngFor="let day of weekDates"
+              class="schedule-day-heading"
+              [class.today-column]="
+                isToday(day.date)
+              "
+            >
+              {{
+                day.date
+                  | date:'EEE M/d'
+              }}
+            </div>
 
           </div>
 
           <div class="week-all-day-grid">
 
-            <div class="time-label all-day-label">
+            <div
+              class="time-label all-day-label"
+            >
               all-day
             </div>
 
             <div
               *ngFor="let day of weekDates"
               class="all-day-cell"
-              [class.today-column]="isToday(day.date)"
+              [class.today-column]="
+                isToday(day.date)
+              "
             >
               <div
                 *ngFor="
@@ -211,7 +254,16 @@
                 [ngClass]="eventClass(event)"
                 [title]="event.description"
               >
-                {{ event.title }}
+                <span class="event-title">
+                  {{ event.title }}
+                </span>
+
+                <span class="event-date">
+                  {{
+                    event.start
+                      | date:'dd-MM-yyyy'
+                  }}
+                </span>
               </div>
             </div>
 
@@ -230,7 +282,9 @@
               <div
                 *ngFor="let day of weekDates"
                 class="week-time-cell"
-                [class.today-column]="isToday(day.date)"
+                [class.today-column]="
+                  isToday(day.date)
+                "
               ></div>
             </div>
 
@@ -247,29 +301,67 @@
 
             <div class="time-heading"></div>
 
-            <div class="schedule-day-heading">
-              {{ currentDate | date:'EEEE M/d' }}
+            <div
+              class="schedule-day-heading"
+            >
+              {{
+                currentDate
+                  | date:'EEEE M/d'
+              }}
             </div>
 
           </div>
 
           <div class="day-all-day-grid">
 
-            <div class="time-label all-day-label">
+            <div
+              class="time-label all-day-label"
+            >
               all-day
             </div>
 
             <div
               class="all-day-cell"
-              [class.today-column]="isToday(currentDate)"
+              [class.today-column]="
+                isToday(currentDate)
+              "
             >
               <div
-                *ngFor="let event of currentDayEvents"
-                class="calendar-event"
+                *ngFor="
+                  let event of
+                  currentDayEvents
+                "
+                class="calendar-event day-event"
                 [ngClass]="eventClass(event)"
                 [title]="event.description"
               >
-                {{ event.title }}
+                <span class="event-title">
+                  {{ event.title }}
+                </span>
+
+                <span class="event-description">
+                  {{ event.description }}
+                </span>
+
+                <span class="event-date">
+                  {{
+                    event.start
+                      | date:'dd-MM-yyyy'
+                  }}
+
+                  <ng-container
+                    *ngIf="
+                      event.end &&
+                      event.end !== event.start
+                    "
+                  >
+                    to
+                    {{
+                      event.end
+                        | date:'dd-MM-yyyy'
+                    }}
+                  </ng-container>
+                </span>
               </div>
             </div>
 
@@ -287,7 +379,9 @@
 
               <div
                 class="day-time-cell"
-                [class.today-column]="isToday(currentDate)"
+                [class.today-column]="
+                  isToday(currentDate)
+                "
               ></div>
             </div>
 

@@ -2,6 +2,9 @@ import {
   Component,
   OnInit
 } from '@angular/core';
+import {
+  HttpErrorResponse
+} from '@angular/common/http';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -53,8 +56,9 @@ export class Calender implements OnInit {
     }
   ];
 
-  currentView: 'month' | 'week' | 'day' =
-    'month';
+  currentView:
+    'month' | 'week' | 'day' =
+      'month';
 
   currentDate: Date = new Date();
 
@@ -104,82 +108,104 @@ export class Calender implements OnInit {
     this.loadUsers();
   }
 
-  /**
-   * Loads active employees for the dropdown.
-   */
   loadUsers(
-    name: string = ''
-  ): void {
+  name: string = ''
+): void {
 
-    this.loading = true;
+  this.loading = true;
 
-    this.calendarService
-      .getReportees(name)
-      .subscribe({
-        next: (
-          response: UserDropdown[]
-        ) => {
+  this.calendarService
+    .getReportees(name)
+    .subscribe({
+      next: (response: any) => {
 
-          console.log(
-            'Reportees response:',
-            response
-          );
+        console.log(
+          'Complete employee response:',
+          response
+        );
 
-          this.users =
-            Array.isArray(response)
-              ? response
-              : [];
-
-          this.loading = false;
-
-          if (this.users.length === 0) {
-            this.selectedUserId = null;
-            this.calendarEvents = [];
-            return;
-          }
-
-          /*
-           * Select the first employee initially.
-           */
-          this.selectedUserId =
-            this.users[0].userId;
-
-          this.loadCalendar();
-        },
-
-        error: error => {
-          console.error(
-            'Failed to load reportees'
-          );
-
-          console.error(
-            'Status:',
-            error.status
-          );
-
-          console.error(
-            'Backend response:',
-            error.error
-          );
-
+        /*
+         * Supports:
+         * 1. Direct array: [...]
+         * 2. Wrapped response: { data: [...] }
+         * 3. Wrapped response: { body: [...] }
+         */
+        if (Array.isArray(response)) {
+          this.users = response;
+        } else if (
+          Array.isArray(response?.data)
+        ) {
+          this.users = response.data;
+        } else if (
+          Array.isArray(response?.body)
+        ) {
+          this.users = response.body;
+        } else {
           this.users = [];
+        }
+
+        console.log(
+          'Employees assigned:',
+          this.users
+        );
+
+        if (this.users.length === 0) {
           this.selectedUserId = null;
           this.calendarEvents = [];
           this.loading = false;
+          return;
         }
-      });
-  }
 
-  /**
-   * Called whenever another employee
-   * is selected from the dropdown.
-   */
+        /*
+         * Select user ID 1 when present.
+         * Otherwise select the first employee.
+         */
+        const preferredUser =
+          this.users.find(
+            user =>
+              Number(user.userId) === 1
+          );
+
+        this.selectedUserId =
+          preferredUser?.userId ??
+          this.users[0].userId;
+
+        this.loadCalendar();
+      },
+
+      error: (
+  error: HttpErrorResponse
+) => {
+        console.error(
+          'Employee API failed'
+        );
+
+        console.error(
+          'Status:',
+          error.status
+        );
+
+        console.error(
+          'URL:',
+          error.url
+        );
+
+        console.error(
+          'Response:',
+          error.error
+        );
+
+        this.users = [];
+        this.selectedUserId = null;
+        this.calendarEvents = [];
+        this.loading = false;
+      }
+    });
+}
+
   onUserChange(): void {
 
-    if (
-      this.selectedUserId === null ||
-      this.selectedUserId === undefined
-    ) {
+    if (this.selectedUserId === null) {
       this.calendarEvents = [];
       return;
     }
@@ -187,16 +213,9 @@ export class Calender implements OnInit {
     this.loadCalendar();
   }
 
-  /**
-   * Loads visits and demos for the
-   * selected employee.
-   */
   loadCalendar(): void {
 
-    if (
-      this.selectedUserId === null ||
-      this.selectedUserId === undefined
-    ) {
+    if (this.selectedUserId === null) {
       this.calendarEvents = [];
       return;
     }
@@ -215,28 +234,20 @@ export class Calender implements OnInit {
             response
           );
 
-          const visitEvents =
-            response?.visitEvents ?? [];
-
-          const demoEvents =
-            response?.demoEvents ?? [];
-
           this.calendarEvents = [
-            ...visitEvents,
-            ...demoEvents
+            ...(response?.visitEvents ?? []),
+            ...(response?.demoEvents ?? [])
           ];
 
           this.loading = false;
         },
 
-        error: error => {
+        error: (
+  error: HttpErrorResponse
+) => {
           console.error(
-            'Failed to load calendar'
-          );
-
-          console.error(
-            'Status:',
-            error.status
+            'Failed to load calendar:',
+            error
           );
 
           console.error(
@@ -313,10 +324,6 @@ export class Calender implements OnInit {
     this.generateMonthDays();
   }
 
-  /**
-   * Generates 42 cells:
-   * 7 columns and 6 rows.
-   */
   generateMonthDays(): void {
 
     const year =
@@ -354,8 +361,10 @@ export class Calender implements OnInit {
 
       generatedDays.push({
         date,
-        dateKey: this.toDateKey(date),
-        dayNumber: date.getDate(),
+        dateKey:
+          this.toDateKey(date),
+        dayNumber:
+          date.getDate(),
         currentMonth:
           date.getMonth() === month
       });
@@ -364,10 +373,6 @@ export class Calender implements OnInit {
     this.monthDays = generatedDays;
   }
 
-  /**
-   * Returns visits and demos scheduled on the supplied date.
-   * Multi-day events are shown on every date from start through end.
-   */
   getEventsForDate(
     dateKey: string
   ): CalendarEvent[] {
@@ -379,15 +384,12 @@ export class Calender implements OnInit {
           return false;
         }
 
-        const startDateKey =
-          this.extractDateKey(event.start);
+        const eventDate =
+          this.extractDateKey(
+            event.start
+          );
 
-        const endDateKey = event.end
-          ? this.extractDateKey(event.end)
-          : startDateKey;
-
-        return dateKey >= startDateKey &&
-          dateKey <= endDateKey;
+        return eventDate === dateKey;
       }
     );
   }
@@ -395,13 +397,13 @@ export class Calender implements OnInit {
   get currentDayEvents():
     CalendarEvent[] {
 
-    const currentDateKey =
+    const dateKey =
       this.toDateKey(
         this.currentDate
       );
 
     return this.getEventsForDate(
-      currentDateKey
+      dateKey
     );
   }
 
@@ -470,6 +472,11 @@ export class Calender implements OnInit {
       end.toLocaleDateString(
         'en-US',
         {
+          month:
+            start.getMonth() !==
+            end.getMonth()
+              ? 'short'
+              : undefined,
           day: 'numeric',
           year: 'numeric'
         }
@@ -480,9 +487,7 @@ export class Calender implements OnInit {
 
   get calendarTitle(): string {
 
-    if (
-      this.currentView === 'month'
-    ) {
+    if (this.currentView === 'month') {
       return this.currentDate
         .toLocaleDateString(
           'en-US',
@@ -493,9 +498,7 @@ export class Calender implements OnInit {
         );
     }
 
-    if (
-      this.currentView === 'week'
-    ) {
+    if (this.currentView === 'week') {
       return this.weekRange;
     }
 
@@ -542,13 +545,7 @@ export class Calender implements OnInit {
     value: string
   ): string {
 
-    /*
-     * Supports:
-     * 2026-09-11
-     * 2026-09-11T10:30:00
-     * 2026-09-11 10:30:00
-     */
-    return String(value).substring(0, 10);
+    return value.substring(0, 10);
   }
 
   private toDateKey(
