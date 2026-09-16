@@ -243,25 +243,34 @@ export class Leadservice {
 
   /* ================= GET ALL OPPORTUNITIES (TABLE) ================= */
   getOpportunityTable(page: number = 0, size: number = 10): Observable<any> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+    const payload = {
+      pagination: {
+        pageNumber: page,
+        pageSize: size,
+        sortBy: 'createdTime',
+        sortOrder: 'DESC'
+      }
+    };
 
-    return this.http.get<any>(`${this.baseUrl}/salesengineer/opportunity/table`, {
-      headers: this.getAuthHeaders(),
-      params: params
+    return this.http.post<any>(`${this.baseUrl}/opportunity/opportunity/search`, payload, {
+      headers: this.getAuthHeaders()
     });
   }
 
   /* ================= SEARCH OPPORTUNITIES (TABLE) ================= */
   searchOpportunitiesTable(params: any, page: number = 0, size: number = 10): Observable<any> {
-    let httpParams = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+    const payload = {
+      ...params,
+      pagination: {
+        pageNumber: page,
+        pageSize: size,
+        sortBy: 'createdTime',
+        sortOrder: 'DESC'
+      }
+    };
 
-    return this.http.post<any>(`${this.baseUrl}/salesengineer/opportunity/search`, params, {
-      headers: this.getAuthHeaders(),
-      params: httpParams
+    return this.http.post<any>(`${this.baseUrl}/opportunity/opportunity/search`, payload, {
+      headers: this.getAuthHeaders()
     });
   }
 
