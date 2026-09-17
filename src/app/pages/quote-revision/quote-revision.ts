@@ -232,14 +232,99 @@ export class QuoteRevisionComponent implements OnInit {
     }
   }
 
+  errors: { [key: string]: string } = {};
+  errorMessage: string = '';
+
   isSubmitting: boolean = false;
+
+  validateForm(): boolean {
+    this.errors = {};
+    this.errorMessage = '';
+
+    // 1. Must select at least one product
+    if (!this.hasSelectedProduct()) {
+      this.errorMessage = 'Please select at least one product for the quote revision.';
+      return false;
+    }
+
+    // 2. Billing required
+    if (!this.quoteForm.billingInfoId) {
+      this.errors['billingInfoId'] = 'Please select Billing.';
+    }
+
+    // 3. Warranty required
+    if (!this.quoteForm.warranty) {
+      this.errors['warranty'] = 'Please select Warranty.';
+    }
+
+    // 4. Advance required and bounded
+    if (this.quoteForm.advance == null || this.quoteForm.advance < 0) {
+      this.errors['advance'] = 'Please enter a valid Advance amount.';
+    } else if (this.quoteForm.advanceType === 1 && this.quoteForm.advance > 100) {
+      this.errors['advance'] = 'Advance percentage cannot exceed 100%.';
+    }
+
+    // 5. Balance payment days required if not fully paid advance
+    const totalQuoteValue = this.quotes
+      .filter(q => q.selected)
+      .reduce((sum, q) => sum + this.calculateDiscountedValue(q), 0);
+
+    const isFullAdvance = (this.quoteForm.advanceType === 1 && this.quoteForm.advance === 100) ||
+                          (this.quoteForm.advanceType === 2 && this.quoteForm.advance >= totalQuoteValue && totalQuoteValue > 0);
+
+    if (!isFullAdvance) {
+      if (!this.quoteForm.balancePaymentDays || this.quoteForm.balancePaymentDays < 1) {
+        this.errors['balancePaymentDays'] = 'Please enter valid Balance Payment days (min 1).';
+      }
+    }
+
+    // 6. Dealer Commission & Dealer selection rules (if not Distributor billing)
+    if (this.quoteForm.billingInfoId !== 2) {
+      if (this.quoteForm.dealerCommission == null || this.quoteForm.dealerCommission < 0 || this.quoteForm.dealerCommission > 100) {
+        this.errors['dealerCommission'] = 'Please enter a valid Dealer Commission (0 - 100%).';
+      }
+      if (this.quoteForm.dealerCommission > 0 && !this.quoteForm.dealerId) {
+        this.errors['dealerId'] = 'Please select a Dealer when commission is greater than 0%.';
+      }
+    }
+
+    // 7. Validate product discounts
+    for (const q of this.quotes.filter(p => p.selected)) {
+      const discount = parseFloat(q.editableDiscount) || 0;
+      const mrpTotal = (q.mrp || 0) * (q.editableQuantity || 1);
+
+      if (discount < 0) {
+        this.errorMessage = `Discount for ${q.productName} cannot be negative.`;
+        return false;
+      }
+      if (q.discountType === 'In %' && discount > 100) {
+        this.errorMessage = `Discount percentage for ${q.productName} cannot exceed 100%.`;
+        return false;
+      }
+      if (q.discountType === 'In Rs' && discount > mrpTotal) {
+        this.errorMessage = `Discount amount for ${q.productName} cannot exceed total MRP (${mrpTotal}).`;
+        return false;
+      }
+    }
+
+    if (Object.keys(this.errors).length > 0) {
+      this.errorMessage = 'Please fix the highlighted errors below before submitting.';
+      return false;
+    }
+
+    return true;
+  }
 
   onSubmit() {
     if (this.isSubmitting) {
       return;
     }
 
-    // 1. Calculate the total discount from all selected products in the table
+    if (!this.validateForm()) {
+      return;
+    }
+
+    // Calculate total product discount
     const totalProductDiscount = this.quotes
       .filter(q => q.selected)
       .reduce((sum, q) => sum + (parseFloat(q.editableDiscount) || 0), 0);
@@ -266,10 +351,7 @@ export class QuoteRevisionComponent implements OnInit {
       advance: this.quoteForm.advance,
       balancePaymentDays: this.quoteForm.balancePaymentDays,
       stockistId: this.quoteForm.stockistId,
-      
-      // 2. Map the calculated total sum here instead of the static form property
-      discount: totalProductDiscount, 
-      
+      discount: totalProductDiscount,
       opportunities: this.quotes.filter(q => q.selected).map(q => ({
         opportunityId: q.opportunityId,
         discountType: q.discountType === 'In %' ? 2 : 1,
@@ -288,22 +370,19 @@ export class QuoteRevisionComponent implements OnInit {
 
     this.http.post(`${this.baseUrl}/quote/create/quote-revision`, payload, { headers }).subscribe({
       next: (res: any) => {
+        this.isSubmitting = false;
         if (res && res.status === false) {
-          this.isSubmitting = false;
-          alert('Failed to save quote revision: ' + (res.message || ''));
+          this.errorMessage = res.message || 'Failed to save quote revision.';
         } else {
-          if (this.leadId) {
-            this.router.navigate(['/salesmanager/leads/edit', this.leadId], { queryParams: { success: 'true' } });
-          } else {
-            window.history.back();
-          }
+          alert('Quote revision saved successfully!');
+          this.goBack();
         }
       },
-      error: (err: any) => {
+      error: (err) => {
         this.isSubmitting = false;
         console.error('Error saving quote revision:', err);
-        const msg = err?.error?.message || err?.message || 'Unknown error';
-        alert('Failed to save quote revision: ' + msg);
+        const msg = err?.error?.message || err?.message || 'Failed to save quote revision';
+        this.errorMessage = msg;
       }
     });
   }
