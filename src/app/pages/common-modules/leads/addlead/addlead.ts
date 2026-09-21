@@ -2088,14 +2088,14 @@ export class AddleadComponent implements OnInit {
     this.leadservice.reRouteLead(currentLeadId, Number(this.selectedRerouteUserId)).subscribe({
       next: (res: any) => {
         this.rerouteSubmitting = false;
-        alert(res.message || 'Lead successfully re-routed!');
+        this.toastService.show(res.message || 'Lead successfully re-assigned!', 'success', 5000);
         this.closeRerouteModal();
         this.loadLeadData(currentLeadId);
       },
       error: (err: any) => {
         this.rerouteSubmitting = false;
         console.error('Failed to reroute lead:', err);
-        alert('Failed to re-route lead: ' + (err.error?.message || err.message || 'Server error'));
+        this.toastService.show('Failed to re-route lead: ' + (err.error?.message || err.message || 'Server error'), 'error', 5000);
       }
     });
   }

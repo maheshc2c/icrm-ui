@@ -14,3 +14,10 @@ body {
   font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "Font Awesome 5 Free", sans-serif !important;
 }
 
+/* Toast success & re-assign notifications */
+.toast-card.success,
+.toast-card.is-reassign {
+  background: #28a745 !important;
+  color: #ffffff !important;
+}
+

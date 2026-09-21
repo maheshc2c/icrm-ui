@@ -1,12 +1,12 @@
 <div class="toast-container">
-  <div class="toast-card" *ngFor="let toast of toasts" [ngClass]="toast.type">
+  <div class="toast-card" *ngFor="let toast of toasts" [ngClass]="toast.type" [class.is-reassign]="toast.message?.includes('re-assigned') || toast.message?.includes('re-routed')">
     <div class="toast-body">
       <!-- Icon -->
       <div class="toast-icon-wrapper" [ngClass]="toast.type">
-        <i *ngIf="toast.type === 'success'" class="fas fa-check-circle"></i>
-        <i *ngIf="toast.type === 'error'" class="fas fa-exclamation-circle"></i>
-        <i *ngIf="toast.type === 'warning'" class="fas fa-exclamation-triangle"></i>
-        <i *ngIf="toast.type === 'info'" class="fas fa-info-circle"></i>
+        <i *ngIf="toast.type === 'success' || toast.message?.includes('re-assigned') || toast.message?.includes('re-routed')" class="fas fa-check-circle"></i>
+        <i *ngIf="toast.type === 'error' && !toast.message?.includes('re-assigned') && !toast.message?.includes('re-routed')" class="fas fa-exclamation-circle"></i>
+        <i *ngIf="toast.type === 'warning' && !toast.message?.includes('re-assigned') && !toast.message?.includes('re-routed')" class="fas fa-exclamation-triangle"></i>
+        <i *ngIf="toast.type === 'info' && !toast.message?.includes('re-assigned') && !toast.message?.includes('re-routed')" class="fas fa-info-circle"></i>
         <i *ngIf="toast.type === 'confirm'" class="fas fa-question-circle"></i>
       </div>
       
