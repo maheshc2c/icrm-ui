@@ -418,7 +418,11 @@ constructor() {
       );
     }
 
-    if (role === 'Country Head') {
+    const isCountryHead = role === 'Country Head' ||
+      normalizedRole === 'COUNTRYHEAD' ||
+      (normalizedRole.includes('COUNTRY') && normalizedRole.includes('HEAD'));
+
+    if (isCountryHead) {
       this.menuItems.push(
         {
           label: 'Home',

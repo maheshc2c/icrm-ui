@@ -38,45 +38,17 @@ export class Demo {
 
 
 private getHomeRoute(): string {
-  const role = localStorage.getItem('role');
-
-  switch (role) {
-    case 'ADMIN':
-    case 'Admin':
-      return '/admindashboard';
-
-    case 'ADMINMARKETING':
-    case 'ADMIN MARKETING':
-      return '/adminmarketingdashboard';
-
-    case 'Sales Director':
-      return '/sddashboard';
-
-    case 'Sales Manager':
-    case 'Sales Engineer':
-    case 'SALES_MANAGER':
-    case 'SALESMANAGER':
-      return '/sales-manager-dashboard';
-
-    case 'Regional Sales Manager':
-      return '/regional-sales-manager-dashboard';
-
-    case 'Regional Branch Head':
-      return '/regional-branch-head-dashboard';
-
-    case 'National Sales Manager':
-      return '/national-sales-manager-dashboard';
-
-    case 'Country Head':
-      return '/country-head';
-
-    case 'SUPERADMIN':
-    case 'SUPER ADMIN':
-      return '/superadmindashboard';
-
-    default:
-      return '/login';
-  }
+  const role = (localStorage.getItem('role') || '').trim();
+  const upper = role.replace(/[\s_]+/g, '').toUpperCase();
+  if (upper === 'COUNTRYHEAD' || upper.includes('COUNTRY')) return '/country-head';
+  if (upper.includes('GLOBAL')) return '/globalhead-dashboard';
+  if (upper.includes('NATIONAL')) return '/national-sales-manager-dashboard';
+  if (upper.includes('REGIONAL') && upper.includes('BRANCH')) return '/regional-branch-head-dashboard';
+  if (upper.includes('REGIONAL')) return '/regional-sales-manager-dashboard';
+  if (upper.includes('DIRECTOR')) return '/sddashboard';
+  if (upper.includes('SUPERADMIN')) return '/superadmindashboard';
+  if (upper.includes('ADMIN')) return '/admindashboard';
+  return '/sales-manager-dashboard';
 }
 
 ngOnInit(): void {
@@ -87,7 +59,7 @@ ngOnInit(): void {
     },
     {
       label: 'Manage Demo',
-      route: '/salesdirector/Demo'
+      route: '/planDemo'
     }
   ];
 
