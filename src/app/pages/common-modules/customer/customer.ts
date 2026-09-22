@@ -11,7 +11,7 @@ import { Search, SearchFieldConfig } from "../../../shared/search/search";
 import { Adminservice } from '../../../service/adminservice';
 import { CustomerModel } from '../../../models/customer-model';
 import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
-
+ 
 @Component({
   selector: 'app-customer',
   imports: [CommonModule,
@@ -23,7 +23,7 @@ import { ConfirmDialogService } from '../../../service/confirm-dialog.service';
   styleUrl: './customer.css',
 })
 export class Customer {
-
+ 
   constructor(
     private router: Router,
     private adminservice: Adminservice,
@@ -31,12 +31,54 @@ export class Customer {
     private toastService: ToastService
   ) {}
    headerTitle = 'Customer List';
-
-   headerBreadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/admindashboard' },
-    { label: 'Customer', route: '/customer' }
-  ];
-
+ 
+headerBreadcrumbs: Breadcrumb[] = [];
+ 
+private getHomeRoute(): string {
+  const role = (localStorage.getItem('role') || '')
+    .replace(/"/g, '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+ 
+  switch (role) {
+    case 'ADMIN':
+      return '/admindashboard';
+ 
+    case 'ADMINMARKETING':
+    case 'ADMIN_MARKETING':
+      return '/adminmarketingdashboard';
+ 
+    case 'SALES_DIRECTOR':
+      return '/sddashboard';
+ 
+    case 'SALES_MANAGER':
+    case 'SALESMANAGER':
+    case 'SALES_ENGINEER':
+      return '/sales-manager-dashboard';
+ 
+    case 'REGIONAL_SALES_MANAGER':
+      return '/regional-sales-manager-dashboard';
+ 
+    case 'REGIONAL_BRANCH_HEAD':
+      return '/regional-branch-head-dashboard';
+ 
+    case 'NATIONAL_SALES_MANAGER':
+      return '/national-sales-manager-dashboard';
+ 
+    case 'COUNTRY_HEAD':
+      return '/country-head';
+ 
+    case 'SUPERADMIN':
+    case 'SUPER_ADMIN':
+      return '/superadmindashboard';
+ 
+    default:
+      console.warn('Unknown role for Customer Home routing:', role);
+      return '/login';
+  }
+}
+ 
    // 🔹 Table Columns
   columns = [
     { header: 'Customer Name', field: 'customerName' },
@@ -47,59 +89,52 @@ export class Customer {
     { header: 'Mobile', field: 'customerMobile' },
     { header: 'Location', field: 'locationName' },
   ];
-
-
+ 
+ 
   customers: CustomerModel[] = [];
   loading = false;
   errorMsg = '';
-
+ 
   rows: any[] = [];
   fullRows: any[] = []; // ✅ full API data (for Excel)
-
+ 
   totalElements = 0;
   currentPage = 1;
   pageSize = 10;
   searchFilters: any = {};
-
+ 
   // Map categoryId → categoryName for search
   private categoryMap: Map<number, string> = new Map();
-
-  private getHomeRoute(): string {
-    const role = (localStorage.getItem('role') || '').trim();
-    const upper = role.replace(/[\s_]+/g, '').toUpperCase();
-    if (upper === 'COUNTRYHEAD' || upper.includes('COUNTRY')) return '/country-head';
-    if (upper.includes('GLOBAL')) return '/globalhead-dashboard';
-    if (upper.includes('NATIONAL')) return '/national-sales-manager-dashboard';
-    if (upper.includes('REGIONAL') && upper.includes('BRANCH')) return '/regional-branch-head-dashboard';
-    if (upper.includes('REGIONAL')) return '/regional-sales-manager-dashboard';
-    if (upper.includes('DIRECTOR')) return '/sddashboard';
-    if (upper.includes('SUPERADMIN')) return '/superadmindashboard';
-    if (upper.includes('ADMIN')) return '/admindashboard';
-    return '/sales-manager-dashboard';
-  }
-
+ 
   ngOnInit(): void {
-    this.headerBreadcrumbs = [
-      { label: 'Home', route: this.getHomeRoute() },
-      { label: 'Customer', route: '/customer' }
-    ];
+ 
+     this.headerBreadcrumbs = [
+    {
+      label: 'Home',
+      route: this.getHomeRoute()
+    },
+    {
+      label: 'Customer'
+    }
+  ];
+ 
     this.loadCustomers();
     this.loadDropdowns();
   }
-
+ 
   private loadCustomersTimeout: any;
-
+ 
   private loadCustomers(): void {
     if (this.loadCustomersTimeout) {
       clearTimeout(this.loadCustomersTimeout);
     }
-
+ 
     this.loadCustomersTimeout = setTimeout(() => {
       this.loading = true;
-
+ 
       // Check if we have active search filters
       const hasSearch = Object.values(this.searchFilters).some(v => v && String(v).trim().length > 0);
-
+ 
       const apiCall = hasSearch
         ? this.adminservice.searchCustomers(
             this.searchFilters.customerName || null,
@@ -110,22 +145,22 @@ export class Customer {
             this.pageSize
           )
         : this.adminservice.getCustomers(this.currentPage - 1, this.pageSize);
-
+ 
       apiCall.subscribe({
         next: (res: any) => {
           this.loading = false;
           const customerList = Array.isArray(res) ? res : (res?.content || []);
           this.totalElements = Array.isArray(res) ? res.length : (res?.totalElements || 0);
-
+ 
           this.fullRows = customerList;
-
+ 
           this.rows = customerList.map((c: any, index: number) => {
             const cust = c.customer ? c.customer : c;
             const leadIdsArr = c.leadIds || cust.leadIds || [];
             const leadIdDisplay = Array.isArray(leadIdsArr) && leadIdsArr.length > 0
               ? leadIdsArr.join(', ')
               : '—';
-
+ 
             return {
               sno: (this.currentPage - 1) * this.pageSize + index + 1,
               customerId: cust.customerId,
@@ -148,7 +183,7 @@ export class Customer {
       });
     }, 50); // 50ms debounce
   }
-
+ 
   private loadDropdowns(): void {
     // Load categories from /customer/categories
     this.adminservice.getCategoryDropdown().subscribe({
@@ -168,7 +203,7 @@ export class Customer {
       }
     });
   }
-
+ 
   // Handle dependent dropdown: category → subcategory
   onFieldChange(event: { key: string; value: any }): void {
     if (event.key === 'customerCategoryName' && event.value) {
@@ -176,7 +211,7 @@ export class Customer {
       // Clear existing subcategory options
       const subField = this.searchFields.find(f => f.key === 'subCategoryName');
       if (subField) { subField.options = []; }
-
+ 
       // Fetch subcategories for the selected category
       this.adminservice.getSubCategoryDropdown(categoryId).subscribe({
         next: (res: any[]) => {
@@ -197,16 +232,16 @@ export class Customer {
       if (subField) { subField.options = []; }
     }
   }
-
+ 
   onAdd() {
     this.router.navigate(['customer/add']);
   }
-
+ 
   onEdit(row: any) {
-    const fullCustomer = this.fullRows.find((c: any) => 
+    const fullCustomer = this.fullRows.find((c: any) =>
       (c.customer?.customerId === row.customerId) || (c.customerId === row.customerId)
     );
-    
+   
     // Merge the wrapper object back into a flat object for addcustomer.ts to consume easily
     let mergedCustomer = fullCustomer;
     if (fullCustomer && fullCustomer.customer) {
@@ -215,13 +250,13 @@ export class Customer {
         customerInstalledBaseDTO: fullCustomer.installedBases // map it back to DTO name expected by frontend
       };
     }
-
+ 
     this.router.navigate(['customer/edit', row.customerId], { state: { customerData: mergedCustomer } });
   }
-
+ 
   isEditMode = false;
   customerId!: number;
-
+ 
   //activate and deactivate
   onDelete(row: any) {
     const Id = row?.customerId;
@@ -230,18 +265,18 @@ export class Customer {
     }
     const status = Number(row?.customerStatus);
     const isActive = status === 1;
-
+ 
     this.confirmService.confirm({
       title: 'Confirm',
       message: `Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this customer?`,
       confirmText: isActive ? 'Deactivate' : 'Activate'
     }).then((confirmed) => {
       if (!confirmed) return;
-
+ 
       const apiCall = isActive
         ? this.adminservice.deactivateCustomer(Id)
         : this.adminservice.activateCustomer(Id);
-
+ 
       apiCall.subscribe({
         next: () => {
           row.customerStatus = isActive ? 2 : 1;
@@ -256,7 +291,7 @@ export class Customer {
       });
     });
   }
-
+ 
   searchFields: SearchFieldConfig[] = [
     {
       key: 'customerName',
@@ -286,14 +321,14 @@ export class Customer {
       type: 'text',
     }
   ];
-
+ 
   onSearch(keyword: string) {
     console.log('🔍 Customer quick search keyword:', keyword);
     this.searchFilters = { customerName: keyword };
     this.currentPage = 1;
     this.loadCustomers();
   }
-
+ 
   onSearchChange(filters: any) {
     console.log('🔍 Customer structured search filters:', filters);
     // Convert categoryId back to categoryName for the search API
@@ -308,21 +343,21 @@ export class Customer {
     this.currentPage = 1;
     this.loadCustomers();
   }
-
+ 
   onPageChange(page: number) {
     this.currentPage = page;
     this.loadCustomers();
   }
-
+ 
   onPageSizeChange(size: number) {
     this.pageSize = size;
     this.currentPage = 1;
     this.loadCustomers();
   }
-
+ 
   onImport() {
     console.log('DOWNLOAD CLICKED');
-
+ 
   this.adminservice.downloadCustomer(
     this.searchFilters.customerName || null,
     this.searchFilters.customerCategoryName || null,
@@ -332,14 +367,14 @@ export class Customer {
   .subscribe({
     next: (blob: Blob) => {
         const url = window.URL.createObjectURL(blob);
-  
+ 
         const a = document.createElement('a');
         a.href = url;
         a.download = 'Customers.xlsx';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-  
+ 
         setTimeout(() => {
           window.URL.revokeObjectURL(url);
         }, 1000);
@@ -349,7 +384,7 @@ export class Customer {
     }
   });
 }
-
+ 
 onReset(): void {
   this.searchFilters = {};
   this.currentPage = 1;
