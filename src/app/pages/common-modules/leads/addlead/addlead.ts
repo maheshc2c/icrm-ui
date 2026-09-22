@@ -212,6 +212,7 @@ export class AddleadComponent implements OnInit {
     siteReadiness: '',
     visitRequirement: '',
     resourceRequirement: '',
+    resourceRequiredDetails: '',
     distributor: '',
     commentLine1: '',
     commentLine2: ''
@@ -305,6 +306,13 @@ export class AddleadComponent implements OnInit {
         { label: 'Yes', value: 'Yes' },
         { label: 'No', value: 'No' }
       ]
+    },
+    {
+      name: 'resourceRequiredDetails',
+      label: 'Resource Required Information',
+      type: 'textarea',
+      required: true,
+      placeholder: 'Enter resource required details'
     },
     {
       name: 'distributor',
@@ -722,6 +730,7 @@ export class AddleadComponent implements OnInit {
           siteReadiness: getStr(data.siteReadinessId || data.siteReadiness?.siteReadinessID),
           visitRequirement: data.visitRequirement === true ? 'Yes' : (data.leadVisitRequirement === 1 ? 'Yes' : 'No'),
           resourceRequirement: data.resourceRequirement === true ? 'Yes' : (data.leadResourceRequirement === 1 ? 'Yes' : 'No'),
+          resourceRequiredDetails: data.resourceRequiredDetails || data.remarks4 || data.leadResourceRequiredDetails || '',
           distributor: getStr(data.distributorId || data.distributor?.userId),
           commentLine1: data.remarks1 || data.leadCmdLine1 || '',
           commentLine2: data.remarks2 || data.leadCmdLine2 || ''
@@ -814,6 +823,9 @@ export class AddleadComponent implements OnInit {
     if (fieldName === 'referralName') {
       return sourceType === 'referral';
     }
+    if (fieldName === 'resourceRequiredDetails') {
+      return this.leadForm.resourceRequirement === 'Yes';
+    }
     return true;
   }
 
@@ -821,6 +833,13 @@ export class AddleadComponent implements OnInit {
   onFieldChange(event: {name: string, value: any}): void {
     // Clear error on change
     delete this.errors[event.name];
+
+    if (event.name === 'resourceRequirement') {
+      if (event.value !== 'Yes') {
+        this.leadForm.resourceRequiredDetails = '';
+        delete this.errors['resourceRequiredDetails'];
+      }
+    }
 
     if (event.name === 'source') {
       const sourceType = this.getSourceType();
@@ -1189,6 +1208,8 @@ export class AddleadComponent implements OnInit {
       siteLocationId: toNullIfEmpty(formData.siteLocation) ? Number(extractId(formData.siteLocation)) : null,
       visitRequirement: formData.visitRequirement === 'Yes',
       resourceRequirement: formData.resourceRequirement === 'Yes',
+      resourceRequiredDetails: formData.resourceRequirement === 'Yes' ? (formData.resourceRequiredDetails || '') : '',
+      remarks4: formData.resourceRequirement === 'Yes' ? (formData.resourceRequiredDetails || '') : '',
       distributorId: toNullIfEmpty(formData.distributor) ? Number(extractId(formData.distributor)) : null,
       campaignId: toNullIfEmpty(formData.campaign) ? Number(extractId(formData.campaign)) : null,
       remarks1: formData.commentLine1 || '',
