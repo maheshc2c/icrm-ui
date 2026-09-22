@@ -291,7 +291,7 @@ export class AddleadComponent implements OnInit {
       name: 'visitRequirement',
       label: 'Visit Requirement',
       type: 'radio',
-      required: true,
+      required: false,
       options: [
         { label: 'Yes', value: 'Yes' },
         { label: 'No', value: 'No' }
@@ -301,7 +301,7 @@ export class AddleadComponent implements OnInit {
       name: 'resourceRequirement',
       label: 'Resource Requirement',
       type: 'radio',
-      required: true,
+      required: false,
       options: [
         { label: 'Yes', value: 'Yes' },
         { label: 'No', value: 'No' }
