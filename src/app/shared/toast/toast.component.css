@@ -27,7 +27,10 @@
 }
 
 /* BACKGROUND COLORS */
-.toast-card.success { background: #10b981; }
+.toast-card.success,
+.toast-card.is-reassign { 
+  background: #28a745 !important; /* Green color for success / re-assign */
+}
 .toast-card.error { background: #ef4444; }
 .toast-card.warning { background: #f59e0b; }
 .toast-card.info { background: #4b5563; } /* Changed from blue to slate grey */

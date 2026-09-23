@@ -69,34 +69,30 @@ export class PurchaseOrderTracking implements OnInit {
   }
 
   updateBreadcrumbs(): void {
-    const role = localStorage.getItem('role');
-    let homeRoute = '/';
-    switch (role) {
-      case 'Country Head':
-        homeRoute = '/country-head';
-        break;
-      case 'Sales Engineer':
-      case 'Sales Manager':
-      case 'SALES_MANAGER':
-      case 'SALESMANAGER':
-        homeRoute = '/sales-manager-dashboard';
-        break;
-      case 'Global Head':
-        homeRoute = '/globalhead-dashboard';
-        break;
-      case 'National Sales Manager':
-        homeRoute = '/national-sales-manager-dashboard';
-        break;
-      case 'Regional Branch Head':
-        homeRoute = '/regional-branch-head-dashboard';
-        break;
-      case 'Regional Sales Manager':
-        homeRoute = '/regional-sales-manager-dashboard';
-        break;
-      case 'Sales Director':
-        homeRoute = '/sddashboard';
-        break;
+    const role = (localStorage.getItem('role') || '').trim();
+    const upper = role.replace(/[\s_]+/g, '').toUpperCase();
+    let homeRoute = '/country-head';
+
+    if (upper === 'COUNTRYHEAD' || upper.includes('COUNTRY')) {
+      homeRoute = '/country-head';
+    } else if (upper.includes('GLOBAL')) {
+      homeRoute = '/globalhead-dashboard';
+    } else if (upper.includes('NATIONAL')) {
+      homeRoute = '/national-sales-manager-dashboard';
+    } else if (upper.includes('REGIONAL') && upper.includes('BRANCH')) {
+      homeRoute = '/regional-branch-head-dashboard';
+    } else if (upper.includes('REGIONAL')) {
+      homeRoute = '/regional-sales-manager-dashboard';
+    } else if (upper.includes('DIRECTOR')) {
+      homeRoute = '/sddashboard';
+    } else if (upper.includes('SUPERADMIN')) {
+      homeRoute = '/superadmindashboard';
+    } else if (upper.includes('ADMIN')) {
+      homeRoute = '/admindashboard';
+    } else {
+      homeRoute = '/sales-manager-dashboard';
     }
+
     this.headerBreadcrumbs = [
       { label: 'Home', route: homeRoute },
       { label: 'Purchase Order Tracking' }

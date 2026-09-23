@@ -5,29 +5,30 @@ import {
 import {
   HttpErrorResponse
 } from '@angular/common/http';
-
+ 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+ 
 import { Sidebar }
   from '../../../layout/sidebar/sidebar';
-
+ 
 import { Pageheader }
   from '../../../shared/pageheader/pageheader';
-
+ 
 import { Header }
   from '../../../layout/header/header';
-
+ 
 import {
   CalendarDay,
   CalendarEvent,
   CalendarResponse,
   UserDropdown
 } from '../../../models/calendar.model';
-
+ 
 import { CalendarService }
   from './calendar.service';
-
+import { Breadcrumb } from '../../../models/breadcrumb';
+ 
 @Component({
   selector: 'app-calender',
   standalone: true,
@@ -42,36 +43,72 @@ import { CalendarService }
   styleUrl: './calender.css'
 })
 export class Calender implements OnInit {
-
+ 
   headerTitle = 'View Calendar';
-
-  headerBreadcrumbs = [
-    {
-      label: 'Home',
-      route: '/sddashboard'
-    },
-    {
-      label: 'View Calendar',
-      route: '/calender'
-    }
-  ];
-
+ 
+ 
+ 
+private getHomeRoute(): string {
+  const role = (localStorage.getItem('role') || '')
+    .replace(/"/g, '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+ 
+  switch (role) {
+    case 'ADMIN':
+      return '/admindashboard';
+ 
+    case 'ADMINMARKETING':
+    case 'ADMIN_MARKETING':
+      return '/adminmarketingdashboard';
+ 
+    case 'SALES_DIRECTOR':
+      return '/sddashboard';
+ 
+    case 'SALES_MANAGER':
+    case 'SALESMANAGER':
+    case 'SALES_ENGINEER':
+      return '/sales-manager-dashboard';
+ 
+    case 'REGIONAL_SALES_MANAGER':
+      return '/regional-sales-manager-dashboard';
+ 
+    case 'REGIONAL_BRANCH_HEAD':
+      return '/regional-branch-head-dashboard';
+ 
+    case 'NATIONAL_SALES_MANAGER':
+      return '/national-sales-manager-dashboard';
+ 
+    case 'COUNTRY_HEAD':
+      return '/country-head';
+ 
+    case 'SUPERADMIN':
+    case 'SUPER_ADMIN':
+      return '/superadmindashboard';
+ 
+    default:
+      console.warn('Unknown role for Calendar Home routing:', role);
+      return '/login';
+  }
+}
+ 
   currentView:
     'month' | 'week' | 'day' =
       'month';
-
+ 
   currentDate: Date = new Date();
-
+ 
   users: UserDropdown[] = [];
-
+ 
   selectedUserId: number | null = null;
-
+ 
   calendarEvents: CalendarEvent[] = [];
-
+ 
   monthDays: CalendarDay[] = [];
-
+ 
   loading = false;
-
+ 
   days: string[] = [
     'Sun',
     'Mon',
@@ -81,7 +118,7 @@ export class Calender implements OnInit {
     'Fri',
     'Sat'
   ];
-
+ 
   timeSlots: string[] = [
     '6am',
     '7am',
@@ -98,32 +135,44 @@ export class Calender implements OnInit {
     '6pm',
     '7pm'
   ];
-
+ 
   constructor(
     private calendarService: CalendarService
   ) {}
-
+ 
+  headerBreadcrumbs: Breadcrumb[] = [];
+ 
   ngOnInit(): void {
-    this.generateMonthDays();
-    this.loadUsers();
-  }
-
+  this.headerBreadcrumbs = [
+    {
+      label: 'Home',
+      route: this.getHomeRoute()
+    },
+    {
+      label: 'View Calendar'
+    }
+  ];
+ 
+  this.generateMonthDays();
+  this.loadUsers();
+}
+ 
   loadUsers(
   name: string = ''
 ): void {
-
+ 
   this.loading = true;
-
+ 
   this.calendarService
     .getReportees(name)
     .subscribe({
       next: (response: any) => {
-
+ 
         console.log(
           'Complete employee response:',
           response
         );
-
+ 
         /*
          * Supports:
          * 1. Direct array: [...]
@@ -143,19 +192,19 @@ export class Calender implements OnInit {
         } else {
           this.users = [];
         }
-
+ 
         console.log(
           'Employees assigned:',
           this.users
         );
-
+ 
         if (this.users.length === 0) {
           this.selectedUserId = null;
           this.calendarEvents = [];
           this.loading = false;
           return;
         }
-
+ 
         /*
          * Select user ID 1 when present.
          * Otherwise select the first employee.
@@ -165,36 +214,36 @@ export class Calender implements OnInit {
             user =>
               Number(user.userId) === 1
           );
-
+ 
         this.selectedUserId =
           preferredUser?.userId ??
           this.users[0].userId;
-
+ 
         this.loadCalendar();
       },
-
+ 
       error: (
   error: HttpErrorResponse
 ) => {
         console.error(
           'Employee API failed'
         );
-
+ 
         console.error(
           'Status:',
           error.status
         );
-
+ 
         console.error(
           'URL:',
           error.url
         );
-
+ 
         console.error(
           'Response:',
           error.error
         );
-
+ 
         this.users = [];
         this.selectedUserId = null;
         this.calendarEvents = [];
@@ -202,46 +251,46 @@ export class Calender implements OnInit {
       }
     });
 }
-
+ 
   onUserChange(): void {
-
+ 
     if (this.selectedUserId === null) {
       this.calendarEvents = [];
       return;
     }
-
+ 
     this.loadCalendar();
   }
-
+ 
   loadCalendar(): void {
-
+ 
     if (this.selectedUserId === null) {
       this.calendarEvents = [];
       return;
     }
-
+ 
     this.loading = true;
-
+ 
     this.calendarService
       .getCalendar(this.selectedUserId)
       .subscribe({
         next: (
           response: CalendarResponse
         ) => {
-
+ 
           console.log(
             'Calendar response:',
             response
           );
-
+ 
           this.calendarEvents = [
             ...(response?.visitEvents ?? []),
             ...(response?.demoEvents ?? [])
           ];
-
+ 
           this.loading = false;
         },
-
+ 
         error: (
   error: HttpErrorResponse
 ) => {
@@ -249,30 +298,30 @@ export class Calender implements OnInit {
             'Failed to load calendar:',
             error
           );
-
+ 
           console.error(
             'Backend response:',
             error.error
           );
-
+ 
           this.calendarEvents = [];
           this.loading = false;
         }
       });
   }
-
+ 
   setView(
     view: 'month' | 'week' | 'day'
   ): void {
-
+ 
     this.currentView = view;
   }
-
+ 
   prev(): void {
-
+ 
     const date =
       new Date(this.currentDate);
-
+ 
     if (this.currentView === 'month') {
       date.setMonth(
         date.getMonth() - 1
@@ -288,16 +337,16 @@ export class Calender implements OnInit {
         date.getDate() - 1
       );
     }
-
+ 
     this.currentDate = date;
     this.generateMonthDays();
   }
-
+ 
   next(): void {
-
+ 
     const date =
       new Date(this.currentDate);
-
+ 
     if (this.currentView === 'month') {
       date.setMonth(
         date.getMonth() + 1
@@ -313,52 +362,52 @@ export class Calender implements OnInit {
         date.getDate() + 1
       );
     }
-
+ 
     this.currentDate = date;
     this.generateMonthDays();
   }
-
+ 
   goToday(): void {
-
+ 
     this.currentDate = new Date();
     this.generateMonthDays();
   }
-
+ 
   generateMonthDays(): void {
-
+ 
     const year =
       this.currentDate.getFullYear();
-
+ 
     const month =
       this.currentDate.getMonth();
-
+ 
     const firstDay =
       new Date(year, month, 1);
-
+ 
     const gridStart =
       new Date(year, month, 1);
-
+ 
     gridStart.setDate(
       firstDay.getDate() -
       firstDay.getDay()
     );
-
+ 
     const generatedDays:
       CalendarDay[] = [];
-
+ 
     for (
       let index = 0;
       index < 42;
       index++
     ) {
-
+ 
       const date =
         new Date(gridStart);
-
+ 
       date.setDate(
         gridStart.getDate() + index
       );
-
+ 
       generatedDays.push({
         date,
         dateKey:
@@ -369,70 +418,70 @@ export class Calender implements OnInit {
           date.getMonth() === month
       });
     }
-
+ 
     this.monthDays = generatedDays;
   }
-
+ 
   getEventsForDate(
     dateKey: string
   ): CalendarEvent[] {
-
+ 
     return this.calendarEvents.filter(
       event => {
-
+ 
         if (!event.start) {
           return false;
         }
-
+ 
         const eventDate =
           this.extractDateKey(
             event.start
           );
-
+ 
         return eventDate === dateKey;
       }
     );
   }
-
+ 
   get currentDayEvents():
     CalendarEvent[] {
-
+ 
     const dateKey =
       this.toDateKey(
         this.currentDate
       );
-
+ 
     return this.getEventsForDate(
       dateKey
     );
   }
-
+ 
   get weekDates(): CalendarDay[] {
-
+ 
     const start =
       new Date(this.currentDate);
-
+ 
     start.setDate(
       start.getDate() -
       start.getDay()
     );
-
+ 
     const dates:
       CalendarDay[] = [];
-
+ 
     for (
       let index = 0;
       index < 7;
       index++
     ) {
-
+ 
       const date =
         new Date(start);
-
+ 
       date.setDate(
         start.getDate() + index
       );
-
+ 
       dates.push({
         date,
         dateKey:
@@ -444,21 +493,21 @@ export class Calender implements OnInit {
           this.currentDate.getMonth()
       });
     }
-
+ 
     return dates;
   }
-
+ 
   get weekRange(): string {
-
+ 
     const dates =
       this.weekDates;
-
+ 
     const start =
       dates[0].date;
-
+ 
     const end =
       dates[6].date;
-
+ 
     const startText =
       start.toLocaleDateString(
         'en-US',
@@ -467,7 +516,7 @@ export class Calender implements OnInit {
           day: 'numeric'
         }
       );
-
+ 
     const endText =
       end.toLocaleDateString(
         'en-US',
@@ -481,12 +530,12 @@ export class Calender implements OnInit {
           year: 'numeric'
         }
       );
-
+ 
     return `${startText} — ${endText}`;
   }
-
+ 
   get calendarTitle(): string {
-
+ 
     if (this.currentView === 'month') {
       return this.currentDate
         .toLocaleDateString(
@@ -497,11 +546,11 @@ export class Calender implements OnInit {
           }
         );
     }
-
+ 
     if (this.currentView === 'week') {
       return this.weekRange;
     }
-
+ 
     return this.currentDate
       .toLocaleDateString(
         'en-US',
@@ -513,24 +562,24 @@ export class Calender implements OnInit {
         }
       );
   }
-
+ 
   eventClass(
     event: CalendarEvent
   ): string {
-
+ 
     return event.eventType
       ?.toUpperCase() === 'VISIT'
         ? 'visit-event'
         : 'demo-event';
   }
-
+ 
   isToday(
     date: Date
   ): boolean {
-
+ 
     const today =
       new Date();
-
+ 
     return (
       date.getFullYear() ===
         today.getFullYear() &&
@@ -540,31 +589,31 @@ export class Calender implements OnInit {
         today.getDate()
     );
   }
-
+ 
   private extractDateKey(
     value: string
   ): string {
-
+ 
     return value.substring(0, 10);
   }
-
+ 
   private toDateKey(
     date: Date
   ): string {
-
+ 
     const year =
       date.getFullYear();
-
+ 
     const month =
       String(
         date.getMonth() + 1
       ).padStart(2, '0');
-
+ 
     const day =
       String(
         date.getDate()
       ).padStart(2, '0');
-
+ 
     return `${year}-${month}-${day}`;
   }
 }
