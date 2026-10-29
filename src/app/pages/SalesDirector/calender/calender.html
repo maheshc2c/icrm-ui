@@ -1,114 +1,301 @@
 <app-header></app-header>
 <app-sidebar></app-sidebar>
 
-<app-pageheader 
-  [title]="headerTitle" 
+<app-pageheader
+  [title]="headerTitle"
   [breadcrumbs]="headerBreadcrumbs">
 </app-pageheader>
 
-<div class="calendar-container">
+<main class="calendar-page">
 
-  <!-- HEADER -->
-  <div class="calendar-header">
+  <section class="calendar-container">
 
-    <!-- Dropdown -->
-    <select class="user-dropdown">
-      <option>Krishna T - ENT005 (Super User)</option>
-    </select>
+    <!-- EMPLOYEE DROPDOWN -->
 
-    <!-- Buttons -->
-    <div class="view-buttons">
-      <button (click)="setView('month')" [class.active]="currentView==='month'">month</button>
-      <button (click)="setView('week')" [class.active]="currentView==='week'">week</button>
-      <button (click)="setView('day')" [class.active]="currentView==='day'">day</button>
+   <div class="calendar-filter">
+  <select
+    class="user-dropdown"
+    [(ngModel)]="selectedUserId"
+    (ngModelChange)="onUserChange()"
+    [disabled]="loading"
+  >
+    <option [ngValue]="null" disabled>
+      Select employee
+    </option>
 
-      <button (click)="goToday()">today</button>
-      <button (click)="prev()">&lt;</button>
-      <button (click)="next()">&gt;</button>
-    </div>
-  </div>
+    <option
+      *ngFor="let user of users"
+      [ngValue]="user.userId"
+    >
+      {{ user.userName }} -
+      {{ user.employeeId }}
+      ({{ user.roleName }})
+    </option>
+  </select>
 
-  <!-- TITLE -->
-  <h2 class="calendar-title">
-    {{ currentView === 'month' ? (currentDate | date:'MMMM yyyy') :
-       currentView === 'week' ? (currentDate | date:'MMM d') + ' - ' + (currentDate | date:'MMM d yyyy') :
-       (currentDate | date:'EEEE, MMM d, yyyy') }}
-  </h2>
-
-  <div class="calendar-body">
-
-    <!-- LEGEND -->
-    <div class="legend">
-      <div class="legend-item">
-        <span class="color visit"></span> → Visit
-      </div>
-      <div class="legend-item">
-        <span class="color demo"></span> → Demo
-      </div>
-    </div>
-
-    <!-- ================= MONTH VIEW ================= -->
-    <div *ngIf="currentView === 'month'" class="calendar-grid">
-
-      <!-- Day Headers -->
-      <div class="day-header" *ngFor="let d of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']">
-        {{ d }}
-      </div>
-
-      <!-- Dates -->
-      <div class="day" *ngFor="let d of monthDays">
-        {{ d }}
-      </div>
-
-    </div>
-
-    <!-- ================= WEEK VIEW ================= -->
-    <div *ngIf="currentView === 'week'" class="week-view">
-
-      <!-- Header -->
-      <div class="week-header">
-        <div></div>
-        <div *ngFor="let d of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']">
-          {{ d }}
-        </div>
-      </div>
-
-      <!-- Body -->
-      <div class="week-body">
-
-        <!-- Time column -->
-        <div class="time-col">
-          <div *ngFor="let t of timeSlots">
-            {{ t }}
-          </div>
-        </div>
-
-        <!-- Days -->
-        <div class="week-days">
-          <div class="day-column" *ngFor="let d of [1,2,3,4,5,6,7]">
-            <div class="slot" *ngFor="let t of timeSlots"></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ================= DAY VIEW ================= -->
-    <div *ngIf="currentView === 'day'" class="day-view">
-
-      <!-- Time -->
-      <div class="time-col">
-        <div *ngFor="let t of timeSlots">
-          {{ t }}
-        </div>
-      </div>
-
-      <!-- Single day -->
-      <div class="day-column">
-        <div class="slot" *ngFor="let t of timeSlots"></div>
-      </div>
-
-    </div>
-
-  </div>
+  <span
+    *ngIf="!loading && users.length === 0"
+    class="dropdown-error"
+  >
+    No employees found
+  </span>
 </div>
+
+    <div
+      *ngIf="loading"
+      class="loading"
+    >
+      Loading calendar...
+    </div>
+
+    <div class="calendar-workspace">
+
+      <!-- LEGEND -->
+
+      <aside class="legend">
+
+        <div class="legend-item">
+          <span class="legend-color visit-color"></span>
+          <span>→ Visit</span>
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-color demo-color"></span>
+          <span>→ Demo</span>
+        </div>
+
+      </aside>
+
+      <!-- MAIN CALENDAR -->
+
+      <section class="calendar-main">
+
+        <div class="calendar-toolbar">
+
+          <h2 class="calendar-title">
+            {{ calendarTitle }}
+          </h2>
+
+          <div class="view-buttons">
+
+            <button
+              type="button"
+              (click)="setView('month')"
+              [class.active]="currentView === 'month'"
+            >
+              month
+            </button>
+
+            <button
+              type="button"
+              (click)="setView('week')"
+              [class.active]="currentView === 'week'"
+            >
+              week
+            </button>
+
+            <button
+              type="button"
+              (click)="setView('day')"
+              [class.active]="currentView === 'day'"
+            >
+              day
+            </button>
+
+            <button
+              type="button"
+              class="today-button"
+              (click)="goToday()"
+            >
+              today
+            </button>
+
+            <button
+              type="button"
+              class="navigation-button"
+              aria-label="Previous"
+              (click)="prev()"
+            >
+              &#8249;
+            </button>
+
+            <button
+              type="button"
+              class="navigation-button"
+              aria-label="Next"
+              (click)="next()"
+            >
+              &#8250;
+            </button>
+
+          </div>
+        </div>
+
+        <!-- MONTH VIEW -->
+
+        <div
+          *ngIf="currentView === 'month'"
+          class="month-view"
+        >
+          <div class="calendar-grid">
+
+            <div
+              *ngFor="let dayName of days"
+              class="day-header"
+            >
+              {{ dayName }}
+            </div>
+
+            <div
+              *ngFor="let day of monthDays"
+              class="day"
+              [class.other-month]="!day.currentMonth"
+              [class.today]="isToday(day.date)"
+            >
+              <span class="day-number">
+                {{ day.dayNumber }}
+              </span>
+
+              <div
+                *ngFor="
+                  let event of
+                  getEventsForDate(day.dateKey)
+                "
+                class="calendar-event"
+                [ngClass]="eventClass(event)"
+                [title]="event.description"
+              >
+                {{ event.title }}
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- WEEK VIEW -->
+
+        <div
+          *ngIf="currentView === 'week'"
+          class="schedule-view"
+        >
+          <div class="week-header-grid">
+
+            <div class="time-heading"></div>
+
+            <div
+  *ngFor="let day of weekDates"
+  class="schedule-day-heading"
+>
+  {{ day.date | date:'EEE M/d' }}
+</div>
+
+          </div>
+
+          <div class="week-all-day-grid">
+
+            <div class="time-label all-day-label">
+              all-day
+            </div>
+
+            <div
+              *ngFor="let day of weekDates"
+              class="all-day-cell"
+              [class.today-column]="isToday(day.date)"
+            >
+              <div
+                *ngFor="
+                  let event of
+                  getEventsForDate(day.dateKey)
+                "
+                class="calendar-event"
+                [ngClass]="eventClass(event)"
+                [title]="event.description"
+              >
+                {{ event.title }}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="time-scroll">
+
+            <div
+              *ngFor="let time of timeSlots"
+              class="week-time-row"
+            >
+              <div class="time-label">
+                {{ time }}
+              </div>
+
+              <div
+                *ngFor="let day of weekDates"
+                class="week-time-cell"
+                [class.today-column]="isToday(day.date)"
+              ></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- DAY VIEW -->
+
+        <div
+          *ngIf="currentView === 'day'"
+          class="schedule-view"
+        >
+          <div class="day-header-grid">
+
+            <div class="time-heading"></div>
+
+            <div class="schedule-day-heading">
+              {{ currentDate | date:'EEEE M/d' }}
+            </div>
+
+          </div>
+
+          <div class="day-all-day-grid">
+
+            <div class="time-label all-day-label">
+              all-day
+            </div>
+
+            <div
+              class="all-day-cell"
+              [class.today-column]="isToday(currentDate)"
+            >
+              <div
+                *ngFor="let event of currentDayEvents"
+                class="calendar-event"
+                [ngClass]="eventClass(event)"
+                [title]="event.description"
+              >
+                {{ event.title }}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="time-scroll">
+
+            <div
+              *ngFor="let time of timeSlots"
+              class="day-time-row"
+            >
+              <div class="time-label">
+                {{ time }}
+              </div>
+
+              <div
+                class="day-time-cell"
+                [class.today-column]="isToday(currentDate)"
+              ></div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+  </section>
+</main>

@@ -938,9 +938,9 @@ export const routes: Routes = [
 },
 
 {
-  path: 'salesdirector/calender',
+  path: 'calender',
   loadComponent: () =>
-    import('./pages/SalesDirector/calender/calender').then(m => m.Calender)
+    import('./pages/common-modules/calender/calender').then(m => m.Calender)
 },
 
 {
@@ -953,7 +953,7 @@ export const routes: Routes = [
   loadComponent: () =>
     import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
 },
-{
+{ 
   path: 'salesdirector/customer/edit/:id',
   loadComponent: () =>
     import('./pages/common-modules/customer/addcustomer/addcustomer').then(m => m.Addcustomer)
@@ -1255,7 +1255,7 @@ export const routes: Routes = [
       { path: 'country-head/leads/closed', redirectTo: 'salesmanager/closed-leads', pathMatch: 'full' },
       { path: 'country-head/opportunities/open', redirectTo: 'salesmanager/opportunities', pathMatch: 'full' },
       { path: 'country-head/opportunities/closed', redirectTo: 'salesmanager/closed-opportunities', pathMatch: 'full' },
-      { path: 'country-head/dashboard/view-calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
+      { path: 'country-head/dashboard/view-calendar', redirectTo: 'calender', pathMatch: 'full' },
       { path: 'country-head/dashboard/leads-dashboard', redirectTo: 'leads-dashboard', pathMatch: 'full' },
       { path: 'country-head/dashboard/opportunity-dashboard', redirectTo: 'opportunity-dashboard', pathMatch: 'full' },
       { path: 'country-head/dashboard/approvals', redirectTo: 'quotes-view', pathMatch: 'full' },
@@ -1263,8 +1263,8 @@ export const routes: Routes = [
       { path: 'country-head/dashboard/demo-product', redirectTo: 'demoproduct', pathMatch: 'full' },
 
       // Legacy / Role-specific Aliases
-      { path: 'regional-sales-manager-view-calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
-      { path: 'salesmanager/calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
+      { path: 'regional-sales-manager-view-calendar', redirectTo: 'calender', pathMatch: 'full' },
+      { path: 'salesmanager/calendar', redirectTo: 'calender', pathMatch: 'full' },
       { path: 'salesmanager/marketing-documents', redirectTo: 'country-head/marketing-document', pathMatch: 'full' },
       { path: 'salesmanager/report', redirectTo: 'reports/target-vs-sales', pathMatch: 'full' },
       { path: 'salesdirector/addleads', redirectTo: 'salesmanager/leads/add', pathMatch: 'full' },
@@ -1273,7 +1273,7 @@ export const routes: Routes = [
       { path: 'salesdirector/viewCampaignDocuments', redirectTo: 'country-head/marketing-document', pathMatch: 'full' },
       { path: 'globalhead/create-lead', redirectTo: 'salesmanager/leads/add', pathMatch: 'full' },
       { path: 'globalhead/assign-lead', redirectTo: 'openleads', pathMatch: 'full' },
-      { path: 'globalhead/view-calendar', redirectTo: 'salesdirector/calender', pathMatch: 'full' },
+      { path: 'globalhead/view-calendar', redirectTo: 'calender', pathMatch: 'full' },
 
       // Regional Branch Head Aliases & Routes
       { path: 'regional-branch-head', redirectTo: 'regional-branch-head-dashboard', pathMatch: 'full' },
