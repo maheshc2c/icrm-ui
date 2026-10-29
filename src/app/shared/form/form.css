@@ -454,3 +454,10 @@
 .searchable-dropdown-item:last-child {
   border-bottom: none;
 }
+.company-text-input:read-only,
+.company-text-input:disabled {
+  background-color: #f1f5f9;
+  color: #475569;
+  cursor: not-allowed;
+  border-color: #cbd5e1;
+}

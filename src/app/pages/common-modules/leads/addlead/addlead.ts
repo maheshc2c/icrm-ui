@@ -221,6 +221,7 @@ export class AddleadComponent implements OnInit {
     contact2: '' as string | number,
     purchasePotentialRs: '',
     purchasePotential: '',
+    projectType: '',
     siteReadiness: '',
     visitRequirement: '',
     resourceRequirement: '',
@@ -290,6 +291,13 @@ export class AddleadComponent implements OnInit {
       label: 'Purchase Potential',
       type: 'text',
       placeholder: 'Enter purchase potential details'
+    },
+    {
+      name: 'projectType',
+      label: 'Project Type',
+      type: 'radio',
+      required: true,
+      options: []
     },
     {
       name: 'siteReadiness',
@@ -649,6 +657,12 @@ export class AddleadComponent implements OnInit {
       error: (err) => console.error('Failed to load rapport:', err)
     });
 
+    // Project Type
+    this.leadservice.getProjectTypes().subscribe({
+      next: (data) => this.setFieldOptions('projectType', data, 'name', 'projectTypeId'),
+      error: (err) => console.error('Failed to load project types:', err)
+    });
+
     // 4. Site Readiness
     this.leadservice.getSiteReadiness().subscribe({
       next: (data) => this.setFieldOptions('siteReadiness', data, 'siteReadinessName', 'siteReadinessID'),
@@ -730,6 +744,7 @@ export class AddleadComponent implements OnInit {
           contact2: getStr(data.contact2Id || data.contact2?.contactId || data.contactPerson2Id),
           purchasePotentialRs: getStr(data.purchasePotential || data.leadPurchasePotential),
           purchasePotential: data.leadCmdLine3 || data.purchasePotentialRemarks || '',
+          projectType: getStr(data.projectTypeId || data.projectType?.projectTypeId),
           siteReadiness: getStr(data.siteReadinessId || data.siteReadiness?.siteReadinessID),
           visitRequirement: data.visitRequirement === true ? 'Yes' : (data.leadVisitRequirement === 1 ? 'Yes' : 'No'),
           resourceRequirement: data.resourceRequirement === true ? 'Yes' : (data.leadResourceRequirement === 1 ? 'Yes' : 'No'),
@@ -1196,6 +1211,7 @@ export class AddleadComponent implements OnInit {
       contactId: toNullIfEmpty(formData.contact1) ? Number(extractId(formData.contact1)) : null,
       contact2Id: toNullIfEmpty(formData.contact2) ? Number(extractId(formData.contact2)) : null,
       purchasePotential: formData.purchasePotentialRs ? Number(formData.purchasePotentialRs) : 0,
+      projectTypeId: toNullIfEmpty(formData.projectType) ? Number(extractId(formData.projectType)) : null,
       siteReadinessId: toNullIfEmpty(formData.siteReadiness) ? Number(extractId(formData.siteReadiness)) : null,
       siteLocationId: toNullIfEmpty(formData.siteLocation) ? Number(extractId(formData.siteLocation)) : null,
       visitRequirement: formData.visitRequirement === 'Yes',
@@ -1215,7 +1231,7 @@ export class AddleadComponent implements OnInit {
     if (this.isEditMode && this.leadId) {
       this.leadservice.updateLead(this.leadId, payload).subscribe({
         next: (response) => {
-          this.toastService.success('Lead updated successfully and resubmitted to CIC for approval!');
+          this.toastService.success('Lead updated successfully!');
           this.router.navigate(['/openleads']);
         },
         error: (err) => {
@@ -1255,7 +1271,7 @@ export class AddleadComponent implements OnInit {
         return;
       }
       const status = (this.originalLeadData as any).leadStatus ?? (this.originalLeadData as any).status ?? 0;
-      if (status < 2) {
+      if (false) {
         this.toastService.warning('Lead is not yet approved by CIS. You cannot add Opportunities yet.');
         return;
       }

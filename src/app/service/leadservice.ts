@@ -168,6 +168,14 @@ export class Leadservice {
     });
   }
 
+  /* ================= GET PROJECT TYPES DROPDOWN ================= */
+  getProjectTypes(): Observable<any[]> {
+    console.log('📡 Calling: /leads/project-type-dropdown');
+    return this.http.get<any[]>(`${this.baseUrl}/leads/project-type-dropdown`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   /* ================= GET SITE READINESS DROPDOWN ================= */
   getSiteReadiness(): Observable<any[]> {
     console.log('📡 Calling: /leads/site-readiness-dropdown');
