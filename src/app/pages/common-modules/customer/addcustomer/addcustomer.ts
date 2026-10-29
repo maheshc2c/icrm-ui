@@ -45,8 +45,8 @@ export class Addcustomer implements OnInit {
  
   /* ================= FORM FIELDS ================= */
   customerFields: any[] = [
-    { name: 'customerName', label: 'Customer Name', type: 'text', required: true },
-    { name: 'customerName1', label: 'Customer Code', type: 'text', required: true },
+    { name: 'customerName', label: 'Company Name', type: 'text', required: true },
+    { name: 'customerName1', label: 'Customer Code', type: 'text', required: false, readonly: true, placeholder: 'Auto-generated code' },
  
     {
       name: 'customerCategory',
@@ -261,7 +261,39 @@ export class Addcustomer implements OnInit {
   }
 
   // Handle category changing in add/edit form
+  private codeGenTimeout: any;
+
   onFieldChange(event: { name: string; value: any }): void {
+    if (this.formInitialData) {
+      this.formInitialData[event.name] = event.value;
+    }
+
+    if (event.name === 'customerName') {
+      const companyName = (event.value || '').trim();
+      if (!this.isEditMode || !this.formInitialData?.customerName1) {
+        clearTimeout(this.codeGenTimeout);
+        if (companyName.length >= 1) {
+          this.codeGenTimeout = setTimeout(() => {
+            this.adminService.generateCustomerCode(companyName).subscribe({
+              next: (res) => {
+                if (res && res.customerCode) {
+                  this.formInitialData = {
+                    ...this.formInitialData,
+                    customerName1: res.customerCode
+                  };
+                }
+              },
+              error: (err) => console.error('Failed to generate customer code:', err)
+            });
+          }, 300);
+        } else {
+          this.formInitialData = {
+            ...this.formInitialData,
+            customerName1: ''
+          };
+        }
+      }
+    }
     if (event.name === 'customerCategory') {
       const categoryName = event.value;
       const subField = this.customerFields.find(f => f.name === 'subCategory');
@@ -344,6 +376,19 @@ export class Addcustomer implements OnInit {
       customerCategory: customer.customerCategory?.customerCategoryName || customer.customerCategoryName,
       subCategory: subCategoryName,
       locations: customer.locations?.[0]?.locationName || customer.cityName?.[0]
+    };
+
+    if (!customerCodeVal && customer.customerName) {
+      this.adminService.generateCustomerCode(customer.customerName).subscribe({
+        next: (res) => {
+          if (res && res.customerCode) {
+            this.formInitialData = {
+              ...this.formInitialData,
+              customerName1: res.customerCode
+            };
+          }
+        }
+      });
     };
   }
  

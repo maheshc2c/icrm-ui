@@ -27,6 +27,8 @@ export interface LeadPayload {
   campaignName?: string;
   siteReadinessId?: number;
   siteReadinessName?: string;
+  projectTypeId?: number;
+  projectTypeName?: string;
   distributorId?: number;
   distributorName?: string;
   relationshipId?: number;

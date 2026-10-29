@@ -7,6 +7,12 @@
     <!-- Main Form Container -->
     <div class="company-form-container" style="background-color: #fff; padding: 30px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
       
+      <!-- Error Banner -->
+      <div *ngIf="errorMessage" class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 12px 20px; border-radius: 4px; margin-bottom: 20px; font-size: 13.5px; display: flex; align-items: center; justify-content: space-between;">
+        <span><i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i> {{ errorMessage }}</span>
+        <button type="button" (click)="errorMessage = ''" style="background: none; border: none; font-size: 16px; color: #721c24; cursor: pointer;">&times;</button>
+      </div>
+
       <!-- Quote ID Input Group -->
       <div style="display: flex; justify-content: center; margin-bottom: 30px;">
         <div style="display: flex; align-items: stretch; border: 1px solid #ced4da; border-radius: 2px; width: 600px; overflow: hidden;">
@@ -51,11 +57,11 @@
                 </td>
                 <td style="padding: 8px 12px; border-left: 1px solid #dee2e6; vertical-align: middle;">
                   <div style="display: flex; border: 1px solid #ced4da; border-radius: 2px; overflow: hidden; background: #fff;">
-                    <select [(ngModel)]="product.discountType" style="padding: 6px 8px; border: none; border-right: 1px solid #ced4da; background: transparent; outline: none; font-size: 12px; color: #495057; cursor: pointer; width: 70px;">
+                    <select [(ngModel)]="product.discountType" [disabled]="!product.selected" style="padding: 6px 8px; border: none; border-right: 1px solid #ced4da; background: transparent; outline: none; font-size: 12px; color: #495057; cursor: pointer; width: 70px;">
                       <option value="In %">In %</option>
                       <option value="In Rs">In Rs</option>
                     </select>
-                    <input type="number" [(ngModel)]="product.editableDiscount" style="width: 100%; padding: 6px 8px; border: none; background: transparent; outline: none; font-size: 12px; color: #495057;">
+                    <input type="number" [(ngModel)]="product.editableDiscount" [disabled]="!product.selected" style="width: 100%; padding: 6px 8px; border: none; background: transparent; outline: none; font-size: 12px; color: #495057;">
                   </div>
                 </td>
                 <td style="padding: 12px; text-align: center; color: #495057; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6; font-weight: 500;">
@@ -106,7 +112,7 @@
                        </tr>
                      </tbody>
                    </table>
-  
+   
                  </td>
               </tr>
             </ng-container>
@@ -117,59 +123,88 @@
       <!-- Form Details Grid -->
       <div style="max-width: 800px; margin: 0 auto;">
         
-        <div style="display: flex; align-items: center; margin-bottom: 15px;">
-          <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
-            Billing <span style="color: #dc3545;">*</span>
+        <div style="display: flex; flex-direction: column; margin-bottom: 15px;">
+          <div style="display: flex; align-items: center;">
+            <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
+              Billing <span style="color: #dc3545;">*</span>
+            </div>
+            <div style="flex: 1;">
+              <select name="billingInfoId" [(ngModel)]="quoteForm.billingInfoId" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
+                <option *ngFor="let b of billingOptions" [ngValue]="b.id">{{ b.name }}</option>
+              </select>
+            </div>
           </div>
-          <div style="flex: 1;">
-            <select name="billingInfoId" [(ngModel)]="quoteForm.billingInfoId" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
-              <option *ngFor="let b of billingOptions" [ngValue]="b.id">{{ b.name }}</option>
-            </select>
-          </div>
+          <span *ngIf="errors['billingInfoId']" style="color: #dc3545; font-size: 12px; margin-left: 250px; margin-top: 4px;">{{ errors['billingInfoId'] }}</span>
         </div>
 
-        <div style="display: flex; align-items: center; margin-bottom: 15px;">
-          <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
-            Warranty <span style="color: #dc3545;">*</span>
+        <div style="display: flex; flex-direction: column; margin-bottom: 15px;">
+          <div style="display: flex; align-items: center;">
+            <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
+              Warranty <span style="color: #dc3545;">*</span>
+            </div>
+            <div style="flex: 1;">
+              <select [(ngModel)]="quoteForm.warranty" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
+                <option *ngFor="let w of warrantyOptions" [ngValue]="w">{{ w }} Months</option>
+              </select>
+            </div>
           </div>
-          <div style="flex: 1;">
-            <select [(ngModel)]="quoteForm.warranty" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
-              <option *ngFor="let w of warrantyOptions" [ngValue]="w">{{ w }} Months</option>
-            </select>
-          </div>
+          <span *ngIf="errors['warranty']" style="color: #dc3545; font-size: 12px; margin-left: 250px; margin-top: 4px;">{{ errors['warranty'] }}</span>
         </div>
 
-        <div style="display: flex; align-items: center; margin-bottom: 15px;">
-          <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
-            Advance <span style="color: #dc3545;">*</span>
+        <div style="display: flex; flex-direction: column; margin-bottom: 15px;">
+          <div style="display: flex; align-items: center;">
+            <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
+              Advance <span style="color: #dc3545;">*</span>
+            </div>
+            <div style="flex: 1; display: flex; gap: 10px;">
+              <select [(ngModel)]="quoteForm.advanceType" style="width: 120px; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
+                <option [ngValue]="1">in %</option>
+                <option [ngValue]="2">in Rs</option>
+              </select>
+              <input type="number" [(ngModel)]="quoteForm.advance" style="flex: 1; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
+            </div>
           </div>
-          <div style="flex: 1; display: flex; gap: 10px;">
-            <select [(ngModel)]="quoteForm.advanceType" style="width: 120px; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
-              <option [ngValue]="1">in %</option>
-              <option [ngValue]="2">in Rs</option>
-            </select>
-            <input type="number" [(ngModel)]="quoteForm.advance" style="flex: 1; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
-          </div>
+          <span *ngIf="errors['advance']" style="color: #dc3545; font-size: 12px; margin-left: 250px; margin-top: 4px;">{{ errors['advance'] }}</span>
         </div>
 
-        <div style="display: flex; align-items: center; margin-bottom: 15px;">
-          <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
-            Dealer Commission (%) <span style="color: #dc3545;">*</span>
+        <div style="display: flex; flex-direction: column; margin-bottom: 15px;">
+          <div style="display: flex; align-items: center;">
+            <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
+              Balance Payment in <span style="color: #dc3545;">*</span>
+            </div>
+            <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+              <input type="number" [(ngModel)]="quoteForm.balancePaymentDays" style="flex: 1; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
+              <span style="font-size: 13px; color: #495057;">days</span>
+            </div>
           </div>
-          <div style="flex: 1;">
-            <input type="number" [(ngModel)]="quoteForm.dealerCommission" placeholder="Dealer Commission (%)" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
-          </div>
+          <span *ngIf="errors['balancePaymentDays']" style="color: #dc3545; font-size: 12px; margin-left: 250px; margin-top: 4px;">{{ errors['balancePaymentDays'] }}</span>
         </div>
 
-        <div style="display: flex; align-items: center; margin-bottom: 30px;">
-          <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
-            Billing Through
+        <div *ngIf="quoteForm.billingInfoId !== 2" style="display: flex; flex-direction: column; margin-bottom: 15px;">
+          <div style="display: flex; align-items: center;">
+            <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
+              Dealer Commission (%) <span style="color: #dc3545;">*</span>
+            </div>
+            <div style="flex: 1;">
+              <input type="number" [(ngModel)]="quoteForm.dealerCommission" placeholder="Dealer Commission (%)" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none;">
+            </div>
           </div>
-          <div style="flex: 1;">
-            <select [(ngModel)]="quoteForm.dealerId" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
-              <option *ngFor="let d of dealerOptions" [ngValue]="d.id">{{ d.name }}</option>
-            </select>
+          <span *ngIf="errors['dealerCommission']" style="color: #dc3545; font-size: 12px; margin-left: 250px; margin-top: 4px;">{{ errors['dealerCommission'] }}</span>
+        </div>
+
+        <div *ngIf="quoteForm.billingInfoId !== 2 && (quoteForm.dealerCommission || 0) > 0" style="display: flex; flex-direction: column; margin-bottom: 30px;">
+          <div style="display: flex; align-items: center;">
+            <div style="width: 250px; text-align: right; padding-right: 20px; font-size: 13px; font-weight: 600; color: #495057;">
+              Dealer <span style="color: #dc3545;">*</span>
+            </div>
+            <div style="flex: 1;">
+              <select [(ngModel)]="quoteForm.dealerId" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 2px; font-size: 13px; color: #495057; outline: none; background-color: #fff; cursor: pointer;">
+                <option [ngValue]="null">Select Dealer</option>
+                <option *ngFor="let d of dealerOptions" [ngValue]="d.id">{{ d.name }}</option>
+              </select>
+            </div>
           </div>
+          <span *ngIf="errors['dealerId']" style="color: #dc3545; font-size: 12px; margin-left: 250px; margin-top: 4px;">{{ errors['dealerId'] }}</span>
         </div>
 
         <!-- Actions -->
