@@ -39,7 +39,7 @@ export class OpportunitiesComponent implements OnInit {
   searchFields: SearchFieldConfig[] = [
     { key: 'oppId', label: 'Opp ID', type: 'text', placeholder: 'Opp ID' },
     { key: 'customer', label: 'Customer', type: 'select', placeholder: 'Select Customer', options: [] },
-    { key: 'productCategory', label: 'Product Category', type: 'select', placeholder: 'Select Product Category', options: [] },
+    { key: 'productCategory', label: 'Business unit', type: 'select', placeholder: 'Select Business unit', options: [] },
     { key: 'stage', label: 'Stage', type: 'select', placeholder: 'Select Stage', options: [] },
     { key: 'category', label: 'Category', type: 'select', placeholder: 'Select Category', options: [
       { value: 1, label: 'Hot' },
@@ -60,7 +60,7 @@ export class OpportunitiesComponent implements OnInit {
   oppFields: any[] = [
     { name: 'leadId', label: 'Select Lead', type: 'select', options: [], required: true },
     { name: 'decisionMaker1', label: 'Decision Maker1', type: 'select', options: [], required: true },
-    { name: 'productCategoryId', label: 'Product Category', type: 'select', options: [], required: true },
+    { name: 'productCategoryId', label: 'Business unit', type: 'select', options: [], required: true },
     { name: 'decisionMaker2', label: 'Decision Maker2', type: 'select', options: [] },
     { name: 'productGroupId', label: 'Product Segment', type: 'select', options: [], required: true },
     { name: 'decisionMaker3', label: 'Decision Maker3', type: 'select', options: [] },

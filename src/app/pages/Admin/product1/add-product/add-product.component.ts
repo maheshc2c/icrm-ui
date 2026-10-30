@@ -99,7 +99,7 @@ export class AddProduct implements OnInit {
   /* ================= FORM FIELDS ================= */
   productFields = [
     { name: 'productCode', label: 'Product Code', placeholder: 'Product Code', type: 'text', required: true },
-    { name: 'productCategory', label: 'Category', placeholder: 'Select Category', type: 'select', required: true, options: [] }, // Dynamic
+    { name: 'productCategory', label: 'Business unit', placeholder: 'Select Business unit', type: 'select', required: true, options: [] }, // Dynamic
     { name: 'productSegment', label: 'Segment', placeholder: 'Select Segment', type: 'select', required: true, options: [] }, // Dynamic key: Group
     { name: 'productSubSystem', label: 'Sub System', placeholder: 'Select Sub System', type: 'select', required: true, options: [] }, // Dynamic
     { name: 'productName', label: 'Product Name', placeholder: 'Product Name', type: 'text', required: true },

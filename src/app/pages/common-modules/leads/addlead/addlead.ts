@@ -164,7 +164,7 @@ export class AddleadComponent implements OnInit {
 
   oppFields: any[] = [
     // Row 1
-    { name: 'productCategoryId', label: 'Product Category', type: 'select', options: [], required: true },
+    { name: 'productCategoryId', label: 'Business unit', type: 'select', options: [], required: true },
     { name: 'decisionMaker1', label: 'Decision Maker1', type: 'select', options: [], required: true, isSearchable: true },
     // Row 2
     { name: 'productGroupId', label: 'Product Segment', type: 'select', options: [], required: true },
@@ -295,7 +295,7 @@ export class AddleadComponent implements OnInit {
     {
       name: 'projectType',
       label: 'Project Type',
-      type: 'radio',
+      type: 'select',
       required: true,
       options: []
     },

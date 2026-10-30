@@ -16,7 +16,7 @@ import { Breadcrumb } from '../../../../models/breadcrumb';
 })
 export class AddcategoryComponent implements OnInit {
   /* ================= HEADER ================= */
-  headerTitle: string = 'Add Product Category';
+  headerTitle: string = 'Add Business Unit';
   headerBreadcrumbs: Breadcrumb[] = [];
 
   /* ================= FORM STATE ================= */
@@ -28,8 +28,8 @@ export class AddcategoryComponent implements OnInit {
   categoryFields: any[] = [
     {
       name: 'categoryName',
-      label: 'Category Name',
-      placeholder: 'Enter category name',
+      label: 'Business Unit Name',
+      placeholder: 'Enter business unit name',
       type: 'text',
       required: true
     },
@@ -68,12 +68,12 @@ export class AddcategoryComponent implements OnInit {
     this.isEditMode = true;
     this.categoryId = id;
 
-    this.headerTitle = 'Edit Product Category';
+    this.headerTitle = 'Edit Business Unit';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
       { label: 'Manage Product', route: '/admin/category' },
       { label: 'Category', route: '/admin/category' },
-      { label: 'Edit Category' }
+      { label: 'Edit Business Unit' }
     ];
 
     this.loadCategory(id);
@@ -82,12 +82,12 @@ export class AddcategoryComponent implements OnInit {
   private setupCreateMode(): void {
     this.isEditMode = false;
 
-    this.headerTitle = 'Add Product Category';
+    this.headerTitle = 'Add Business Unit';
     this.headerBreadcrumbs = [
       { label: 'Home', route: '/admindashboard' },
       { label: 'Manage Product', route: '/admin/category' },
       { label: 'Category', route: '/admin/category' },
-      { label: 'Add Category' }
+      { label: 'Add Business Unit' }
     ];
   }
 
