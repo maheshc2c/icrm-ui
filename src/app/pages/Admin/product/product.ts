@@ -50,7 +50,7 @@ export class Product implements OnInit {
   ];
  
   columns = [
-    { header: 'Category', field: 'category' },
+    { header: 'Business unit', field: 'category' },
     { header: 'Segment', field: 'segment' },
     { header: 'Product', field: 'productName' },
     { header: 'Description', field: 'productDescription' },
@@ -65,7 +65,7 @@ export class Product implements OnInit {
  
   searchFields: SearchFieldConfig[] = [
     { key: 'productName', label: 'Product Name', type: 'text', placeholder: 'Search by Name' },
-    { key: 'category', label: 'Category', type: 'text', placeholder: 'Search by Category' },
+    { key: 'category', label: 'Business unit', type: 'text', placeholder: 'Search by Business unit' },
     { key: 'segment', label: 'Segment', type: 'text', placeholder: 'Search by Segment' }
   ];
  

@@ -25,7 +25,7 @@ export class CategoryComponent implements OnInit {
   loading: boolean = true;
 
   /* ================= HEADER ================= */
-  headerTitle: string = 'Product Category Management';
+  headerTitle: string = 'Business Unit Management';
   headerBreadcrumbs: Breadcrumb[] = [
     { label: 'Home', route: '/admindashboard' },
     { label: 'Manage Product', route: '/admin/category' },
@@ -34,7 +34,7 @@ export class CategoryComponent implements OnInit {
 
   /* ================= TABLE CONFIG ================= */
   columns: any[] = [
-    { header: 'Category Name', field: 'categoryName' },
+    { header: 'Business Unit Name', field: 'categoryName' },
     { header: 'Description', field: 'categoryDescription' }
   ];
 
@@ -42,8 +42,8 @@ export class CategoryComponent implements OnInit {
   searchFields: SearchFieldConfig[] = [
     {
       key: 'searchKeyword',
-      label: 'Category Name',
-      placeholder: 'Enter category name',
+      label: 'Business Unit Name',
+      placeholder: 'Enter business unit name',
       type: 'text'
     }
   ];

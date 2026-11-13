@@ -334,6 +334,18 @@ downloadCompetitor(payload: any) {
   }
 
 
+    // ================= GENERATE CUSTOMER CODE =================
+  generateCustomerCode(companyName: string): Observable<{ customerCode: string }> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<{ customerCode: string }>(
+      `${this.baseUrl}/customer/generate-code`,
+      {
+        params: { companyName: companyName || '' },
+        headers
+      }
+    );
+  }
+
   // ================= CREATE CUSTOMER =================
   createCustomer(customer: any): Observable<any> {
     const headers = this.getAuthHeaders();
