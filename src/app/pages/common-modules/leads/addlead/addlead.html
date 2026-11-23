@@ -1126,6 +1126,13 @@
 <!-- Add Contract Note Modal -->
 <app-modal [show]="showAddContractNoteModal" [title]="'Add Contract Note'" size="lg" (closeDialog)="closeAddContractNoteModal()">
   <div style="padding: 20px; font-family: 'Inter', sans-serif;">
+    <!-- Error Alert Banner -->
+    <div *ngIf="contractNoteErrors['general'] || contractNoteErrors['purchaseOrderNo']"
+         style="background-color: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+      <i class="fas fa-exclamation-circle" style="font-size: 16px;"></i>
+      <span>{{ contractNoteErrors['purchaseOrderNo'] || contractNoteErrors['general'] }}</span>
+    </div>
+
     <div style="display: grid; grid-template-columns: 180px 1fr; gap: 16px; align-items: center; margin-bottom: 16px;">
       
       <!-- Quote -->

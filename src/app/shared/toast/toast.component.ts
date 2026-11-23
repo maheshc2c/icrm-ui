@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastService, Toast } from '../../service/toast.service';
 
@@ -12,15 +12,20 @@ import { ToastService, Toast } from '../../service/toast.service';
 export class ToastComponent implements OnInit {
   toasts: Toast[] = [];
 
-  constructor(private toastService: ToastService) {}
+  constructor(
+    private toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.toastService.toasts$.subscribe(toasts => {
       this.toasts = toasts;
+      this.cdr.detectChanges();
     });
   }
 
   onDismiss(id: number) {
     this.toastService.dismiss(id);
+    this.cdr.detectChanges();
   }
 }
