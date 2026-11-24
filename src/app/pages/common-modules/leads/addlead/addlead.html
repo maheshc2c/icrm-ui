@@ -91,7 +91,7 @@
 
             <!-- LOOP ALL FIELDS -->
             <ng-container *ngFor="let field of leadFields">
-              <div class="company-field-row" *ngIf="shouldShowField(field.name)">
+              <div class="company-field-row" [class.textarea-row]="field.type === 'textarea'" *ngIf="shouldShowField(field.name)">
 
                 <!-- LABEL -->
                 <label class="field-label-text">

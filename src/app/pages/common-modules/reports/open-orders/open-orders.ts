@@ -14,13 +14,13 @@ import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Header } from '../../../../layout/header/header';
 import { Breadcrumb } from '../../../../models/breadcrumb';
-
-
+ 
+ 
 // Highcharts is loaded from CDN via index.html
 declare var Highcharts: any;
-
+ 
 // ─── Period option type ───────────────────────────────────────────────────────
-
+ 
 interface PeriodOption {
   id?:       number;   // Optional id for database-backed periods (weeks/months)
   label:    string;
@@ -33,20 +33,20 @@ interface PeriodOption {
   fromDate: string;
   toDate:   string;
 }
-
+ 
 // ─── Bar-click context (passed from Highcharts click handler) ─────────────────
-
+ 
 interface Chart1ClickContext {
   categoryName: string;   // x-axis label (product category)
   seriesName:   string;   // series name (status label from backend)
 }
-
+ 
 interface Chart2ClickContext {
   segmentName: string;    // x-axis label clicked in chart2
 }
-
+ 
 // ─── Component ────────────────────────────────────────────────────────────────
-
+ 
 @Component({
   selector: 'app-open-orders',
   standalone: true,
@@ -55,46 +55,89 @@ interface Chart2ClickContext {
   styleUrls: ['./open-orders.css']
 })
 export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
-
+ 
   // ── Breadcrumbs ──────────────────────────────────────────────────────────
-  breadcrumbs: Breadcrumb[] = [
-    { label: 'Home', route: '/sales-manager-dashboard' },
-    { label: 'Open Order Report' }
-  ];
-
+  // ── Breadcrumbs ──────────────────────────────────────────────
+breadcrumbs: Breadcrumb[] = [];
+ 
+private getHomeRoute(): string {
+  const role = (localStorage.getItem('role') || '')
+    .replace(/"/g, '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+ 
+  switch (role) {
+    case 'ADMIN':
+      return '/admindashboard';
+ 
+    case 'ADMINMARKETING':
+    case 'ADMIN_MARKETING':
+      return '/adminmarketingdashboard';
+ 
+    case 'SALES_DIRECTOR':
+      return '/sddashboard';
+ 
+    case 'SALES_MANAGER':
+    case 'SALESMANAGER':
+    case 'SALES_ENGINEER':
+      return '/sales-manager-dashboard';
+ 
+    case 'REGIONAL_SALES_MANAGER':
+      return '/regional-sales-manager-dashboard';
+ 
+    case 'REGIONAL_BRANCH_HEAD':
+      return '/regional-branch-head-dashboard';
+ 
+    case 'NATIONAL_SALES_MANAGER':
+      return '/national-sales-manager-dashboard';
+ 
+    case 'COUNTRY_HEAD':
+      return '/country-head';
+ 
+    case 'SUPERADMIN':
+    case 'SUPER_ADMIN':
+      return '/superadmindashboard';
+ 
+    default:
+      console.warn('Unknown role for dashboard routing:', role);
+      return '/login';
+  }
+}
+ 
   // ── Chart 1 state ─────────────────────────────────────────────────────────
   isLoading    = false;
   hasError     = false;
   errorMessage = '';
   chartTitle   = 'Open Order Report';
   private chart1Instance: any = null;
-
+ 
   // ── Filter state ──────────────────────────────────────────────────────────
   selectedUserId:   number | null = null;
   selectedRegionId: number | null = null;  // NEW: region filter
   selectedViewTime: string        = 'y';   // w | m | q | y | a (default: year to match PHP)
-
+ 
   users: { id: number; label: string }[] = [];
   regions: { id: number; label: string }[] = [];  // NEW: regions dropdown
   showRegionDropdown = true;
-
+ 
   weeks:    PeriodOption[] = [];
   months:   PeriodOption[] = [];
   quarters: PeriodOption[] = [];
   years:    PeriodOption[] = [];
-
+ 
   selectedWeek:    PeriodOption | null = null;
   selectedMonth:   PeriodOption | null = null;
   selectedQuarter: PeriodOption | null = null;
   selectedYear:    PeriodOption | null = null;
-
+ 
   // Searchable user dropdown
   dropdownOpen = false;
   searchQuery  = '';
-
+ 
   // Region dropdown
   regionDropdownOpen = false;
-
+ 
   // ── Chart 2 state (segment drill-down) ────────────────────────────────────
   chart2Visible    = false;
   chart2Loading    = false;
@@ -103,7 +146,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
   chart2Title      = '';
   chart2Context: Chart1ClickContext | null = null;
   private chart2Instance: any = null;
-
+ 
   // ── Chart 3 state (customer / product tables) ─────────────────────────────
   chart3Visible   = false;
   chart3Loading   = false;
@@ -113,48 +156,58 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
   chart3Context: Chart2ClickContext | null = null;
   chart3Customers: CustomerRow[] = [];
   chart3Products:  ProductRow[]  = [];
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   constructor(
     private openOrdersService: OpenOrdersService,
     private cdr: ChangeDetectorRef
   ) {}
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   ngOnInit(): void {
+ 
+    this.breadcrumbs = [
+    {
+      label: 'Home',
+      route: this.getHomeRoute()
+    },
+    {
+      label: 'Open Order Report'
+    }
+  ];
     this.loadRegions();  // Load regions first
     this.loadWeeks();    // Load actual financial year weeks from database
     this.loadMonths();   // Load actual financial year months from database
     this.buildPeriodOptions();
     this.loadUsers();
   }
-
+ 
   ngAfterViewInit(): void {
     setTimeout(() => this.loadChart(), 200);
   }
-
+ 
   ngOnDestroy(): void {
     this.destroyChart1();
     this.destroyChart2();
   }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // User Dropdown
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   get filteredUsers() {
     if (!this.searchQuery) return this.users;
     return this.users.filter(u =>
       u.label.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
   }
-
+ 
   get selectedUserName(): string {
     if (!this.selectedUserId) return 'Select User';
     const u = this.users.find(u => u.id === this.selectedUserId);
     return u ? u.label : 'Select User';
   }
-
+ 
   selectUser(user: { id: number; label: string }): void {
     this.selectedUserId = user.id;
     this.dropdownOpen   = false;
@@ -162,13 +215,13 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     this.resetDrillDowns();
     this.loadChart();
   }
-
+ 
   clearUser(): void {
     this.selectedUserId = null;
     this.resetDrillDowns();
     this.loadChart();
   }
-
+ 
   private loadUsers(): void {
     this.users = [];
     this.openOrdersService.getUsersForDropdown(this.selectedRegionId).subscribe({
@@ -178,17 +231,17 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       error: () => console.warn('Could not load users dropdown')
     });
   }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Region Dropdown
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   get selectedRegionName(): string {
     if (!this.selectedRegionId) return 'Select Region';
     const r = this.regions.find(r => r.id === this.selectedRegionId);
     return r ? r.label : 'Select Region';
   }
-
+ 
   selectRegion(region: { id: number; label: string }): void {
     this.selectedRegionId = Number(region.id);
     this.regionDropdownOpen = false;
@@ -197,7 +250,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     this.resetDrillDowns();
     this.loadChart();
   }
-
+ 
   clearRegion(): void {
     this.selectedRegionId = null;
     this.regionDropdownOpen = false;
@@ -206,7 +259,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     this.resetDrillDowns();
     this.loadChart();
   }
-
+ 
   private loadRegions(): void {
     this.openOrdersService.getRegionsForDropdown().subscribe({
       next: (regions) => {
@@ -215,15 +268,15 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       error: () => console.warn('Could not load regions dropdown')
     });
   }
-
+ 
   private loadWeeks(): void {
     console.log('=== Loading weeks from backend ===');
     this.openOrdersService.getWeeksForDropdown().subscribe({
       next: (weeks) => {
         console.log('Weeks received from backend:', weeks);
-        this.weeks = weeks.map(w => ({ 
-          id: Number(w.id), 
-          label: w.label, 
+        this.weeks = weeks.map(w => ({
+          id: Number(w.id),
+          label: w.label,
           value: w.weekNo ?? Number(w.id), // Use weekNo for numeric value
           weekNo: w.weekNo, // Week number for display
           phpValue: w.value, // PHP format value: "YYYY-MM-DDtoYYYY-MM-DD"
@@ -245,13 +298,13 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
-
+ 
   private loadMonths(): void {
     this.openOrdersService.getMonthsForDropdown().subscribe({
       next: (months) => {
-        this.months = months.map(m => ({ 
-          id: Number(m.id), 
-          label: m.label, 
+        this.months = months.map(m => ({
+          id: Number(m.id),
+          label: m.label,
           value: m.monthNo ?? Number(m.id), // Use monthNo for numeric value
           monthNo: m.monthNo, // Month number for display
           yearNo: m.yearNo, // Year number
@@ -271,7 +324,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
-
+ 
   private buildProgrammaticWeeks(): void {
     console.log('=== Building programmatic weeks for current month ===');
     const today = new Date();
@@ -279,15 +332,15 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
     const currentMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     console.log('Month start:', currentMonthStart, 'Month end:', currentMonthEnd);
-    
+   
     let weekNo = 1;
     let wStart = new Date(currentMonthStart);
-    
+   
     this.weeks = [] as PeriodOption[];
     while (wStart <= currentMonthEnd) {
       const wEnd = new Date(wStart);
       wEnd.setDate(wEnd.getDate() + 6);
-      
+     
       this.weeks.push({
         label: `Week ${weekNo} (${this.fmtDate(wStart)})`,
         value: weekNo,
@@ -296,28 +349,28 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
         fromDate: this.toIsoDate(wStart),
         toDate: this.toIsoDate(wEnd > currentMonthEnd ? currentMonthEnd : wEnd)
       });
-      
+     
       weekNo++;
       wStart.setDate(wStart.getDate() + 7);
     }
-    
+   
     console.log('Programmatic weeks built:', this.weeks);
-    
+   
     if (this.weeks.length > 0) {
       this.selectedWeek = this.weeks[0];
       console.log('Selected programmatic week:', this.selectedWeek);
     }
   }
-
+ 
   private buildProgrammaticMonths(): void {
     const today = new Date();
     const fyStartYear = today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear() - 1;
     const fyStart = new Date(fyStartYear, 3, 1);
     const fyEnd = new Date(fyStartYear + 1, 2, 31);
-    
+   
     const monthNames = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'];
     const currentFyMonth = (today.getMonth() - 3 + 12) % 12;
-    
+   
     this.months = monthNames
       .slice(0, currentFyMonth + 1)
       .map((name, i) => {
@@ -325,7 +378,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
         const mEnd = new Date(fyStartYear + (i >= 9 ? 1 : 0), (3 + i) % 12 + 1, 0);
         const fyMonthNo = i + 1;
         const year = mStart.getFullYear();
-        
+       
         return {
           id: i + 1,
           label: `${name}-${year.toString().slice(-2)}`,
@@ -337,29 +390,29 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
           toDate: this.toIsoDate(mEnd)
         };
       });
-    
+   
     if (this.months.length > 0) {
       this.selectedMonth = this.months[this.months.length - 1]; // Select current month
     }
   }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Period Options
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   private buildPeriodOptions(): void {
     const today       = new Date();
     const fyStartYear = today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear() - 1;
     const fyStart     = new Date(fyStartYear, 3, 1);
     const fyEnd       = new Date(fyStartYear + 1, 2, 31);
-
+ 
     // Months are now loaded from database via loadMonths() method
     // This ensures month boundaries match the actual financial year setup
-
+ 
     const qLabels = ['Q1 (Apr–Jun)', 'Q2 (Jul–Sep)', 'Q3 (Oct–Dec)', 'Q4 (Jan–Mar)'];
     const currentFyMonth = (today.getMonth() - 3 + 12) % 12;
     const currentQuarter = Math.floor(currentFyMonth / 3);
-    
+   
     this.quarters = qLabels
       .slice(0, currentQuarter + 1)
       .map((label, i) => {
@@ -367,20 +420,20 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
         const qEnd   = new Date(qStart);  qEnd.setMonth(qStart.getMonth() + 3); qEnd.setDate(qEnd.getDate() - 1);
         return { label, value: i + 1, fromDate: this.toIsoDate(qStart), toDate: this.toIsoDate(qEnd) };
       });
-
+ 
     this.years = [{
       label: `FY ${fyStartYear}-${String(fyStartYear + 1).slice(2)}`, value: 1,
       fromDate: this.toIsoDate(fyStart), toDate: this.toIsoDate(fyEnd)
     }];
-
+ 
     this.selectedQuarter = this.quarters[Math.floor(currentFyMonth / 3)] || this.quarters[0];
     this.selectedYear = this.years[0];
   }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Period label getter
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   get currentPeriodLabel(): string {
     switch (this.selectedViewTime) {
       case 'w': return this.selectedWeek?.label    ?? 'Select Week';
@@ -390,8 +443,8 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       default:  return 'All Time';
     }
   }
-
-
+ 
+ 
   getDynamicChartTitle(): string {
   const viewLabelMap: { [key: string]: string } = {
     w: 'Week',
@@ -400,40 +453,40 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     y: 'Year',
     a: 'All'
   };
-
+ 
   const viewLabel = viewLabelMap[this.selectedViewTime] || 'Week';
-
+ 
   if (this.selectedRegionId) {
     return `${this.selectedRegionName} Wise Open Orders (${viewLabel})`;
   }
-
+ 
   return `Open Orders (${viewLabel})`;
 }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Filter change handlers
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   onViewTimeChange(): void { this.resetDrillDowns(); this.loadChart(); }
   onPeriodChange():   void { this.resetDrillDowns(); this.loadChart(); }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Build filter payloads
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   private buildFilter(): OpenOrderFilter {
     const vt = this.selectedViewTime;
-    const f: OpenOrderFilter = { 
-      userId: this.selectedUserId, 
+    const f: OpenOrderFilter = {
+      userId: this.selectedUserId,
       regionId: this.selectedRegionId,  // NEW: include regionId
-      viewTime: vt 
+      viewTime: vt
     };
     switch (vt) {
-      case 'w': 
+      case 'w':
         // Handle week value - use phpValue for date parsing, weekNo for duration
         let weekValue: string | null = this.selectedWeek?.phpValue ?? null;
         let weekDuration: number | null = this.selectedWeek?.weekNo ?? this.selectedWeek?.value ?? null;
-        
+       
         if (weekValue && weekValue.includes('to')) {
           // Parse PHP format: "YYYY-MM-DDtoYYYY-MM-DD"
           const dates = weekValue.split('to');
@@ -446,16 +499,16 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
           f.fromDate = this.selectedWeek?.fromDate ?? null;
           f.toDate = this.selectedWeek?.toDate ?? null;
         }
-        
-        f.duration = weekDuration; 
+       
+        f.duration = weekDuration;
         f.durationText = this.selectedWeek?.label ?? null;
         break;
-        
-      case 'm': 
+       
+      case 'm':
         // Handle month value - use monthValue for date parsing, monthNo for duration
         let monthValue: string | null = this.selectedMonth?.monthValue ?? null;
         let monthDuration: number | null = this.selectedMonth?.monthNo ?? this.selectedMonth?.value ?? null;
-        
+       
         if (monthValue && monthValue.includes('to')) {
           // Parse PHP format: "month_notoyear_no"
           const parts = monthValue.split('to');
@@ -482,11 +535,11 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
           f.fromDate = this.selectedMonth?.fromDate ?? null;
           f.toDate = this.selectedMonth?.toDate ?? null;
         }
-        
-        f.duration = monthDuration; 
+       
+        f.duration = monthDuration;
         f.durationText = this.selectedMonth?.label ?? null;
         break;
-        
+       
       case 'q': f.duration = this.selectedQuarter?.value ?? null; f.durationText = this.selectedQuarter?.label ?? null;
                 f.fromDate = this.selectedQuarter?.fromDate ?? null; f.toDate = this.selectedQuarter?.toDate ?? null; break;
       case 'y': f.duration = 1; f.durationText = this.selectedYear?.label ?? null;
@@ -495,7 +548,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     }
     return f;
   }
-
+ 
   /** Builds the common drill-down request base fields from current filter state. */
   private buildDrillDownBase(): Omit<OpenOrderDrillDownRequest, 'categoryName' | 'status'> {
     const f = this.buildFilter();
@@ -509,16 +562,16 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       toDate:       f.toDate
     };
   }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Chart 1 – Load & Render
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   loadChart(): void {
     if (typeof Highcharts === 'undefined') { console.warn('Highcharts not loaded'); return; }
     this.isLoading = true;
     this.hasError  = false;
-
+ 
     this.openOrdersService.getOpenOrderChart1(this.buildFilter()).subscribe({
       next: data => {
         this.isLoading = false;
@@ -532,7 +585,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
-
+ 
   private renderChart1(data: OpenOrderChartResponseDto): void {
     if (typeof Highcharts === 'undefined') {
       console.warn('Highcharts not loaded');
@@ -541,7 +594,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     this.destroyChart1();
     // this.chartTitle = data.title ?? 'Open Order Report';
     this.chartTitle = this.getDynamicChartTitle();
-
+ 
     const categories = data.xAxisCategories ?? [];
     const self = this;
     const series = (data.series ?? []).map(s => ({
@@ -563,7 +616,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     }));
-
+ 
     try {
       this.chart1Instance = Highcharts.chart('open-order-chart1-container', {
         chart: {
@@ -609,15 +662,15 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
           valueDecimals: 2,
           style: { fontSize: '13px', fontWeight: '500' }
         },
-        plotOptions: { 
-          column: { 
+        plotOptions: {
+          column: {
             stacking: 'normal',
             borderWidth: 1,
             borderColor: '#ffffff',
             dataLabels: {
               enabled: true,
-              style: { 
-                fontSize: '12px', 
+              style: {
+                fontSize: '12px',
                 fontWeight: '700',
                 color: '#ffffff',
                 textOutline: '1px #000000'
@@ -626,7 +679,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
                 return this.y !== null && this.y > 0 ? this.y.toFixed(2) : '';
               }
             }
-          } 
+          }
         },
         exporting: { enabled: true },
         credits: { enabled: false },
@@ -639,15 +692,15 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       this.errorMessage = 'Failed to render chart';
     }
   }
-
+ 
   private destroyChart1(): void {
     if (this.chart1Instance) { this.chart1Instance.destroy(); this.chart1Instance = null; }
   }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Chart 2 – Segment drill-down (triggered by chart1 bar click)
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   onChart1BarClick(ctx: Chart1ClickContext): void {
     this.chart2Context  = ctx;
     this.chart2Visible  = true;
@@ -659,13 +712,13 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     this.chart3Context  = null;
     this.chart3Customers = [];
     this.chart3Products  = [];
-
+ 
     const request: OpenOrderDrillDownRequest = {
       ...this.buildDrillDownBase(),
       categoryName: ctx.categoryName,
       status:       ctx.seriesName
     };
-
+ 
     this.openOrdersService.getOpenOrderChart2(request).subscribe({
       next: data => {
         this.chart2Loading = false;
@@ -679,10 +732,10 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
-
+ 
   private renderChart2(data: OpenOrderChartResponseDto, ctx: Chart1ClickContext): void {
     this.destroyChart2();
-
+ 
     const self = this;
     const COLORS = [
       '#FFD54F','#3F51B5','#7ABA7A','#FF9800','#F44336',
@@ -690,7 +743,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       '#CDDC39','#A1887F','#99b3ff','#CC1559','#6D929B',
       '#e87d7d','#bea7a7','#d9ff66','#717D8C','#66ff8c'
     ];
-
+ 
     // For w/y the backend returns a single series with plain numbers.
     // Apply individual bar colours by converting each value to a {y, color} point.
     const isSingleSeries = data.series.length === 1;
@@ -725,7 +778,7 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
         borderWidth: 0, cursor: 'pointer'
       };
     });
-
+ 
     this.chart2Instance = Highcharts.chart('open-order-chart2-container', {
       chart:  { type: 'column', backgroundColor: '#ffffff',
                 style: { fontFamily: "'Segoe UI', sans-serif" },
@@ -755,11 +808,11 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       series
     });
   }
-
+ 
   private destroyChart2(): void {
     if (this.chart2Instance) { this.chart2Instance.destroy(); this.chart2Instance = null; }
   }
-
+ 
   closeChart2(): void {
     this.chart2Visible = false;
     this.chart2Context = null;
@@ -767,11 +820,11 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     this.chart3Visible = false;
     this.chart3Context = null;
   }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Chart 3 – Customer & product tables (triggered by chart2 bar click)
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   onChart2BarClick(ctx2: Chart2ClickContext, ctx1: Chart1ClickContext): void {
     if (!ctx1) return;
     this.chart3Context  = ctx2;
@@ -781,14 +834,14 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     this.chart3Title    = `${ctx1.categoryName} › ${ctx2.segmentName}`;
     this.chart3Customers = [];
     this.chart3Products  = [];
-
+ 
     const request: OpenOrderDrillDownRequest = {
       ...this.buildDrillDownBase(),
       categoryName: ctx1.categoryName,
       status:       ctx1.seriesName,
       segmentName:  ctx2.segmentName === 'ALL' ? null : ctx2.segmentName
     };
-
+ 
     this.openOrdersService.getOpenOrderChart3(request).subscribe({
       next: data => {
         this.chart3Loading   = false;
@@ -802,18 +855,18 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
-
+ 
   closeChart3(): void {
     this.chart3Visible  = false;
     this.chart3Context  = null;
     this.chart3Customers = [];
     this.chart3Products  = [];
   }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Reset all drill-downs (on filter change)
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   private resetDrillDowns(): void {
     this.destroyChart2();
     this.chart2Visible  = false;
@@ -823,18 +876,18 @@ export class OpenOrders implements OnInit, AfterViewInit, OnDestroy {
     this.chart3Customers = [];
     this.chart3Products  = [];
   }
-
+ 
   // ─────────────────────────────────────────────────────────────────────────
   // Utility
   // ─────────────────────────────────────────────────────────────────────────
-
+ 
   private toIsoDate(d: Date): string {
     const y  = d.getFullYear();
     const m  = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
     return `${y}-${m}-${dd}`;
   }
-
+ 
   private fmtDate(d: Date): string {
     return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
   }

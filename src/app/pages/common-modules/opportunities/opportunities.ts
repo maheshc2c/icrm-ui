@@ -14,6 +14,8 @@ import { Sidebar } from '../../../layout/sidebar/sidebar';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Pageheader } from '../../../shared/pageheader/pageheader';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-opportunities',
@@ -157,6 +159,7 @@ export class OpportunitiesComponent implements OnInit {
       { label: 'Home', route: this.getHomeRoute() },
       { label: 'Opportunities' }
     ];
+    this.populateSearchDropdowns();
     this.loadOpportunities();
     this.loadDropdownData();
   }
@@ -169,9 +172,9 @@ export class OpportunitiesComponent implements OnInit {
     this.leadService.getOpenLeads().subscribe((data: any) => {
       const leadField = this.oppFields.find(f => f.name === 'leadId');
       if (leadField) {
-        const leadsArray = data.content || data || [];
+        const leadsArray = data?.data || data?.content || (Array.isArray(data) ? data : []);
         this.allLeadsData = leadsArray;
-        leadField.options = leadsArray.map((l: any) => ({ label: l.customerName || `Lead ${l.leadId}`, value: l.leadId, raw: l }));
+        leadField.options = leadsArray.map((l: any) => ({ label: l.customerName || `Lead ${l.leadId || l.id}`, value: l.leadId || l.id, raw: l }));
       }
     });
 
@@ -316,24 +319,148 @@ export class OpportunitiesComponent implements OnInit {
   loadOpportunities(): void {
     this.leadService.getOpportunityTable(this.currentPage - 1, this.pageSize).subscribe({
       next: (data: any) => {
-        const opps = data.content || data; // handle both Page object and raw array just in case
-        this.opportunities = opps.map((opp: any) => ({
-          ...opp,
-          product: opp.productAndCategory,
-          lifeTime: opp.lifeTimeDays,
-          value: (opp.mrp && opp.qty) ? (opp.qty * opp.mrp) : (opp.value || (opp.qty ? opp.qty * 125000 : 0)),
-          probability: typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 50)
-        }));
-        this.filteredOpportunities = [...this.opportunities];
-        this.totalElements = data.totalElements !== undefined ? data.totalElements : opps.length;
-        this.populateSearchDropdowns();
+        const opps = data?.content || data || [];
+        if (Array.isArray(opps) && opps.length > 0) {
+          this.opportunities = opps.map((opp: any) => this.mapOpportunityRow(opp));
+          this.filteredOpportunities = [...this.opportunities];
+          this.totalElements = data.totalElements !== undefined ? data.totalElements : opps.length;
+          this.opportunities.forEach(row => this.enrichOpportunityRow(row));
+        } else {
+          // Fallback: Fetch opportunities directly from leads in database
+          this.fetchOpportunitiesFromDatabaseLeads();
+        }
       },
       error: (err) => {
-        console.error('Error loading opportunities:', err);
+        console.warn('Primary opportunity endpoint failed, querying database leads directly:', err);
+        this.fetchOpportunitiesFromDatabaseLeads();
+      }
+    });
+  }
+
+  private fetchOpportunitiesFromDatabaseLeads(): void {
+    forkJoin({
+      openLeads: this.leadService.getOpenLeads(0, 100).pipe(catchError(() => of([]))),
+      closedLeads: this.leadService.getClosedLeads().pipe(catchError(() => of([])))
+    }).subscribe({
+      next: ({ openLeads, closedLeads }) => {
+        const extractArray = (res: any): any[] => {
+          if (!res) return [];
+          if (Array.isArray(res)) return res;
+          if (Array.isArray(res.data)) return res.data;
+          if (Array.isArray(res.content)) return res.content;
+          return [];
+        };
+
+        const combined = [...extractArray(openLeads), ...extractArray(closedLeads)];
+        const leadIdSet = new Set<number>();
+        const uniqueLeads: any[] = [];
+        for (const l of combined) {
+          const lid = l.leadId || l.id;
+          if (lid && !leadIdSet.has(lid)) {
+            leadIdSet.add(lid);
+            uniqueLeads.push(l);
+          }
+        }
+
+        if (uniqueLeads.length === 0) {
+          this.opportunities = [];
+          this.filteredOpportunities = [];
+          this.totalElements = 0;
+          return;
+        }
+
+        const requests = uniqueLeads.map((l: any) => {
+          const leadId = l.leadId || l.id;
+          return this.leadService.getOpportunitiesByLeadId(leadId).pipe(
+            catchError(() => of([]))
+          );
+        });
+
+        forkJoin(requests).subscribe({
+          next: (results: any[]) => {
+            const allOpps: any[] = [];
+            results.forEach(oppList => {
+              if (Array.isArray(oppList)) {
+                allOpps.push(...oppList);
+              }
+            });
+
+            this.opportunities = allOpps.map(opp => this.mapOpportunityRow(opp));
+            this.filteredOpportunities = [...this.opportunities];
+            this.totalElements = this.opportunities.length;
+            this.opportunities.forEach(row => this.enrichOpportunityRow(row));
+          },
+          error: () => {
+            this.opportunities = [];
+            this.filteredOpportunities = [];
+            this.totalElements = 0;
+          }
+        });
+      },
+      error: () => {
         this.opportunities = [];
         this.filteredOpportunities = [];
         this.totalElements = 0;
       }
+    });
+  }
+
+  private mapOpportunityRow(opp: any): any {
+    return {
+      ...opp,
+      id: opp.id || opp.opportunityId,
+      leadDetails: opp.leadDetails || opp.customerName || (opp.id ? `Opportunity #${opp.id}` : '-'),
+      product: opp.productAndCategory || opp.product || opp.productName || 'N/A',
+      qty: opp.qty != null ? opp.qty : (opp.requiredQuantity || 0),
+      stage: opp.stage || opp.oppStatus || opp.category || 'Active',
+      category: opp.category || 'Warm',
+      lifeTime: opp.lifeTimeDays != null ? opp.lifeTimeDays : (opp.lifeTime || 0),
+      value: (opp.mrp && opp.qty) ? (opp.qty * opp.mrp) : (opp.value || (opp.qty ? opp.qty * 125000 : 0)),
+      probability: typeof opp.probability === 'number' ? opp.probability : (parseFloat(opp.probability) || 50)
+    };
+  }
+
+  private enrichOpportunityRow(row: any): void {
+    if (!row || !row.id) return;
+    this.leadService.getOpportunityById(row.id).subscribe({
+      next: (detail: any) => {
+        if (!detail) return;
+
+        // 1. Enrich Product & Category & Value
+        if (detail.opportunityProducts && detail.opportunityProducts.length > 0) {
+          const firstProd = detail.opportunityProducts[0].product;
+          if (firstProd) {
+            const pName = firstProd.productName || 'Product';
+            const gName = firstProd.group?.groupName || '';
+            row.product = gName ? `${pName} (${gName})` : pName;
+            if (firstProd.productMrp) {
+              row.mrp = firstProd.productMrp;
+              row.value = (row.qty || detail.requiredQuantity || 1) * firstProd.productMrp;
+            }
+          }
+        }
+
+        // 2. Enrich Stage if available
+        if (detail.status) {
+          const statusField = this.oppFields.find(f => f.name === 'status');
+          const matchedStatus = statusField?.options?.find((o: any) => o.value == detail.status);
+          if (matchedStatus) {
+            row.stage = matchedStatus.oppName || matchedStatus.label?.replace(/\s*\(\d+%\)/, '').trim();
+          } else {
+            row.stage = `Stage ${detail.status}`;
+          }
+        }
+
+        // 3. Lead Details
+        if (detail.lead) {
+          const custName = detail.lead.customerLocationContact?.customerLocation?.customer?.customerName 
+            || detail.lead.customerName 
+            || row.customerName 
+            || '';
+          row.leadDetails = `ID : ${detail.lead.leadId || detail.lead.id}${custName ? ' - ' + custName : ''}`;
+        }
+      },
+      error: () => {}
     });
   }
 
@@ -358,7 +485,7 @@ export class OpportunitiesComponent implements OnInit {
     this.leadService.getRegions().subscribe(data => {
       const field = this.searchFields.find(f => f.key === 'region');
       if (field && data) {
-        field.options = data.map(r => ({ value: r.locationId, label: r.locationName }));
+        field.options = data.map(r => ({ value: r.id || r.locationId, label: r.name || r.locationName }));
       }
     });
 
@@ -366,7 +493,7 @@ export class OpportunitiesComponent implements OnInit {
     this.leadService.getSources().subscribe(data => {
       const field = this.searchFields.find(f => f.key === 'sourceOfLead');
       if (field && data) {
-        field.options = data.map(s => ({ value: s.sourceId, label: s.sourceName }));
+        field.options = data.map(s => ({ value: s.sourceId || s.id, label: s.sourceName || s.name }));
       }
     });
 
@@ -374,7 +501,7 @@ export class OpportunitiesComponent implements OnInit {
     this.leadService.getStages().subscribe(data => {
       const field = this.searchFields.find(f => f.key === 'stage');
       if (field && data) {
-        field.options = data.map(s => ({ value: s.stageId, label: s.stageName }));
+        field.options = data.map(s => ({ value: s.id || s.stageId, label: s.label || s.stageName }));
       }
     });
 
@@ -395,13 +522,13 @@ export class OpportunitiesComponent implements OnInit {
     const backendParams: any = {};
 
     if (this.currentFilters.searchBy) backendParams.text = this.currentFilters.searchBy;
-    if (this.currentFilters.oppId) backendParams.opportunityId = this.currentFilters.oppId; 
-    if (this.currentFilters.customer) backendParams.customerId = this.currentFilters.customer;
-    if (this.currentFilters.productCategory) backendParams.productCategory = this.currentFilters.productCategory;
-    if (this.currentFilters.stage) backendParams.stage = this.currentFilters.stage;
-    if (this.currentFilters.category) backendParams.category = this.currentFilters.category;
-    if (this.currentFilters.sourceOfLead) backendParams.leadSource = this.currentFilters.sourceOfLead;
-    if (this.currentFilters.region) backendParams.region = this.currentFilters.region;
+    if (this.currentFilters.oppId) backendParams.opportunityId = Number(this.currentFilters.oppId); 
+    if (this.currentFilters.customer) backendParams.customerId = Number(this.currentFilters.customer);
+    if (this.currentFilters.productCategory) backendParams.productCategory = Number(this.currentFilters.productCategory);
+    if (this.currentFilters.stage) backendParams.stage = Number(this.currentFilters.stage);
+    if (this.currentFilters.category) backendParams.category = Number(this.currentFilters.category);
+    if (this.currentFilters.sourceOfLead) backendParams.leadSource = Number(this.currentFilters.sourceOfLead);
+    if (this.currentFilters.region) backendParams.region = Number(this.currentFilters.region);
     if (this.currentFilters.oppCreatedStartDate) backendParams.startDate = this.currentFilters.oppCreatedStartDate;
     if (this.currentFilters.oppCreatedEndDate) backendParams.endDate = this.currentFilters.oppCreatedEndDate;
     if (this.currentFilters.orderConclusionStartDate) backendParams.startOrder = this.currentFilters.orderConclusionStartDate;
@@ -409,21 +536,66 @@ export class OpportunitiesComponent implements OnInit {
 
     this.leadService.searchOpportunitiesTable(backendParams, this.currentPage - 1, this.pageSize).subscribe({
       next: (data) => {
-        const opps = data.content || data;
-        this.filteredOpportunities = opps.map((opp: any) => ({
-          ...opp,
-          product: opp.productAndCategory,
-          lifeTime: opp.lifeTimeDays,
-          value: opp.value || (opp.qty ? opp.qty * 125000 : 0)
-        }));
-        this.totalElements = data.totalElements !== undefined ? data.totalElements : opps.length;
+        const opps = data?.content || data || [];
+        if (Array.isArray(opps) && opps.length > 0) {
+          this.filteredOpportunities = opps.map((opp: any) => this.mapOpportunityRow(opp));
+          this.totalElements = data.totalElements !== undefined ? data.totalElements : opps.length;
+          this.filteredOpportunities.forEach(row => this.enrichOpportunityRow(row));
+        } else {
+          this.filterLoadedOpportunities();
+        }
       },
-      error: (err) => {
-        console.error('Search failed:', err);
-        this.filteredOpportunities = [];
-        this.totalElements = 0;
+      error: () => {
+        this.filterLoadedOpportunities();
       }
     });
+  }
+
+  private filterLoadedOpportunities(): void {
+    let result = [...this.opportunities];
+
+    if (this.currentFilters.searchBy) {
+      const q = String(this.currentFilters.searchBy).toLowerCase().trim();
+      result = result.filter(o => 
+        String(o.id).includes(q) ||
+        (o.leadDetails && o.leadDetails.toLowerCase().includes(q)) ||
+        (o.product && o.product.toLowerCase().includes(q)) ||
+        (o.stage && o.stage.toLowerCase().includes(q)) ||
+        (o.category && o.category.toLowerCase().includes(q))
+      );
+    }
+
+    if (this.currentFilters.oppId) {
+      result = result.filter(o => o.id == this.currentFilters.oppId);
+    }
+
+    if (this.currentFilters.customer) {
+      const custId = this.currentFilters.customer;
+      const custField = this.searchFields.find(f => f.key === 'customer');
+      const custOpt = custField?.options?.find(opt => opt.value == custId);
+      const custName = custOpt?.label?.toLowerCase();
+      if (custName) {
+        result = result.filter(o => o.leadDetails && o.leadDetails.toLowerCase().includes(custName));
+      }
+    }
+
+    if (this.currentFilters.category) {
+      const catMap: any = { 1: 'Hot', 2: 'Warm', 3: 'Cold' };
+      const expectedCat = catMap[this.currentFilters.category] || this.currentFilters.category;
+      result = result.filter(o => o.category && o.category.toLowerCase() === String(expectedCat).toLowerCase());
+    }
+
+    if (this.currentFilters.stage) {
+      const stageField = this.searchFields.find(f => f.key === 'stage');
+      const stageOpt = stageField?.options?.find(opt => opt.value == this.currentFilters.stage);
+      const stageName = stageOpt?.label?.toLowerCase();
+      if (stageName) {
+        result = result.filter(o => o.stage && o.stage.toLowerCase().includes(stageName));
+      }
+    }
+
+    this.filteredOpportunities = result;
+    this.totalElements = result.length;
   }
 
   onReset(): void {

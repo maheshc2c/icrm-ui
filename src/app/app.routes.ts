@@ -1261,6 +1261,8 @@ export const routes: Routes = [
       { path: 'country-head/dashboard/approvals', redirectTo: 'quotes-view', pathMatch: 'full' },
       { path: 'country-head/dashboard/purchase-order-approval', redirectTo: 'PO-Approval', pathMatch: 'full' },
       { path: 'country-head/dashboard/demo-product', redirectTo: 'demoproduct', pathMatch: 'full' },
+      { path: 'country-head/dashboard', redirectTo: 'country-head', pathMatch: 'full' },
+      { path: 'countryhead', redirectTo: 'country-head', pathMatch: 'full' },
 
       // Legacy / Role-specific Aliases
       { path: 'regional-sales-manager-view-calendar', redirectTo: 'calender', pathMatch: 'full' },

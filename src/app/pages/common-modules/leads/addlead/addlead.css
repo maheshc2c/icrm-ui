@@ -120,14 +120,25 @@
 /* ================= FIELD ROW ================= */
 .company-field-row {
   display: grid;
-  grid-template-columns: 180px 1fr; /* ⬅️ reduced from 220px */
+  grid-template-columns: 240px 1fr;
   align-items: center;
-  column-gap: 24px;                /* ⬅️ reduced from 20px */
+  column-gap: 24px;
   margin-bottom: 20px;
 }
 .company-field-row[hidden] {
   display: none !important;
 }
+
+.company-field-row.textarea-row,
+.company-field-row:has(textarea) {
+  align-items: flex-start;
+}
+
+.company-field-row.textarea-row .field-label-text,
+.company-field-row:has(textarea) .field-label-text {
+  padding-top: 8px;
+}
+
 /* ================= LABEL ================= */
 .field-label-text {
   text-align: right;        /* ✅ aligns text naturally */

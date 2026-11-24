@@ -9,7 +9,7 @@ import { Pageheader } from '../../../../shared/pageheader/pageheader';
 import { Header } from '../../../../layout/header/header';
 import { Sidebar } from '../../../../layout/sidebar/sidebar';
 import { Leadservice } from '../../../../service/leadservice';
-
+  
 @Component({
   selector: 'app-closed-leads',
   standalone: true,

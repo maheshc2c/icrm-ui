@@ -65,7 +65,25 @@ export class OpportunityDashboardComponent implements OnInit {
     private userService: Userservice
   ) {}
 
+  private getHomeRoute(): string {
+    const role = (localStorage.getItem('role') || '').trim();
+    const upper = role.replace(/[\s_]+/g, '').toUpperCase();
+    if (upper === 'COUNTRYHEAD' || upper.includes('COUNTRY')) return '/country-head';
+    if (upper.includes('GLOBAL')) return '/globalhead-dashboard';
+    if (upper.includes('NATIONAL')) return '/national-sales-manager-dashboard';
+    if (upper.includes('REGIONAL') && upper.includes('BRANCH')) return '/regional-branch-head-dashboard';
+    if (upper.includes('REGIONAL')) return '/regional-sales-manager-dashboard';
+    if (upper.includes('DIRECTOR')) return '/sddashboard';
+    if (upper.includes('SUPERADMIN')) return '/superadmindashboard';
+    if (upper.includes('ADMIN')) return '/admindashboard';
+    return '/sales-manager-dashboard';
+  }
+
   ngOnInit(): void {
+    this.breadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      { label: 'Opportunity Dashboard' }
+    ];
     const role = (localStorage.getItem('role') || '').toUpperCase();
     // In Old PHP: role_id != 4 && role_id != 5 && role_id != 6 && role_id != 7
     // Hides for Sales Engineer, Sales Manager, Regional Sales Manager, Regional Branch Head

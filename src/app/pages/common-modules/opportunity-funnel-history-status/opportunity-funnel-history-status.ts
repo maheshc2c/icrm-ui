@@ -65,7 +65,25 @@ totalPages = 1;
 
   constructor(private leadService: Leadservice) {}
 
+  private getHomeRoute(): string {
+    const role = (localStorage.getItem('role') || '').trim();
+    const upper = role.replace(/[\s_]+/g, '').toUpperCase();
+    if (upper === 'COUNTRYHEAD' || upper.includes('COUNTRY')) return '/country-head';
+    if (upper.includes('GLOBAL')) return '/globalhead-dashboard';
+    if (upper.includes('NATIONAL')) return '/national-sales-manager-dashboard';
+    if (upper.includes('REGIONAL') && upper.includes('BRANCH')) return '/regional-branch-head-dashboard';
+    if (upper.includes('REGIONAL')) return '/regional-sales-manager-dashboard';
+    if (upper.includes('DIRECTOR')) return '/sddashboard';
+    if (upper.includes('SUPERADMIN')) return '/superadmindashboard';
+    if (upper.includes('ADMIN')) return '/admindashboard';
+    return '/sales-manager-dashboard';
+  }
+
   ngOnInit(): void {
+    this.headerBreadcrumbs = [
+      { label: 'Home', route: this.getHomeRoute() },
+      { label: 'Opportunity Funnel History' }
+    ];
     this.loadData();
   }
 

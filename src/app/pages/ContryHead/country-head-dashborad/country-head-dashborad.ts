@@ -15,7 +15,7 @@ import { Pageheader } from '../../../shared/pageheader/pageheader';
 export class CountryHeadDashborad {
 
   headerBreadcrumbs = [
-    { label: 'Home', route: '/' },
+    { label: 'Home', route: '/country-head' },
     { label: 'Country Head', route: '/country-head' }
   ];
   headerTitle = 'Country Head Dashboard';
