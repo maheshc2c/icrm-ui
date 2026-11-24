@@ -2475,16 +2475,23 @@ export class AddleadComponent implements OnInit {
 
     this.leadservice.createContractNote(payload).subscribe({
       next: (response: any) => {
+        this.contractNoteSubmitting = false;
         this.toastService.success('Contract note created successfully.');
         this.closeAddContractNoteModal();
         this.loadContractNoteDetails();
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Failed to submit contract note:', err);
-        this.toastService.error('Failed to submit contract note. Please try again.');
-      },
-      complete: () => {
         this.contractNoteSubmitting = false;
+        console.error('Failed to submit contract note:', err);
+        const errMsg = err?.error?.message || err?.error?.error || 'Failed to submit contract note. Please try again.';
+        this.toastService.error(errMsg);
+        if (errMsg.toLowerCase().includes('po number')) {
+          this.contractNoteErrors['purchaseOrderNo'] = errMsg;
+        } else {
+          this.contractNoteErrors['general'] = errMsg;
+        }
+        this.cdr.detectChanges();
       }
     });
   }
