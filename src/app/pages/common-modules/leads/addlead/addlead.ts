@@ -34,6 +34,8 @@ interface ContractNoteErrors {
   dateOfPurchaseOrder?: string;
   institutionCode?: string;
   billingToParty?: string;
+  general?: string;
+  [key: string]: string | undefined;
 }
 
 @Component({
